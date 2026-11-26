@@ -8,9 +8,12 @@ import 'server_text.dart';
 /// One event of a history: what happened, to which release, when, and what the
 /// server says about it.
 class HistoryEventTile extends StatelessWidget {
-  const HistoryEventTile(this.event, {super.key});
+  const HistoryEventTile(this.event, {this.episode, super.key});
 
   final HistoryEvent event;
+
+  /// The episode the event is about, in the history of a whole series.
+  final Episode? episode;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,15 @@ class HistoryEventTile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (episode case final episode?)
+              Text(
+                episode.seasonNumber == 0
+                    ? strings.historySpecialCode(episode.episodeNumber)
+                    : strings.historyEpisodeCode(
+                        episode.seasonNumber,
+                        episode.episodeNumber,
+                      ),
+              ),
             if (serverText(event.sourceTitle) case final title?) Text(title),
             Text(
               strings.historyDateAndTime(

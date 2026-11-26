@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../../src/l10n/generated/app_localizations.dart';
+import 'history_episodes.dart';
 import 'history_event_tile.dart';
 import 'item_history_controller.dart';
 
@@ -37,10 +38,9 @@ class ItemHistoryScreen extends ConsumerWidget {
       );
     }
 
-    final provider = itemHistoryProvider((
-      item: item,
-      client: instance.context.http,
-    ));
+    final key = (item: item, client: instance.context.http);
+    final provider = itemHistoryProvider(key);
+    final episodes = ref.watch(historyEpisodesProvider(key));
     final history = ref.watch(provider);
     final controller = ref.read(provider.notifier);
     final events = history.events;
@@ -92,6 +92,7 @@ class ItemHistoryScreen extends ConsumerWidget {
             emptyMessage: strings.historyEmpty,
             builder: (context, events, {required isStale}) => _Events(
               events: events,
+              episodes: episodes,
               history: history,
               canReadOlder: !isStale && !history.refreshing,
               onOlder: () => unawaited(controller.loadMore()),
@@ -107,6 +108,7 @@ class ItemHistoryScreen extends ConsumerWidget {
 class _Events extends StatelessWidget {
   const _Events({
     required this.events,
+    required this.episodes,
     required this.history,
     required this.canReadOlder,
     required this.onOlder,
@@ -114,6 +116,7 @@ class _Events extends StatelessWidget {
   });
 
   final List<HistoryEvent> events;
+  final Map<ItemRef, Episode> episodes;
   final ItemHistoryState history;
 
   /// Not while the events shown may be replaced.
@@ -131,10 +134,15 @@ class _Events extends StatelessWidget {
         vertical: 8,
       ),
       itemCount: events.length + (history.hasMore ? 1 : 0),
-      itemBuilder: (context, index) => index < events.length
-          ? HistoryEventTile(events[index], key: ValueKey(events[index].id))
-          : _older(context),
+      itemBuilder: (context, index) =>
+          index < events.length ? _event(events[index]) : _older(context),
     ),
+  );
+
+  Widget _event(HistoryEvent event) => HistoryEventTile(
+    event,
+    episode: episodes[event.itemRef],
+    key: ValueKey(event.id),
   );
 
   /// What follows the events while the server has older ones.
