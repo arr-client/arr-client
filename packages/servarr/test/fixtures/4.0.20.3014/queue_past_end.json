@@ -1,0 +1,161 @@
+{
+  "page": 3,
+  "pageSize": 3,
+  "sortKey": "timeleft",
+  "sortDirection": "descending",
+  "totalRecords": 10,
+  "records": [
+    {
+      "seriesId": 1,
+      "episodeId": 14,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 2097152,
+      "title": "redacted-9",
+      "estimatedCompletionTime": "2026-11-26T14:06:23Z",
+      "added": "2026-11-26T13:56:24Z",
+      "status": "downloading",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "protocol": "torrent",
+      "downloadClient": "redacted-2",
+      "downloadClientHasPostImportCategory": false,
+      "episodeHasFile": false,
+      "sizeleft": 2031616,
+      "timeleft": "00:09:16",
+      "id": 159047080
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 17,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 3145728,
+      "title": "redacted-10",
+      "estimatedCompletionTime": "2026-11-26T13:57:07Z",
+      "added": "2026-11-26T13:56:30Z",
+      "status": "completed",
+      "trackedDownloadStatus": "warning",
+      "trackedDownloadState": "importPending",
+      "statusMessages": [
+        {
+          "title": "redacted-11",
+          "messages": [
+            "redacted-12"
+          ]
+        }
+      ],
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "protocol": "torrent",
+      "downloadClient": "redacted-2",
+      "downloadClientHasPostImportCategory": false,
+      "outputPath": "/redacted/13.mkv",
+      "episodeHasFile": false,
+      "sizeleft": 0,
+      "timeleft": "00:00:00",
+      "id": 973312781
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 19,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 4194304,
+      "title": "redacted-14",
+      "estimatedCompletionTime": "2026-11-26T13:57:07Z",
+      "added": "2026-11-26T13:56:34Z",
+      "status": "completed",
+      "trackedDownloadStatus": "warning",
+      "trackedDownloadState": "importBlocked",
+      "statusMessages": [
+        {
+          "title": "redacted-15",
+          "messages": []
+        },
+        {
+          "title": "redacted-16",
+          "messages": [
+            "redacted-12"
+          ]
+        },
+        {
+          "title": "redacted-17",
+          "messages": [
+            "redacted-12"
+          ]
+        }
+      ],
+      "downloadId": "ABCDEF0000000000000000000000000000000006",
+      "protocol": "torrent",
+      "downloadClient": "redacted-2",
+      "downloadClientHasPostImportCategory": false,
+      "outputPath": "/redacted/18",
+      "episodeHasFile": false,
+      "sizeleft": 0,
+      "timeleft": "00:00:00",
+      "id": 1511149784
+    }
+  ]
+}

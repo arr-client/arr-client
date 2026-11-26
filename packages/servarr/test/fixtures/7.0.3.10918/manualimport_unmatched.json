@@ -1,0 +1,41 @@
+[
+  {
+    "path": "/redacted/26.mkv",
+    "relativePath": "redacted-24",
+    "name": "redacted-198",
+    "size": 2097152,
+    "releaseGroup": "redacted-199",
+    "quality": {
+      "quality": {
+        "id": 5,
+        "name": "WEBDL-720p",
+        "source": "webdl",
+        "resolution": 720,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 0,
+        "name": "Unknown"
+      }
+    ],
+    "qualityWeight": 16,
+    "downloadId": "ABCDEF0000000000000000000000000000000009",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-200",
+        "type": "permanent"
+      }
+    ],
+    "id": 1441775442
+  }
+]

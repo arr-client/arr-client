@@ -1,0 +1,54 @@
+{
+  "name": "ManualImport",
+  "commandName": "Manual Import",
+  "body": {
+    "files": [
+      {
+        "path": "/redacted/39.mkv",
+        "folderName": "redacted-18",
+        "quality": {
+          "quality": {
+            "id": 3,
+            "name": "WEBDL-1080p",
+            "source": "unknown",
+            "resolution": 0,
+            "modifier": "none"
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "languages": [
+          {
+            "id": 4,
+            "name": "German"
+          }
+        ],
+        "releaseGroup": "redacted-28",
+        "indexerFlags": 0,
+        "downloadId": "ABCDEF0000000000000000000000000000000007",
+        "movieId": 7
+      }
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "importMode": "redacted-201",
+    "updateScheduledTask": true,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "ManualImport",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "high",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T13:57:54Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 29
+}

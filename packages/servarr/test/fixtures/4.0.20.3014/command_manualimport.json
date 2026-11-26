@@ -1,0 +1,89 @@
+{
+  "name": "ManualImport",
+  "commandName": "Manual Import",
+  "body": {
+    "files": [
+      {
+        "path": "/redacted/40.mkv",
+        "folderName": "redacted-14",
+        "seriesId": 1,
+        "episodeIds": [
+          20
+        ],
+        "quality": {
+          "quality": {
+            "id": 3,
+            "name": "WEBDL-1080p",
+            "source": "unknown",
+            "resolution": 0
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "languages": [
+          {
+            "id": 4,
+            "name": "German"
+          }
+        ],
+        "releaseGroup": "redacted-29",
+        "indexerFlags": 0,
+        "releaseType": "singleEpisode",
+        "downloadId": "ABCDEF0000000000000000000000000000000006"
+      },
+      {
+        "path": "/redacted/71.mkv",
+        "folderName": "redacted-14",
+        "seriesId": 1,
+        "episodeIds": [
+          19
+        ],
+        "quality": {
+          "quality": {
+            "id": 3,
+            "name": "WEBDL-1080p",
+            "source": "unknown",
+            "resolution": 0
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "languages": [
+          {
+            "id": 1,
+            "name": "English"
+          }
+        ],
+        "releaseGroup": "redacted-29",
+        "indexerFlags": 0,
+        "releaseType": "singleEpisode",
+        "downloadId": "ABCDEF0000000000000000000000000000000006"
+      }
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "importMode": "redacted-78",
+    "updateScheduledTask": true,
+    "isLongRunning": false,
+    "isExclusive": false,
+    "name": "ManualImport",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "high",
+  "status": "started",
+  "result": "unknown",
+  "queued": "2026-11-26T13:57:55Z",
+  "started": "2026-11-26T13:57:55Z",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T13:57:55Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 15
+}

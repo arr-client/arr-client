@@ -1,0 +1,380 @@
+[
+  {
+    "path": "/redacted/39.mkv",
+    "relativePath": "redacted-19",
+    "folderName": "redacted-18",
+    "name": "redacted-161",
+    "size": 2097152,
+    "movie": {
+      "title": "redacted-162",
+      "originalTitle": "redacted-162",
+      "originalLanguage": {
+        "id": 1,
+        "name": "English"
+      },
+      "alternateTitles": [
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-163",
+          "id": 75
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-164",
+          "id": 76
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-165",
+          "id": 77
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-166",
+          "id": 78
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-167",
+          "id": 79
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-168",
+          "id": 80
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-169",
+          "id": 81
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-170",
+          "id": 82
+        }
+      ],
+      "secondaryYearSourceId": 0,
+      "sortTitle": "redacted-171",
+      "status": "released",
+      "overview": "redacted-172",
+      "inCinemas": "1963-12-01T00:00:00Z",
+      "physicalRelease": "1990-01-01T00:00:00Z",
+      "digitalRelease": "1963-12-01T00:00:00Z",
+      "releaseDate": "1963-12-01T00:00:00Z",
+      "images": [
+        {
+          "coverType": "poster",
+          "remoteUrl": "https://redacted.invalid/173.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "remoteUrl": "https://redacted.invalid/174.jpg"
+        }
+      ],
+      "website": "",
+      "year": 1963,
+      "youTubeTrailerId": "redacted-175",
+      "studio": "redacted-176",
+      "path": "/redacted/177",
+      "qualityProfileId": 1,
+      "movieFileId": 0,
+      "monitored": true,
+      "minimumAvailability": "tba",
+      "isAvailable": true,
+      "folderName": "/redacted/177",
+      "runtime": 113,
+      "cleanTitle": "redacted-171",
+      "imdbId": "tt0056923",
+      "tmdbId": 4808,
+      "titleSlug": "redacted-178",
+      "certification": "NR",
+      "genres": [
+        "redacted-83",
+        "redacted-179",
+        "redacted-84"
+      ],
+      "keywords": [
+        "redacted-180",
+        "redacted-181",
+        "redacted-182",
+        "redacted-183",
+        "redacted-184",
+        "redacted-185",
+        "redacted-186",
+        "redacted-187",
+        "redacted-188",
+        "redacted-131",
+        "redacted-189",
+        "redacted-190",
+        "redacted-106",
+        "redacted-191",
+        "redacted-192",
+        "redacted-193",
+        "redacted-194",
+        "redacted-195"
+      ],
+      "tags": [],
+      "added": "2026-11-26T13:55:47Z",
+      "ratings": {
+        "imdb": {
+          "votes": 95272,
+          "value": 7.8,
+          "type": "user"
+        },
+        "tmdb": {
+          "votes": 1630,
+          "value": 7.661,
+          "type": "user"
+        },
+        "metacritic": {
+          "votes": 0,
+          "value": 83,
+          "type": "user"
+        },
+        "rottenTomatoes": {
+          "votes": 0,
+          "value": 95,
+          "type": "user"
+        },
+        "trakt": {
+          "votes": 1820,
+          "value": 7.7478,
+          "type": "user"
+        }
+      },
+      "popularity": 3.5593,
+      "id": 7
+    },
+    "releaseGroup": "redacted-28",
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "qualityWeight": 20,
+    "downloadId": "ABCDEF0000000000000000000000000000000007",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-13",
+        "type": "permanent"
+      }
+    ],
+    "id": 93023688
+  },
+  {
+    "path": "/redacted/196.mkv",
+    "relativePath": "redacted-20",
+    "folderName": "redacted-18",
+    "name": "redacted-197",
+    "size": 2097152,
+    "movie": {
+      "title": "redacted-162",
+      "originalTitle": "redacted-162",
+      "originalLanguage": {
+        "id": 1,
+        "name": "English"
+      },
+      "alternateTitles": [
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-163",
+          "id": 75
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-164",
+          "id": 76
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-165",
+          "id": 77
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-166",
+          "id": 78
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-167",
+          "id": 79
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-168",
+          "id": 80
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-169",
+          "id": 81
+        },
+        {
+          "sourceType": "tmdb",
+          "movieMetadataId": 10,
+          "title": "redacted-170",
+          "id": 82
+        }
+      ],
+      "secondaryYearSourceId": 0,
+      "sortTitle": "redacted-171",
+      "status": "released",
+      "overview": "redacted-172",
+      "inCinemas": "1963-12-01T00:00:00Z",
+      "physicalRelease": "1990-01-01T00:00:00Z",
+      "digitalRelease": "1963-12-01T00:00:00Z",
+      "releaseDate": "1963-12-01T00:00:00Z",
+      "images": [
+        {
+          "coverType": "poster",
+          "remoteUrl": "https://redacted.invalid/173.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "remoteUrl": "https://redacted.invalid/174.jpg"
+        }
+      ],
+      "website": "",
+      "year": 1963,
+      "youTubeTrailerId": "redacted-175",
+      "studio": "redacted-176",
+      "path": "/redacted/177",
+      "qualityProfileId": 1,
+      "movieFileId": 0,
+      "monitored": true,
+      "minimumAvailability": "tba",
+      "isAvailable": true,
+      "folderName": "/redacted/177",
+      "runtime": 113,
+      "cleanTitle": "redacted-171",
+      "imdbId": "tt0056923",
+      "tmdbId": 4808,
+      "titleSlug": "redacted-178",
+      "certification": "NR",
+      "genres": [
+        "redacted-83",
+        "redacted-179",
+        "redacted-84"
+      ],
+      "keywords": [
+        "redacted-180",
+        "redacted-181",
+        "redacted-182",
+        "redacted-183",
+        "redacted-184",
+        "redacted-185",
+        "redacted-186",
+        "redacted-187",
+        "redacted-188",
+        "redacted-131",
+        "redacted-189",
+        "redacted-190",
+        "redacted-106",
+        "redacted-191",
+        "redacted-192",
+        "redacted-193",
+        "redacted-194",
+        "redacted-195"
+      ],
+      "tags": [],
+      "added": "2026-11-26T13:55:47Z",
+      "ratings": {
+        "imdb": {
+          "votes": 95272,
+          "value": 7.8,
+          "type": "user"
+        },
+        "tmdb": {
+          "votes": 1630,
+          "value": 7.661,
+          "type": "user"
+        },
+        "metacritic": {
+          "votes": 0,
+          "value": 83,
+          "type": "user"
+        },
+        "rottenTomatoes": {
+          "votes": 0,
+          "value": 95,
+          "type": "user"
+        },
+        "trakt": {
+          "votes": 1820,
+          "value": 7.7478,
+          "type": "user"
+        }
+      },
+      "popularity": 3.5593,
+      "id": 7
+    },
+    "releaseGroup": "redacted-28",
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "qualityWeight": 20,
+    "downloadId": "ABCDEF0000000000000000000000000000000007",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-13",
+        "type": "permanent"
+      }
+    ],
+    "id": 1017328650
+  }
+]

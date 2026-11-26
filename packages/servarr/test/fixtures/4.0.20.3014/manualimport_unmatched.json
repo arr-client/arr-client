@@ -1,0 +1,41 @@
+[
+  {
+    "path": "/redacted/27.mkv",
+    "relativePath": "redacted-25",
+    "name": "redacted-24",
+    "size": 2097152,
+    "releaseGroup": "redacted-73",
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "HDTV-720p",
+        "source": "television",
+        "resolution": 720
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 0,
+        "name": "Unknown"
+      }
+    ],
+    "qualityWeight": 8,
+    "downloadId": "ABCDEF0000000000000000000000000000000009",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "unknown",
+    "rejections": [
+      {
+        "reason": "redacted-74",
+        "type": "permanent"
+      }
+    ],
+    "id": 217376507
+  }
+]
