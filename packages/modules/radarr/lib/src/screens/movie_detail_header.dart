@@ -39,7 +39,7 @@ class MovieBackdrop extends StatelessWidget {
   }
 }
 
-/// A movie's poster, title and state.
+/// A movie's poster, title and state. Monitoring is shown by its switch.
 class MovieHeader extends StatelessWidget {
   /// Creates a [MovieHeader].
   const MovieHeader({
@@ -82,8 +82,6 @@ class MovieHeader extends StatelessWidget {
         if (movie.year case final year?) Text('$year'),
         const SizedBox(height: 8),
         ItemStateLine(movie.state),
-        const SizedBox(height: 4),
-        MonitoredLine(monitored: movie.monitored),
         const SizedBox(height: 4),
         Text(
           strings.movieOnInstance(instanceName),

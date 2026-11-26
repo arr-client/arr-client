@@ -136,6 +136,7 @@ Widget _movieDetail(
       movieId: id,
       library: RadarrLibraryAdapter(api, instance),
       history: RadarrHistoryAdapter(api),
+      commands: RadarrCommandAdapter(api, instance.instance.id),
     ),
   );
 }

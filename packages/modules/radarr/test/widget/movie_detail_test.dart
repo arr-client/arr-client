@@ -479,7 +479,10 @@ void main() {
     expect(find.text('No file'), findsOneWidget);
     expect(find.text('No history'), findsOneWidget);
     expect(find.text('Unmonitored'), findsOneWidget);
-    expect(find.text('Not monitored'), findsOneWidget);
+    expect(
+      tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+      isFalse,
+    );
   });
 
   testWidgets('shows the whole cast on request', (tester) async {
