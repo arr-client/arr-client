@@ -62,6 +62,9 @@ String itemPlaceholderLocation(String instanceId, String title) => Uri(
   queryParameters: {'title': title},
 ).toString();
 
+/// Where profiles are managed.
+const profilesLocation = '/profiles';
+
 /// A shared flow about an item of one instance. No module's paths can collide
 /// with these, as theirs start with the module's id.
 enum InstanceFlow { releases, edit, delete, history }
