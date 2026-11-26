@@ -91,6 +91,11 @@ void main() {
       'tmdbId', 'id', 'quality', 'year',
       'forced', 'hearing_impaired', 'hi', 'original_format', 'language',
       'originalLanguage', 'airTime', 'runTime', 'finaleType',
+      'appName', 'errorCode', 'propertyName', 'reason', 'releaseSource',
+      'releaseType', 'indexerFlags', 'certification', 'audioCodec',
+      'videoCodec', 'resolution', 'audioLanguages', 'subtitles', 'matches',
+      'timestamp', 'parsed_timestamp', 'score', 'episode_number', 'sortKey',
+      'size', 'age', 'isbn13', 'privacy', 'secondaryTypes', 'severity',
     ];
 
     for (final field in fields) {
@@ -390,8 +395,214 @@ void main() {
     });
 
     test('keeps the plain text bodies of qBittorrent', () {
-      for (final body in ['Ok.', 'Fails.', 'v5.1.0', '2.11.4']) {
+      for (final body in [
+        'Ok.',
+        'Fails.',
+        'Unauthorized',
+        'Forbidden',
+        'Your IP address has been banned after too many failed authentication '
+            'attempts.',
+        'v5.1.0',
+        'v5.0.0rc1',
+        '2.11.4',
+      ]) {
         expect(FixtureSanitizer().sanitize('$body\n'), '$body\n');
+      }
+      expect(FixtureSanitizer().sanitize(''), '');
+    });
+  });
+
+  group('keeps what contract tests read from', () {
+    void unchanged(Object? body) =>
+        expect(FixtureSanitizer().sanitizeJson(body), body);
+
+    test('a system status, apart from what describes the server', () {
+      const status = {
+        'appName': 'Radarr',
+        'instanceName': 'Fake Person films',
+        'version': '5.27.5.10198',
+        'buildTime': '2025-09-01T10:00:00Z',
+        'startupPath': '/home/fakeperson/radarr',
+        'urlBase': '',
+        'osName': 'fakehostname',
+        'authentication': 'forms',
+        'migrationVersion': 242,
+        'runtimeVersion': '8.0.12',
+      };
+      expect(FixtureSanitizer().sanitizeJson(status), {
+        ...status,
+        'instanceName': 'redacted-1',
+        'startupPath': '/redacted/2',
+        'osName': 'redacted-3',
+      });
+      for (final app in ['Sonarr', 'Lidarr', 'Readarr', 'Prowlarr']) {
+        unchanged({'appName': app});
+      }
+      unchanged({'bazarr_version': '1.5.2', 'sonarr_version': 'unknown'});
+    });
+
+    test('add errors', () {
+      const error = {
+        'propertyName': 'TmdbId',
+        'errorMessage': 'This movie has already been added for fakeperson',
+        'errorCode': 'MovieExistsValidator',
+        'severity': 'error',
+      };
+      expect(FixtureSanitizer().sanitizeJson([error]), [
+        {...error, 'errorMessage': 'redacted-1'},
+      ]);
+      for (final code in [
+        'SeriesExistsValidator',
+        'ArtistExistsValidator',
+        'AlbumExistsValidator',
+        'AuthorExistsValidator',
+        'RootFolderAncestorValidator',
+        'NotEmptyValidator',
+      ]) {
+        unchanged({'errorCode': code});
+      }
+      unchanged({'message': 'invalid csrf token'});
+    });
+
+    test('commands', () {
+      unchanged({
+        'name': 'RefreshSeries',
+        'commandName': 'Refresh Series',
+        'body': {'name': 'RefreshSeries', 'trigger': 'manual'},
+        'status': 'completed',
+        'result': 'indeterminate',
+        'priority': 'normal',
+        'queued': '2024-01-01T00:00:00.1234567Z',
+        'duration': '00:00:01.2345678',
+      });
+      for (final name in ['MissingEpisodeSearch', 'CutoffUnmetBookSearch']) {
+        unchanged({'name': name});
+      }
+    });
+
+    test('queue pages', () {
+      unchanged({
+        'page': 1,
+        'sortKey': 'timeleft',
+        'sortDirection': 'ascending',
+        'records': [
+          {
+            'authorId': 3,
+            'status': 'warning',
+            'trackedDownloadStatus': 'warning',
+            'trackedDownloadState': 'importBlocked',
+            'protocol': 'usenet',
+            'timeleft': '1.02:03:04',
+            'quality': {
+              'quality': {
+                'name': 'WEBDL-1080p',
+                'source': 'webdl',
+                'resolution': 1080,
+              },
+            },
+            'languages': [
+              {'id': 1, 'name': 'English'},
+            ],
+          },
+        ],
+      });
+      unchanged({'sortKey': 'series.sortTitle'});
+      unchanged({'sortKey': 'episodes.airDateUtc'});
+    });
+
+    test('history', () {
+      unchanged({
+        'eventType': 'grabbed',
+        'data': {
+          'age': '3',
+          'ageHours': '72.5083',
+          'ageMinutes': '4350.5',
+          'size': '1234567890',
+          'protocol': '2',
+          'publishedDate': '2024-01-01T00:00:00Z',
+          'customFormatScore': '-10',
+          'tmdbId': '12345',
+          'imdbId': '0',
+          'releaseSource': 'InteractiveSearch',
+          'movieMatchType': 'Title',
+          'releaseType': 'SingleEpisode',
+          'indexerFlags': 'G_Freeleech, G_Internal',
+          'reason': 'MissingFromDisk',
+        },
+      });
+    });
+
+    test('releases and manual import', () {
+      unchanged({
+        'protocol': 'torrent',
+        'indexerFlags': ['G_Freeleech', 'freeleech'],
+        'releaseType': 'multiSeasonPack',
+        'rejections': <Object?>[],
+        'quality': {
+          'quality': {'name': 'Bluray-1080p Remux', 'source': 'blurayRaw'},
+        },
+      });
+    });
+
+    test('definitions, health and indexers', () {
+      unchanged({
+        'quality': {'name': 'FLAC 24bit'},
+        'title': 'FLAC 24bit',
+      });
+      unchanged({'source': 'IndexerVIPExpiredCheck', 'type': 'notice'});
+      unchanged({'source': 'RemovedMovieCheck', 'type': 'error'});
+      unchanged({
+        'privacy': 'semiPrivate',
+        'language': 'en-US',
+        'categories': [
+          {'id': 5040, 'name': 'TV/HD'},
+        ],
+      });
+    });
+
+    test('library details', () {
+      unchanged({
+        'certification': 'PG-13',
+        'minimumAvailability': 'preDB',
+        'mediaInfo': {
+          'videoCodec': 'x265',
+          'videoDynamicRange': 'HDR',
+          'videoDynamicRangeType': 'DV HDR10',
+          'resolution': '3840x2160',
+          'scanType': 'Progressive',
+          'audioCodec': 'EAC3 Atmos',
+          'audioLanguages': 'eng/jpn',
+          'subtitles': 'eng',
+        },
+      });
+      unchanged({
+        'audioBitRate': '320 kbps',
+        'audioSampleRate': '44.1kHz',
+        'audioBits': '16bit',
+      });
+      unchanged({
+        'albumType': 'Album',
+        'secondaryTypes': ['Live', 'DJ-mix'],
+        'artistType': 'Group',
+        'isbn13': '9780000000002',
+      });
+      unchanged({'status': 'Returning Series'});
+    });
+
+    test('Bazarr wanted and history', () {
+      unchanged({
+        'episode_number': '1x12',
+        'year': '2001',
+        'timestamp': '3 days ago',
+        'parsed_timestamp': '01/02/24 10:11:12',
+        'score': '98.33%',
+        'action': 1,
+        'matches': ['series', 'release_group'],
+        'dont_matches': ['hearing_impaired'],
+        'language': {'name': 'English', 'code2': 'en', 'code3': 'eng'},
+      });
+      for (final text in ['now', 'yesterday', 'a minute ago', 'last week']) {
+        unchanged({'timestamp': text});
       }
     });
   });
@@ -402,12 +613,15 @@ void main() {
       'Set-Cookie: SID=fake',
       '{"apiKey": "FAKE-truncated',
       'fakeperson',
-      '',
     ]) {
       test(jsonEncode(body), () {
         expect(() => FixtureSanitizer().sanitize(body), _refuses);
       });
     }
+
+    test('a number too large to write back', () {
+      expect(() => FixtureSanitizer().sanitize('{"a": 1e999}'), _refuses);
+    });
 
     test('without quoting it', () {
       expect(
@@ -456,6 +670,15 @@ void main() {
       );
       expect(out.existsSync(), isFalse);
       expect('$errors', isNot(contains('FAKE')));
+    });
+
+    test('writes nothing if an output cannot be a file there', () async {
+      final raw = file('raw', '{}');
+      final out = file('out');
+      for (final bad in [file('missing/out').path, directory.path]) {
+        expect(await run([raw.path, out.path, raw.path, bad], errors), 73);
+        expect(out.existsSync(), isFalse);
+      }
     });
 
     test('rejects binary and missing inputs', () async {

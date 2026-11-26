@@ -6,9 +6,9 @@
 // equal placeholders and download ids still match torrent hashes. Keep raw recordings outside the
 // repository.
 //
-// It is an allow-list: a string survives only if this file knows it to be harmless; every other
-// string is replaced, whatever its field is called. If a contract test needs a value that was
-// replaced, add it here for review. Do not edit the fixture by copying the value back.
+// It is an allow-list: a string survives only if fixture_allow_list.dart knows it to be harmless;
+// every other string is replaced, whatever its field is called. If a contract test needs a value
+// that was replaced, add it there for review. Do not edit the fixture by copying the value back.
 //
 // It cannot judge these, so read every fixture before committing it:
 // - numbers and booleans are kept unless a field name marks them as private;
@@ -18,6 +18,8 @@
 
 import 'dart:convert';
 import 'dart:io';
+
+import 'fixture_allow_list.dart';
 
 /// Thrown for input that cannot be sanitized. The message never quotes the input.
 class UnsanitizableInput implements Exception {
@@ -35,11 +37,11 @@ class FixtureSanitizer {
   final _hashes = <String, String>{};
   final _keys = <String, String>{};
 
-  /// Returns the sanitized form of one response body: JSON, or one of the few plain text bodies
-  /// the services send. Anything else (HTML, header dumps, logs) throws [UnsanitizableInput].
+  /// Returns the sanitized form of one response body: JSON, or one of the few plain text or empty
+  /// bodies the services send. Anything else (HTML, header dumps, logs) throws [UnsanitizableInput].
   String sanitize(String body) {
     final text = body.trim();
-    if (_isSafePlainText(text)) return '$text\n';
+    if (isSafePlainText(text)) return text.isEmpty ? '' : '$text\n';
     final Object? json;
     try {
       json = jsonDecode(text);
@@ -58,6 +60,10 @@ class FixtureSanitizer {
   Object? _value(Object? value, String field, {required bool private}) {
     return switch (value) {
       null || bool() => value,
+      // 1e999 decodes to infinity, which cannot be written back.
+      num() when !value.isFinite => throw const UnsanitizableInput(
+        'A number is out of range.',
+      ),
       num() => private ? 0 : value,
       String() => private ? _privateString(value) : _string(value, field),
       // Items of a list are judged by the name of the list.
@@ -99,7 +105,7 @@ class FixtureSanitizer {
   String _privateString(String value) => value.isEmpty ? '' : 'redacted';
 
   String _string(String value, String field) {
-    if (value.isEmpty || _isSafeString(value, field)) return value;
+    if (value.isEmpty || isAllowedString(value, field)) return value;
     if (_hashFields.contains(field) && _hexHash.hasMatch(value)) {
       return _fakeHash(value);
     }
@@ -137,27 +143,6 @@ String _placeholder(String value, int n) {
   return 'redacted-$n';
 }
 
-bool _isSafeString(String value, String field) {
-  if (_timestamp.hasMatch(value) || _duration.hasMatch(value)) return true;
-  if (_mediaCover.hasMatch(value)) return true;
-  if (field.endsWith('version')) return _isVersion(value);
-  if (_fieldShapes[field]?.hasMatch(value) ?? false) return true;
-  // Health checks are identified by class name.
-  if (field == 'source' && _healthCheck.hasMatch(value)) return true;
-  return _enumFields.contains(field) && _enumValues.contains(value);
-}
-
-bool _isSafePlainText(String text) =>
-    text == 'Ok.' || text == 'Fails.' || _isVersion(text);
-
-bool _isVersion(String value) {
-  final match = _version.firstMatch(value);
-  if (match == null) return false;
-  final parts = match[1]!.split('.');
-  // Four small numbers could be an IPv4 address.
-  return parts.length < 4 || parts.any((part) => int.parse(part) > 255);
-}
-
 bool _isFieldName(String key) =>
     _seasonNumber.hasMatch(key) ||
     (_identifier.hasMatch(key) && _digit.allMatches(key).length <= 3);
@@ -173,48 +158,6 @@ bool _isPrivateName(String key) {
       .any((word) => _privateWords.contains(word[0]!.toLowerCase()));
 }
 
-final _timestamp = RegExp(
-  r'^\d{4}-\d{2}-\d{2}'
-  r'([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?(Z|[+-]\d{2}:?\d{2})?)?$',
-);
-final _duration = RegExp(r'^(\d{1,4}\.)?\d{2}:[0-5]\d:[0-5]\d(\.\d{1,9})?$');
-final _version = RegExp(
-  r'^v?(\d{1,2}(?:\.\d{1,5}){1,3})'
-  r'(?:-(?:develop|nightly|beta|alpha|rc)(?:\.\d{1,4})?)?$',
-);
-final _mediaCover = RegExp(
-  r'^/MediaCover(/Albums|/Books)?(/\d{1,9})?'
-  r'/(poster|banner|fanart|cover|logo|clearlogo|disc|screenshot|headshot)'
-  r'(-\d{2,4})?\.(jpg|jpeg|png)(\?lastWrite=\d{1,20})?$',
-);
-final _imdbId = RegExp(r'^tt\d{7,9}$');
-final _languageCode = RegExp(r'^[a-z]{2,3}$');
-// Bazarr sends these booleans as Python strings and takes original_format back.
-final _pythonBool = RegExp(r'^(True|False)$');
-// Bazarr: a language, optionally with country, script and kind, as in "pt-BR:hi".
-final _subtitleLanguage = RegExp(
-  r'^[a-z]{2,3}(-[A-Z]{2})?(-[A-Z][a-z]{3})?(:(hi|forced))?$',
-);
-final _clockTime = RegExp(r'^([01]\d|2[0-3]):[0-5]\d$');
-// m:ss or h:mm:ss.
-final _runTime = RegExp(r'^(\d{1,2}:[0-5]\d|[0-5]?\d):[0-5]\d$');
-
-/// Shapes that are harmless in the named field only.
-final _fieldShapes = {
-  'airtime': _clockTime,
-  'code2': _languageCode,
-  'code3': _languageCode,
-  'forced': _pythonBool,
-  'hearingimpaired': _pythonBool,
-  'hi': _pythonBool,
-  'imdbid': _imdbId,
-  'language': _subtitleLanguage,
-  'originalformat': _pythonBool,
-  'originallanguage': _languageCode,
-  'runtime': _runTime,
-};
-
-final _healthCheck = RegExp(r'^([A-Z][a-z]+){1,8}Check$');
 final _hexHash = RegExp(r'^([0-9a-fA-F]{32}|[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$');
 final _email = RegExp(r'^[^\s/\\:]+@[^\s/\\:]+$');
 final _drive = RegExp(r'^[A-Za-z]:[\\/]');
@@ -288,84 +231,6 @@ const _privateWords = {
   'xsrf',
 };
 
-// An enum value survives only in one of these fields.
-const _enumFields = {
-  'authentication',
-  'commandname',
-  'covertype',
-  'eventtype',
-  'finaletype',
-  'mediatype',
-  'minimumavailability',
-  'mode',
-  'modifier',
-  'monitornewitems',
-  'name',
-  'priority',
-  'protocol',
-  'releasetype',
-  'result',
-  'seriestype',
-  'sortdirection',
-  'sortkey',
-  'source',
-  'state',
-  'status',
-  'trackeddownloadstate',
-  'trackeddownloadstatus',
-  'trigger',
-  'type',
-};
-
-// Fixed words of the services' APIs, matched exactly. None of them describes a user or a server.
-const _enumValues = {
-  // Common
-  'unknown', 'none', 'all', 'new', 'ok', 'notice', 'warning', 'error',
-  'info', 'low', 'normal', 'high', 'auto', 'manual', 'scheduled', 'unspecified',
-  'successful', 'unsuccessful', 'ascending', 'descending', 'default',
-  // Servarr queue, commands and history
-  'queued', 'paused', 'downloading', 'completed', 'failed', 'delay', 'delayed',
-  'downloadClientUnavailable', 'fallback', 'importBlocked', 'importPending',
-  'importing', 'imported', 'failedPending', 'ignored', 'downloadFailed',
-  'downloadFailedPending', 'started', 'aborted', 'cancelled', 'orphaned',
-  'grabbed',
-  'seriesFolderImported',
-  'downloadFolderImported',
-  'movieFileDeleted',
-  'movieFolderImported', 'movieFileRenamed', 'episodeFileDeleted',
-  'episodeFileRenamed', 'downloadIgnored', 'trackFileImported',
-  'trackFileDeleted', 'trackFileRenamed', 'albumImportIncomplete',
-  'downloadImported', 'bookFileImported', 'bookFileDeleted', 'bookFileRenamed',
-  'bookImportIncomplete', 'releaseGrabbed', 'indexerQuery', 'indexerRss',
-  'indexerAuth', 'usenet', 'torrent', 'artistFolderImported',
-  'trackFileRetagged', 'bookFileRetagged', 'indexerInfo',
-  // Servarr releases, credits and episodes
-  'permanent', 'temporary', 'cast', 'crew', 'series', 'season', 'midseason',
-  'webRip', 'screener',
-  // Servarr command names
-  'RefreshSeries', 'RefreshMovie', 'RefreshArtist', 'RefreshAuthor',
-  'RescanSeries', 'RescanMovie', 'RescanFolders', 'EpisodeSearch',
-  'SeasonSearch', 'SeriesSearch', 'MoviesSearch', 'AlbumSearch', 'ArtistSearch',
-  'BookSearch', 'AuthorSearch', 'MissingEpisodeSearch', 'ManualImport',
-  'RssSync',
-  // Servarr library and media
-  'continuing', 'ended', 'upcoming', 'deleted', 'tba', 'announced', 'inCinemas',
-  'released', 'standard', 'daily', 'anime', 'poster', 'banner', 'fanart',
-  'cover', 'logo', 'clearlogo', 'disc', 'screenshot', 'headshot', 'television',
-  'televisionRaw', 'web', 'webdl', 'webrip', 'bluray', 'blurayRaw', 'dvd',
-  'raw', 'tv', 'cam', 'telesync', 'telecine', 'workprint', 'regional',
-  'dvdscr', 'rawhd', 'brdisk', 'remux', 'singleEpisode', 'multiEpisode',
-  'seasonPack', 'imdb', 'tmdb', 'trakt', 'rottenTomatoes', 'metacritic',
-  'user', 'critic', 'forms', 'basic', 'external',
-  // qBittorrent torrent states
-  'missingFiles', 'uploading', 'pausedUP', 'stoppedUP', 'queuedUP', 'stalledUP',
-  'checkingUP', 'forcedUP', 'allocating', 'metaDL', 'forcedMetaDL', 'pausedDL',
-  'stoppedDL', 'queuedDL', 'stalledDL', 'checkingDL', 'forcedDL',
-  'checkingResumeData', 'moving',
-  // Seerr
-  'movie', 'person', 'collection',
-};
-
 /// Reads every input before writing anything, so a refused input leaves no output behind.
 Future<int> run(List<String> arguments, StringSink errors) async {
   if (arguments.isEmpty || arguments.length.isOdd) {
@@ -379,7 +244,15 @@ Future<int> run(List<String> arguments, StringSink errors) async {
   for (var i = 0; i < arguments.length; i += 2) {
     try {
       final body = await File(arguments[i]).readAsString();
-      outputs[arguments[i + 1]] = sanitizer.sanitize(body);
+      final output = arguments[i + 1];
+      if (!File(output).parent.existsSync() || Directory(output).existsSync()) {
+        errors.writeln(
+          'Output ${i ~/ 2 + 1}: not a file in an existing directory. '
+          'Nothing was written.',
+        );
+        return 73;
+      }
+      outputs[output] = sanitizer.sanitize(body);
     } on UnsanitizableInput catch (e) {
       errors.writeln('Input ${i ~/ 2 + 1}: $e Nothing was written.');
       return 65;
@@ -391,7 +264,12 @@ Future<int> run(List<String> arguments, StringSink errors) async {
     }
   }
   for (final MapEntry(:key, :value) in outputs.entries) {
-    await File(key).writeAsString(value);
+    try {
+      await File(key).writeAsString(value);
+    } on FileSystemException {
+      errors.writeln('Cannot write $key. Other outputs may have been written.');
+      return 73;
+    }
   }
   return 0;
 }
