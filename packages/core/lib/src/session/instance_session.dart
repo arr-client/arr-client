@@ -32,8 +32,14 @@ import '../platform/local_network_permission.dart';
 /// credential. Without one, signing in comes before the request. When the
 /// module says it has expired, a read signs in and is sent once more. A write
 /// is never sent again; its session is discarded, so that the next request
-/// signs in. If a read is refused with a session just signed in, that session
-/// is not signed in again for the same path.
+/// signs in.
+///
+/// A server can refuse a request however new the session is, for want of a
+/// permission or because a proxy drops the cookie, and the password must not be
+/// sent at the rate of polling. So an expired session is signed in again at most
+/// once in [reloginInterval], and a path that refused a new session causes no
+/// sign-in until it has succeeded or [refusedRetryInterval] has passed. Until
+/// then such a read fails with the server's answer.
 ///
 /// Make one for each instance and isolate. The latch and the session are read
 /// from storage for every request, so another isolate, with its own database
@@ -42,7 +48,8 @@ import '../platform/local_network_permission.dart';
 /// may each try to sign in once before the instance is latched.
 final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   /// [handler] is the module's `sessionHandler` and [apiKeyHeader] its
-  /// descriptor's. [timeout] is that of [InstanceHttpClient].
+  /// descriptor's. [timeout] is that of [InstanceHttpClient]. [now] times the
+  /// sign-ins.
   InstanceSession({
     required ProfileRepository profiles,
     required String instanceId,
@@ -51,6 +58,7 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
     required DiagnosticLog log,
     required LocalNetworkPermission localNetwork,
     Duration timeout = const Duration(seconds: 30),
+    this._now = DateTime.now,
   }) : _profiles = profiles,
        _instanceId = instanceId,
        _log = log,
@@ -63,6 +71,14 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
          timeout: timeout,
        );
 
+  /// The least time between two sign-ins made because a session expired. Short,
+  /// as a session that has really expired waits for it too.
+  static const reloginInterval = Duration(minutes: 1);
+
+  /// How long a path that refused a new session causes no sign-in.
+  static const refusedRetryInterval = Duration(minutes: 10);
+
+  final DateTime Function() _now;
   final ProfileRepository _profiles;
   final String _instanceId;
   final SessionHandler? _handler;
@@ -74,8 +90,11 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   /// A rejection that could not be stored. Nothing is sent until it is.
   InstanceAccess? _unrecorded;
 
-  /// By path, a session that was refused there although it was new.
-  final _refused = <String, String>{};
+  /// When an expired session was last signed in again.
+  DateTime? _renewedAt;
+
+  /// By path, when it last refused a new session.
+  final _refused = <String, DateTime>{};
 
   /// Drops every connection. Later sends fail.
   void close() => _client.close();
@@ -106,29 +125,39 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
 
     final result = await _sendAs(used, request);
     if (handler == null || !_isExpired(handler, result)) {
-      _refused.remove(request.path);
+      // Only a success shows that the path is no longer refused.
+      if (result is Ok) _refused.remove(request.path);
       return _settle(used, result);
     }
     if (request.method != HttpMethod.get) {
       await _discard(used);
       return result;
     }
+    if (_isWithin(refusedRetryInterval, _refused[request.path])) return result;
     final stale = used.credential?.sessionCookie;
-    if (_refused[request.path] == stale) return result;
-    switch (await _renew(stale)) {
+    // Too soon to sign in again, but another may have done so meanwhile. A
+    // sign-in under way is waited for.
+    final tooSoon =
+        _signingIn == null && _isWithin(reloginInterval, _renewedAt);
+    switch (tooSoon ? await _access() : await _renew(stale)) {
       case Ok(:final value):
         used = value;
       case Err(:final error):
         return Err(HttpError(error));
     }
+    final session = used.credential?.sessionCookie;
+    if (session == null || session == stale) return result;
     final repeated = await _sendAs(used, request);
     if (!_isExpired(handler, repeated)) return _settle(used, repeated);
     // The sign-in was accepted, so this refuses the request, not the account.
-    if (used.credential?.sessionCookie case final fresh?) {
-      _refused[request.path] = fresh;
-    }
+    _refused[request.path] = _now();
     return repeated;
   }
+
+  /// Whether [time] is less than [interval] ago. A clock set back counts by how
+  /// far, so that it cannot block for longer.
+  bool _isWithin(Duration interval, DateTime? time) =>
+      time != null && _now().difference(time).abs() < interval;
 
   /// What to authenticate with now, or why nothing may be sent.
   Future<Result<InstanceAccess, ServiceFailure>> _access() async {
@@ -208,6 +237,9 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
     if (credential.username == null && credential.password == null) {
       return const Err(AuthFailed());
     }
+
+    // Counted whatever comes of it, as the password is sent.
+    if (stale != null) _renewedAt = _now();
 
     final Result<String, ServiceFailure> answer;
     try {

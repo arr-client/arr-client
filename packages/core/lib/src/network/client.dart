@@ -229,11 +229,7 @@ final class InstanceHttpClient implements ServiceHttpClient {
       }
 
       if (!_redirectStatuses.contains(response.statusCode)) {
-        final failure = _failureOfResponse(
-          response,
-          settings.credential,
-          isRead: isRead,
-        );
+        final failure = _failureOfResponse(response, settings, isRead: isRead);
         return failure == null
             ? Ok(response)
             : _failed(request, failure, response: response);
@@ -335,13 +331,17 @@ final class InstanceHttpClient implements ServiceHttpClient {
   /// dealt with before.
   ServiceFailure? _failureOfResponse(
     ServiceResponse response,
-    Credential credential, {
+    ConnectionSettings settings, {
     required bool isRead,
   }) => switch (response.statusCode) {
+    final status
+        when settings.authKind == AuthKind.apiKey &&
+            status == _apiKeyHeader?.rejectionStatus =>
+      const AuthFailed(),
     >= 200 && < 300 => _isWebPage(response) ? const ProxyInterception() : null,
     // ASP.NET Core's host filtering, which the Servarr services run on.
     400 when response.text.contains('Invalid Hostname') => const HostRejected(),
-    400 || 422 => Validation(_messages(response, credential)),
+    400 || 422 => Validation(_messages(response, settings.credential)),
     401 => const AuthFailed(),
     403 => const Forbidden(),
     404 => const NotFound(),

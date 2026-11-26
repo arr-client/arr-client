@@ -192,6 +192,9 @@ void main() {
   late AppDatabase database;
   late ProfileRepository profiles;
   late Instance instance;
+  late DateTime now;
+
+  void wait(Duration time) => now = now.add(time);
 
   ProfileRepository open(AppDatabase database) => ProfileRepository(
     database: database,
@@ -201,15 +204,19 @@ void main() {
     modules: [_Module()],
   );
 
-  InstanceSession session({ProfileRepository? through}) {
+  InstanceSession session({
+    ProfileRepository? through,
+    ApiKeyHeader header = apiKeyHeader,
+  }) {
     final session = InstanceSession(
       profiles: through ?? profiles,
       instanceId: instance.id,
       handler: handler,
-      apiKeyHeader: apiKeyHeader,
+      apiKeyHeader: header,
       log: log,
       localNetwork: FakePermission(),
       timeout: const Duration(seconds: 10),
+      now: () => now,
     );
     addTearDown(session.close);
     return session;
@@ -252,6 +259,7 @@ void main() {
   setUp(() async {
     service = await _Service.start();
     handler = _Handler();
+    now = DateTime(2026, 1, 2);
     secrets = _Secrets();
     log = DiagnosticLog();
     database = AppDatabase(NativeDatabase.memory());
@@ -486,14 +494,25 @@ void main() {
   });
 
   group('a read the new session is refused too', () {
-    setUp(() => service.fixed['admin'] = 403);
+    const interval = InstanceSession.reloginInterval;
+    const retry = InstanceSession.refusedRetryInterval;
+    const second = Duration(seconds: 1);
+
+    late InstanceSession client;
+
+    setUp(() async {
+      client = session();
+      expectOk(await client.send(_read()));
+      service.fixed['admin'] = 403;
+      service.fixed['users'] = 403;
+    });
+
+    Future<void> refused(String path) async =>
+        expectFailure<Forbidden>(await client.send(_read(path)));
 
     test('neither latches nor signs in over and over', () async {
-      final client = session();
-      expectOk(await client.send(_read()));
-
-      for (var i = 0; i < 3; i++) {
-        expectFailure<Forbidden>(await client.send(_read('admin')));
+      for (var i = 0; i < 10; i++) {
+        await refused('admin');
       }
 
       // The first request's, and one to find that signing in does not help.
@@ -501,12 +520,137 @@ void main() {
       expect(await latched(), isFalse);
     });
 
-    test('does not stop another path from renewing', () async {
-      final client = session();
-      expectFailure<Forbidden>(await client.send(_read('admin')));
+    test('does not take turns with another such path', () async {
+      for (var i = 0; i < 10; i++) {
+        await refused('admin');
+        await refused('users');
+      }
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('is tried rarely however long paths take turns', () async {
+      // Half an hour of polling.
+      for (var i = 0; i < 360; i++) {
+        await refused(i.isEven ? 'admin' : 'users');
+        wait(const Duration(seconds: 5));
+      }
+
+      // The first, then one for each path in each ten minutes.
+      expect(service.logins, hasLength(7));
+    });
+
+    test('does not cost a sign-in for each of many paths', () async {
+      for (var i = 0; i < 20; i++) {
+        service.fixed['movie/$i'] = 403;
+        await refused('movie/$i');
+      }
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('signs in once an interval while many paths are tried', () async {
+      // Ten minutes, a path not seen before every five seconds.
+      for (var i = 0; i < 120; i++) {
+        service.fixed['movie/$i'] = 403;
+        await refused('movie/$i');
+        wait(const Duration(seconds: 5));
+      }
+
+      expect(service.logins, hasLength(11));
+    });
+
+    test('signs in once for paths refused at the same time', () async {
+      await Future.wait([refused('admin'), refused('users')]);
+      await Future.wait([refused('admin'), refused('users')]);
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('is tried with a new session again much later', () async {
+      await refused('admin');
+
+      wait(retry - second);
+      await refused('admin');
+      expect(service.logins, hasLength(2));
+
+      wait(second);
+      await refused('admin');
+      expect(service.logins, hasLength(3));
+    });
+
+    test('is forgotten once the path succeeds', () async {
+      await refused('admin');
+      wait(interval);
+      service.fixed.remove('admin');
+      expectOk(await client.send(_read('admin')));
       service.sessions.clear();
 
+      expectOk(await client.send(_read('admin')));
+
+      expect(service.logins, hasLength(3));
+    });
+
+    test('is not forgotten when the server fails instead', () async {
+      await refused('admin');
+      wait(interval);
+      service.fixed['admin'] = 500;
+      expectFailure<ServerError>(await client.send(_read('admin')));
+      service.fixed['admin'] = 403;
+
+      await refused('admin');
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('delays the renewal of an expired session only briefly', () async {
+      await refused('admin');
+      service.sessions.clear();
+
+      wait(interval - second);
+      await refused('torrents');
+      expect(service.logins, hasLength(2));
+
+      wait(second);
       expectOk(await client.send(_read()));
+      expect(service.logins, hasLength(3));
+    });
+
+    test('does not delay using a session another has just got', () async {
+      await refused('admin');
+      // While the request is on its way, as the other isolate would.
+      service.before = (_) async {
+        service.before = null;
+        service.sessions.clear();
+        _expectSignedIn(await session().login());
+      };
+
+      expectOk(await client.send(_read()));
+      expect(service.logins, hasLength(3));
+    });
+
+    test('does not delay signing in without a session', () async {
+      await refused('admin');
+      service.fixed['torrents'] = 403;
+      // A refused write discards the session.
+      expectFailure<Forbidden>(await client.send(_write()));
+      service.fixed.remove('torrents');
+
+      expectOk(await client.send(_read()));
+      expect(service.logins, hasLength(3));
+    });
+  });
+
+  group('an expired session, time after time', () {
+    test('is renewed each time, an interval apart', () async {
+      final client = session();
+      for (var i = 0; i < 4; i++) {
+        expectOk(await client.send(_read()));
+        service.sessions.clear();
+        wait(InstanceSession.reloginInterval);
+      }
+
+      expect(service.logins, hasLength(4));
     });
   });
 
@@ -524,6 +668,44 @@ void main() {
 
       expect(await latched(), isTrue);
       expect(service.server.requests, hasLength(1));
+    });
+
+    for (final MapEntry(key: name, value: header) in {
+      'latches where the service rejects keys so': const ApiKeyHeader(
+        'Authorization',
+        prefix: 'Bearer ',
+        rejectionStatus: 403,
+      ),
+      'does not latch elsewhere': apiKeyHeader,
+    }.entries) {
+      test('with a wrong API key and a 403 $name', () async {
+        await edit(
+          authKind: AuthKind.apiKey,
+          credential: const Credential(apiKey: apiKey),
+        );
+        final rejects = header.rejectionStatus != null;
+        final client = session(header: header);
+
+        final first = expectError(await client.send(_read()));
+        final second = expectError(await client.send(_read()));
+
+        expect(first.failure, rejects ? isA<AuthFailed>() : isA<Forbidden>());
+        expect(first.response!.statusCode, 403);
+        expect(second.failure, rejects ? isA<AuthFailed>() : isA<Forbidden>());
+        expect(await latched(), rejects);
+        expect(service.server.requests, hasLength(rejects ? 1 : 2));
+      });
+    }
+
+    test('with a login ignores the status that rejects a key', () async {
+      service.fixed['admin'] = 403;
+      final client = session(
+        header: const ApiKeyHeader('X-Api-Key', rejectionStatus: 403),
+      );
+
+      expectFailure<Forbidden>(await client.send(_read('admin')));
+
+      expect(await latched(), isFalse);
     });
 
     test('that is not an expired session latches without a login', () async {
