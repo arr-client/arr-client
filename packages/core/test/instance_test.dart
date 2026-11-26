@@ -37,7 +37,7 @@
 ///     DateTime Function() now = DateTime.now,
 ///   });
 ///
-///   Future<void> ensureDefaultProfile();
+///   Future<void> ensureDefaultProfile(); // also if none is active
 ///   Future<List<Profile>> profiles(); // by sortOrder
 ///   Future<Result<Profile, RuleViolation>> createProfile(String name);
 ///   Future<Result<void, RuleViolation>> renameProfile(String id, String name);
@@ -81,6 +81,9 @@
 /// - Deleting the active profile makes another one active.
 /// - Credentials given to or read by the repository are registered with the log
 ///   before the secret store or the caller gets them, also if refused.
+/// - A secret read or write that fails throws and changes nothing, but new
+///   credentials can be saved over ones that cannot be read. A failed secret
+///   delete is logged and does not stop the deletion of records.
 library;
 
 import 'dart:io';
@@ -131,11 +134,16 @@ final _modules = <ServiceModule>[
 class _SecretStore implements SecretStore {
   final values = <String, String>{};
 
-  /// Runs before each write; may throw to make it fail.
+  /// Each runs before its operation; may throw to make it fail.
+  void Function(String key)? beforeRead;
   void Function(String key)? beforeWrite;
+  void Function(String key)? beforeDelete;
 
   @override
-  Future<String?> read(String key) async => values[key];
+  Future<String?> read(String key) async {
+    beforeRead?.call(key);
+    return values[key];
+  }
 
   @override
   Future<void> write(String key, String value) async {
@@ -145,6 +153,7 @@ class _SecretStore implements SecretStore {
 
   @override
   Future<void> delete(String key) async {
+    beforeDelete?.call(key);
     values.remove(key);
   }
 }
@@ -392,6 +401,15 @@ void main() {
 
       expect(await profileNames(), ['Cabin']);
     });
+
+    test('makes a profile active again if none is', () async {
+      await database.delete(database.appPreferences).go();
+
+      await repository.ensureDefaultProfile();
+
+      expect(await activeProfile(), home.id);
+      expect(await profileNames(), ['Default']);
+    });
   });
 
   group('profile names', () {
@@ -607,6 +625,8 @@ void main() {
       '//nas.test/radarr',
       'http://',
       'http:///radarr',
+      'http://nas.test:0',
+      'http://nas.test:65536',
       'http://user@nas.test',
       'http://user:pass@nas.test',
       'http://nas.test/radarr?apikey=1',
@@ -878,6 +898,24 @@ void main() {
     test('is allowed with an API key in another header', () async {
       await add(_draft(), credential: both);
     });
+
+    test('kept from a password login refuses a change to an API key', () async {
+      final instance = await add(
+        _draft(serviceType: 'qbittorrent', authKind: AuthKind.userPassword),
+        credential: both,
+      );
+
+      expect(
+        _refusal(
+          await repository.updateInstance(
+            instance.id,
+            _draft(serviceType: 'qbittorrent'),
+          ),
+        ),
+        RuleViolation.basicAuthWithApiKey,
+      );
+      expect((await stored(instance)).authKind, AuthKind.userPassword);
+    });
   });
 
   group('links', () {
@@ -1115,6 +1153,156 @@ void main() {
 
       expect(seen, isNotEmpty);
       seen.forEach(_expectRedacted);
+    });
+  });
+
+  group('a secret store that fails', () {
+    Never locked(String key) => throw const FileSystemException('locked');
+    final throwsLocked = throwsA(isA<FileSystemException>());
+
+    late Instance instance;
+
+    setUp(() async {
+      instance = await add(_draft(), credential: _credential);
+      await repository.markAuthFailed(instance.id);
+    });
+
+    test('to read lets the caller know', () async {
+      secrets.beforeRead = locked;
+
+      await expectLater(repository.credential(instance.id), throwsLocked);
+    });
+
+    test('to read does not stop edits that keep the session', () async {
+      secrets.beforeRead = locked;
+
+      await update(instance, _draft(name: 'Films'));
+
+      expect((await stored(instance)).name, 'Films');
+    });
+
+    test('to read stops a new origin from getting the old session', () async {
+      secrets.beforeRead = locked;
+
+      await expectLater(
+        repository.updateInstance(
+          instance.id,
+          _draft(url: 'https://other.test'),
+        ),
+        throwsLocked,
+      );
+
+      expect((await stored(instance)).url, instance.url);
+    });
+
+    test('to read still takes new credentials', () async {
+      secrets.beforeRead = locked;
+
+      await update(
+        instance,
+        _draft(url: 'https://other.test'),
+        credential: _credential,
+      );
+
+      secrets.beforeRead = null;
+      expect(_fields(await repository.credential(instance.id)), {
+        ..._fields(_credential)!,
+        'sessionCookie': null,
+      });
+      expect((await stored(instance)).authFailed, isFalse);
+    });
+
+    test('to read lets a profile be neither copied nor half copied', () async {
+      final rows = await databaseText();
+      secrets.beforeRead = locked;
+
+      await expectLater(
+        repository.copyProfile(home.id, name: 'Away'),
+        throwsLocked,
+      );
+
+      expect(await databaseText(), rows);
+      expect(secrets.values.keys, ['cred/${instance.id}']);
+    });
+
+    test('to write keeps the record and the old credential', () async {
+      final rows = await databaseText();
+      // Fails once, having removed the old value as the store may.
+      secrets.beforeWrite = (key) {
+        secrets.beforeWrite = null;
+        secrets.values.remove(key);
+        locked(key);
+      };
+
+      await expectLater(
+        repository.updateInstance(
+          instance.id,
+          _draft(url: 'https://other.test'),
+          credential: const Credential(apiKey: 'zq-hotel-888'),
+        ),
+        throwsLocked,
+      );
+
+      expect(await databaseText(), rows);
+      expect(
+        _fields(await repository.credential(instance.id)),
+        _fields(_credential),
+      );
+    });
+
+    test('to write and to delete reports the write', () async {
+      secrets.beforeWrite = locked;
+      secrets.beforeDelete = (_) => throw StateError('broken');
+
+      await expectLater(
+        repository.addInstance(
+          home.id,
+          _draft(name: 'Other'),
+          credential: _credential,
+        ),
+        throwsLocked,
+      );
+
+      expect(await repository.instances(home.id), hasLength(1));
+    });
+
+    test('to delete does not keep an instance', () async {
+      await addData(instance);
+      secrets.beforeDelete = locked;
+      log.clear();
+
+      await repository.deleteInstance(instance.id);
+
+      expect(await repository.instances(home.id), isEmpty);
+      expect(await subscribed(), isEmpty);
+      expect(log.entries.single.level, LogLevel.warning);
+    });
+
+    test('to delete does not keep a profile', () async {
+      final away = _value(await repository.createProfile('Away'));
+      await add(_draft(), profileId: away.id, credential: _credential);
+      await add(
+        _draft(name: 'Other'),
+        profileId: away.id,
+        credential: _credential,
+      );
+      final tried = <String>[];
+      secrets.beforeDelete = (key) {
+        tried.add(key);
+        locked(key);
+      };
+
+      _done(await repository.deleteProfile(away.id));
+
+      expect(await profileNames(), ['Default']);
+      // Each secret is tried, whatever the earlier ones did.
+      expect(tried, hasLength(2));
+    });
+
+    test('by holding something else reads as no credential', () async {
+      secrets.values['cred/${instance.id}'] = '{"apiKey": "zq-alpha-1';
+
+      expect(await repository.credential(instance.id), isNull);
     });
   });
 
