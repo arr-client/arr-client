@@ -68,6 +68,8 @@ pkgs.mkShell {
   ]
   ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.chromium ];
 
+  # `flutter` sets this for itself; plain `dart` needs it to resolve Flutter SDK packages.
+  FLUTTER_ROOT = "${pkgs.flutter350}";
   ANDROID_HOME = sdk;
   ANDROID_SDK_ROOT = sdk;
   JAVA_HOME = pkgs.jdk17.home;
