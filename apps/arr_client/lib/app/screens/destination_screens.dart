@@ -16,6 +16,7 @@ import '../../features/activity/queue/queue_tab.dart';
 import '../../features/calendar/calendar_screen.dart';
 import '../../features/home/home_overview.dart';
 import '../../features/home/profile_switcher.dart';
+import '../../features/home/refresh_home.dart';
 import '../../features/home/unreachable_offer.dart';
 import '../../features/library/library_controller.dart';
 import '../../features/library/library_view_body.dart';
@@ -43,7 +44,16 @@ class HomeScreen extends ConsumerWidget {
           ),
           _ => Text(strings.navHome),
         },
-        actions: _searchActions(context, ref),
+        actions: [
+          // Pulling down does this too, which a screen reader cannot.
+          if (saved.value?.instances.isNotEmpty ?? false)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: strings.homeRefresh,
+              onPressed: () => unawaited(refreshHome(ref)),
+            ),
+          ..._searchActions(context, ref),
+        ],
       ),
       body: switch (saved) {
         AsyncData(value: final active?) when active.instances.isNotEmpty =>
@@ -189,9 +199,16 @@ class MoreScreen extends ConsumerWidget {
 /// A page of More. Subtitles and indexer search are screens of a module, which
 /// are reached through the capability's route.
 class MorePage extends ConsumerWidget {
-  const MorePage({required this.entry, super.key});
+  const MorePage({
+    required this.entry,
+    this.calendarTab = CalendarTab.agenda,
+    super.key,
+  });
 
   final MoreEntry entry;
+
+  /// The view a calendar opens on.
+  final CalendarTab calendarTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -202,7 +219,9 @@ class MorePage extends ConsumerWidget {
     if (scope != null && !Navigation.of(scope).moreEntries.contains(entry)) {
       return MessagePage(title: title, message: strings.notOffered);
     }
-    if (entry == MoreEntry.calendar) return const CalendarScreen();
+    if (entry == MoreEntry.calendar) {
+      return CalendarScreen(initialTab: calendarTab);
+    }
     if (entry == MoreEntry.wanted) return const WantedScreen();
     if (entry == MoreEntry.blocklist) return const BlocklistScreen();
     if (entry == MoreEntry.settings) return const SettingsScreen();
