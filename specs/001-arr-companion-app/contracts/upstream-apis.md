@@ -32,13 +32,21 @@ Common to Sonarr, Radarr, Lidarr, Readarr:
 `includeUnknownAuthorItems`); the default hides downloads the server cannot match. `GET queue/details`
 has no such parameter: without an item filter it returns the whole queue, unmatched downloads included.
 
-Cover artwork: the `url` of a resource's image is the web UI's path, under the server's URL base:
-`/MediaCover/<id>/<file>`, or `/MediaCover/Albums/<id>/<file>` (Lidarr) and
-`/MediaCover/Books/<id>/<file>` (Readarr), with `?h=` (Radarr) or `?lastWrite=` (Sonarr, Lidarr,
-Readarr). That path is behind the web UI's authentication. The listed `mediacover/...` read, which
-takes the API key, is `mediacover/<id>/<file>` on Sonarr and Radarr, `mediacover/artist/<id>/<file>`
-and `mediacover/album/<id>/<file>` on Lidarr, and `mediacover/author/<id>/<file>` and
+Cover artwork of a resource in the library: the `url` of its image is the web UI's path, under the
+server's URL base, `/MediaCover/<id>/<file>`, or `/MediaCover/Albums/<id>/<file>` (Lidarr albums) and
+`/MediaCover/Books/<id>/<file>` (Readarr books). It may carry a query, which differs by version:
+
+- `?h=`: Radarr 6.4.0.10540 and later; Sonarr 5 (pre-release, seen in 5.0.0.3041).
+- `?lastWrite=`: earlier Radarr, including the 5.6 minimum; Sonarr 4; Lidarr; Readarr.
+
+That path is behind the web UI's authentication. The listed `mediacover/...` read, which takes the
+API key, is `mediacover/<id>/<file>` on Sonarr and Radarr, `mediacover/artist/<id>/<file>` and
+`mediacover/album/<id>/<file>` on Lidarr, and `mediacover/author/<id>/<file>` and
 `mediacover/book/<id>/<file>` on Readarr.
+
+A lookup result that is not in the library (id 0) instead carries
+`/MediaCoverProxy/<hash>/<file>` in `url`. No listed read serves that path, so its `remoteUrl` is
+used.
 
 Delete with an import exclusion: the query parameter is `addImportExclusion` on Radarr and
 `addImportListExclusion` on Sonarr, Lidarr and Readarr.

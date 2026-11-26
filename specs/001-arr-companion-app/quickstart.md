@@ -19,8 +19,8 @@ From an emulator the host machine is `10.0.2.2`; keys are printed by `tool/devst
 
 Seerr cannot be set up without a media server. The stack includes Jellyfin for this: finish its
 wizard with at least one library, then in Seerr's setup choose Jellyfin at `http://jellyfin:8096`
-and enable a library. Overseerr (best-effort profile) signs in only with Plex, which the stack does
-not have.
+and enable a library. Overseerr (best-effort profile) can be set up only with a Plex account, and
+the stack has no Plex.
 
 ## Limits of the dev stack
 - It adds no indexers and downloads no media, so queue items, imports and release search results do
