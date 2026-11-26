@@ -11,6 +11,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../features/activity/queue/queue_tab.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/library/library_controller.dart';
 import '../../features/library/library_view_body.dart';
 import '../../src/l10n/generated/app_localizations.dart';
@@ -192,6 +193,7 @@ class MorePage extends ConsumerWidget {
     if (scope != null && !Navigation.of(scope).moreEntries.contains(entry)) {
       return MessagePage(title: title, message: strings.notOffered);
     }
+    if (entry == MoreEntry.calendar) return const CalendarScreen();
     final owned = switch (entry) {
       MoreEntry.subtitles => [
         if (scope != null)

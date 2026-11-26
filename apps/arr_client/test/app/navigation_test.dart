@@ -168,12 +168,13 @@ void main() {
     await open(tester, 'More');
     await tester.tap(find.text('Calendar'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('not built yet'), findsOneWidget);
+    expect(find.widgetWithText(Tab, 'Agenda'), findsOneWidget);
 
     await app.services.profiles.deleteInstance(shows);
     await tester.pumpAndSettle();
 
     expect(find.textContaining('No service in this profile'), findsOneWidget);
+    expect(find.byType(Tab), findsNothing);
     await app.stop(tester);
   });
 
