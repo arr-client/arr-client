@@ -103,6 +103,11 @@ jobs:
       - if: steps.changes.outputs.build == 'true'
         name: Check that SQLite was compiled from source, not downloaded
         run: dart run tool/check_sqlite_source.dart --built=android
+      # Only a release build compiles Dart ahead of time, which can fail on code that a debug
+      # build and the tests accept. Built as release.yml builds, but unsigned.
+      - if: steps.changes.outputs.build == 'true'
+        name: Check that the release build compiles
+        run: cd apps/arr_client && flutter build apk --release --split-per-abi
       # Caches are saved only by the steps below, and only from main.
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.flutter-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
