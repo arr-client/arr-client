@@ -5,17 +5,16 @@ import 'json_fields.dart';
 
 /// A record of `GET credit`.
 Credit readCredit(JsonObject record) {
-  final cast = record['type'] == 'cast';
+  final type =
+      CreditType.values.asNameMap()[record['type']] ?? CreditType.unknown;
   return Credit(
     person: requireText(record, 'personName'),
-    // Radarr gives a cast member no job. The word is in the language of the
-    // jobs it does give.
-    role: cast
-        ? 'Actor'
-        : optionalText(record, 'job') ??
-              optionalText(record, 'department') ??
-              'Crew',
-    character: cast ? optionalText(record, 'character') : null,
+    type: type,
+    // Radarr gives a cast member neither.
+    role: optionalText(record, 'job') ?? optionalText(record, 'department'),
+    character: type == CreditType.cast
+        ? optionalText(record, 'character')
+        : null,
     image: readImages(record).firstOrNull,
   );
 }

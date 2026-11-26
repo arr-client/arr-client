@@ -128,15 +128,56 @@ void main() {
       for (final entry in wire) {
         final credit = result[entry['personName']]!;
         if (entry['type'] == 'cast') {
+          expect(credit.type, CreditType.cast);
           expect(credit.character, entry['character']);
-          // Radarr gives a cast member no job; the contract names no word.
-          expect(credit.role, isNotEmpty);
+          // Radarr gives a cast member no job, and the module makes up none.
+          expect(credit.role, isNull);
         } else {
+          expect(credit.type, CreditType.crew);
           expect(credit.role, entry['job']);
           expect(credit.character, isNull);
         }
       }
     });
+
+    for (final (what, changes, type, role) in [
+      (
+        'a crew member with a department only',
+        {'job': null},
+        CreditType.crew,
+        'Directing',
+      ),
+      (
+        'a crew member with neither job nor department',
+        {'job': null, 'department': null},
+        CreditType.crew,
+        null,
+      ),
+      (
+        'a type it does not know',
+        {'type': 'someFutureType'},
+        CreditType.unknown,
+        'Director',
+      ),
+    ]) {
+      test('reads $what', () async {
+        final harness = Harness();
+        harness.server.answers['api/v3/credit'] = jsonAnswer([
+          {
+            ...wire.firstWhere((entry) => entry['type'] == 'crew'),
+            'job': 'Director',
+            'department': 'Directing',
+            ...changes,
+          },
+        ]);
+
+        final credit = (await credits(harness)).values.single;
+
+        expect(credit.type, type);
+        expect(credit.role, role);
+        expect(credit.character, isNull);
+      });
+    }
 
     test('takes a headshot from its public address', () async {
       final harness = Harness();

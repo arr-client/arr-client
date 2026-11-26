@@ -157,11 +157,6 @@ class FakeRadarr implements ServiceHttpClient {
             min(page * size, matching.length),
           ),
         });
-      case 'queue/details':
-        return jsonAnswer([
-          for (final entry in queue)
-            if (movieId == null || movieId.contains(entry['movieId'])) entry,
-        ]);
     }
     return null;
   }
