@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HTTP is a supported choice and server addresses are unknown at build time, so cleartext is
+     permitted everywhere (research R7). Trust anchors stay at the platform default. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
