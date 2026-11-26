@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 
 import '../json_reading.dart';
 import '../servarr_refs.dart';
+import 'protocol_record.dart';
 import 'quality_record.dart';
 
 /// A record of `GET queue`.
@@ -21,16 +22,18 @@ QueueItem queueItem(JsonObject record, ServarrRefs refs) {
     id: requireInt(record, 'id'),
     title: optionalString(record, 'title') ?? '',
     status: status,
-    trackedState:
-        TrackedState.values.asNameMap()[record['trackedDownloadState']] ??
-        TrackedState.unknown,
+    trackedState: switch (record['trackedDownloadState']) {
+      // Lidarr and Readarr tell a failed import from a blocked one. Either
+      // waits for help.
+      'importFailed' => TrackedState.importBlocked,
+      final word =>
+        TrackedState.values.asNameMap()[word] ?? TrackedState.unknown,
+    },
     severity: severity,
     // Without what is left, nothing is known to have arrived.
     progress: QueueItem.progressFrom(size: size, sizeLeft: sizeLeft ?? size),
     sizeLeft: sizeLeft?.toInt() ?? 0,
-    protocol:
-        DownloadProtocol.values.asNameMap()[record['protocol']] ??
-        DownloadProtocol.unknown,
+    protocol: recordProtocol(record['protocol']),
     downloadId: optionalString(record, 'downloadId'),
     itemRef: refs.item,
     parent: refs.parent,

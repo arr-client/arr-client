@@ -1,0 +1,31 @@
+{
+  "name": "RescanFolders",
+  "commandName": "Rescan Folders",
+  "body": {
+    "folders": [
+      "/redacted/49"
+    ],
+    "filter": "redacted-256",
+    "addNewArtists": false,
+    "artistIds": [
+      1
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "isLongRunning": true,
+    "updateScheduledTask": true,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "name": "RescanFolders",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T21:37:25Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 30
+}

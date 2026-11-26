@@ -1,0 +1,14 @@
+[
+  {
+    "propertyName": "ForeignArtistId",
+    "errorMessage": "redacted-308",
+    "attemptedValue": "redacted-33",
+    "severity": "error",
+    "errorCode": "ArtistExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-309",
+      "propertyValue": "redacted-33"
+    }
+  }
+]

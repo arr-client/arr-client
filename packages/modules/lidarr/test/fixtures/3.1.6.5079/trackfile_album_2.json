@@ -1,0 +1,157 @@
+[
+  {
+    "artistId": 1,
+    "albumId": 2,
+    "path": "/redacted/178.mp3",
+    "size": 7346236,
+    "dateAdded": "2026-11-26T21:35:35Z",
+    "quality": {
+      "quality": {
+        "id": 1,
+        "name": "MP3-192"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 16,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "192 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 1
+  },
+  {
+    "artistId": 1,
+    "albumId": 2,
+    "path": "/redacted/179.mp3",
+    "size": 6098002,
+    "dateAdded": "2026-11-26T21:35:35Z",
+    "quality": {
+      "quality": {
+        "id": 1,
+        "name": "MP3-192"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 16,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "192 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 2
+  },
+  {
+    "artistId": 1,
+    "albumId": 2,
+    "path": "/redacted/180.mp3",
+    "size": 5713688,
+    "dateAdded": "2026-11-26T21:35:35Z",
+    "quality": {
+      "quality": {
+        "id": 1,
+        "name": "MP3-192"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 16,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "192 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 3
+  },
+  {
+    "artistId": 1,
+    "albumId": 2,
+    "path": "/redacted/181.mp3",
+    "size": 6242205,
+    "dateAdded": "2026-11-26T21:35:35Z",
+    "quality": {
+      "quality": {
+        "id": 1,
+        "name": "MP3-192"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 16,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "192 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 4
+  },
+  {
+    "artistId": 1,
+    "albumId": 2,
+    "path": "/redacted/182.mp3",
+    "size": 7057849,
+    "dateAdded": "2026-11-26T21:35:35Z",
+    "quality": {
+      "quality": {
+        "id": 1,
+        "name": "MP3-192"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 16,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "192 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 5
+  }
+]

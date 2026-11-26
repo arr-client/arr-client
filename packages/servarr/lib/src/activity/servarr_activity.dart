@@ -106,8 +106,8 @@ mixin _ServarrActivity {
     );
   }
 
-  /// The qualities and languages a candidate can be corrected to. Fails if
-  /// either cannot be read.
+  /// The qualities and languages a candidate can be corrected to, the latter
+  /// only where the service has them. Fails if either cannot be read.
   ServiceResult<ImportChoices> importChoices() async {
     switch (await _client.read(
       'qualitydefinition',
@@ -116,6 +116,9 @@ mixin _ServarrActivity {
       case Err(:final error):
         return Err(error);
       case Ok(value: final qualities):
+        if (!_client._correctsLanguages) {
+          return Ok(ImportChoices(qualities: qualities, languages: const []));
+        }
         return _client.read(
           'language',
           (json) => ImportChoices(
@@ -131,6 +134,9 @@ mixin _ServarrActivity {
   }
 
   /// Has the server evaluate [candidates], as corrected, again.
+  ///
+  /// Lidarr adds to its answer the files its album already has, marked as
+  /// additional. Those were not asked about and are left out.
   ServiceResult<List<ManualImportCandidate>> reprocess(
     List<ManualImportCandidate> candidates, {
     required ServarrImportMapping mapping,
@@ -151,12 +157,14 @@ mixin _ServarrActivity {
       'manualimport',
       (json) => [
         for (final record in asObjects(json))
-          reprocessedCandidate(
-            sent[requireString(record, 'path')] ??
-                (throw const FormatException('A file that was not sent')),
-            record,
-            mapping,
-          ),
+          if (sent.containsKey(record['path']) ||
+              record['additionalFile'] != true)
+            reprocessedCandidate(
+              sent[requireString(record, 'path')] ??
+                  (throw const FormatException('A file that was not sent')),
+              record,
+              mapping,
+            ),
       ],
       body: JsonBody([
         for (final (index, candidate) in candidates.indexed)
@@ -224,7 +232,12 @@ mixin _ServarrActivity {
     }
     return Ok([
       for (final candidate in candidates)
-        importEntry(candidate, mapping, qualities),
+        importEntry(
+          candidate,
+          mapping,
+          qualities,
+          withLanguages: _client._correctsLanguages,
+        ),
     ]);
   }
 

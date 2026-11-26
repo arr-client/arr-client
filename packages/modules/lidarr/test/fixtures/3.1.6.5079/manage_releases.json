@@ -1,0 +1,367 @@
+[
+  {
+    "guid": "redacted-235",
+    "quality": {
+      "quality": {
+        "id": 13,
+        "name": "WAV"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 701,
+    "age": 0,
+    "ageHours": 0.028736662555555556,
+    "ageMinutes": 1.72419976,
+    "size": 2097152,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseGroup": "redacted-236",
+    "releaseHash": "",
+    "title": "redacted-237",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-80",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-238"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/239.torrent",
+    "downloadAllowed": true,
+    "releaseWeight": 0,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 2,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-214",
+    "quality": {
+      "quality": {
+        "id": 6,
+        "name": "FLAC"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 601,
+    "age": 0,
+    "ageHours": 0.028736671916666668,
+    "ageMinutes": 1.724200315,
+    "size": 2097152,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseGroup": "redacted-197",
+    "releaseHash": "",
+    "title": "redacted-183",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-32",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-240"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/213.torrent",
+    "downloadAllowed": true,
+    "releaseWeight": 1,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 5,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-218",
+    "quality": {
+      "quality": {
+        "id": 6,
+        "name": "FLAC"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 601,
+    "age": 0,
+    "ageHours": 0.028736672666666668,
+    "ageMinutes": 1.72420036,
+    "size": 3145728,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseGroup": "redacted-197",
+    "releaseHash": "",
+    "title": "redacted-187",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-36",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-240"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/217.torrent",
+    "downloadAllowed": true,
+    "releaseWeight": 2,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 7,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-241",
+    "quality": {
+      "quality": {
+        "id": 6,
+        "name": "FLAC"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 601,
+    "age": 0,
+    "ageHours": 0.02873667386111111,
+    "ageMinutes": 1.7242004316666666,
+    "size": 2097152,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseGroup": "redacted-197",
+    "releaseHash": "",
+    "title": "redacted-242",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-80",
+    "approved": true,
+    "temporarilyRejected": false,
+    "rejected": false,
+    "rejections": [],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/243.torrent",
+    "downloadAllowed": true,
+    "releaseWeight": 3,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 3,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-220",
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 501,
+    "age": 0,
+    "ageHours": 0.02873667438888889,
+    "ageMinutes": 1.7242004633333334,
+    "size": 3847442,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseHash": "",
+    "title": "redacted-189",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-32",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-244",
+      "redacted-240"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/219.torrent",
+    "downloadAllowed": true,
+    "releaseWeight": 4,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 4,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-222",
+    "quality": {
+      "quality": {
+        "id": 1,
+        "name": "MP3-192"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 301,
+    "age": 0,
+    "ageHours": 0.028736677166666665,
+    "ageMinutes": 1.7242006416666666,
+    "size": 78359577,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseHash": "",
+    "title": "redacted-206",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-80",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-245"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/221.torrent",
+    "downloadAllowed": true,
+    "releaseWeight": 5,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 12,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-199",
+    "quality": {
+      "quality": {
+        "id": 6,
+        "name": "FLAC"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 601,
+    "age": 0,
+    "ageHours": 0.028736684777777778,
+    "ageMinutes": 1.7242010866666666,
+    "size": 2097152,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseGroup": "redacted-197",
+    "releaseHash": "",
+    "title": "redacted-196",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-32",
+    "albumTitle": "redacted-246",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-247"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/198.torrent",
+    "downloadAllowed": false,
+    "releaseWeight": 6,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 2,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "redacted-248",
+    "quality": {
+      "quality": {
+        "id": 6,
+        "name": "FLAC"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 601,
+    "age": 0,
+    "ageHours": 0.02873668536111111,
+    "ageMinutes": 1.7242011216666666,
+    "size": 2097152,
+    "indexerId": 1,
+    "indexer": "redacted-186",
+    "releaseGroup": "redacted-197",
+    "releaseHash": "",
+    "title": "redacted-188",
+    "discography": false,
+    "sceneSource": false,
+    "artistName": "redacted-249",
+    "albumTitle": "redacted-250",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-251"
+    ],
+    "publishDate": "2026-11-26T21:34:49Z",
+    "downloadUrl": "http://redacted.invalid/252.torrent",
+    "downloadAllowed": false,
+    "releaseWeight": 7,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 1,
+    "leechers": 1,
+    "protocol": "TorrentDownloadProtocol",
+    "indexerFlags": 0
+  }
+]

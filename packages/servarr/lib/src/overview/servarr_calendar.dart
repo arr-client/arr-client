@@ -6,8 +6,8 @@ import '../servarr_client.dart';
 
 /// The calendar and the imports of a service of the Servarr family.
 ///
-/// [recentlyAdded] and [importedOn] list imports from a download folder, newest
-/// first and each item once with its latest import.
+/// [recentlyAdded] and [importedOn] list imports from a download, newest first
+/// and each item once with its latest import.
 final class ServarrCalendar implements CalendarProvider {
   /// The calendar of one service.
   ///
@@ -15,7 +15,8 @@ final class ServarrCalendar implements CalendarProvider {
   /// [importTitle] the title to show for one history record; both throw
   /// [FormatException] for a record they cannot understand. [calendarQuery]
   /// and [historyQuery] are the service's own parameters, such as those that
-  /// make its records name their item.
+  /// make its records name their item. [importEvent] is the word its history has
+  /// for an import, where it is not that of the services for movies and series.
   ///
   /// [startOfDay] gives the first instant of a day, and takes days past the
   /// end of a month as [DateTime] does. It is the device's local midnight unless
@@ -26,6 +27,7 @@ final class ServarrCalendar implements CalendarProvider {
     required this._calendarQuery,
     required this._importTitle,
     required this._historyQuery,
+    this._importEvent = downloadFolderImported,
     this._startOfDay = _localMidnight,
   });
 
@@ -45,6 +47,7 @@ final class ServarrCalendar implements CalendarProvider {
   final Map<String, List<String>> _calendarQuery;
   final String Function(JsonObject record) _importTitle;
   final Map<String, List<String>> _historyQuery;
+  final String _importEvent;
   final DateTime Function(int year, int month, int day) _startOfDay;
 
   static DateTime _localMidnight(int year, int month, int day) =>
@@ -128,6 +131,7 @@ final class ServarrCalendar implements CalendarProvider {
     records,
     itemRef: (record) => _client.refs(record).item,
     title: _importTitle,
+    eventWord: _importEvent,
     within: within,
   );
 

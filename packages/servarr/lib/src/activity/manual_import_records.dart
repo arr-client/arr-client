@@ -20,6 +20,8 @@ ManualImportCandidate importCandidate(
     downloadId: optionalString(record, 'downloadId'),
     matchedRef: match.item,
     episodeIds: match.episodeIds,
+    albumId: _albumId(record),
+    trackIds: _trackIds(record),
     quality: recordQuality(record['quality']),
     languages: _languages(record['languages']),
     rejections: _rejections(record['rejections']),
@@ -43,6 +45,8 @@ ManualImportCandidate reprocessedCandidate(
     selected: sent.selected,
     matchedRef: match.item,
     episodeIds: match.episodeIds,
+    albumId: _albumId(record),
+    trackIds: _trackIds(record),
     quality: recordQuality(record['quality']),
     languages: _languages(record['languages']),
     rejections: _rejections(record['rejections']),
@@ -76,20 +80,23 @@ int? correctedQualityId(ManualImportCandidate candidate) {
 /// its corrections, and of the server's record only what the import needs.
 ///
 /// [qualities] must have the [correctedQualityId] of the candidate.
+/// [withLanguages] is false for a service that has none.
 JsonObject importEntry(
   ManualImportCandidate candidate,
   ServarrImportMapping mapping,
-  Map<int, JsonObject> qualities,
-) {
+  Map<int, JsonObject> qualities, {
+  required bool withLanguages,
+}) {
   final raw = candidate.rawJson;
   return {
     'path': candidate.path,
     'downloadId': ?candidate.downloadId,
     'quality': ?_sentQuality(candidate, qualities),
-    'languages': [
-      for (final language in candidate.languages)
-        {'id': language.id, 'name': language.name},
-    ],
+    if (withLanguages)
+      'languages': [
+        for (final language in candidate.languages)
+          {'id': language.id, 'name': language.name},
+      ],
     for (final field in const ['releaseGroup', 'indexerFlags', 'releaseType'])
       if (raw.containsKey(field)) field: raw[field],
     ...mapping.ids(candidate),
@@ -111,6 +118,18 @@ Object? _sentQuality(
     if (recorded case {'revision': final Object revision}) 'revision': revision,
   };
 }
+
+// Only records of music have an album and tracks.
+int? _albumId(JsonObject record) => switch (record['album']) {
+  {'id': final int id} when id > 0 => id,
+  _ => null,
+};
+
+List<int> _trackIds(JsonObject record) => [
+  if (record['tracks'] case final List<Object?> tracks)
+    for (final track in tracks)
+      if (track case {'id': final int id} when id > 0) id,
+];
 
 List<Language> _languages(Object? json) => [
   if (json is List<Object?>)

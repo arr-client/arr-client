@@ -18,10 +18,16 @@ HistoryEventType _eventType(Object? word) => switch (word) {
   'grabbed' => HistoryEventType.grabbed,
   'downloadFolderImported' ||
   'movieFolderImported' ||
-  'seriesFolderImported' => HistoryEventType.imported,
+  'seriesFolderImported' ||
+  // Not `downloadImported`, which would count a download a second time.
+  'trackFileImported' => HistoryEventType.imported,
   'downloadFailed' => HistoryEventType.failed,
-  'movieFileRenamed' || 'episodeFileRenamed' => HistoryEventType.renamed,
-  'movieFileDeleted' || 'episodeFileDeleted' => HistoryEventType.deleted,
+  'movieFileRenamed' ||
+  'episodeFileRenamed' ||
+  'trackFileRenamed' => HistoryEventType.renamed,
+  'movieFileDeleted' ||
+  'episodeFileDeleted' ||
+  'trackFileDeleted' => HistoryEventType.deleted,
   _ => HistoryEventType.other,
 };
 

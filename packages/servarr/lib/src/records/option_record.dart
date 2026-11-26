@@ -9,6 +9,13 @@ ServerOption qualityProfileOption(JsonObject record) => ServerOption(
   label: requireString(record, 'name'),
 );
 
+/// An entry of `GET metadataprofile`.
+ServerOption metadataProfileOption(JsonObject record) => ServerOption(
+  kind: ServerOptionKind.metadataProfile,
+  id: requireInt(record, 'id'),
+  label: requireString(record, 'name'),
+);
+
 /// An entry of `GET rootfolder`.
 ServerOption rootFolderOption(JsonObject record) => ServerOption(
   kind: ServerOptionKind.rootFolder,

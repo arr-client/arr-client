@@ -1,0 +1,731 @@
+[
+  {
+    "path": "/redacted/205.mp3",
+    "size": 1322884,
+    "artist": {
+      "status": "continuing",
+      "ended": false,
+      "artistName": "redacted-32",
+      "foreignArtistId": "redacted-33",
+      "tadbId": 0,
+      "discogsId": 0,
+      "artistType": "Group",
+      "disambiguation": "",
+      "links": [
+        {
+          "url": "http://redacted.invalid/34",
+          "name": "redacted-35"
+        }
+      ],
+      "nextAlbum": null,
+      "lastAlbum": null,
+      "images": [],
+      "path": "/redacted/49",
+      "qualityProfileId": 4,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [
+        "redacted-48"
+      ],
+      "cleanName": "redacted-35",
+      "sortName": "redacted-35",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T21:33:52Z",
+      "ratings": {
+        "votes": 22,
+        "value": 9.1
+      },
+      "id": 1
+    },
+    "album": {
+      "title": "redacted-32",
+      "disambiguation": "",
+      "overview": "",
+      "artistId": 1,
+      "foreignAlbumId": "redacted-71",
+      "monitored": true,
+      "anyReleaseOk": true,
+      "profileId": 1,
+      "duration": 3032092,
+      "albumType": "Album",
+      "secondaryTypes": [],
+      "ratings": {
+        "votes": 21,
+        "value": 8.2
+      },
+      "releaseDate": "1997-09-29T00:00:00Z",
+      "releases": [
+        {
+          "id": 1,
+          "albumId": 1,
+          "foreignReleaseId": "redacted-72",
+          "title": "redacted-32",
+          "status": "redacted-26",
+          "duration": 3032092,
+          "trackCount": 11,
+          "mediumCount": 2,
+          "media": [
+            {
+              "mediumNumber": 1,
+              "mediumName": "",
+              "mediumFormat": "redacted-40"
+            },
+            {
+              "mediumNumber": 2,
+              "mediumName": "",
+              "mediumFormat": "redacted-40"
+            }
+          ],
+          "disambiguation": "",
+          "country": [
+            "redacted-46"
+          ],
+          "label": [
+            "redacted-73"
+          ],
+          "format": "redacted-74",
+          "monitored": true
+        },
+        {
+          "id": 2,
+          "albumId": 1,
+          "foreignReleaseId": "redacted-75",
+          "title": "redacted-32",
+          "status": "redacted-26",
+          "duration": 3034890,
+          "trackCount": 11,
+          "mediumCount": 1,
+          "media": [
+            {
+              "mediumNumber": 1,
+              "mediumName": "",
+              "mediumFormat": "redacted-45"
+            }
+          ],
+          "disambiguation": "",
+          "country": [
+            "redacted-76"
+          ],
+          "label": [
+            "redacted-73"
+          ],
+          "format": "redacted-45",
+          "monitored": false
+        }
+      ],
+      "genres": [
+        "redacted-48"
+      ],
+      "mediumCount": 2,
+      "media": [
+        {
+          "mediumNumber": 1,
+          "mediumName": "",
+          "mediumFormat": "redacted-40"
+        },
+        {
+          "mediumNumber": 2,
+          "mediumName": "",
+          "mediumFormat": "redacted-40"
+        }
+      ],
+      "artist": {
+        "status": "continuing",
+        "ended": false,
+        "artistName": "redacted-32",
+        "foreignArtistId": "redacted-33",
+        "tadbId": 0,
+        "discogsId": 0,
+        "artistType": "Group",
+        "disambiguation": "",
+        "links": [
+          {
+            "url": "http://redacted.invalid/34",
+            "name": "redacted-35"
+          }
+        ],
+        "nextAlbum": null,
+        "lastAlbum": null,
+        "images": [],
+        "path": "/redacted/49",
+        "qualityProfileId": 4,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "genres": [
+          "redacted-48"
+        ],
+        "cleanName": "redacted-35",
+        "sortName": "redacted-35",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T21:33:52Z",
+        "ratings": {
+          "votes": 22,
+          "value": 9.1
+        },
+        "id": 1
+      },
+      "images": [
+        {
+          "coverType": "cover",
+          "remoteUrl": "https://redacted.invalid/77.jpg",
+          "extension": "redacted-51"
+        },
+        {
+          "coverType": "disc",
+          "remoteUrl": "https://redacted.invalid/78.jpg",
+          "extension": "redacted-51"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://redacted.invalid/79",
+          "name": "redacted-54"
+        }
+      ],
+      "lastSearchTime": "2026-11-26T21:36:32Z",
+      "id": 1
+    },
+    "albumReleaseId": 1,
+    "tracks": [
+      {
+        "artistId": 1,
+        "foreignTrackId": "redacted-135",
+        "foreignRecordingId": "redacted-136",
+        "trackFileId": 0,
+        "albumId": 1,
+        "explicit": false,
+        "absoluteTrackNumber": 1,
+        "trackNumber": "redacted-137",
+        "title": "redacted-138",
+        "duration": 282000,
+        "mediumNumber": 1,
+        "hasFile": false,
+        "ratings": {
+          "votes": 0,
+          "value": 0
+        },
+        "id": 1
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 0,
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-226",
+        "type": "permanent"
+      },
+      {
+        "reason": "redacted-227",
+        "type": "permanent"
+      }
+    ],
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 1541481368
+  },
+  {
+    "path": "/redacted/203.mp3",
+    "size": 1242426,
+    "artist": {
+      "status": "continuing",
+      "ended": false,
+      "artistName": "redacted-32",
+      "foreignArtistId": "redacted-33",
+      "tadbId": 0,
+      "discogsId": 0,
+      "artistType": "Group",
+      "disambiguation": "",
+      "links": [
+        {
+          "url": "http://redacted.invalid/34",
+          "name": "redacted-35"
+        }
+      ],
+      "nextAlbum": null,
+      "lastAlbum": null,
+      "images": [],
+      "path": "/redacted/49",
+      "qualityProfileId": 4,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [
+        "redacted-48"
+      ],
+      "cleanName": "redacted-35",
+      "sortName": "redacted-35",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T21:33:52Z",
+      "ratings": {
+        "votes": 22,
+        "value": 9.1
+      },
+      "id": 1
+    },
+    "album": {
+      "title": "redacted-32",
+      "disambiguation": "",
+      "overview": "",
+      "artistId": 1,
+      "foreignAlbumId": "redacted-71",
+      "monitored": true,
+      "anyReleaseOk": true,
+      "profileId": 1,
+      "duration": 3032092,
+      "albumType": "Album",
+      "secondaryTypes": [],
+      "ratings": {
+        "votes": 21,
+        "value": 8.2
+      },
+      "releaseDate": "1997-09-29T00:00:00Z",
+      "releases": [
+        {
+          "id": 1,
+          "albumId": 1,
+          "foreignReleaseId": "redacted-72",
+          "title": "redacted-32",
+          "status": "redacted-26",
+          "duration": 3032092,
+          "trackCount": 11,
+          "mediumCount": 2,
+          "media": [
+            {
+              "mediumNumber": 1,
+              "mediumName": "",
+              "mediumFormat": "redacted-40"
+            },
+            {
+              "mediumNumber": 2,
+              "mediumName": "",
+              "mediumFormat": "redacted-40"
+            }
+          ],
+          "disambiguation": "",
+          "country": [
+            "redacted-46"
+          ],
+          "label": [
+            "redacted-73"
+          ],
+          "format": "redacted-74",
+          "monitored": true
+        },
+        {
+          "id": 2,
+          "albumId": 1,
+          "foreignReleaseId": "redacted-75",
+          "title": "redacted-32",
+          "status": "redacted-26",
+          "duration": 3034890,
+          "trackCount": 11,
+          "mediumCount": 1,
+          "media": [
+            {
+              "mediumNumber": 1,
+              "mediumName": "",
+              "mediumFormat": "redacted-45"
+            }
+          ],
+          "disambiguation": "",
+          "country": [
+            "redacted-76"
+          ],
+          "label": [
+            "redacted-73"
+          ],
+          "format": "redacted-45",
+          "monitored": false
+        }
+      ],
+      "genres": [
+        "redacted-48"
+      ],
+      "mediumCount": 2,
+      "media": [
+        {
+          "mediumNumber": 1,
+          "mediumName": "",
+          "mediumFormat": "redacted-40"
+        },
+        {
+          "mediumNumber": 2,
+          "mediumName": "",
+          "mediumFormat": "redacted-40"
+        }
+      ],
+      "artist": {
+        "status": "continuing",
+        "ended": false,
+        "artistName": "redacted-32",
+        "foreignArtistId": "redacted-33",
+        "tadbId": 0,
+        "discogsId": 0,
+        "artistType": "Group",
+        "disambiguation": "",
+        "links": [
+          {
+            "url": "http://redacted.invalid/34",
+            "name": "redacted-35"
+          }
+        ],
+        "nextAlbum": null,
+        "lastAlbum": null,
+        "images": [],
+        "path": "/redacted/49",
+        "qualityProfileId": 4,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "genres": [
+          "redacted-48"
+        ],
+        "cleanName": "redacted-35",
+        "sortName": "redacted-35",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T21:33:52Z",
+        "ratings": {
+          "votes": 22,
+          "value": 9.1
+        },
+        "id": 1
+      },
+      "images": [
+        {
+          "coverType": "cover",
+          "remoteUrl": "https://redacted.invalid/77.jpg",
+          "extension": "redacted-51"
+        },
+        {
+          "coverType": "disc",
+          "remoteUrl": "https://redacted.invalid/78.jpg",
+          "extension": "redacted-51"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://redacted.invalid/79",
+          "name": "redacted-54"
+        }
+      ],
+      "lastSearchTime": "2026-11-26T21:36:32Z",
+      "id": 1
+    },
+    "albumReleaseId": 1,
+    "tracks": [
+      {
+        "artistId": 1,
+        "foreignTrackId": "redacted-139",
+        "foreignRecordingId": "redacted-140",
+        "trackFileId": 0,
+        "albumId": 1,
+        "explicit": false,
+        "absoluteTrackNumber": 2,
+        "trackNumber": "redacted-141",
+        "title": "redacted-142",
+        "duration": 242360,
+        "mediumNumber": 1,
+        "hasFile": false,
+        "ratings": {
+          "votes": 0,
+          "value": 0
+        },
+        "id": 2
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 0,
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-226",
+        "type": "permanent"
+      },
+      {
+        "reason": "redacted-227",
+        "type": "permanent"
+      }
+    ],
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 769162311
+  },
+  {
+    "path": "/redacted/224.mp3",
+    "size": 1282132,
+    "artist": {
+      "status": "continuing",
+      "ended": false,
+      "artistName": "redacted-32",
+      "foreignArtistId": "redacted-33",
+      "tadbId": 0,
+      "discogsId": 0,
+      "artistType": "Group",
+      "disambiguation": "",
+      "links": [
+        {
+          "url": "http://redacted.invalid/34",
+          "name": "redacted-35"
+        }
+      ],
+      "nextAlbum": null,
+      "lastAlbum": null,
+      "images": [],
+      "path": "/redacted/49",
+      "qualityProfileId": 4,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [
+        "redacted-48"
+      ],
+      "cleanName": "redacted-35",
+      "sortName": "redacted-35",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T21:33:52Z",
+      "ratings": {
+        "votes": 22,
+        "value": 9.1
+      },
+      "id": 1
+    },
+    "album": {
+      "title": "redacted-32",
+      "disambiguation": "",
+      "overview": "",
+      "artistId": 1,
+      "foreignAlbumId": "redacted-71",
+      "monitored": true,
+      "anyReleaseOk": true,
+      "profileId": 1,
+      "duration": 3032092,
+      "albumType": "Album",
+      "secondaryTypes": [],
+      "ratings": {
+        "votes": 21,
+        "value": 8.2
+      },
+      "releaseDate": "1997-09-29T00:00:00Z",
+      "releases": [
+        {
+          "id": 1,
+          "albumId": 1,
+          "foreignReleaseId": "redacted-72",
+          "title": "redacted-32",
+          "status": "redacted-26",
+          "duration": 3032092,
+          "trackCount": 11,
+          "mediumCount": 2,
+          "media": [
+            {
+              "mediumNumber": 1,
+              "mediumName": "",
+              "mediumFormat": "redacted-40"
+            },
+            {
+              "mediumNumber": 2,
+              "mediumName": "",
+              "mediumFormat": "redacted-40"
+            }
+          ],
+          "disambiguation": "",
+          "country": [
+            "redacted-46"
+          ],
+          "label": [
+            "redacted-73"
+          ],
+          "format": "redacted-74",
+          "monitored": true
+        },
+        {
+          "id": 2,
+          "albumId": 1,
+          "foreignReleaseId": "redacted-75",
+          "title": "redacted-32",
+          "status": "redacted-26",
+          "duration": 3034890,
+          "trackCount": 11,
+          "mediumCount": 1,
+          "media": [
+            {
+              "mediumNumber": 1,
+              "mediumName": "",
+              "mediumFormat": "redacted-45"
+            }
+          ],
+          "disambiguation": "",
+          "country": [
+            "redacted-76"
+          ],
+          "label": [
+            "redacted-73"
+          ],
+          "format": "redacted-45",
+          "monitored": false
+        }
+      ],
+      "genres": [
+        "redacted-48"
+      ],
+      "mediumCount": 2,
+      "media": [
+        {
+          "mediumNumber": 1,
+          "mediumName": "",
+          "mediumFormat": "redacted-40"
+        },
+        {
+          "mediumNumber": 2,
+          "mediumName": "",
+          "mediumFormat": "redacted-40"
+        }
+      ],
+      "artist": {
+        "status": "continuing",
+        "ended": false,
+        "artistName": "redacted-32",
+        "foreignArtistId": "redacted-33",
+        "tadbId": 0,
+        "discogsId": 0,
+        "artistType": "Group",
+        "disambiguation": "",
+        "links": [
+          {
+            "url": "http://redacted.invalid/34",
+            "name": "redacted-35"
+          }
+        ],
+        "nextAlbum": null,
+        "lastAlbum": null,
+        "images": [],
+        "path": "/redacted/49",
+        "qualityProfileId": 4,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "genres": [
+          "redacted-48"
+        ],
+        "cleanName": "redacted-35",
+        "sortName": "redacted-35",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T21:33:52Z",
+        "ratings": {
+          "votes": 22,
+          "value": 9.1
+        },
+        "id": 1
+      },
+      "images": [
+        {
+          "coverType": "cover",
+          "remoteUrl": "https://redacted.invalid/77.jpg",
+          "extension": "redacted-51"
+        },
+        {
+          "coverType": "disc",
+          "remoteUrl": "https://redacted.invalid/78.jpg",
+          "extension": "redacted-51"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://redacted.invalid/79",
+          "name": "redacted-54"
+        }
+      ],
+      "lastSearchTime": "2026-11-26T21:36:32Z",
+      "id": 1
+    },
+    "albumReleaseId": 1,
+    "tracks": [
+      {
+        "artistId": 1,
+        "foreignTrackId": "redacted-143",
+        "foreignRecordingId": "redacted-144",
+        "trackFileId": 0,
+        "albumId": 1,
+        "explicit": false,
+        "absoluteTrackNumber": 3,
+        "trackNumber": "redacted-145",
+        "title": "redacted-146",
+        "duration": 264666,
+        "mediumNumber": 1,
+        "hasFile": false,
+        "ratings": {
+          "votes": 0,
+          "value": 0
+        },
+        "id": 3
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 0,
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-226",
+        "type": "permanent"
+      },
+      {
+        "reason": "redacted-227",
+        "type": "permanent"
+      }
+    ],
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 1793440656
+  }
+]
