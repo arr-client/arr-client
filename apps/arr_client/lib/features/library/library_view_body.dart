@@ -37,10 +37,19 @@ class LibraryViewBody extends ConsumerStatefulWidget {
 class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
   final _text = TextEditingController();
   final _scroll = ScrollController();
+  late final AppLifecycleListener _lifecycle;
+
+  /// Whether the library is on screen, not behind another tab or page.
+  var _onScreen = false;
 
   @override
   void initState() {
     super.initState();
+    _lifecycle = AppLifecycleListener(
+      onResume: () {
+        if (_onScreen) _refreshIfOld();
+      },
+    );
     ref.listenManual(libraryProvider(widget.kind), (previous, next) {
       final view = next.view;
       if (view == null) return;
@@ -55,7 +64,24 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Tickers are off behind another destination or page.
+    final onScreen = TickerMode.valuesOf(context).enabled;
+    if (onScreen && !_onScreen) _refreshIfOld();
+    _onScreen = onScreen;
+  }
+
+  void _refreshIfOld() {
+    // Not during build, which must not set the state.
+    scheduleMicrotask(() {
+      if (mounted) unawaited(_controller.refreshIfOld());
+    });
+  }
+
+  @override
   void dispose() {
+    _lifecycle.dispose();
     _text.dispose();
     _scroll.dispose();
     super.dispose();
@@ -74,21 +100,18 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
     );
   }
 
-  /// Loading until there is something to show or to say. Only a library of one
-  /// instance can fail as a whole; with several each says its own.
+  /// With several instances the screen is there as soon as the view is read:
+  /// the choice between them must stay while the one chosen is still loading,
+  /// and each says for itself how it is doing. A library of one instance has
+  /// nothing but its loading or its failure until it has items.
   static ViewState<LibraryState> _viewState(LibraryState state) {
     if (state.view == null || state.sources.isEmpty) return const ViewLoading();
-    final shown = state.shown;
-    final known = shown.any((source) => source.entries != null);
-    final failed = shown.any((source) => source.failure != null);
-    if (!known && !failed) return const ViewLoading();
-    if (!known && state.sources.length == 1) {
-      // A retry under way shows as loading.
-      return shown.single.isLoading
-          ? const ViewLoading()
-          : ViewError(shown.single.failure!);
-    }
-    return ViewData(state);
+    if (state.sources.length > 1) return ViewData(state);
+    final source = state.sources.single;
+    if (source.entries != null) return ViewData(state);
+    // A retry under way shows as loading.
+    final failure = source.isLoading ? null : source.failure;
+    return failure == null ? const ViewLoading() : ViewError(failure);
   }
 
   Widget _content(LibraryState state) {

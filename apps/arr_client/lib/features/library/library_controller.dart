@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/composition.dart';
@@ -26,6 +27,13 @@ class LibraryController extends Notifier<LibraryState> {
 
   /// The kind of the top-level items.
   final MediaKind kind;
+
+  /// How old an answer may be before coming back to the library asks again.
+  static const maxAge = Duration(minutes: 5);
+
+  /// The clock that ages are measured with.
+  @visibleForTesting
+  DateTime Function() now = DateTime.now;
 
   late AppServices _services;
   String? _profileId;
@@ -59,6 +67,15 @@ class LibraryController extends Notifier<LibraryState> {
   /// Asks every instance again. Completes when all have answered.
   Future<void> refresh() => Future.wait([
     for (final instance in _sources.values.toList()) _load(instance),
+  ]);
+
+  /// Asks again those that answered, or failed to, [maxAge] ago or longer, so
+  /// that old states are not taken for current ones.
+  Future<void> refreshIfOld() => Future.wait([
+    for (final instance in _sources.values.toList())
+      if (instance.answeredAt case final at?
+          when now().difference(at) >= maxAge)
+        _load(instance),
   ]);
 
   /// Asks one instance again.
@@ -260,7 +277,8 @@ class LibraryController extends Notifier<LibraryState> {
           isLoading: false,
         ),
       });
-      if (result is Ok) instance.loadedAt = DateTime.now();
+      instance.answeredAt = now();
+      if (result is Ok) instance.loadedAt = instance.answeredAt;
     }
     await options;
   }
@@ -382,4 +400,7 @@ final class _Instance {
 
   /// When the server last supplied the items, in this run.
   DateTime? loadedAt;
+
+  /// When the last read of the items ended, well or not.
+  DateTime? answeredAt;
 }

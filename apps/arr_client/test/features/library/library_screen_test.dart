@@ -3,8 +3,12 @@ library;
 
 import 'dart:async';
 
+import 'package:arr_client/app/app.dart';
+import 'package:arr_client/features/library/library_controller.dart';
 import 'package:arr_client/features/library/library_tiles.dart';
+import 'package:arr_client/features/library/library_view_body.dart';
 import 'package:core/core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -240,6 +244,99 @@ void main() {
 
     expect(find.text('Late'), findsOneWidget);
     expect(find.text('Loading Attic'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('choosing a service that is still loading keeps the way back', (
+    tester,
+  ) async {
+    final app = await start(tester);
+    final slow = FakeLibrary(items: [movie('Late')])..gate = Completer();
+    final id = await addServer(app, 'Attic', slow);
+    await addServer(app, 'Lounge', FakeLibrary(items: [movie('Early')]));
+    await app.pump(tester);
+    await tester.tap(find.text('Library'));
+    await pumpSome(tester);
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Attic'));
+    await pumpSome(tester);
+
+    void expectScopedAndLoading() {
+      expect(find.byType(TextField), findsOneWidget);
+      expect(find.widgetWithText(ChoiceChip, 'All'), findsOneWidget);
+      expect(find.text('Loading Attic'), findsOneWidget);
+      expect(find.text('Early'), findsNothing);
+    }
+
+    expectScopedAndLoading();
+
+    // The saved scope is the same after a restart.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(ArrClientApp(services: app.services));
+    await pumpSome(tester);
+    await tester.tap(find.text('Library'));
+    await pumpSome(tester);
+    expect(
+      (await app.services.preferences.view(
+        await app.activeProfile,
+        MediaKind.movie,
+      )).instanceScope,
+      id,
+    );
+    expectScopedAndLoading();
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+    await pumpSome(tester);
+    expect(find.text('Early'), findsOneWidget);
+
+    slow.gate!.complete();
+    await tester.pumpAndSettle();
+    expect(find.text('Late'), findsOneWidget);
+    await app.stop(tester);
+  });
+
+  testWidgets('asks again on coming back to old data, not to fresh', (
+    tester,
+  ) async {
+    final app = await start(tester);
+    final library = FakeLibrary(items: [movie('Alpha')]);
+    await addServer(app, 'Films', library);
+    await openLibrary(tester, app);
+    final controller = ProviderScope.containerOf(
+      tester.element(find.byType(LibraryViewBody)),
+    ).read(libraryProvider(MediaKind.movie).notifier);
+
+    Future<void> leaveAndReturn() async {
+      await open(tester, 'More');
+      await open(tester, 'Library');
+    }
+
+    Future<void> resume() async {
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+    }
+
+    await leaveAndReturn();
+    await resume();
+    expect(library.listed, 1);
+
+    var later = Duration.zero;
+    controller.now = () => DateTime.now().add(later);
+    later = LibraryController.maxAge;
+    await leaveAndReturn();
+    expect(library.listed, 2);
+
+    later = LibraryController.maxAge * 2 + const Duration(minutes: 1);
+    await resume();
+    expect(library.listed, 3);
+
+    // Not while the library is out of sight.
+    await open(tester, 'More');
+    later = LibraryController.maxAge * 4;
+    await resume();
+    expect(library.listed, 3);
     await app.stop(tester);
   });
 
