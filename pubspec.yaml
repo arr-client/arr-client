@@ -24,9 +24,11 @@ workspace:
 dev_dependencies:
   # tool/check_dependencies.dart parses Dart directives with it.
   analyzer: ^14.7.0
+  # tool/check_licenses.dart recognises long licence texts by their SHA-256.
+  crypto: ^3.0.7
   # The root analysis_options.yaml includes it.
   flutter_lints: ^6.0.0
   # Runs the tests of the repository tools in tool/test/.
-  test: ^1.26.0
-  # The repository tools read pubspec.yaml files with it.
+  test: ^1.31.0
+  # The repository tools read pubspec files and pubspec.lock with it.
   yaml: ^3.1.3
