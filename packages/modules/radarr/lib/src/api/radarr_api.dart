@@ -5,7 +5,7 @@ import 'package:servarr/servarr.dart';
 
 const _apiPath = 'api/v3';
 
-/// Radarr's reads, and its add, for one instance.
+/// Radarr's reads, its add and its deletes, for one instance.
 ///
 /// As in [ServarrClient], a failure of the HTTP client is returned unchanged,
 /// nothing is retried, and an answer to a read of another shape is
@@ -72,6 +72,23 @@ final class RadarrApi {
         ),
       );
 
+  /// Deletes the movie [id], once. Both choices are stated, so that neither is
+  /// left to the server.
+  ServiceResult<void> deleteMovie(
+    int id, {
+    required bool deleteFiles,
+    required bool addImportExclusion,
+  }) => _delete(
+    'movie/$id',
+    query: {
+      'deleteFiles': ['$deleteFiles'],
+      'addImportExclusion': ['$addImportExclusion'],
+    },
+  );
+
+  /// Deletes the movie file [id], once.
+  ServiceResult<void> deleteMovieFile(int id) => _delete('moviefile/$id');
+
   /// The whole download queue.
   ServiceResult<List<QueueItem>> queue() => shared.queue();
 
@@ -92,6 +109,22 @@ final class RadarrApi {
   static List<JsonObject> _objects(Object? json) => json is List<Object?>
       ? [for (final entry in json) _object(entry)]
       : throw const FormatException('Not a list');
+
+  // The server answers with nothing, so the answer is not read.
+  ServiceResult<void> _delete(
+    String path, {
+    Map<String, List<String>> query = const {},
+  }) async {
+    final request = ServiceRequest(
+      HttpMethod.delete,
+      '$_apiPath/$path',
+      query: query,
+    );
+    return switch (await _http.send(request)) {
+      Ok() => const Ok(null),
+      Err(:final error) => Err(error.failure),
+    };
+  }
 
   ServiceResult<T> _get<T>(
     String path,

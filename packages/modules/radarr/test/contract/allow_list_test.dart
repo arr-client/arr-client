@@ -45,6 +45,14 @@ void main() {
           'movieIds': [1],
         },
       ),
+      _send(
+        HttpMethod.delete,
+        'movie/1',
+        query: {
+          'deleteFiles': ['true'],
+          'addImportExclusion': ['false'],
+        },
+      ),
       for (final buster in ['h', 'lastWrite'])
         _send(
           HttpMethod.get,
@@ -118,6 +126,32 @@ void main() {
           'blocklist': ['false'],
         },
         body: {'ids': <int>[]},
+      ),
+      // A delete says what happens to the files and to the exclusion.
+      _send(HttpMethod.delete, 'movie/1'),
+      _send(
+        HttpMethod.delete,
+        'movie/1',
+        query: {
+          'deleteFiles': ['false'],
+        },
+      ),
+      // Sonarr's name for the exclusion, which Radarr ignores.
+      _send(
+        HttpMethod.delete,
+        'movie/1',
+        query: {
+          'deleteFiles': ['false'],
+          'addImportListExclusion': ['true'],
+        },
+      ),
+      // Would delete several movies at once, which the app does not.
+      _send(
+        HttpMethod.delete,
+        'movie/editor',
+        body: {
+          'movieIds': [1],
+        },
       ),
       // Hides unmatched downloads.
       _send(HttpMethod.get, 'queue'),

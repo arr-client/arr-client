@@ -62,6 +62,8 @@ void main() {
     expect(offered, {
       CapabilityKind.library,
       CapabilityKind.lookup,
+      CapabilityKind.command,
+      CapabilityKind.release,
       CapabilityKind.queue,
       CapabilityKind.history,
       CapabilityKind.wanted,

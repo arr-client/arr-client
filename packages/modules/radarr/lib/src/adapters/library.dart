@@ -6,6 +6,7 @@ import '../api/radarr_api.dart';
 import '../models/credit_record.dart';
 import '../models/media_file_record.dart';
 import '../models/movie_record.dart';
+import 'manage.dart';
 import 'queued_movies.dart';
 
 /// The movies of one Radarr instance.
@@ -13,12 +14,20 @@ import 'queued_movies.dart';
 /// A movie's state depends on the download queue, so [list] and [item] read it
 /// too. If that read fails they fail and leave the cache as it was: a queued
 /// movie would otherwise be shown, and cached, as missing.
-final class RadarrLibraryAdapter implements LibraryProvider {
+final class RadarrLibraryAdapter
+    with RadarrLibraryWrites
+    implements LibraryProvider {
   /// Reads through [_api] and caches in the cache of [_context].
   RadarrLibraryAdapter(this._api, this._context);
 
   final RadarrApi _api;
   final InstanceContext _context;
+
+  @override
+  RadarrApi get api => _api;
+
+  @override
+  InstanceContext get context => _context;
 
   @override
   MediaKind get itemKind => MediaKind.movie;
@@ -130,32 +139,6 @@ final class RadarrLibraryAdapter implements LibraryProvider {
         Ok(:final value) => _decode(() => value.map(readCredit).toList()),
         Err(:final error) => Err(error),
       };
-
-  @override
-  ServiceResult<void> setMonitored(MediaTarget target, bool monitored) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> applyMonitorOption(ItemRef ref, String optionId) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> edit(ItemRef ref, ItemEdit changes) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> bulkEdit(List<ItemRef> refs, BulkEdit changes) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> delete(
-    ItemRef ref, {
-    required bool deleteFiles,
-    required bool addImportExclusion,
-  }) => throw UnimplementedError();
-
-  @override
-  ServiceResult<void> deleteFile(MediaFile file) => throw UnimplementedError();
 
   @override
   ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError();

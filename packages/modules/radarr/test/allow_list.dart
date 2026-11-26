@@ -195,7 +195,8 @@ final allowList = AllowList([
   AllowedRequest.write(
     HttpMethod.delete,
     'api/v3/movie/{id}',
-    query: {'deleteFiles': _flag, 'addImportExclusion': _flag},
+    // Stated, so that what happens to the files is never left to a default.
+    query: {'deleteFiles': _statedFlag, 'addImportExclusion': _statedFlag},
   ),
   AllowedRequest.write(
     HttpMethod.put,

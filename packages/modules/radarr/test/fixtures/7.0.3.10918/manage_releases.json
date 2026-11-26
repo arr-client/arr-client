@@ -1,0 +1,307 @@
+[
+  {
+    "guid": "http://redacted.invalid/1",
+    "quality": {
+      "quality": {
+        "id": 31,
+        "name": "Remux-2160p",
+        "source": "bluray",
+        "resolution": 2160,
+        "modifier": "remux"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityWeight": 2301,
+    "age": 10,
+    "ageHours": 240.0115505693611,
+    "ageMinutes": 14400.693034321666,
+    "size": 42949672960,
+    "indexerId": 2,
+    "indexer": "redacted-2",
+    "releaseGroup": "redacted-3",
+    "releaseHash": "",
+    "title": "redacted-4",
+    "sceneSource": false,
+    "movieTitles": [
+      "redacted-5"
+    ],
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "mappedMovieId": 1,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "tmdbId": 0,
+    "imdbId": 0,
+    "rejections": [
+      "redacted-6",
+      "redacted-7"
+    ],
+    "publishDate": "2026-11-16T15:38:40Z",
+    "downloadUrl": "http://redacted.invalid/8",
+    "movieRequested": true,
+    "downloadAllowed": true,
+    "releaseWeight": 0,
+    "edition": "",
+    "protocol": "usenet",
+    "indexerFlags": []
+  },
+  {
+    "guid": "http://redacted.invalid/9",
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityWeight": 1801,
+    "age": 30,
+    "ageHours": 720.0115507025,
+    "ageMinutes": 43200.693042155,
+    "size": 4294967296,
+    "indexerId": 1,
+    "indexer": "redacted-10",
+    "releaseGroup": "redacted-3",
+    "releaseHash": "",
+    "title": "redacted-11",
+    "sceneSource": false,
+    "movieTitles": [
+      "redacted-5"
+    ],
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "mappedMovieId": 1,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "tmdbId": 0,
+    "imdbId": 0,
+    "rejections": [
+      "redacted-7"
+    ],
+    "publishDate": "2026-10-27T15:38:40Z",
+    "downloadUrl": "http://redacted.invalid/12",
+    "movieRequested": true,
+    "downloadAllowed": true,
+    "releaseWeight": 1,
+    "edition": "",
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 12,
+    "leechers": 3,
+    "protocol": "torrent",
+    "indexerFlags": []
+  },
+  {
+    "guid": "http://redacted.invalid/13",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "WEBDL-1080p",
+        "source": "webdl",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityWeight": 1701,
+    "age": 1,
+    "ageHours": 24.01155070586111,
+    "ageMinutes": 1440.6930423533333,
+    "size": 3221225472,
+    "indexerId": 2,
+    "indexer": "redacted-2",
+    "releaseGroup": "redacted-14",
+    "releaseHash": "",
+    "title": "redacted-15",
+    "sceneSource": false,
+    "movieTitles": [
+      "redacted-5"
+    ],
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "mappedMovieId": 1,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "tmdbId": 0,
+    "imdbId": 0,
+    "rejections": [
+      "redacted-16",
+      "redacted-7"
+    ],
+    "publishDate": "2026-11-25T15:38:40Z",
+    "downloadUrl": "http://redacted.invalid/17",
+    "movieRequested": true,
+    "downloadAllowed": true,
+    "releaseWeight": 2,
+    "edition": "",
+    "protocol": "usenet",
+    "indexerFlags": []
+  },
+  {
+    "guid": "http://redacted.invalid/18",
+    "quality": {
+      "quality": {
+        "id": 5,
+        "name": "WEBDL-720p",
+        "source": "webdl",
+        "resolution": 720,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 2,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [
+      {
+        "id": 1,
+        "name": "redacted-19"
+      }
+    ],
+    "customFormatScore": 25,
+    "qualityWeight": 1402,
+    "age": 2,
+    "ageHours": 48.01155070972222,
+    "ageMinutes": 2880.6930425833334,
+    "size": 2147483648,
+    "indexerId": 1,
+    "indexer": "redacted-10",
+    "releaseGroup": "redacted-3",
+    "releaseHash": "",
+    "title": "redacted-20",
+    "sceneSource": false,
+    "movieTitles": [
+      "redacted-5"
+    ],
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "mappedMovieId": 1,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "tmdbId": 0,
+    "imdbId": 0,
+    "rejections": [
+      "redacted-21",
+      "redacted-22",
+      "redacted-7",
+      "redacted-23"
+    ],
+    "publishDate": "2026-11-24T15:38:40Z",
+    "downloadUrl": "http://redacted.invalid/24",
+    "movieRequested": true,
+    "downloadAllowed": true,
+    "releaseWeight": 3,
+    "edition": "",
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 3,
+    "leechers": 0,
+    "protocol": "torrent",
+    "indexerFlags": []
+  },
+  {
+    "guid": "http://redacted.invalid/25",
+    "quality": {
+      "quality": {
+        "id": 2,
+        "name": "DVD",
+        "source": "dvd",
+        "resolution": 0,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityWeight": 801,
+    "age": 400,
+    "ageHours": 9600.011550710333,
+    "ageMinutes": 576000.69304262,
+    "size": 734003200,
+    "indexerId": 1,
+    "indexer": "redacted-10",
+    "releaseGroup": "redacted-3",
+    "releaseHash": "",
+    "title": "redacted-26",
+    "sceneSource": false,
+    "movieTitles": [
+      "redacted-5"
+    ],
+    "languages": [
+      {
+        "id": 2,
+        "name": "French"
+      }
+    ],
+    "mappedMovieId": 1,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "tmdbId": 0,
+    "imdbId": 0,
+    "rejections": [
+      "redacted-27",
+      "redacted-28",
+      "redacted-29",
+      "redacted-23"
+    ],
+    "publishDate": "2025-10-22T15:38:40Z",
+    "downloadUrl": "http://redacted.invalid/30",
+    "movieRequested": true,
+    "downloadAllowed": true,
+    "releaseWeight": 4,
+    "edition": "",
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 0,
+    "leechers": 1,
+    "protocol": "torrent",
+    "indexerFlags": []
+  }
+]

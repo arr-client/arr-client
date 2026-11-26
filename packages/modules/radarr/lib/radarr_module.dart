@@ -10,6 +10,7 @@ import 'package:servarr/servarr.dart';
 import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
+import 'src/adapters/manage.dart';
 import 'src/adapters/overview.dart';
 import 'src/api/radarr_api.dart';
 
@@ -65,6 +66,8 @@ final class RadarrModule implements ServiceModule {
   ) => const {
     CapabilityKind.library,
     CapabilityKind.lookup,
+    CapabilityKind.command,
+    CapabilityKind.release,
     CapabilityKind.queue,
     CapabilityKind.history,
     CapabilityKind.wanted,
@@ -80,6 +83,14 @@ final class RadarrModule implements ServiceModule {
         context,
       ),
       const (LookupProvider) => RadarrLookupAdapter(
+        RadarrApi(context),
+        context.instance.id,
+      ),
+      const (CommandProvider) => RadarrCommandAdapter(
+        RadarrApi(context),
+        context.instance.id,
+      ),
+      const (ReleaseProvider) => RadarrReleaseAdapter(
         RadarrApi(context),
         context.instance.id,
       ),
