@@ -21,8 +21,17 @@ enum ItemState {
   /// The state of an item to which the given facts apply: where several do, the
   /// one that comes first in this enum wins.
   ///
-  /// [allWantedPresent] is false for an item that wants no files, and
-  /// [anyPresent] is true if the server has at least one of its files.
+  /// An item's parts are what holds its files: a movie itself, or a series'
+  /// episodes. Wanted does not mean monitored. If [monitored] is true, the
+  /// wanted files are those of the released, monitored parts and any already
+  /// present. If it is false, they are those of every released part and any
+  /// already present. So a movie with its file is downloaded whether or not it
+  /// is monitored, and an unmonitored series that lacks released episodes is
+  /// partial, not downloaded.
+  ///
+  /// [allWantedPresent] is true if there is at least one wanted file and none is
+  /// absent. [anyPresent] is true if the server has at least one of the item's
+  /// files.
   static ItemState resolve({
     required bool downloading,
     required bool allWantedPresent,

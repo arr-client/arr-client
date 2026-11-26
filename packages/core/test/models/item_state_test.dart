@@ -20,6 +20,29 @@ void main() {
     ]);
   });
 
+  group('an unmonitored item', () {
+    ItemState unmonitored({required bool allWanted, required bool any}) =>
+        ItemState.resolve(
+          downloading: false,
+          allWantedPresent: allWanted,
+          anyPresent: any,
+          monitored: false,
+          released: true,
+        );
+
+    test('that is complete is downloaded', () {
+      expect(unmonitored(allWanted: true, any: true), ItemState.downloaded);
+    });
+
+    test('that is partly present is partial', () {
+      expect(unmonitored(allWanted: false, any: true), ItemState.partial);
+    });
+
+    test('with no files is unmonitored', () {
+      expect(unmonitored(allWanted: false, any: false), ItemState.unmonitored);
+    });
+  });
+
   test('the highest state that applies wins, whatever else is true', () {
     for (final facts in _combinations(5)) {
       final [downloading, allWanted, any, monitored, released] = facts;
