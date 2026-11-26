@@ -335,6 +335,11 @@ void main() {
         ],
       };
       expect(FixtureSanitizer().sanitizeJson(input), input);
+      // Bazarr 1.5 says which format as a number.
+      for (final format in ['0', '1']) {
+        final old = {'original_format': format};
+        expect(FixtureSanitizer().sanitizeJson(old), old);
+      }
     });
 
     test('keeps those values in their own fields and spelling only', () {

@@ -1,0 +1,86 @@
+{
+  "data": [
+    {
+      "alternativeTitles": [
+        "redacted-32",
+        "redacted-33",
+        "redacted-34",
+        "redacted-35",
+        "redacted-36",
+        "redacted-37",
+        "redacted-38",
+        "redacted-39",
+        "redacted-40",
+        "redacted-41",
+        "redacted-42",
+        "redacted-43",
+        "redacted-44",
+        "redacted-45"
+      ],
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "created_at_timestamp": "2026-11-26 22:05:36.753893",
+      "fanart": "/redacted/46",
+      "imdbId": "tt0032599",
+      "missing_subtitles": [
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "overview": "redacted-47",
+      "path": "/redacted/48.mkv",
+      "poster": "/redacted/49",
+      "profileId": 1,
+      "radarrId": 3,
+      "sceneName": null,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/50.srt",
+          "forced": false,
+          "hi": true,
+          "file_size": 594,
+          "embedded_track_id": null,
+          "id": 2
+        }
+      ],
+      "tags": [],
+      "title": "redacted-51",
+      "year": "1940"
+    }
+  ],
+  "total": 1
+}

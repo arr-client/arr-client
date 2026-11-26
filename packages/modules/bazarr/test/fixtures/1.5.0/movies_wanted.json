@@ -1,0 +1,106 @@
+{
+  "data": [
+    {
+      "title": "redacted-51",
+      "missing_subtitles": [
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "radarrId": 3,
+      "sceneName": null,
+      "tags": []
+    },
+    {
+      "title": "redacted-67",
+      "missing_subtitles": [
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "radarrId": 2,
+      "sceneName": null,
+      "tags": []
+    },
+    {
+      "title": "redacted-31",
+      "missing_subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "radarrId": 1,
+      "sceneName": null,
+      "tags": []
+    }
+  ],
+  "total": 3
+}

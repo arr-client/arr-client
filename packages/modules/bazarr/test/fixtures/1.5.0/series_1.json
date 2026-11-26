@@ -1,0 +1,26 @@
+{
+  "data": [
+    {
+      "alternativeTitles": [],
+      "audio_language": [],
+      "episodeFileCount": 4,
+      "ended": true,
+      "episodeMissingCount": 4,
+      "fanart": "/redacted/8.jpg",
+      "imdbId": "tt1748166",
+      "lastAired": "2011-12-13",
+      "monitored": true,
+      "overview": "redacted-9",
+      "path": "/redacted/10",
+      "poster": "/redacted/11.jpg",
+      "profileId": 1,
+      "seriesType": "standard",
+      "sonarrSeriesId": 1,
+      "tags": [],
+      "title": "redacted-12",
+      "tvdbId": 170551,
+      "year": "2010"
+    }
+  ],
+  "total": 2
+}

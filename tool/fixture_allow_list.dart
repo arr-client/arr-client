@@ -131,7 +131,8 @@ final _fieldShapes = <String, RegExp>{
   'forced': _pythonBool,
   'hearingimpaired': _pythonBool,
   'hi': _pythonBool,
-  'originalformat': _pythonBool,
+  // 1.5 sends "0" or "1" here.
+  'originalformat': RegExp(r'^(True|False|0|1)$'),
   'parsedtimestamp': RegExp(r'^\d\d/\d\d/\d\d \d\d:\d\d:\d\d$'),
   'score': RegExp(r'^\d{1,3}(\.\d{1,2})?%$'),
   // History shows this text as it is.

@@ -1,0 +1,264 @@
+{
+  "data": [
+    {
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "episode": 4,
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "path": "/redacted/68.mkv",
+      "season": 1,
+      "sonarrEpisodeId": 4,
+      "sonarrSeriesId": 1,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/69.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594,
+          "embedded_track_id": null,
+          "id": 4
+        },
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "path": "/redacted/70.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 582,
+          "embedded_track_id": null,
+          "id": 10
+        }
+      ],
+      "title": "redacted-71",
+      "sceneName": null
+    },
+    {
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "episode": 3,
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "path": "/redacted/72.mkv",
+      "season": 1,
+      "sonarrEpisodeId": 3,
+      "sonarrSeriesId": 1,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/73.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 50,
+          "embedded_track_id": null,
+          "id": 2
+        },
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "path": "/redacted/74.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 582,
+          "embedded_track_id": null,
+          "id": 8
+        }
+      ],
+      "title": "redacted-75",
+      "sceneName": null
+    },
+    {
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "episode": 2,
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "path": "/redacted/76.mkv",
+      "season": 1,
+      "sonarrEpisodeId": 2,
+      "sonarrSeriesId": 1,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/77.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594,
+          "embedded_track_id": null,
+          "id": 3
+        },
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "path": "/redacted/78.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 582,
+          "embedded_track_id": null,
+          "id": 7
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "path": "/redacted/79.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594,
+          "embedded_track_id": null,
+          "id": 1
+        }
+      ],
+      "title": "redacted-80",
+      "sceneName": null
+    },
+    {
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "episode": 1,
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "path": "/redacted/81.mkv",
+      "season": 1,
+      "sonarrEpisodeId": 1,
+      "sonarrSeriesId": 1,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/82.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594,
+          "embedded_track_id": null,
+          "id": 5
+        },
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "path": "/redacted/83.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 582,
+          "embedded_track_id": null,
+          "id": 9
+        }
+      ],
+      "title": "redacted-84",
+      "sceneName": null
+    }
+  ]
+}

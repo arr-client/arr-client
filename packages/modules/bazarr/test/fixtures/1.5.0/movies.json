@@ -1,0 +1,230 @@
+{
+  "data": [
+    {
+      "alternativeTitles": [
+        "redacted-18",
+        "redacted-19",
+        "redacted-20",
+        "redacted-21",
+        "redacted-22",
+        "redacted-23",
+        "redacted-24"
+      ],
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "fanart": "/redacted/25",
+      "imdbId": "tt1254207",
+      "missing_subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "overview": "redacted-26",
+      "path": "/redacted/27.mkv",
+      "poster": "/redacted/28",
+      "profileId": 1,
+      "radarrId": 1,
+      "sceneName": null,
+      "subtitles": [
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "path": "/redacted/29.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 582
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "path": "/redacted/30.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594
+        }
+      ],
+      "tags": [],
+      "title": "redacted-31",
+      "year": "2008"
+    },
+    {
+      "alternativeTitles": [
+        "redacted-32",
+        "redacted-33",
+        "redacted-34",
+        "redacted-35",
+        "redacted-36",
+        "redacted-37",
+        "redacted-38",
+        "redacted-39",
+        "redacted-40",
+        "redacted-41",
+        "redacted-42",
+        "redacted-43",
+        "redacted-44",
+        "redacted-45"
+      ],
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "fanart": "/redacted/46",
+      "imdbId": "tt0032599",
+      "missing_subtitles": [
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "overview": "redacted-47",
+      "path": "/redacted/48.mkv",
+      "poster": "/redacted/49",
+      "profileId": 1,
+      "radarrId": 3,
+      "sceneName": null,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/50.srt",
+          "forced": false,
+          "hi": true,
+          "file_size": 594
+        }
+      ],
+      "tags": [],
+      "title": "redacted-51",
+      "year": "1940"
+    },
+    {
+      "alternativeTitles": [
+        "redacted-52",
+        "redacted-53",
+        "redacted-54",
+        "redacted-55",
+        "redacted-56",
+        "redacted-57",
+        "redacted-58",
+        "redacted-59",
+        "redacted-60",
+        "redacted-61"
+      ],
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "fanart": "/redacted/62",
+      "imdbId": "tt0063350",
+      "missing_subtitles": [
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "overview": "redacted-63",
+      "path": "/redacted/64.mkv",
+      "poster": "/redacted/65",
+      "profileId": 1,
+      "radarrId": 2,
+      "sceneName": null,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/66.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594
+        }
+      ],
+      "tags": [],
+      "title": "redacted-67",
+      "year": "1968"
+    }
+  ],
+  "total": 3
+}

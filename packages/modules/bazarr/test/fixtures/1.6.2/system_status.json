@@ -1,0 +1,17 @@
+{
+  "data": {
+    "bazarr_version": "1.6.2",
+    "package_version": "redacted-1",
+    "sonarr_version": "4.0.20.3014",
+    "radarr_version": "7.0.3.10918",
+    "operating_system": "redacted-2",
+    "python_version": "3.12.16",
+    "database_engine": "redacted-3",
+    "database_migration": "redacted-4",
+    "bazarr_directory": "/redacted/5",
+    "bazarr_config_directory": "/redacted/6",
+    "start_time": 1795730687.2512162,
+    "timezone": "redacted-7",
+    "cpu_cores": 32
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "data": [
+    {
+      "dont_matches": [],
+      "forced": "False",
+      "hearing_impaired": "False",
+      "language": "en",
+      "matches": [
+        "hash",
+        "hearing_impaired"
+      ],
+      "original_format": "0",
+      "orig_score": 120,
+      "provider": "redacted-83",
+      "release_info": [
+        "redacted-94"
+      ],
+      "score": 100,
+      "score_without_hash": 1,
+      "subtitle": "redacted-95",
+      "uploader": null,
+      "url": "/redacted/64.mkv"
+    },
+    {
+      "dont_matches": [],
+      "forced": "False",
+      "hearing_impaired": "False",
+      "language": "fr",
+      "matches": [
+        "hash",
+        "hearing_impaired"
+      ],
+      "original_format": "0",
+      "orig_score": 120,
+      "provider": "redacted-83",
+      "release_info": [
+        "redacted-96"
+      ],
+      "score": 100,
+      "score_without_hash": 1,
+      "subtitle": "redacted-97",
+      "uploader": null,
+      "url": "/redacted/64.mkv"
+    }
+  ]
+}

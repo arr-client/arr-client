@@ -1,0 +1,130 @@
+{
+  "data": [
+    {
+      "seriesTitle": "redacted-12",
+      "episode_number": "1x4",
+      "episodeTitle": "redacted-71",
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "sonarrSeriesId": 1,
+      "sonarrEpisodeId": 4,
+      "sceneName": null,
+      "tags": [],
+      "seriesType": "standard"
+    },
+    {
+      "seriesTitle": "redacted-12",
+      "episode_number": "1x3",
+      "episodeTitle": "redacted-75",
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "sonarrSeriesId": 1,
+      "sonarrEpisodeId": 3,
+      "sceneName": null,
+      "tags": [],
+      "seriesType": "standard"
+    },
+    {
+      "seriesTitle": "redacted-12",
+      "episode_number": "1x2",
+      "episodeTitle": "redacted-80",
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "sonarrSeriesId": 1,
+      "sonarrEpisodeId": 2,
+      "sceneName": null,
+      "tags": [],
+      "seriesType": "standard"
+    },
+    {
+      "seriesTitle": "redacted-12",
+      "episode_number": "1x1",
+      "episodeTitle": "redacted-84",
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "sonarrSeriesId": 1,
+      "sonarrEpisodeId": 1,
+      "sceneName": null,
+      "tags": [],
+      "seriesType": "standard"
+    }
+  ],
+  "total": 4
+}
