@@ -92,10 +92,12 @@ final class RadarrLookupAdapter implements LookupProvider {
       'rootFolderPath': rootFolder,
       'qualityProfileId': choices.qualityProfileId,
       'tags': choices.tagIds.toList(),
-      // Without a choice the record keeps its own.
-      if (choices.minimumAvailability case final chosen?
-          when chosen != MinimumAvailability.unknown)
-        'minimumAvailability': chosen.name,
+      // Always sent: a search result says `tba`, the unset value, which Radarr
+      // counts as available at once. Without a choice, Radarr's own default.
+      'minimumAvailability': switch (choices.minimumAvailability) {
+        null || MinimumAvailability.unknown => MinimumAvailability.released,
+        final chosen => chosen,
+      }.name,
       'monitored': choices.monitorOptionId != _monitorNone,
       'addOptions': {
         'monitor': choices.monitorOptionId,

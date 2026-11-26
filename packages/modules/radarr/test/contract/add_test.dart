@@ -245,6 +245,25 @@ void main() {
       });
     }
 
+    // A search result outside the library says `tba`, the unset value, which
+    // Radarr counts as available at once. Its own default is `released`.
+    for (final availability in [null, MinimumAvailability.unknown]) {
+      test('sends released for minimum availability '
+          '${availability?.name}', () async {
+        expect(
+          records(fixture('lookup_new')).single['minimumAvailability'],
+          'tba',
+        );
+
+        final body = await _posted(
+          LookupHarness(),
+          _choices(minimumAvailability: availability),
+        );
+
+        expect(body['minimumAvailability'], 'released');
+      });
+    }
+
     test('sends nothing meant for another service', () async {
       final body = await _posted(
         LookupHarness(),
