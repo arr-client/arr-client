@@ -1,0 +1,14 @@
+[
+  {
+    "propertyName": "TvdbId",
+    "errorMessage": "redacted-48",
+    "attemptedValue": 318408,
+    "severity": "error",
+    "errorCode": "SeriesExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-49",
+      "propertyValue": 318408
+    }
+  }
+]

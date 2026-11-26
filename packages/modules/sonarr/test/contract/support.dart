@@ -12,6 +12,12 @@
 // The server answers as the recorded one did: embedded objects only when asked
 // for, an empty list for the episodes of a series it does not have, 404 for
 // that series' files and history, and 500 for an episode id it does not have.
+//
+// The lookups and the answers to adding were recorded from another throwaway
+// server of the same image: a search that finds a series it has and some it does
+// not, cut to four results, a lookup by TVDB id, an accepted add and two refused
+// ones. An add is refused for a series it has, a root folder or quality profile
+// it does not have and a monitoring value it does not know.
 
 import 'dart:convert';
 import 'dart:io';
@@ -34,6 +40,10 @@ Object? _decode(String name) =>
 List<Map<String, Object?>> records(String name) =>
     (_decode(name)! as List<Object?>).cast<Map<String, Object?>>();
 
+/// A fresh copy of a recorded object.
+Map<String, Object?> record(String name) =>
+    _decode(name)! as Map<String, Object?>;
+
 /// A fresh copy of the records of a recorded page.
 List<Map<String, Object?>> pageRecords(String name) =>
     ((_decode(name)! as Map<String, Object?>)['records']! as List<Object?>)
@@ -49,10 +59,45 @@ ItemRef seriesRef(int id) =>
 ItemRef episodeRef(int id) =>
     ItemRef(instanceId: instanceId, kind: MediaKind.episode, remoteId: id);
 
+/// What the recorded server takes as `addOptions.monitor`.
+const _monitorTypes = {
+  'unknown',
+  'all',
+  'future',
+  'missing',
+  'existing',
+  'firstSeason',
+  'lastSeason',
+  'latestSeason',
+  'pilot',
+  'recent',
+  'monitorSpecials',
+  'unmonitorSpecials',
+  'none',
+  'skip',
+};
+
+/// The messages the core's client takes from a refusal.
+List<String> _messages(String body) {
+  final Object? json;
+  try {
+    json = jsonDecode(body);
+  } on FormatException {
+    return const [];
+  }
+  return [
+    if (json is List<Object?>)
+      for (final entry in json)
+        if (entry case {'errorMessage': final String message}) message,
+    if (json case {'message': final String message}) message,
+  ];
+}
+
 Result<ServiceResponse, HttpError> _answer(
   int status,
   String body, {
   String contentType = 'application/json; charset=utf-8',
+  bool write = false,
 }) {
   final response = ServiceResponse(
     statusCode: status,
@@ -63,10 +108,15 @@ Result<ServiceResponse, HttpError> _answer(
   );
   // As the core's client classifies them.
   final failure = switch (status) {
-    200 when contentType.startsWith('text/html') => const ProxyInterception(),
-    200 => null,
+    >= 200 && < 300 when contentType.startsWith('text/html') =>
+      const ProxyInterception(),
+    >= 200 && < 300 => null,
+    400 || 422 => Validation(_messages(body)),
     401 => const AuthFailed(),
+    403 => const Forbidden(),
     404 => const NotFound(),
+    409 => const Conflict(),
+    502 || 504 when write => const OutcomeUnknown(),
     _ => ServerError(statusCode: status),
   };
   return failure == null
@@ -75,7 +125,8 @@ Result<ServiceResponse, HttpError> _answer(
 }
 
 /// Answers the reads of the library from [series], [episodes], [queue] and the
-/// other lists, which a test may change.
+/// other lists, which a test may change, and takes the adding of a series. As
+/// with the core's client, nothing is sent twice.
 class FakeSonarr implements ServiceHttpClient {
   final series = records('series');
   final episodes = <int, List<Map<String, Object?>>>{
@@ -93,6 +144,19 @@ class FakeSonarr implements ServiceHttpClient {
   final rootFolders = records('rootfolder');
   final tags = records('tag');
 
+  /// What a search for [searchTerm] finds.
+  final lookupResults = records('series_lookup');
+  static const searchTerm = 'planet earth';
+
+  /// What `tvdb:79257` finds.
+  final tvdbLookup = records('series_lookup_tvdb');
+
+  /// The id given to a series that is added.
+  static const addedId = 42;
+
+  /// If set, adding gets this, and the library does not change.
+  Result<ServiceResponse, HttpError>? addAnswer;
+
   final requests = <ServiceRequest>[];
 
   /// If set, every request gets this.
@@ -104,22 +168,79 @@ class FakeSonarr implements ServiceHttpClient {
   /// No answer from the address, from now on.
   void goOffline() => always = const Err(HttpError(Unreachable()));
 
-  /// An answer with [body] as it is.
+  /// The requests that were not reads.
+  Iterable<ServiceRequest> get writes =>
+      requests.where((request) => request.method != HttpMethod.get);
+
+  /// An answer with [body] as it is; [write] if it answers one.
   static Result<ServiceResponse, HttpError> body(
     String body, {
     int status = 200,
     String contentType = 'application/json; charset=utf-8',
-  }) => _answer(status, body, contentType: contentType);
+    bool write = false,
+  }) => _answer(status, body, contentType: contentType, write: write);
 
   @override
   Future<Result<ServiceResponse, HttpError>> send(
     ServiceRequest request,
   ) async {
     requests.add(request);
-    expect(request.method, HttpMethod.get, reason: 'only reads are tested');
     expect(request.path, startsWith('api/v3/'));
     final path = request.path.substring('api/v3/'.length);
+    if (request.method != HttpMethod.get) {
+      expect(
+        (request.method, path),
+        (HttpMethod.post, 'series'),
+        reason: 'the only write tested',
+      );
+      expect(request.query, isEmpty);
+      return always ?? addAnswer ?? _add(request.body);
+    }
     return always ?? overrides[path] ?? _route(path, request.query);
+  }
+
+  Result<ServiceResponse, HttpError> _add(RequestBody? body) {
+    expect(body, isA<JsonBody>());
+    // As the server would receive it.
+    final sent = jsonDecode(
+      jsonEncode((body! as JsonBody).value),
+    ) as Map<String, Object?>;
+    Result<ServiceResponse, HttpError> refuse(Object? json) =>
+        _answer(400, jsonEncode(json), write: true);
+
+    if (sent['addOptions'] case {'monitor': final String monitor}
+        when !_monitorTypes.contains(monitor)) {
+      return refuse({
+        'title': 'One or more validation errors occurred.',
+        'status': 400,
+        'errors': {
+          r'$.addOptions.monitor': ['The JSON value could not be converted.'],
+        },
+      });
+    }
+    if (series.any((s) => s['tvdbId'] == sent['tvdbId'])) {
+      return refuse(records('series_add_exists'));
+    }
+    if (!rootFolders.any((f) => f['path'] == sent['rootFolderPath'])) {
+      return refuse(records('series_add_bad_root'));
+    }
+    if (!qualityProfiles.any((p) => p['id'] == sent['qualityProfileId'])) {
+      return refuse([
+        {
+          'propertyName': 'QualityProfileId',
+          'errorMessage': 'Quality Profile does not exist',
+          'errorCode': 'QualityProfileExistsValidator',
+        },
+      ]);
+    }
+    final added = {
+      ...record('series_add'),
+      'tvdbId': sent['tvdbId'],
+      'title': sent['title'],
+      'id': addedId,
+    };
+    series.add(added);
+    return _answer(201, jsonEncode(added), write: true);
   }
 
   Result<ServiceResponse, HttpError> _route(
@@ -159,6 +280,14 @@ class FakeSonarr implements ServiceHttpClient {
     switch (path) {
       case 'series':
         return _json(series);
+      case 'series/lookup':
+        final term = one('term')!;
+        if (term == 'tvdb:79257') return _json(tvdbLookup);
+        if (RegExp(r'^tvdb:(\d+)$').firstMatch(term) case final match?) {
+          final id = int.parse(match[1]!);
+          return _json(lookupResults.where((r) => r['tvdbId'] == id).toList());
+        }
+        return _json(term == searchTerm ? lookupResults : const <Object>[]);
       case 'episode':
         final all = episodes.values.expand((list) => list);
         if (numbers('episodeIds') case final ids?) {
@@ -407,6 +536,8 @@ class Harness {
   LibraryProvider get library => _capability<LibraryProvider>();
 
   HistoryProvider get history => _capability<HistoryProvider>();
+
+  LookupProvider get lookup => _capability<LookupProvider>();
 
   QueueProvider get queue => _capability<QueueProvider>();
 

@@ -1,0 +1,84 @@
+[
+  {
+    "title": "redacted-1",
+    "sortTitle": "redacted-2",
+    "status": "ended",
+    "ended": true,
+    "overview": "redacted-3",
+    "network": "redacted-4",
+    "images": [
+      {
+        "coverType": "banner",
+        "url": "/redacted/5.jpg",
+        "remoteUrl": "https://redacted.invalid/6.jpg"
+      },
+      {
+        "coverType": "poster",
+        "url": "/redacted/7.jpg",
+        "remoteUrl": "https://redacted.invalid/8.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "url": "/redacted/9.jpg",
+        "remoteUrl": "https://redacted.invalid/10.jpg"
+      },
+      {
+        "coverType": "clearlogo",
+        "url": "/redacted/11.png",
+        "remoteUrl": "https://redacted.invalid/12.png"
+      }
+    ],
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "remotePoster": "https://redacted.invalid/8.jpg",
+    "seasons": [
+      {
+        "seasonNumber": 0,
+        "monitored": false
+      },
+      {
+        "seasonNumber": 1,
+        "monitored": true
+      }
+    ],
+    "year": 2006,
+    "qualityProfileId": 0,
+    "seasonFolder": false,
+    "monitored": true,
+    "monitorNewItems": "all",
+    "useSceneNumbering": false,
+    "runtime": 59,
+    "tvdbId": 79257,
+    "tvRageId": 8077,
+    "tvMazeId": 768,
+    "tmdbId": 1044,
+    "firstAired": "2006-03-05T00:00:00Z",
+    "lastAired": "2006-12-10T00:00:00Z",
+    "seriesType": "standard",
+    "cleanTitle": "redacted-13",
+    "imdbId": "tt0795176",
+    "titleSlug": "redacted-14",
+    "folder": "redacted-1",
+    "certification": "TV-G",
+    "genres": [
+      "redacted-15"
+    ],
+    "tags": [],
+    "added": "0001-01-01T00:00:00Z",
+    "ratings": {
+      "votes": 238102,
+      "value": 9.4
+    },
+    "statistics": {
+      "seasonCount": 1,
+      "episodeFileCount": 0,
+      "episodeCount": 0,
+      "totalEpisodeCount": 0,
+      "sizeOnDisk": 0,
+      "percentOfEpisodes": 0
+    },
+    "languageProfileId": 1
+  }
+]
