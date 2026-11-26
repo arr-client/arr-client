@@ -21,6 +21,9 @@ final class DiagnosticLog implements Logger {
   /// How many entries are kept.
   final int capacity;
 
+  /// What ends a text that was cut off.
+  static const _ellipsis = '...';
+
   final DateTime Function() _clock;
   final _redactor = SecretRedactor();
   final _entries = Queue<LogEntry>();
@@ -30,14 +33,12 @@ final class DiagnosticLog implements Logger {
 
   /// Registers values to remove from past and future entries.
   void addSecrets(Iterable<String> secrets) {
-    _redactor.addSecrets(secrets);
-    _redactStored();
+    if (_redactor.addSecrets(secrets)) _redactStored();
   }
 
   /// Registers the secrets of [credential], as [addSecrets] does.
   void addCredential(Credential credential) {
-    _redactor.addCredential(credential);
-    _redactStored();
+    if (_redactor.addCredential(credential)) _redactStored();
   }
 
   @override
@@ -53,7 +54,7 @@ final class DiagnosticLog implements Logger {
         level: level,
         message: _clean(message),
         error: error == null ? null : _clean(_describe(error)),
-        stackTrace: stackTrace == null ? null : _clean('$stackTrace'),
+        stackTrace: stackTrace == null ? null : _clean(_describe(stackTrace)),
       ),
     );
     while (_entries.length > capacity) {
@@ -69,16 +70,18 @@ final class DiagnosticLog implements Logger {
 
   String _clean(String text) {
     final redacted = _redactor.redact(text);
-    return redacted.length <= maximumTextLength
-        ? redacted
-        : '${redacted.substring(0, maximumTextLength)}...';
+    if (redacted.length <= maximumTextLength) return redacted;
+    var end = maximumTextLength;
+    // Not between the two halves of a surrogate pair.
+    if (redacted.codeUnitAt(end - 1) & 0xFC00 == 0xD800) end--;
+    return '${redacted.substring(0, end)}$_ellipsis';
   }
 
   static String _describe(Object error) {
-    // Its toString quotes an excerpt of the input, which can cut a secret short
-    // so that it is no longer recognised.
-    if (error is FormatException) return 'FormatException: ${error.message}';
     try {
+      // Its toString quotes an excerpt of the input, which can cut a secret
+      // short so that it is no longer recognised.
+      if (error is FormatException) return 'FormatException: ${error.message}';
       return error.toString();
     } catch (_) {
       // Logging must not fail because the error cannot describe itself.
@@ -87,14 +90,20 @@ final class DiagnosticLog implements Logger {
   }
 
   void _redactStored() {
-    String? again(String? text) =>
-        text == null ? null : _redactor.redactKnown(text);
+    String clean(String text) {
+      if (!text.endsWith(_ellipsis)) return _redactor.redactKnown(text);
+      // The cut may have left the first part of a secret, only now known.
+      final kept = text.substring(0, text.length - _ellipsis.length);
+      return '${_redactor.redactKnown(kept, cutOff: true)}$_ellipsis';
+    }
+
+    String? again(String? text) => text == null ? null : clean(text);
     final redacted = [
       for (final entry in _entries)
         LogEntry(
           time: entry.time,
           level: entry.level,
-          message: _redactor.redactKnown(entry.message),
+          message: clean(entry.message),
           error: again(entry.error),
           stackTrace: again(entry.stackTrace),
         ),

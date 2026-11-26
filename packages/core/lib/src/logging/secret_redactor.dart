@@ -8,7 +8,8 @@ import '../instances/credential.dart';
 /// they appear. Anything else is recognised only by its surroundings: URL
 /// queries and user information, sensitive names such as `password` or
 /// `Cookie`, `Bearer` and `Basic` tokens, and 32-digit hexadecimal API keys.
-/// It errs towards removing too much.
+/// It errs towards removing too much, and removes the whole of a text that it
+/// cannot process.
 final class SecretRedactor {
   /// What replaces a secret.
   static const marker = '[redacted]';
@@ -20,7 +21,9 @@ final class SecretRedactor {
   final _known = <String, RegExp>{};
 
   /// Registers values to remove, also in their URL and JSON encoded forms.
-  void addSecrets(Iterable<String> secrets) {
+  /// Returns whether any of them was new.
+  bool addSecrets(Iterable<String> secrets) {
+    final before = _known.length;
     for (final secret in secrets) {
       for (final value in {secret, secret.trim()}) {
         if (value.length < minimumSecretLength) continue;
@@ -30,18 +33,20 @@ final class SecretRedactor {
           json.substring(1, json.length - 1),
           ..._urlForms(value),
         ]) {
-          _known[form] ??= RegExp(RegExp.escape(form), caseSensitive: false);
+          _known[form] ??= _literal(form);
         }
       }
     }
+    return _known.length > before;
   }
 
-  /// Registers every secret of [credential], including the user names.
-  void addCredential(Credential credential) {
+  /// Registers every secret of [credential], including the user names. Returns
+  /// whether any of them was new.
+  bool addCredential(Credential credential) {
     final basicUser = credential.basicUser;
     final basicPassword = credential.basicPassword;
     final cookie = credential.sessionCookie;
-    addSecrets([
+    return addSecrets([
       ?credential.apiKey,
       ?credential.username,
       ?credential.password,
@@ -60,27 +65,81 @@ final class SecretRedactor {
   }
 
   /// [text] without the secrets.
-  String redact(String text) {
-    // Registered values go first, so that no rule below cuts one in half and
-    // leaves the rest of it unrecognisable.
-    final result = redactKnown(text)
-        .replaceAllMapped(_userInfo, (m) => '${m[1]}$marker@')
-        .replaceAll(_query, '?$marker')
-        .replaceAll(_fragment, '#$marker')
-        .replaceAllMapped(_headerValueError, (m) => '${m[1]} $marker')
-        .replaceAllMapped(_scheme, (m) => '${m[1]} $marker');
-    return _redactNamed(result).replaceAll(_hexKey, marker);
-  }
+  String redact(String text) => _guarded(() {
+    // Registered values are found in the original text, so that no rule can cut
+    // one in half. The rules see neither them nor their markers, so that a
+    // registered `pass` or `https` cannot stop a rule from recognising what
+    // follows it.
+    final spans = _knownSpans(text);
+    var unseen = text;
+    for (final rule in _rules) {
+      final found = [
+        for (final (start, end) in rule(unseen))
+          if (end > start) (start, end),
+      ];
+      spans.addAll(found);
+      // Later rules skip what this one found. Positions stay as they were.
+      unseen = _replace(unseen, found, (length) => '\u0001' * length);
+    }
+    return _replace(text, spans, (_) => marker);
+  });
 
   /// [text] without the registered values only.
-  String redactKnown(String text) {
-    // All matches are found before any is replaced, so that overlapping
-    // secrets leave no fragment behind.
-    final spans = [
-      for (final pattern in _known.values)
-        for (final match in pattern.allMatches(text)) (match.start, match.end),
-    ]..sort((a, b) => a.$1.compareTo(b.$1));
+  ///
+  /// If [text] was [cutOff] from a longer one, this also removes its end where
+  /// that is the start of a registered value.
+  String redactKnown(String text, {bool cutOff = false}) => _guarded(() {
+    final spans = _knownSpans(text);
+    if (cutOff) {
+      for (final form in _known.keys) {
+        final start = _startOfCutValue(text, form);
+        if (start != null) spans.add((start, text.length));
+      }
+    }
+    return _replace(text, spans, (_) => marker);
+  });
+
+  /// Never lets text through unredacted, and never fails the caller.
+  static String _guarded(String Function() redaction) {
+    try {
+      return redaction();
+    } catch (_) {
+      // A regular expression can overflow the stack on a very large input.
+      return marker;
+    }
+  }
+
+  List<(int, int)> _knownSpans(String text) => [
+    for (final pattern in _known.values)
+      for (final match in pattern.allMatches(text)) (match.start, match.end),
+  ];
+
+  /// Where [text] ends in the first part of [form], if that part is at least
+  /// [minimumSecretLength] long.
+  static int? _startOfCutValue(String text, String form) {
+    final lower = form.toLowerCase();
+    final opening = _literal(form.substring(0, minimumSecretLength));
+    final earliest = text.length > form.length ? text.length - form.length : 0;
+    for (final match in opening.allMatches(text, earliest)) {
+      if (lower.startsWith(text.substring(match.start).toLowerCase())) {
+        return match.start;
+      }
+    }
+    return null;
+  }
+
+  static RegExp _literal(String value) =>
+      RegExp(RegExp.escape(value), caseSensitive: false);
+
+  /// Replaces each of [spans], joining those that touch so that overlapping
+  /// secrets leave no fragment behind.
+  static String _replace(
+    String text,
+    List<(int, int)> spans,
+    String Function(int length) replacement,
+  ) {
     if (spans.isEmpty) return text;
+    spans.sort((a, b) => a.$1.compareTo(b.$1));
 
     final result = StringBuffer();
     var copied = 0;
@@ -88,7 +147,7 @@ final class SecretRedactor {
     void replaceSpan() {
       result
         ..write(text.substring(copied, start))
-        ..write(marker);
+        ..write(replacement(end - start));
       copied = end;
     }
 
@@ -107,8 +166,14 @@ final class SecretRedactor {
 
   static List<String> _urlForms(String value) {
     try {
+      final component = Uri.encodeComponent(value);
       return [
-        Uri.encodeComponent(value),
+        component,
+        // Strict RFC 3986, as requests are sent: these are escaped too.
+        component.replaceAllMapped(
+          RegExp("[!'()*]"),
+          (m) => '%${m[0]!.codeUnitAt(0).toRadixString(16).toUpperCase()}',
+        ),
         Uri.encodeQueryComponent(value),
         Uri.encodeFull(value),
       ];
@@ -118,36 +183,69 @@ final class SecretRedactor {
     }
   }
 
-  /// Replaces what follows a sensitive name and `:` or `=`.
-  static String _redactNamed(String text) {
-    final result = StringBuffer();
-    var copied = 0;
+  /// The parts of a text that each rule takes for secrets, in the order the
+  /// rules are applied.
+  static final _rules = <Iterable<(int, int)> Function(String)>[
+    (text) => _afterPrefix(_userInfo, text, suffix: 1),
+    (text) => _afterPrefix(_query, text),
+    (text) => _afterPrefix(_fragment, text),
+    (text) => _afterPrefix(_headerValueError, text),
+    (text) => _afterPrefix(_scheme, text),
+    _namedValues,
+    (text) => _hexKey.allMatches(text).map((m) => (m.start, m.end)),
+  ];
+
+  /// Each match of [pattern] without its first group, which is kept, and
+  /// without its last [suffix] characters.
+  static Iterable<(int, int)> _afterPrefix(
+    RegExp pattern,
+    String text, {
+    int suffix = 0,
+  }) => pattern
+      .allMatches(text)
+      .map((m) => (m.start + m[1]!.length, m.end - suffix));
+
+  /// What follows a sensitive name and `:` or `=`.
+  static Iterable<(int, int)> _namedValues(String text) sync* {
+    var done = 0;
     for (final match in _assignment.allMatches(text)) {
-      if (match.start < copied || !_isSensitive(match[1]!)) continue;
+      if (match.start < done || !_isSensitive(match[1]!)) continue;
       var start = match.end;
       if (start == text.length) continue;
-      var end = _endOfLine(text, start);
+      final int end;
       final first = text[start];
-      if (first == '"' || first == "'") {
-        // Only the quoted value, provided it plainly ends where it seems to.
-        final quoted = RegExp(
-          '$first(?:\\\\.|[^$first\\\\\\r\\n])*$first'
-          r'(?=$|[\s,;&)}\]])',
-        ).matchAsPrefix(text, start);
-        if (quoted != null) {
-          start += 1;
-          end = quoted.end - 1;
-        }
+      final closing = first == '"' || first == "'"
+          ? _closingQuote(text, start)
+          : null;
+      if (closing != null) {
+        // Only the quoted value.
+        start += 1;
+        end = closing;
       } else if (first == '{' || first == '[' || first == '(') {
         end = _endOfLine(text, _endOfBrackets(text, start));
+      } else {
+        end = _endOfLine(text, start);
       }
-      result
-        ..write(text.substring(copied, start))
-        ..write(marker);
-      copied = end;
+      yield (start, end);
+      done = end;
     }
-    result.write(text.substring(copied));
-    return result.toString();
+  }
+
+  /// The quote closing the one at [open], if the value plainly ends there.
+  /// Scanned by hand: a regular expression overflows on a very long value.
+  static int? _closingQuote(String text, int open) {
+    for (var i = open + 1; i < text.length; i++) {
+      if (text[i] == '\n' || text[i] == '\r') return null;
+      if (text[i] == r'\') {
+        i++;
+      } else if (text[i] == text[open]) {
+        final next = i + 1;
+        return next == text.length || _delimiter.hasMatch(text[next])
+            ? i
+            : null;
+      }
+    }
+    return null;
   }
 
   static int _endOfLine(String text, int from) {
@@ -192,10 +290,15 @@ final class SecretRedactor {
     'username|basicuser',
   );
 
-  /// A name, an optional closing quote, then `:` or `=`.
+  static final _delimiter = RegExp(r'[\s,;&)}\]]');
+
+  /// A name, an optional closing quote or bracket, then `:` or `=`. The bracket
+  /// is how `ArgumentError` writes a name: `(password): "..."`.
   static final _assignment = RegExp(
-    r'''(?<![A-Za-z0-9_.-])([A-Za-z0-9_.-]+)(?:\\*["'])?[ \t]*[:=]\s*''',
+    r'''(?<![A-Za-z0-9_.-])([A-Za-z0-9_.-]+)(?:\\*["']|\))?[ \t]*[:=]\s*''',
   );
+
+  // In the patterns below, the first group is what is kept.
 
   static final _userInfo = RegExp(
     r'''([a-z0-9+.-]://)[^/?#\s"<>]*@''',
@@ -203,19 +306,20 @@ final class SecretRedactor {
   );
 
   // The whole query goes: any parameter may carry a secret.
-  static final _query = RegExp(r'\?[^\s"<>]+');
+  static final _query = RegExp(r'(\?)[^\s"<>]+');
 
-  static final _fragment = RegExp(r'#(?=[^\s"<>=]*=)[^\s"<>]+');
+  // The lookahead stops at the next `#`, or a run of them takes quadratic time.
+  static final _fragment = RegExp(r'(#)(?=[^\s"<>=#]*=)[^\s"<>]+');
 
   // `dart:io` quotes a rejected header value, which may be a custom one.
   static final _headerValueError = RegExp(
-    r'(header (?:field )?value:).*',
+    r'(header (?:field )?value: ?).*',
     caseSensitive: false,
   );
 
   // A word in lower case, as in "Basic authentication", is not a token.
   static final _scheme = RegExp(
-    r'\b([Bb]earer|BEARER|[Bb]asic|BASIC)[ \t]+(?![a-z]+(?![\w.~+/=-]))'
+    r'\b((?:[Bb]earer|BEARER|[Bb]asic|BASIC)[ \t]+)(?![a-z]+(?![\w.~+/=-]))'
     r'[\w.~+/=-]{6,}',
   );
 

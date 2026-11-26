@@ -154,6 +154,8 @@ void main() {
       '{name: x, nested: [{accessToken: s3cretZ}]}',
       'Credential(basicPassword: s3cretZ)',
       'Invalid HTTP header field value: "s3cretZ\\n"',
+      'Invalid argument (password): "s3cretZ"',
+      'Invalid argument (apiKey): Must not be empty: "s3cretZ"',
     ];
 
     for (final line in lines) {
@@ -173,6 +175,33 @@ void main() {
 
       expect(_record(DiagnosticLog(), 'sent $key.'), isNot(contains(key)));
     });
+
+    test('in an ArgumentError', () {
+      final recorded = _record(
+        DiagnosticLog(),
+        'x',
+        error: ArgumentError.value('s3cretZ', 'password'),
+      );
+
+      expect(recorded, isNot(contains('s3cretZ')));
+    });
+
+    // Registered values that are also part of what a rule looks for.
+    for (final (registered, line) in [
+      ('pass', 'password=s3cretZ'),
+      ('https', 'https://me:s3cretZ@host.test/api'),
+      ('Bearer', 'sent Bearer s3cretZ.abc'),
+      ('word', 'Invalid argument (password): "s3cretZ"'),
+    ]) {
+      test('although "$registered" is registered', () {
+        final log = DiagnosticLog()..addSecrets([registered]);
+
+        final recorded = _record(log, line);
+
+        expect(recorded, isNot(contains('s3cretZ')));
+        expect(recorded, isNot(contains(registered)));
+      });
+    }
 
     test('in nested collections', () {
       final recorded = _record(
@@ -213,6 +242,13 @@ void main() {
         expect(_record(DiagnosticLog(), line), endsWith(line));
       });
     }
+
+    test('after a URL query', () {
+      expect(
+        _record(DiagnosticLog(), 'GET api?apikey=s3cretZ returned 401'),
+        endsWith('GET api?[redacted] returned 401'),
+      );
+    });
 
     test('around a quoted value', () {
       expect(
@@ -260,6 +296,77 @@ void main() {
         DiagnosticLog.maximumTextLength + 3,
       );
     });
+
+    test('removes what was cut short once it is registered', () {
+      for (var kept = 4; kept < _custom.length; kept++) {
+        final log = DiagnosticLog();
+        final padding = '.' * (DiagnosticLog.maximumTextLength - kept);
+        log.log(LogLevel.debug, '$padding$_custom');
+
+        log.addSecrets([_custom]);
+
+        expect(
+          log.entries.single.message,
+          '$padding${SecretRedactor.marker}...',
+        );
+      }
+    });
+
+    test('does not cut a surrogate pair in two', () {
+      final padding = '.' * (DiagnosticLog.maximumTextLength - 1);
+      final log = DiagnosticLog()..log(LogLevel.debug, '$padding\u{1F600}');
+
+      expect(log.entries.single.message, '$padding...');
+    });
+
+    test('says whether a secret is new', () {
+      final redactor = SecretRedactor();
+
+      expect(redactor.addCredential(_credential), isTrue);
+      expect(redactor.addCredential(_credential), isFalse);
+      expect(redactor.addSecrets([_custom, 'a']), isFalse);
+    });
+
+    test('removes a value encoded strictly per RFC 3986', () {
+      final log = DiagnosticLog()..addSecrets(["seed !'()* value"]);
+
+      expect(
+        _record(log, 'at /seed%20%21%27%28%29%2A%20value'),
+        endsWith('at /[redacted]'),
+      );
+    });
+
+    for (final (name, text) in [
+      ('a run of #', '#' * 100000),
+      ('a run of ?', '?' * 100000),
+      ('many quoted values on one line', 'key="v", ' * 20000),
+      ('a run of names', 'a:' * 50000),
+      ('a run of schemes', 'a://' * 25000),
+      ('a run of Bearer', 'Bearer ' * 15000),
+    ]) {
+      test('redacts $name in reasonable time', () {
+        final watch = Stopwatch()..start();
+
+        _record(DiagnosticLog(), text);
+
+        expect(watch.elapsed, lessThan(const Duration(seconds: 5)));
+      });
+    }
+
+    for (final (name, text) in [
+      ('quoted value', 'password="${'z' * 5000000}"'),
+      ('unterminated value', 'password="${r'\z' * 2500000}'),
+      ('query', '?${'z' * 5000000}'),
+      ('token', 'Bearer ${'Z' * 5000000}'),
+    ]) {
+      test('does not fail on a huge $name', () {
+        final recorded = _record(DiagnosticLog(), text);
+
+        expect(recorded, contains(SecretRedactor.marker));
+        expect(recorded.toLowerCase(), isNot(contains('zz')));
+        expect(recorded, isNot(contains(r'\z')));
+      });
+    }
 
     test('survives an error that cannot describe itself', () {
       expect(
