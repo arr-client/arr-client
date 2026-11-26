@@ -13,6 +13,7 @@ String encodeProbeSnapshot(ProbeSnapshot probe) => jsonEncode({
   'version': probe.version,
   'capabilities': [for (final kind in probe.capabilities) kind.name],
   'permissions': [for (final permission in probe.permissions) permission.name],
+  'newerThanTested': probe.newerThanTested,
 });
 
 /// Reads the column. Null if it is not a probe.
@@ -24,7 +25,7 @@ ProbeSnapshot? decodeProbeSnapshot(String text) {
     // Not a probe either; the next one replaces it.
     return null;
   }
-  if (stored case {
+  if (stored case <String, Object?>{
     'product': final String product,
     'version': final String version,
     'capabilities': final List<Object?> capabilities,
@@ -37,6 +38,7 @@ ProbeSnapshot? decodeProbeSnapshot(String text) {
       version: version,
       capabilities: {for (final name in capabilities) ?kinds[name]},
       permissions: {for (final name in permissions) ?known[name]},
+      newerThanTested: stored['newerThanTested'] == true,
     );
   }
   return null;

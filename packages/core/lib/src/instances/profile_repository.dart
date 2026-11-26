@@ -409,6 +409,10 @@ class ProfileRepository {
           lastProbe: probe != null
               ? Value(encodeProbeSnapshot(probe))
               : const Value.absent(),
+          // What was found too old was at another address, or has been updated.
+          unsupportedVersion: probe != null || newUrl
+              ? const Value(null)
+              : const Value.absent(),
           updatedAt: Value(_now().toUtc()),
         ),
       );
@@ -535,24 +539,41 @@ class ProfileRepository {
   });
 
   /// Keeps what a successful probe through [used] found, as `lastProbe` and
-  /// `detectedVersion`. It is not an edit: `updatedAt` stays. False, storing
-  /// nothing, if the instance is gone or its address, authKind or what the user
-  /// enters has changed since: something else was probed.
+  /// `detectedVersion`, and lifts a block on the instance. It is not an edit:
+  /// `updatedAt` stays. False, storing nothing, if the instance is gone or its
+  /// address, authKind or what the user enters has changed since: something
+  /// else was probed.
   Future<bool> recordProbe(InstanceAccess used, ProbeSnapshot probe) =>
-      _database.transaction(() async {
-        final id = used.instance.id;
-        final current = await instanceWithCredential(id);
-        if (current == null || !_isUnchanged(current, used)) return false;
-        await (_database.update(
-          _database.instances,
-        )..where((row) => row.id.equals(id))).write(
-          InstancesCompanion(
-            detectedVersion: Value(probe.version),
-            lastProbe: Value(encodeProbeSnapshot(probe)),
-          ),
-        );
-        return true;
-      });
+      _recordFinding(
+        used,
+        InstancesCompanion(
+          detectedVersion: Value(probe.version),
+          lastProbe: Value(encodeProbeSnapshot(probe)),
+          unsupportedVersion: const Value(null),
+        ),
+      );
+
+  /// Blocks the instance because a probe through [used] found a server too old
+  /// to be supported, of [version] if it named one. `lastProbe` and
+  /// `detectedVersion` stay. Otherwise as [recordProbe].
+  Future<bool> recordUnsupportedVersion(InstanceAccess used, String? version) =>
+      _recordFinding(
+        used,
+        InstancesCompanion(unsupportedVersion: Value(version ?? '')),
+      );
+
+  Future<bool> _recordFinding(
+    InstanceAccess used,
+    InstancesCompanion finding,
+  ) => _database.transaction(() async {
+    final id = used.instance.id;
+    final current = await instanceWithCredential(id);
+    if (current == null || !_isUnchanged(current, used)) return false;
+    await (_database.update(
+      _database.instances,
+    )..where((row) => row.id.equals(id))).write(finding);
+    return true;
+  });
 
   /// Gives the instance [id], which has [stored] now, the session [cookie].
   Future<void> _writeSession(
@@ -846,6 +867,7 @@ class ProfileRepository {
       sortOrder: row.sortOrder,
       detectedVersion: row.detectedVersion,
       lastProbe: lastProbe == null ? null : decodeProbeSnapshot(lastProbe),
+      unsupportedVersion: row.unsupportedVersion,
       links: [
         for (final link in links)
           if (link.instanceId == row.id)

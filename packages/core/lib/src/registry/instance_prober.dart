@@ -24,8 +24,8 @@ import 'profile_scope.dart';
 /// is probed. That is so at the first contact of a launch, after a profile is
 /// activated, an instance is added, imported, re-enabled or edited, and after a
 /// change of network. A latched instance is also probed once the user has it
-/// try again. What a successful probe found is kept, and the instance's
-/// connection says how it went.
+/// try again. What a successful probe found is kept, as is that a server's
+/// version is too old, and the instance's connection says how it went.
 ///
 /// - Nothing is sent for an instance whose `authFailed` is set, nor for one that
 ///   is disabled or not of the active profile.
@@ -145,14 +145,19 @@ final class InstanceProber {
     _registry.setConnection(active, const ConnectionProbing());
     final answer = await _ask(active);
     if (_closed || !active.isCurrent) return false;
-    if (answer case Ok(:final value)) {
-      try {
-        // Edited meanwhile: the registry is about to replace the instance.
-        if (!await _profiles.recordProbe(used, value)) return false;
-      } catch (error) {
-        // The server answered all the same.
-        _warn('A probe could not be recorded', error);
-      }
+    try {
+      final recorded = switch (answer) {
+        Ok(:final value) => await _profiles.recordProbe(used, value),
+        Err(error: UnsupportedVersion(:final version)) =>
+          await _profiles.recordUnsupportedVersion(used, version),
+        // Any other failure says nothing about the server.
+        Err() => true,
+      };
+      // Edited meanwhile: the registry is about to replace the instance.
+      if (!recorded) return false;
+    } catch (error) {
+      // The server answered all the same.
+      _warn('A probe could not be recorded', error);
     }
     if (!active.isCurrent) return false;
     if (_registry.scope?.instance(id)?.connection is! ConnectionProbing) {

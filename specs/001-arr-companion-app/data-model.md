@@ -33,7 +33,8 @@ A secret is erased only after the deletion of its records is saved; see PendingS
 | enabled | bool | default true |
 | sortOrder | int | |
 | detectedVersion | string? | from last successful test |
-| lastProbe | {product, version, capabilities, permissions}? | persisted at each successful probe; drives navigation when offline. Saving a changed url without a successful test keeps its capabilities until the next probe and clears detectedVersion |
+| lastProbe | {product, version, capabilities, permissions, newerThanTested}? | persisted at each successful probe; drives navigation when offline. Saving a changed url without a successful test keeps its capabilities until the next probe and clears detectedVersion. newerThanTested gives the version notice |
+| unsupportedVersion | string? | set when a probe finds the server older than supported (empty if it names no version); while set the instance offers nothing. Cleared by a successful probe or a changed url |
 | links | list<{type, instanceId}> | `subtitlesFor` only: Bazarr → Sonarr/Radarr in the same profile; at most one of each |
 | createdAt, updatedAt | datetime | UTC |
 
