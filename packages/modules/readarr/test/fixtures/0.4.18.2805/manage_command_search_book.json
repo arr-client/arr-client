@@ -1,0 +1,30 @@
+{
+  "name": "BookSearch",
+  "commandName": "Book Search",
+  "body": {
+    "bookIds": [
+      29
+    ],
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "BookSearch",
+    "trigger": "manual",
+    "suppressMessages": false,
+    "clientUserAgent": "redacted-17"
+  },
+  "priority": "normal",
+  "status": "started",
+  "result": "unknown",
+  "queued": "2026-11-26T23:10:06Z",
+  "started": "2026-11-26T23:10:06Z",
+  "trigger": "manual",
+  "clientUserAgent": "redacted-17",
+  "stateChangeTime": "2026-11-26T23:10:06Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 34
+}

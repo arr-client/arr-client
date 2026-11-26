@@ -1,0 +1,1138 @@
+[
+  {
+    "bookId": 10,
+    "authorId": 1,
+    "sourceTitle": "redacted-35",
+    "quality": {
+      "quality": {
+        "id": 2,
+        "name": "MOBI"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": true,
+    "date": "2026-11-26T23:03:21Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000005",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-2",
+      "nzbInfoUrl": "http://redacted.invalid/43",
+      "releaseGroup": null,
+      "age": "0",
+      "ageHours": "0.0008331265",
+      "ageMinutes": "0.04998769833333333",
+      "publishedDate": "2026-11-26T23:03:19Z",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "size": "201190",
+      "downloadUrl": "http://redacted.invalid/44",
+      "guid": "http://redacted.invalid/43",
+      "protocol": "2",
+      "downloadForced": "redacted-31",
+      "customFormatScore": "0",
+      "releaseSource": "InteractiveSearch",
+      "indexerFlags": "0",
+      "torrentInfoHash": "abcdef0000000000000000000000000000000005"
+    },
+    "book": {
+      "title": "redacted-75",
+      "authorTitle": "redacted-76",
+      "seriesTitle": "redacted-77",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-78",
+      "foreignEditionId": "redacted-79",
+      "titleSlug": "redacted-78",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 5,
+        "value": 2.8,
+        "popularity": 14
+      },
+      "releaseDate": "1909-01-01T08:00:00Z",
+      "pageCount": 0,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/80.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 10
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 2
+  },
+  {
+    "bookId": 19,
+    "authorId": 1,
+    "sourceTitle": "redacted-1",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:03:24Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000003",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-2",
+      "nzbInfoUrl": "http://redacted.invalid/41",
+      "releaseGroup": null,
+      "age": "0",
+      "ageHours": "0.0005705639166666667",
+      "ageMinutes": "0.03423392",
+      "publishedDate": "2026-11-26T23:03:22Z",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "size": "201198",
+      "downloadUrl": "http://redacted.invalid/42",
+      "guid": "http://redacted.invalid/41",
+      "protocol": "2",
+      "downloadForced": "redacted-31",
+      "customFormatScore": "0",
+      "releaseSource": "InteractiveSearch",
+      "indexerFlags": "0",
+      "torrentInfoHash": "abcdef0000000000000000000000000000000003"
+    },
+    "book": {
+      "title": "redacted-58",
+      "authorTitle": "redacted-59",
+      "seriesTitle": "redacted-60",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-61",
+      "foreignEditionId": "redacted-62",
+      "titleSlug": "redacted-61",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 9970,
+        "value": 3.83,
+        "popularity": 38185.1
+      },
+      "releaseDate": "1910-01-01T08:00:00Z",
+      "pageCount": 312,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/63.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 19
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 3
+  },
+  {
+    "bookId": 8,
+    "authorId": 1,
+    "sourceTitle": "redacted-38",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:03:25Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000006",
+    "eventType": "bookFileImported",
+    "data": {
+      "fileId": "1",
+      "droppedPath": "/redacted/39.epub",
+      "importedPath": "/redacted/40.epub",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "releaseGroup": null,
+      "size": "201186",
+      "indexerFlags": "0"
+    },
+    "book": {
+      "title": "redacted-81",
+      "authorTitle": "redacted-82",
+      "seriesTitle": "redacted-83",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-84",
+      "foreignEditionId": "redacted-85",
+      "titleSlug": "redacted-84",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 325,
+        "value": 4.03,
+        "popularity": 1309.75
+      },
+      "releaseDate": "1907-01-01T08:00:00Z",
+      "pageCount": 0,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/86.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 8
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 4
+  },
+  {
+    "bookId": 10,
+    "authorId": 1,
+    "sourceTitle": "redacted-35",
+    "quality": {
+      "quality": {
+        "id": 2,
+        "name": "MOBI"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": true,
+    "date": "2026-11-26T23:03:25Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000005",
+    "eventType": "bookFileImported",
+    "data": {
+      "fileId": "2",
+      "droppedPath": "/redacted/36.mobi",
+      "importedPath": "/redacted/37.mobi",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "releaseGroup": null,
+      "size": "201190",
+      "indexerFlags": "0"
+    },
+    "book": {
+      "title": "redacted-75",
+      "authorTitle": "redacted-76",
+      "seriesTitle": "redacted-77",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-78",
+      "foreignEditionId": "redacted-79",
+      "titleSlug": "redacted-78",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 5,
+        "value": 2.8,
+        "popularity": 14
+      },
+      "releaseDate": "1909-01-01T08:00:00Z",
+      "pageCount": 0,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/80.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 10
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 5
+  },
+  {
+    "bookId": 11,
+    "authorId": 1,
+    "sourceTitle": "redacted-32",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:05:28Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-2",
+      "nzbInfoUrl": "http://redacted.invalid/33",
+      "releaseGroup": null,
+      "age": "0",
+      "ageHours": "0.0006914173888888889",
+      "ageMinutes": "0.0414851",
+      "publishedDate": "2026-11-26T23:05:26Z",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "size": "201187",
+      "downloadUrl": "http://redacted.invalid/34",
+      "guid": "http://redacted.invalid/33",
+      "protocol": "2",
+      "downloadForced": "redacted-23",
+      "customFormatScore": "0",
+      "releaseSource": "InteractiveSearch",
+      "indexerFlags": "0",
+      "torrentInfoHash": "abcdef0000000000000000000000000000000001"
+    },
+    "book": {
+      "title": "redacted-69",
+      "authorTitle": "redacted-70",
+      "seriesTitle": "redacted-71",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-72",
+      "foreignEditionId": "redacted-73",
+      "titleSlug": "redacted-72",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 5455,
+        "value": 3.86,
+        "popularity": 21056.3
+      },
+      "releaseDate": "1919-01-01T08:00:00Z",
+      "pageCount": 288,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/74.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 11
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 6
+  },
+  {
+    "bookId": 18,
+    "authorId": 1,
+    "sourceTitle": "redacted-26",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:05:30Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-2",
+      "nzbInfoUrl": "http://redacted.invalid/29",
+      "releaseGroup": null,
+      "age": "0",
+      "ageHours": "0.0007009845555555555",
+      "ageMinutes": "0.042059135",
+      "publishedDate": "2026-11-26T23:05:28Z",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "size": "201202",
+      "downloadUrl": "http://redacted.invalid/30",
+      "guid": "http://redacted.invalid/29",
+      "protocol": "2",
+      "downloadForced": "redacted-31",
+      "customFormatScore": "0",
+      "releaseSource": "InteractiveSearch",
+      "indexerFlags": "0",
+      "torrentInfoHash": "abcdef0000000000000000000000000000000004"
+    },
+    "book": {
+      "title": "redacted-64",
+      "authorTitle": "redacted-65",
+      "seriesTitle": "redacted-66",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-67",
+      "foreignEditionId": "redacted-68",
+      "titleSlug": "redacted-67",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 16,
+        "value": 3.69,
+        "popularity": 59.04
+      },
+      "releaseDate": "1900-05-17T08:00:00Z",
+      "pageCount": 332,
+      "genres": [],
+      "images": [],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 18
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 7
+  },
+  {
+    "bookId": 18,
+    "authorId": 1,
+    "sourceTitle": "redacted-26",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:05:33Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "eventType": "bookFileImported",
+    "data": {
+      "fileId": "3",
+      "droppedPath": "/redacted/27.epub",
+      "importedPath": "/redacted/28.epub",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "releaseGroup": null,
+      "size": "201202",
+      "indexerFlags": "0"
+    },
+    "book": {
+      "title": "redacted-64",
+      "authorTitle": "redacted-65",
+      "seriesTitle": "redacted-66",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-67",
+      "foreignEditionId": "redacted-68",
+      "titleSlug": "redacted-67",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 16,
+        "value": 3.69,
+        "popularity": 59.04
+      },
+      "releaseDate": "1900-05-17T08:00:00Z",
+      "pageCount": 332,
+      "genres": [],
+      "images": [],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 18
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 8
+  },
+  {
+    "bookId": 19,
+    "authorId": 1,
+    "sourceTitle": "redacted-1",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:06:45Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000003",
+    "eventType": "downloadFailed",
+    "data": {
+      "downloadClient": "redacted-20",
+      "downloadClientName": null,
+      "message": "redacted-3",
+      "releaseGroup": null,
+      "size": "201198",
+      "indexer": "redacted-2"
+    },
+    "book": {
+      "title": "redacted-58",
+      "authorTitle": "redacted-59",
+      "seriesTitle": "redacted-60",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-61",
+      "foreignEditionId": "redacted-62",
+      "titleSlug": "redacted-61",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 9970,
+        "value": 3.83,
+        "popularity": 38185.1
+      },
+      "releaseDate": "1910-01-01T08:00:00Z",
+      "pageCount": 312,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/63.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 19
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 9
+  },
+  {
+    "bookId": 29,
+    "authorId": 1,
+    "sourceTitle": "redacted-24",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:09:46Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "eventType": "bookFileImported",
+    "data": {
+      "fileId": "4",
+      "droppedPath": "/redacted/14.epub",
+      "importedPath": "/redacted/25.epub",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "releaseGroup": null,
+      "size": "201187",
+      "indexerFlags": "0"
+    },
+    "book": {
+      "title": "redacted-53",
+      "authorTitle": "redacted-54",
+      "seriesTitle": "redacted-55",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-56",
+      "foreignEditionId": "redacted-15",
+      "titleSlug": "redacted-56",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 20433,
+        "value": 3.78,
+        "popularity": 77236.73999999999
+      },
+      "releaseDate": "1904-01-01T08:00:00Z",
+      "pageCount": 192,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/57.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 29
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 10
+  },
+  {
+    "bookId": 9,
+    "authorId": 1,
+    "sourceTitle": "redacted-18",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T23:10:53Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-2",
+      "nzbInfoUrl": "http://redacted.invalid/19",
+      "releaseGroup": null,
+      "age": "0",
+      "ageHours": "0.0007398896388888889",
+      "ageMinutes": "0.044393448333333335",
+      "publishedDate": "2026-11-26T23:10:51Z",
+      "downloadClient": "redacted-20",
+      "downloadClientName": "redacted-21",
+      "size": "201190",
+      "downloadUrl": "http://redacted.invalid/22",
+      "guid": "http://redacted.invalid/19",
+      "protocol": "2",
+      "downloadForced": "redacted-23",
+      "customFormatScore": "0",
+      "releaseSource": "InteractiveSearch",
+      "indexerFlags": "0",
+      "torrentInfoHash": "abcdef0000000000000000000000000000000002"
+    },
+    "book": {
+      "title": "redacted-47",
+      "authorTitle": "redacted-48",
+      "seriesTitle": "redacted-49",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-50",
+      "foreignEditionId": "redacted-51",
+      "titleSlug": "redacted-50",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 6282,
+        "value": 3.88,
+        "popularity": 24374.16
+      },
+      "releaseDate": "1920-01-01T08:00:00Z",
+      "pageCount": 283,
+      "genres": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/52.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:51Z",
+      "grabbed": false,
+      "id": 9
+    },
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 11
+  }
+]

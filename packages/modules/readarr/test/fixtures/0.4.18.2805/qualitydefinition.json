@@ -1,0 +1,100 @@
+[
+  {
+    "quality": {
+      "id": 0,
+      "name": "Unknown Text"
+    },
+    "title": "Unknown Text",
+    "weight": 1,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 1
+  },
+  {
+    "quality": {
+      "id": 1,
+      "name": "PDF"
+    },
+    "title": "PDF",
+    "weight": 5,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 2
+  },
+  {
+    "quality": {
+      "id": 2,
+      "name": "MOBI"
+    },
+    "title": "MOBI",
+    "weight": 10,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 3
+  },
+  {
+    "quality": {
+      "id": 3,
+      "name": "EPUB"
+    },
+    "title": "EPUB",
+    "weight": 11,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 4
+  },
+  {
+    "quality": {
+      "id": 4,
+      "name": "AZW3"
+    },
+    "title": "AZW3",
+    "weight": 12,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 5
+  },
+  {
+    "quality": {
+      "id": 13,
+      "name": "Unknown Audio"
+    },
+    "title": "Unknown Audio",
+    "weight": 50,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 6
+  },
+  {
+    "quality": {
+      "id": 10,
+      "name": "MP3"
+    },
+    "title": "MP3",
+    "weight": 100,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 7
+  },
+  {
+    "quality": {
+      "id": 12,
+      "name": "M4B"
+    },
+    "title": "M4B",
+    "weight": 105,
+    "minSize": 0,
+    "maxSize": 350,
+    "id": 8
+  },
+  {
+    "quality": {
+      "id": 11,
+      "name": "FLAC"
+    },
+    "title": "FLAC",
+    "weight": 110,
+    "minSize": 0,
+    "id": 9
+  }
+]

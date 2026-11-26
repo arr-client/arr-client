@@ -1,0 +1,33 @@
+{
+  "name": "RescanFolders",
+  "commandName": "Rescan Folders",
+  "body": {
+    "folders": [
+      "/redacted/10"
+    ],
+    "filter": "redacted-178",
+    "addNewAuthors": false,
+    "authorIds": [
+      1
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "updateScheduledTask": true,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "RescanFolders",
+    "trigger": "manual",
+    "suppressMessages": false,
+    "clientUserAgent": "redacted-17"
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T23:10:18Z",
+  "trigger": "manual",
+  "clientUserAgent": "redacted-17",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 39
+}

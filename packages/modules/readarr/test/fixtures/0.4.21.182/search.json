@@ -1,0 +1,326 @@
+[
+  {
+    "foreignId": "redacted-115",
+    "author": {
+      "authorMetadataId": 0,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-113",
+      "authorNameLastFirst": "redacted-114",
+      "foreignAuthorId": "redacted-115",
+      "titleSlug": "redacted-115",
+      "overview": "redacted-116",
+      "links": [],
+      "images": [
+        {
+          "url": "/redacted/253.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/117.jpg"
+        }
+      ],
+      "remotePoster": "https://redacted.invalid/117.jpg",
+      "qualityProfileId": 0,
+      "metadataProfileId": 0,
+      "monitored": false,
+      "monitorNewItems": "all",
+      "folder": "redacted-113",
+      "genres": [],
+      "cleanName": "redacted-119",
+      "sortName": "redacted-120",
+      "sortNameLastFirst": "redacted-121",
+      "tags": [],
+      "added": "0001-01-01T00:00:00Z",
+      "ratings": {
+        "votes": 0,
+        "value": 0,
+        "popularity": 0
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      }
+    },
+    "id": 1
+  },
+  {
+    "foreignId": "redacted-128",
+    "book": {
+      "title": "redacted-126",
+      "authorTitle": "redacted-127",
+      "seriesTitle": "",
+      "disambiguation": "",
+      "overview": "redacted-254",
+      "authorId": 0,
+      "foreignBookId": "redacted-128",
+      "foreignEditionId": "redacted-129",
+      "titleSlug": "redacted-128",
+      "monitored": false,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 886431,
+        "value": 4.05,
+        "popularity": 3590045.55
+      },
+      "releaseDate": "1818-01-01T07:52:58Z",
+      "pageCount": 260,
+      "genres": [],
+      "author": {
+        "authorMetadataId": 0,
+        "status": "continuing",
+        "ended": false,
+        "authorName": "redacted-113",
+        "authorNameLastFirst": "redacted-114",
+        "foreignAuthorId": "redacted-115",
+        "titleSlug": "redacted-115",
+        "overview": "redacted-116",
+        "links": [],
+        "images": [
+          {
+            "url": "https://redacted.invalid/117.jpg",
+            "coverType": "poster",
+            "extension": "redacted-9"
+          }
+        ],
+        "qualityProfileId": 0,
+        "metadataProfileId": 0,
+        "monitored": false,
+        "monitorNewItems": "all",
+        "folder": "redacted-113",
+        "genres": [],
+        "cleanName": "redacted-119",
+        "sortName": "redacted-120",
+        "sortNameLastFirst": "redacted-121",
+        "tags": [],
+        "added": "0001-01-01T00:00:00Z",
+        "ratings": {
+          "votes": 0,
+          "value": 0,
+          "popularity": 0
+        },
+        "statistics": {
+          "bookFileCount": 0,
+          "bookCount": 0,
+          "availableBookCount": 0,
+          "totalBookCount": 0,
+          "sizeOnDisk": 0,
+          "percentOfBooks": 0
+        }
+      },
+      "images": [
+        {
+          "url": "/redacted/255.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/131.jpg"
+        }
+      ],
+      "links": [],
+      "added": "0001-01-01T00:00:00Z",
+      "remoteCover": "https://redacted.invalid/131.jpg",
+      "editions": [
+        {
+          "bookId": 0,
+          "foreignEditionId": "redacted-129",
+          "titleSlug": "redacted-129",
+          "isbn13": "9780143131847",
+          "asin": "redacted-256",
+          "title": "redacted-126",
+          "language": "eng",
+          "overview": "redacted-254",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-257",
+          "pageCount": 260,
+          "releaseDate": "2018-01-16T08:00:00Z",
+          "images": [
+            {
+              "url": "/redacted/255.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9",
+              "remoteUrl": "https://redacted.invalid/131.jpg"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 886431,
+            "value": 4.05,
+            "popularity": 3590045.55
+          },
+          "monitored": true,
+          "manualAdd": false,
+          "grabbed": false
+        }
+      ],
+      "grabbed": false
+    },
+    "id": 2
+  },
+  {
+    "foreignId": "redacted-287",
+    "author": {
+      "authorMetadataId": 0,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-288",
+      "authorNameLastFirst": "redacted-289",
+      "foreignAuthorId": "redacted-287",
+      "titleSlug": "redacted-287",
+      "overview": "redacted-290",
+      "links": [],
+      "images": [
+        {
+          "url": "/redacted/291.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/292.jpg"
+        }
+      ],
+      "remotePoster": "https://redacted.invalid/292.jpg",
+      "qualityProfileId": 0,
+      "metadataProfileId": 0,
+      "monitored": false,
+      "monitorNewItems": "all",
+      "folder": "redacted-288",
+      "genres": [],
+      "cleanName": "redacted-293",
+      "sortName": "redacted-294",
+      "sortNameLastFirst": "redacted-295",
+      "tags": [],
+      "added": "0001-01-01T00:00:00Z",
+      "ratings": {
+        "votes": 0,
+        "value": 0,
+        "popularity": 0
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      }
+    },
+    "id": 3
+  },
+  {
+    "foreignId": "redacted-296",
+    "book": {
+      "title": "redacted-297",
+      "authorTitle": "redacted-298",
+      "seriesTitle": "",
+      "disambiguation": "",
+      "overview": "redacted-299",
+      "authorId": 0,
+      "foreignBookId": "redacted-296",
+      "foreignEditionId": "redacted-300",
+      "titleSlug": "redacted-296",
+      "monitored": false,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 30679,
+        "value": 4.11,
+        "popularity": 126090.69000000002
+      },
+      "releaseDate": "2005-01-01T08:00:00Z",
+      "pageCount": 144,
+      "genres": [],
+      "author": {
+        "authorMetadataId": 0,
+        "status": "continuing",
+        "ended": false,
+        "authorName": "redacted-288",
+        "authorNameLastFirst": "redacted-289",
+        "foreignAuthorId": "redacted-287",
+        "titleSlug": "redacted-287",
+        "overview": "redacted-290",
+        "links": [],
+        "images": [
+          {
+            "url": "https://redacted.invalid/292.jpg",
+            "coverType": "poster",
+            "extension": "redacted-9"
+          }
+        ],
+        "qualityProfileId": 0,
+        "metadataProfileId": 0,
+        "monitored": false,
+        "monitorNewItems": "all",
+        "folder": "redacted-288",
+        "genres": [],
+        "cleanName": "redacted-293",
+        "sortName": "redacted-294",
+        "sortNameLastFirst": "redacted-295",
+        "tags": [],
+        "added": "0001-01-01T00:00:00Z",
+        "ratings": {
+          "votes": 0,
+          "value": 0,
+          "popularity": 0
+        },
+        "statistics": {
+          "bookFileCount": 0,
+          "bookCount": 0,
+          "availableBookCount": 0,
+          "totalBookCount": 0,
+          "sizeOnDisk": 0,
+          "percentOfBooks": 0
+        }
+      },
+      "images": [
+        {
+          "url": "/redacted/301.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/302.jpg"
+        }
+      ],
+      "links": [],
+      "added": "0001-01-01T00:00:00Z",
+      "remoteCover": "https://redacted.invalid/302.jpg",
+      "editions": [
+        {
+          "bookId": 0,
+          "foreignEditionId": "redacted-300",
+          "titleSlug": "redacted-300",
+          "isbn13": "9780345506405",
+          "asin": "redacted-303",
+          "title": "redacted-297",
+          "language": "eng",
+          "overview": "redacted-299",
+          "format": "redacted-162",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-304",
+          "pageCount": 144,
+          "releaseDate": "2009-02-03T08:00:00Z",
+          "images": [
+            {
+              "url": "/redacted/301.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9",
+              "remoteUrl": "https://redacted.invalid/302.jpg"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 30679,
+            "value": 4.11,
+            "popularity": 126090.69000000002
+          },
+          "monitored": true,
+          "manualAdd": false,
+          "grabbed": false
+        }
+      ],
+      "grabbed": false
+    },
+    "id": 4
+  }
+]

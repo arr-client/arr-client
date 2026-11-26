@@ -1,0 +1,88 @@
+{
+  "title": "redacted-126",
+  "authorTitle": "redacted-127",
+  "seriesTitle": "",
+  "disambiguation": "",
+  "authorId": 2,
+  "foreignBookId": "redacted-128",
+  "foreignEditionId": "redacted-129",
+  "titleSlug": "redacted-128",
+  "monitored": true,
+  "anyEditionOk": true,
+  "ratings": {
+    "votes": 886431,
+    "value": 4.05,
+    "popularity": 3590045.55
+  },
+  "releaseDate": "1818-01-01T07:52:58Z",
+  "pageCount": 260,
+  "genres": [],
+  "author": {
+    "authorMetadataId": 2,
+    "status": "continuing",
+    "ended": false,
+    "authorName": "redacted-113",
+    "authorNameLastFirst": "redacted-114",
+    "foreignAuthorId": "redacted-115",
+    "titleSlug": "redacted-115",
+    "overview": "redacted-116",
+    "links": [],
+    "images": [
+      {
+        "url": "https://redacted.invalid/117.jpg",
+        "coverType": "poster",
+        "extension": "redacted-9"
+      }
+    ],
+    "path": "/redacted/118",
+    "qualityProfileId": 1,
+    "metadataProfileId": 1,
+    "monitored": false,
+    "monitorNewItems": "all",
+    "genres": [],
+    "cleanName": "redacted-119",
+    "sortName": "redacted-120",
+    "sortNameLastFirst": "redacted-121",
+    "tags": [],
+    "added": "2026-11-26T23:02:49Z",
+    "addOptions": {
+      "searchForMissingBooks": false,
+      "monitor": "redacted-130",
+      "booksToMonitor": [],
+      "monitored": false
+    },
+    "ratings": {
+      "votes": 954994,
+      "value": 4.0385165,
+      "popularity": 3856759.026401
+    },
+    "statistics": {
+      "bookFileCount": 0,
+      "bookCount": 0,
+      "availableBookCount": 0,
+      "totalBookCount": 0,
+      "sizeOnDisk": 0,
+      "percentOfBooks": 0
+    },
+    "id": 2
+  },
+  "images": [
+    {
+      "url": "/MediaCover/Books/54/cover.jpg",
+      "coverType": "cover",
+      "extension": "redacted-9",
+      "remoteUrl": "https://redacted.invalid/131.jpg"
+    }
+  ],
+  "links": [],
+  "statistics": {
+    "bookFileCount": 0,
+    "bookCount": 1,
+    "totalBookCount": 1,
+    "sizeOnDisk": 0,
+    "percentOfBooks": 0
+  },
+  "added": "2026-11-26T23:02:47Z",
+  "grabbed": false,
+  "id": 54
+}

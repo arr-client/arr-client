@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Books",
+    "path": "/redacted/107",
+    "defaultMetadataProfileId": 1,
+    "defaultQualityProfileId": 1,
+    "defaultMonitorOption": "redacted-108",
+    "defaultNewItemMonitorOption": "redacted-108",
+    "defaultTags": [],
+    "isCalibreLibrary": false,
+    "port": 0,
+    "outputProfile": "redacted-198",
+    "useSsl": false,
+    "accessible": true,
+    "freeSpace": 341295415296,
+    "totalSpace": 1950433533952,
+    "id": 1
+  }
+]

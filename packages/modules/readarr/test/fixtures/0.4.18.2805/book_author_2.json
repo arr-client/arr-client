@@ -1,0 +1,80 @@
+[
+  {
+    "title": "redacted-126",
+    "authorTitle": "redacted-127",
+    "seriesTitle": "",
+    "disambiguation": "",
+    "authorId": 2,
+    "foreignBookId": "redacted-128",
+    "foreignEditionId": "redacted-129",
+    "titleSlug": "redacted-128",
+    "monitored": false,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 886431,
+      "value": 4.05,
+      "popularity": 3590045.55
+    },
+    "releaseDate": "1818-01-01T07:52:58Z",
+    "pageCount": 260,
+    "genres": [],
+    "images": [
+      {
+        "url": "/MediaCover/Books/54/cover.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/131.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 0,
+      "bookCount": 0,
+      "totalBookCount": 1,
+      "sizeOnDisk": 0,
+      "percentOfBooks": 0
+    },
+    "added": "2026-11-26T23:02:47Z",
+    "grabbed": false,
+    "id": 54
+  },
+  {
+    "title": "redacted-143",
+    "authorTitle": "redacted-144",
+    "seriesTitle": "",
+    "disambiguation": "",
+    "authorId": 2,
+    "foreignBookId": "redacted-145",
+    "foreignEditionId": "redacted-146",
+    "titleSlug": "redacted-145",
+    "monitored": false,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 100,
+      "value": 4.05,
+      "popularity": 405
+    },
+    "releaseDate": "1990-11-15T08:00:00Z",
+    "pageCount": 446,
+    "genres": [],
+    "images": [
+      {
+        "url": "/MediaCover/Books/55/cover.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/147.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 0,
+      "bookCount": 0,
+      "totalBookCount": 1,
+      "sizeOnDisk": 0,
+      "percentOfBooks": 0
+    },
+    "added": "2026-11-26T23:02:49Z",
+    "grabbed": false,
+    "id": 55
+  }
+]

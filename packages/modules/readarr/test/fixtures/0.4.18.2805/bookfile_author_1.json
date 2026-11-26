@@ -1,0 +1,90 @@
+[
+  {
+    "authorId": 1,
+    "bookId": 8,
+    "path": "/redacted/40.epub",
+    "size": 201186,
+    "dateAdded": "2026-11-26T23:03:25Z",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 12,
+    "indexerFlags": 0,
+    "qualityCutoffNotMet": false,
+    "id": 1
+  },
+  {
+    "authorId": 1,
+    "bookId": 10,
+    "path": "/redacted/37.mobi",
+    "size": 201190,
+    "dateAdded": "2026-11-26T23:03:25Z",
+    "quality": {
+      "quality": {
+        "id": 2,
+        "name": "MOBI"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 11,
+    "indexerFlags": 0,
+    "qualityCutoffNotMet": true,
+    "id": 2
+  },
+  {
+    "authorId": 1,
+    "bookId": 18,
+    "path": "/redacted/28.epub",
+    "size": 201202,
+    "dateAdded": "2026-11-26T23:05:33Z",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 12,
+    "indexerFlags": 0,
+    "qualityCutoffNotMet": false,
+    "id": 3
+  },
+  {
+    "authorId": 1,
+    "bookId": 29,
+    "path": "/redacted/25.epub",
+    "size": 201187,
+    "dateAdded": "2026-11-26T23:09:46Z",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 12,
+    "indexerFlags": 0,
+    "qualityCutoffNotMet": false,
+    "id": 4
+  }
+]

@@ -1,0 +1,99 @@
+[
+  {
+    "bookId": 8,
+    "foreignEditionId": "redacted-168",
+    "titleSlug": "redacted-168",
+    "isbn13": "9780543895141",
+    "asin": "redacted-169",
+    "title": "redacted-170",
+    "language": "eng",
+    "overview": "redacted-166",
+    "format": "redacted-157",
+    "isEbook": false,
+    "disambiguation": "",
+    "publisher": "redacted-171",
+    "pageCount": 188,
+    "releaseDate": "2000-09-21T07:00:00Z",
+    "images": [
+      {
+        "url": "https://redacted.invalid/172.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9"
+      }
+    ],
+    "links": [],
+    "ratings": {
+      "votes": 23563,
+      "value": 3.95,
+      "popularity": 93073.85
+    },
+    "monitored": true,
+    "manualAdd": false,
+    "grabbed": false,
+    "id": 16
+  },
+  {
+    "bookId": 8,
+    "foreignEditionId": "redacted-173",
+    "titleSlug": "redacted-173",
+    "isbn13": "9780688066321",
+    "asin": "redacted-174",
+    "title": "redacted-170",
+    "language": "eng",
+    "overview": "redacted-175",
+    "format": "redacted-162",
+    "isEbook": false,
+    "disambiguation": "",
+    "publisher": "redacted-163",
+    "pageCount": 272,
+    "releaseDate": "1989-05-24T07:00:00Z",
+    "images": [
+      {
+        "url": "https://redacted.invalid/176.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9"
+      }
+    ],
+    "links": [],
+    "ratings": {
+      "votes": 884,
+      "value": 3.96,
+      "popularity": 3500.64
+    },
+    "monitored": false,
+    "manualAdd": false,
+    "grabbed": false,
+    "id": 17
+  },
+  {
+    "bookId": 8,
+    "foreignEditionId": "redacted-85",
+    "titleSlug": "redacted-85",
+    "asin": "redacted-165",
+    "title": "redacted-81",
+    "language": "",
+    "overview": "redacted-166",
+    "format": "redacted-167",
+    "isEbook": true,
+    "disambiguation": "",
+    "publisher": "",
+    "pageCount": 0,
+    "images": [
+      {
+        "url": "https://redacted.invalid/86.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9"
+      }
+    ],
+    "links": [],
+    "ratings": {
+      "votes": 325,
+      "value": 4.03,
+      "popularity": 1309.75
+    },
+    "monitored": false,
+    "manualAdd": false,
+    "grabbed": false,
+    "id": 18
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "date",
+  "sortDirection": "descending",
+  "totalRecords": 1,
+  "records": [
+    {
+      "authorId": 1,
+      "bookIds": [
+        19
+      ],
+      "sourceTitle": "redacted-1",
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "EPUB"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "date": "2026-11-26T23:06:45Z",
+      "protocol": "torrent",
+      "indexer": "redacted-2",
+      "message": "redacted-3",
+      "author": {
+        "authorMetadataId": 1,
+        "status": "continuing",
+        "ended": false,
+        "authorName": "redacted-4",
+        "authorNameLastFirst": "redacted-5",
+        "foreignAuthorId": "redacted-6",
+        "titleSlug": "redacted-6",
+        "overview": "redacted-7",
+        "links": [],
+        "images": [
+          {
+            "url": "https://redacted.invalid/8.jpg",
+            "coverType": "poster",
+            "extension": "redacted-9"
+          }
+        ],
+        "path": "/redacted/10",
+        "qualityProfileId": 1,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "genres": [],
+        "cleanName": "redacted-11",
+        "sortName": "redacted-12",
+        "sortNameLastFirst": "redacted-13",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T23:02:43Z",
+        "ratings": {
+          "votes": 620757,
+          "value": 3.9591675,
+          "popularity": 2457680.9397975
+        },
+        "statistics": {
+          "bookFileCount": 0,
+          "bookCount": 0,
+          "availableBookCount": 0,
+          "totalBookCount": 0,
+          "sizeOnDisk": 0,
+          "percentOfBooks": 0
+        },
+        "id": 1
+      },
+      "id": 1
+    }
+  ]
+}

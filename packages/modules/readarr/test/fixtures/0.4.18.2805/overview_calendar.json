@@ -1,0 +1,505 @@
+[
+  {
+    "title": "redacted-64",
+    "authorTitle": "redacted-65",
+    "seriesTitle": "redacted-66",
+    "disambiguation": "",
+    "authorId": 1,
+    "foreignBookId": "redacted-67",
+    "foreignEditionId": "redacted-68",
+    "titleSlug": "redacted-67",
+    "monitored": true,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 16,
+      "value": 3.69,
+      "popularity": 59.04
+    },
+    "releaseDate": "1900-05-17T08:00:00Z",
+    "pageCount": 332,
+    "genres": [],
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "images": [],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 1,
+      "bookCount": 1,
+      "totalBookCount": 1,
+      "sizeOnDisk": 201202,
+      "percentOfBooks": 100
+    },
+    "added": "2026-11-26T23:02:43Z",
+    "lastSearchTime": "2026-11-26T23:10:09Z",
+    "grabbed": false,
+    "id": 18
+  },
+  {
+    "title": "redacted-53",
+    "authorTitle": "redacted-54",
+    "seriesTitle": "redacted-55",
+    "disambiguation": "",
+    "authorId": 1,
+    "foreignBookId": "redacted-56",
+    "foreignEditionId": "redacted-15",
+    "titleSlug": "redacted-56",
+    "monitored": true,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 20433,
+      "value": 3.78,
+      "popularity": 77236.73999999999
+    },
+    "releaseDate": "1904-01-01T08:00:00Z",
+    "pageCount": 192,
+    "genres": [],
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "images": [
+      {
+        "url": "/MediaCover/Books/29/cover.jpg?lastWrite=636040770560000000",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/57.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 1,
+      "bookCount": 1,
+      "totalBookCount": 1,
+      "sizeOnDisk": 201187,
+      "percentOfBooks": 100
+    },
+    "added": "2026-11-26T23:02:43Z",
+    "lastSearchTime": "2026-11-26T23:10:09Z",
+    "grabbed": false,
+    "id": 29
+  },
+  {
+    "title": "redacted-132",
+    "authorTitle": "redacted-133",
+    "seriesTitle": "",
+    "disambiguation": "",
+    "authorId": 1,
+    "foreignBookId": "redacted-134",
+    "foreignEditionId": "redacted-135",
+    "titleSlug": "redacted-134",
+    "monitored": true,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 490,
+      "value": 3.92,
+      "popularity": 1920.8
+    },
+    "releaseDate": "1905-01-01T08:00:00Z",
+    "pageCount": 108,
+    "genres": [],
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "images": [
+      {
+        "url": "/MediaCover/Books/1/cover.jpg?lastWrite=636041880680000000",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/136.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 0,
+      "bookCount": 1,
+      "totalBookCount": 1,
+      "sizeOnDisk": 0,
+      "percentOfBooks": 0
+    },
+    "added": "2026-11-26T23:02:43Z",
+    "lastSearchTime": "2026-11-26T23:10:09Z",
+    "grabbed": false,
+    "id": 1
+  },
+  {
+    "title": "redacted-81",
+    "authorTitle": "redacted-82",
+    "seriesTitle": "redacted-83",
+    "disambiguation": "",
+    "authorId": 1,
+    "foreignBookId": "redacted-84",
+    "foreignEditionId": "redacted-85",
+    "titleSlug": "redacted-84",
+    "monitored": true,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 325,
+      "value": 4.03,
+      "popularity": 1309.75
+    },
+    "releaseDate": "1907-01-01T08:00:00Z",
+    "pageCount": 0,
+    "genres": [],
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "images": [
+      {
+        "url": "/MediaCover/Books/8/cover.jpg?lastWrite=636040986240000000",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/86.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 1,
+      "bookCount": 1,
+      "totalBookCount": 1,
+      "sizeOnDisk": 201186,
+      "percentOfBooks": 100
+    },
+    "added": "2026-11-26T23:02:43Z",
+    "lastSearchTime": "2026-11-26T23:10:09Z",
+    "grabbed": false,
+    "id": 8
+  },
+  {
+    "title": "redacted-75",
+    "authorTitle": "redacted-76",
+    "seriesTitle": "redacted-77",
+    "disambiguation": "",
+    "authorId": 1,
+    "foreignBookId": "redacted-78",
+    "foreignEditionId": "redacted-79",
+    "titleSlug": "redacted-78",
+    "monitored": true,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 5,
+      "value": 2.8,
+      "popularity": 14
+    },
+    "releaseDate": "1909-01-01T08:00:00Z",
+    "pageCount": 0,
+    "genres": [],
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "images": [
+      {
+        "url": "/MediaCover/Books/10/cover.jpg?lastWrite=636432974680000000",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/80.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 1,
+      "bookCount": 1,
+      "totalBookCount": 1,
+      "sizeOnDisk": 201190,
+      "percentOfBooks": 100
+    },
+    "added": "2026-11-26T23:02:43Z",
+    "lastSearchTime": "2026-11-26T23:10:09Z",
+    "grabbed": false,
+    "id": 10
+  },
+  {
+    "title": "redacted-58",
+    "authorTitle": "redacted-59",
+    "seriesTitle": "redacted-60",
+    "disambiguation": "",
+    "authorId": 1,
+    "foreignBookId": "redacted-61",
+    "foreignEditionId": "redacted-62",
+    "titleSlug": "redacted-61",
+    "monitored": true,
+    "anyEditionOk": true,
+    "ratings": {
+      "votes": 9970,
+      "value": 3.83,
+      "popularity": 38185.1
+    },
+    "releaseDate": "1910-01-01T08:00:00Z",
+    "pageCount": 312,
+    "genres": [],
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "images": [
+      {
+        "url": "/MediaCover/Books/19/cover.jpg?lastWrite=636040772010000000",
+        "coverType": "cover",
+        "extension": "redacted-9",
+        "remoteUrl": "https://redacted.invalid/63.jpg"
+      }
+    ],
+    "links": [],
+    "statistics": {
+      "bookFileCount": 0,
+      "bookCount": 1,
+      "totalBookCount": 1,
+      "sizeOnDisk": 0,
+      "percentOfBooks": 0
+    },
+    "added": "2026-11-26T23:02:43Z",
+    "lastSearchTime": "2026-11-26T23:10:09Z",
+    "grabbed": false,
+    "id": 19
+  }
+]

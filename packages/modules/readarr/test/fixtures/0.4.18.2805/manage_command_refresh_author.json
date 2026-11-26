@@ -1,0 +1,28 @@
+{
+  "name": "RefreshAuthor",
+  "commandName": "Refresh Author",
+  "body": {
+    "authorId": 1,
+    "isNewAuthor": false,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": false,
+    "completionMessage": "redacted-177",
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "RefreshAuthor",
+    "trigger": "manual",
+    "suppressMessages": false,
+    "clientUserAgent": "redacted-17"
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T23:10:12Z",
+  "trigger": "manual",
+  "clientUserAgent": "redacted-17",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": false,
+  "id": 36
+}

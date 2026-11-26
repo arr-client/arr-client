@@ -1,0 +1,122 @@
+[
+  {
+    "path": "/redacted/90.epub",
+    "name": "redacted-91",
+    "size": 201190,
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "book": {
+      "title": "redacted-64",
+      "authorTitle": "redacted-65",
+      "seriesTitle": "redacted-66",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-67",
+      "foreignEditionId": "redacted-68",
+      "titleSlug": "redacted-67",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 16,
+        "value": 3.69,
+        "popularity": 59.04
+      },
+      "releaseDate": "1900-05-17T08:00:00Z",
+      "pageCount": 332,
+      "genres": [],
+      "images": [],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 18
+    },
+    "foreignEditionId": "redacted-68",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 12,
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
+    "indexerFlags": 0,
+    "rejections": [],
+    "audioTags": {
+      "authors": [
+        "redacted-4"
+      ],
+      "authorTitle": "redacted-4",
+      "bookTitle": "redacted-92",
+      "discNumber": 0,
+      "discCount": 0,
+      "year": 0,
+      "duration": "00:00:00",
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "EPUB"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "trackNumbers": [],
+      "language": "eng"
+    },
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 1221025406
+  }
+]

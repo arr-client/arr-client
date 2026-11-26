@@ -1,0 +1,54 @@
+{
+  "name": "ManualImport",
+  "commandName": "Manual Import",
+  "message": "redacted-179",
+  "body": {
+    "files": [
+      {
+        "path": "/redacted/14.epub",
+        "authorId": 1,
+        "bookId": 29,
+        "foreignEditionId": "redacted-15",
+        "quality": {
+          "quality": {
+            "id": 3,
+            "name": "EPUB"
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "indexerFlags": 0,
+        "downloadId": "ABCDEF0000000000000000000000000000000001",
+        "disableReleaseSwitching": false
+      }
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "importMode": "redacted-16",
+    "replaceExistingFiles": false,
+    "updateScheduledTask": true,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "ManualImport",
+    "trigger": "manual",
+    "suppressMessages": false,
+    "clientUserAgent": "redacted-17"
+  },
+  "priority": "high",
+  "status": "completed",
+  "result": "successful",
+  "queued": "2026-11-26T23:09:46Z",
+  "started": "2026-11-26T23:09:46Z",
+  "ended": "2026-11-26T23:09:46Z",
+  "duration": "00:00:00.0172546",
+  "trigger": "manual",
+  "clientUserAgent": "redacted-17",
+  "stateChangeTime": "2026-11-26T23:09:46Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 31
+}
