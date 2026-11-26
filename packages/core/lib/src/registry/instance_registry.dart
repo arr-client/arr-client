@@ -172,9 +172,9 @@ final class InstanceRegistry {
       for (final profile in await _profiles.profiles())
         ...await _profiles.instances(profile.id),
     ];
-    if (_closed) return;
     // A switch that is on its way reloads when it has been saved.
-    if (_switching == 0) _apply(activeId, instances);
+    if (_closed || _switching > 0) return;
+    _apply(activeId, instances);
     // After the instances concerned have been retired.
     _clearArtwork(instances);
   }
