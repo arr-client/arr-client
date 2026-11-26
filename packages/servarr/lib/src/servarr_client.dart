@@ -29,12 +29,15 @@ final class ServarrClient with _ServarrActivity, _ServarrManage {
   /// cannot match. [refs] reads the ids of each queue, history and blocklist
   /// record. [hasMetadataProfiles] says that the service has metadata profiles
   /// beside quality profiles, as those for music and books do.
+  /// [correctsLanguages] is false where manual import has no languages to
+  /// correct, as for those two.
   ServarrClient(
     this._http, {
     required this._apiPath,
     required this._includeUnknownParameter,
     required this.refs,
     this._hasMetadataProfiles = false,
+    this._correctsLanguages = true,
   });
 
   static const _queuePageSize = 250;
@@ -44,6 +47,7 @@ final class ServarrClient with _ServarrActivity, _ServarrManage {
   final String _apiPath;
   final String _includeUnknownParameter;
   final bool _hasMetadataProfiles;
+  final bool _correctsLanguages;
 
   /// Reads the ids of a queue or history record.
   final ServarrRefs Function(JsonObject record) refs;

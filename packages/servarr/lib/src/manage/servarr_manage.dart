@@ -7,7 +7,14 @@ const _searchTimeout = Duration(minutes: 2);
 
 /// The fields of a search target that a grab may send. The server takes further
 /// ones that change what it does with a release.
-const _grabTargetFields = ['movieId', 'episodeId', 'seriesId', 'seasonNumber'];
+const _grabTargetFields = [
+  'movieId',
+  'episodeId',
+  'seriesId',
+  'seasonNumber',
+  'albumId',
+  'artistId',
+];
 
 /// Interactive search and grab, commands, and edits.
 ///

@@ -22,6 +22,7 @@ final class LidarrApi {
         includeUnknownParameter: 'includeUnknownArtistItems',
         refs: (record) => _refs(context.instance.id, record),
         hasMetadataProfiles: true,
+        correctsLanguages: false,
       );
 
   /// The instance whose items the records are.
@@ -100,6 +101,82 @@ final class LidarrApi {
   /// Quality and metadata profiles, root folders and tags.
   ServiceResult<List<ServerOption>> options() => shared.options();
 
+  /// The events of an artist, newest first.
+  ServiceResult<List<HistoryEvent>> artistHistory(int artistId) =>
+      shared.itemHistory('history/artist', query: _ofArtist(artistId));
+
+  /// One page of the events of an album, newest first.
+  ServiceResult<ResultPage<HistoryEvent>> albumHistory(
+    int albumId, {
+    required int page,
+  }) => shared.history(page: page, filter: _ofAlbum(albumId));
+
+  /// Turns monitoring of the albums [ids] on or off.
+  ServiceResult<void> monitorAlbums(List<int> ids, {required bool monitored}) =>
+      _write(
+        HttpMethod.put,
+        'album/monitor',
+        body: JsonBody({'albumIds': ids, 'monitored': monitored}),
+      );
+
+  /// Has the albums of the artist [id] monitored as [monitor] says. An artist
+  /// the server does not have is [NotFound].
+  ServiceResult<void> albumStudio(int id, {required String monitor}) => _write(
+    HttpMethod.post,
+    'albumstudio',
+    body: JsonBody({
+      'artist': [
+        {'id': id},
+      ],
+      'monitoringOptions': {'monitor': monitor},
+    }),
+    classify: (error) => switch (error.failure) {
+      _ when _saysNoSuchRecord(error) => const NotFound(),
+      // The path names no artist, so this does not say that it is gone.
+      NotFound() => const ServerError(statusCode: 404),
+      final failure => failure,
+    },
+  );
+
+  /// Deletes the artist or album at [path], such as `album/1`.
+  ServiceResult<void> delete(
+    String path, {
+    required bool deleteFiles,
+    required bool addImportListExclusion,
+  }) => _write(
+    HttpMethod.delete,
+    path,
+    // Both stated: what is deleted never rests on a server default.
+    query: {
+      'deleteFiles': ['$deleteFiles'],
+      'addImportListExclusion': ['$addImportListExclusion'],
+    },
+  );
+
+  /// Deletes the track file [id].
+  ServiceResult<void> deleteTrackFile(int id) =>
+      _write(HttpMethod.delete, 'trackfile/$id');
+
+  /// A write whose answer is not read.
+  ServiceResult<void> _write(
+    HttpMethod method,
+    String path, {
+    Map<String, List<String>> query = const {},
+    RequestBody? body,
+    ServiceFailure Function(HttpError error)? classify,
+  }) async {
+    final request = ServiceRequest(
+      method,
+      '$_apiPath/$path',
+      query: query,
+      body: body,
+    );
+    return switch (await _http.send(request)) {
+      Ok() => const Ok(null),
+      Err(:final error) => Err(classify?.call(error) ?? error.failure),
+    };
+  }
+
   ServiceResult<int> _add(
     String path,
     JsonObject record, {
@@ -142,6 +219,15 @@ final class LidarrApi {
   };
 }
 
+// What the server says of an id it has no record for, where it looks up a list
+// of them.
+bool _saysNoSuchRecord(HttpError error) {
+  final response = error.response;
+  return response != null &&
+      response.statusCode == 500 &&
+      response.text.contains('Expected query to return 1 rows but returned 0');
+}
+
 /// Whether a refused add names the validator [code]. Other refusals, a folder
 /// already in use included, stay as they are.
 bool _refusedBy(HttpError error, String code) {
@@ -159,9 +245,10 @@ bool _refusedBy(HttpError error, String code) {
       );
 }
 
-/// A queue or history record is about an album of an artist.
+/// A queue or history record is about an album of an artist. A blocklist record
+/// lists its albums: one of several is not what it is about.
 ServarrRefs _refs(String instanceId, JsonObject record) {
-  ItemRef? ref(MediaKind kind, String field) => switch (record[field]) {
+  ItemRef? ref(MediaKind kind, Object? value) => switch (value) {
     final int id when id > 0 => ItemRef(
       instanceId: instanceId,
       kind: kind,
@@ -169,8 +256,12 @@ ServarrRefs _refs(String instanceId, JsonObject record) {
     ),
     _ => null,
   };
+  final albumId = switch (record['albumIds']) {
+    [final only] => only,
+    _ => record['albumId'],
+  };
   return (
-    item: ref(MediaKind.album, 'albumId'),
-    parent: ref(MediaKind.artist, 'artistId'),
+    item: ref(MediaKind.album, albumId),
+    parent: ref(MediaKind.artist, record['artistId']),
   );
 }

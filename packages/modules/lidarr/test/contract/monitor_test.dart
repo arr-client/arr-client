@@ -90,6 +90,25 @@ void main() {
   });
 
   group('monitoring option', () {
+    // What the server says of an id it has no artist for.
+    test('of an artist that is gone is not found', () async {
+      final harness = Harness();
+      await ok(harness.library.list());
+      harness.server.writeAnswer = FakeLidarr.body(
+        '{"message":"Expected query to return 1 rows but returned 0"}',
+        status: 500,
+        write: true,
+      );
+
+      expect(
+        await failureOf(
+          harness.library.applyMonitorOption(artistRef(1), 'all'),
+        ),
+        isA<NotFound>(),
+      );
+      expect(await harness.cache.entry(MediaKind.artist, 1), isNull);
+    });
+
     for (final option in _options) {
       test('applies $option to the artist', () async {
         final harness = Harness();

@@ -13,6 +13,8 @@
 // The server chooses the release of an album: it is sent back only for the
 // album it was given for.
 
+import 'dart:convert';
+
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -198,6 +200,27 @@ void main() {
       expect(sent['albumReleaseId'], isNull);
     });
 
+    // Lidarr adds to its answer the files the chosen album already has.
+    test('leaves out the files it adds of the album', () async {
+      final harness = Harness();
+      harness.server.writeAnswer = FakeLidarr.body(
+        jsonEncode([
+          ...records('activity_manualimport_reprocess').take(1),
+          {
+            ...records('activity_manualimport_reprocess').first,
+            'path': '/redacted/held.mp3',
+            'additionalFile': true,
+          },
+        ]),
+        status: 202,
+      );
+      final candidate = (await _candidates(harness)).first;
+
+      final answer = await ok(harness.queue.reprocess([_corrected(candidate)]));
+
+      expect(answer.map((c) => c.path), [candidate.path]);
+    });
+
     test('a file without an artist is refused, with nothing sent', () async {
       final harness = Harness();
       final raw = records('activity_manualimport').first;
@@ -284,6 +307,25 @@ void main() {
 
       expect(await failureOf(harness.queue.importFiles([])), isA<Validation>());
       expect(harness.server.requests, isEmpty);
+    });
+
+    test('of a file moved to another artist is refused', () async {
+      final harness = Harness();
+      final candidate = (await _reprocessed(harness)).first;
+
+      expect(
+        await failureOf(
+          harness.queue.importFiles([
+            _corrected(
+              candidate,
+              artist: artistRef(2),
+              trackIds: candidate.trackIds,
+            ),
+          ]),
+        ),
+        isA<Validation>(),
+      );
+      expect(harness.server.writes, isEmpty);
     });
 
     for (final (name, change) in [

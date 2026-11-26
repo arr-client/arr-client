@@ -5,9 +5,13 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:servarr/servarr.dart';
 
+import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
+import 'src/adapters/manage.dart';
+import 'src/adapters/overview.dart';
 import 'src/api/lidarr_api.dart';
 
 // The app adds the delegate to its own, for the names the module supplies.
@@ -71,7 +75,6 @@ final class LidarrModule implements ServiceModule {
     CapabilityKind.health,
   };
 
-  /// The library and the lookup so far; T117 adds the rest.
   @override
   T? capability<T extends Capability>(InstanceContext context) {
     final Capability? found = switch (T) {
@@ -80,6 +83,13 @@ final class LidarrModule implements ServiceModule {
         context.cache,
       ),
       const (LookupProvider) => LidarrLookupAdapter(LidarrApi(context)),
+      const (CommandProvider) => LidarrCommandAdapter(LidarrApi(context)),
+      const (ReleaseProvider) => LidarrReleaseAdapter(LidarrApi(context)),
+      const (QueueProvider) => LidarrQueueAdapter(LidarrApi(context)),
+      const (HistoryProvider) => LidarrHistoryAdapter(LidarrApi(context)),
+      const (CalendarProvider) => LidarrCalendarAdapter(LidarrApi(context)),
+      const (WantedProvider) => LidarrWantedAdapter(LidarrApi(context)),
+      const (HealthProvider) => ServarrHealth(LidarrApi(context).shared),
       _ => null,
     };
     return found as T?;
