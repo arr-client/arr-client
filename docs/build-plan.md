@@ -10,6 +10,9 @@ run at once, each in its own git worktree, each producing one pull request.
 3. Findings go back to the same build agent. After the fix, another **new** QA agent reviews.
 4. Squash merge when the latest commit has passed QA **and** CI.
 5. A rebase that needed conflict resolution counts as a new commit and is reviewed again.
+6. If QA comes back two or three times with different complaints about the same code, stop patching:
+   rewrite that part from its requirements, with a simpler design. The same build agent or a new one
+   may do the rewrite, and it is reviewed by a new QA agent like any other change.
 
 Build agents do not edit `tasks.md`; completed tasks are ticked in separate pull requests, so
 parallel branches do not collide.
