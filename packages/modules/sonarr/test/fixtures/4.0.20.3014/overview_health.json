@@ -1,0 +1,20 @@
+[
+  {
+    "source": "IndexerSearchCheck",
+    "type": "warning",
+    "message": "redacted-73",
+    "wikiUrl": "https://redacted.invalid/74"
+  },
+  {
+    "source": "DownloadClientCheck",
+    "type": "warning",
+    "message": "redacted-75",
+    "wikiUrl": "https://redacted.invalid/76"
+  },
+  {
+    "source": "IndexerRssCheck",
+    "type": "error",
+    "message": "redacted-77",
+    "wikiUrl": "https://redacted.invalid/78"
+  }
+]
