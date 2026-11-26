@@ -1,0 +1,155 @@
+[
+  {
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "relativePath": "redacted-60",
+    "path": "/redacted/61.mkv",
+    "size": 146333,
+    "dateAdded": "2026-11-26T12:51:56Z",
+    "releaseGroup": "redacted-8",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "HDTV-720p",
+        "source": "television",
+        "resolution": 720
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "singleEpisode",
+    "mediaInfo": {
+      "audioBitrate": 0,
+      "audioChannels": 2,
+      "audioCodec": "AAC",
+      "audioLanguages": "eng",
+      "audioStreamCount": 1,
+      "videoBitDepth": 8,
+      "videoBitrate": 0,
+      "videoCodec": "x264",
+      "videoFps": 24,
+      "videoDynamicRange": "",
+      "videoDynamicRangeType": "",
+      "resolution": "1280x720",
+      "runTime": "0:05",
+      "scanType": "Progressive",
+      "subtitles": ""
+    },
+    "qualityCutoffNotMet": true,
+    "id": 1
+  },
+  {
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "relativePath": "redacted-65",
+    "path": "/redacted/66.mkv",
+    "size": 146333,
+    "dateAdded": "2026-11-26T12:51:56Z",
+    "releaseGroup": "redacted-8",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "HDTV-720p",
+        "source": "television",
+        "resolution": 720
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "singleEpisode",
+    "mediaInfo": {
+      "audioBitrate": 0,
+      "audioChannels": 2,
+      "audioCodec": "AAC",
+      "audioLanguages": "eng",
+      "audioStreamCount": 1,
+      "videoBitDepth": 8,
+      "videoBitrate": 0,
+      "videoCodec": "x264",
+      "videoFps": 24,
+      "videoDynamicRange": "",
+      "videoDynamicRangeType": "",
+      "resolution": "1280x720",
+      "runTime": "0:05",
+      "scanType": "Progressive",
+      "subtitles": ""
+    },
+    "qualityCutoffNotMet": true,
+    "id": 2
+  },
+  {
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "relativePath": "redacted-76",
+    "path": "/redacted/77.mkv",
+    "size": 146333,
+    "dateAdded": "2026-11-26T12:53:30Z",
+    "releaseGroup": "redacted-8",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "HDTV-720p",
+        "source": "television",
+        "resolution": 720
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "singleEpisode",
+    "mediaInfo": {
+      "audioBitrate": 0,
+      "audioChannels": 2,
+      "audioCodec": "AAC",
+      "audioLanguages": "eng",
+      "audioStreamCount": 1,
+      "videoBitDepth": 8,
+      "videoBitrate": 0,
+      "videoCodec": "x264",
+      "videoFps": 24,
+      "videoDynamicRange": "",
+      "videoDynamicRangeType": "",
+      "resolution": "1280x720",
+      "runTime": "0:05",
+      "scanType": "Progressive",
+      "subtitles": ""
+    },
+    "qualityCutoffNotMet": true,
+    "id": 4
+  }
+]

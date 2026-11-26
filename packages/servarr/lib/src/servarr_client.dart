@@ -96,8 +96,12 @@ final class ServarrClient {
     }
   }
 
-  /// One page of the history, newest first. Pages start at 1.
-  ServiceResult<ResultPage<HistoryEvent>> history({int page = 1}) => _get(
+  /// One page of the history, newest first. Pages start at 1. [filter] narrows
+  /// it by the service's own parameters, such as `episodeId`.
+  ServiceResult<ResultPage<HistoryEvent>> history({
+    int page = 1,
+    Map<String, List<String>> filter = const {},
+  }) => _get(
     'history',
     (json) {
       final read = readPage(
@@ -111,6 +115,7 @@ final class ServarrClient {
       );
     },
     query: {
+      ...filter,
       'page': ['$page'],
       'pageSize': ['$_historyPageSize'],
       'sortKey': ['date'],
@@ -121,6 +126,22 @@ final class ServarrClient {
   /// Where the command [commandId] is.
   ServiceResult<Command> commandStatus(int commandId) =>
       _get('command/$commandId', (json) => readCommand(asObject(json)));
+
+  /// The events of one item, newest first, from the service's own read at
+  /// [path], such as `history/movie`. The server does not page them.
+  ServiceResult<List<HistoryEvent>> itemHistory(
+    String path, {
+    required Map<String, List<String>> query,
+  }) => _get(path, (json) {
+    final events = [
+      for (final record in asObjects(json)) historyEvent(record, _refs(record)),
+    ];
+    // The id orders events of the same moment.
+    return events..sort((a, b) {
+      final byDate = b.date.compareTo(a.date);
+      return byDate != 0 ? byDate : b.id.compareTo(a.id);
+    });
+  }, query: query);
 
   /// The problems the server reports.
   ServiceResult<List<HealthIssue>> health() =>

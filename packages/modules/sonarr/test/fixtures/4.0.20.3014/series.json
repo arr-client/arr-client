@@ -1,0 +1,679 @@
+[
+  {
+    "title": "redacted-1",
+    "alternateTitles": [],
+    "sortTitle": "redacted-2",
+    "status": "ended",
+    "ended": true,
+    "overview": "redacted-3",
+    "previousAiring": "1971-03-24T00:30:00Z",
+    "network": "redacted-4",
+    "airTime": "19:30",
+    "images": [
+      {
+        "coverType": "banner",
+        "url": "/MediaCover/1/banner.jpg?lastWrite=639312942949425627",
+        "remoteUrl": "https://redacted.invalid/5.jpg"
+      },
+      {
+        "coverType": "poster",
+        "url": "/MediaCover/1/poster.jpg?lastWrite=639312942949825629",
+        "remoteUrl": "https://redacted.invalid/6.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "url": "/MediaCover/1/fanart.jpg?lastWrite=639312942950425631",
+        "remoteUrl": "https://redacted.invalid/7.jpg"
+      }
+    ],
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "seasons": [
+      {
+        "seasonNumber": 0,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 12,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 1,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1963-05-29T23:30:00Z",
+          "episodeFileCount": 3,
+          "episodeCount": 36,
+          "totalEpisodeCount": 36,
+          "sizeOnDisk": 438999,
+          "releaseGroups": [
+            "redacted-8"
+          ],
+          "percentOfEpisodes": 8.333333333333334
+        }
+      },
+      {
+        "seasonNumber": 2,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1964-06-10T23:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 36,
+          "totalEpisodeCount": 36,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 3,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1965-06-16T23:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 34,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 4,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1966-05-18T23:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 32,
+          "totalEpisodeCount": 32,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 5,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1967-04-20T00:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 30,
+          "totalEpisodeCount": 30,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 6,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1968-04-04T00:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 30,
+          "totalEpisodeCount": 30,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 7,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1969-03-27T00:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 26,
+          "totalEpisodeCount": 26,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 8,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1970-03-19T00:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 26,
+          "totalEpisodeCount": 26,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 9,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1971-03-24T00:30:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 24,
+          "totalEpisodeCount": 24,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      }
+    ],
+    "year": 1962,
+    "path": "/redacted/9",
+    "qualityProfileId": 6,
+    "seasonFolder": true,
+    "monitored": true,
+    "monitorNewItems": "all",
+    "useSceneNumbering": false,
+    "runtime": 25,
+    "tvdbId": 71471,
+    "tvRageId": 5615,
+    "tvMazeId": 2139,
+    "tmdbId": 1930,
+    "firstAired": "1962-09-26T00:00:00Z",
+    "lastAired": "1971-03-23T00:00:00Z",
+    "seriesType": "standard",
+    "cleanTitle": "redacted-10",
+    "imdbId": "tt0055662",
+    "titleSlug": "redacted-11",
+    "rootFolderPath": "/redacted/12",
+    "certification": "TV-G",
+    "genres": [
+      "redacted-13",
+      "redacted-14"
+    ],
+    "tags": [
+      1
+    ],
+    "added": "2026-11-26T12:51:34Z",
+    "ratings": {
+      "votes": 12680,
+      "value": 7.3
+    },
+    "statistics": {
+      "seasonCount": 9,
+      "episodeFileCount": 3,
+      "episodeCount": 274,
+      "totalEpisodeCount": 286,
+      "sizeOnDisk": 438999,
+      "releaseGroups": [
+        "redacted-8"
+      ],
+      "percentOfEpisodes": 1.094890510948905
+    },
+    "languageProfileId": 1,
+    "id": 1
+  },
+  {
+    "title": "redacted-15",
+    "alternateTitles": [],
+    "sortTitle": "redacted-16",
+    "status": "ended",
+    "ended": true,
+    "overview": "redacted-17",
+    "images": [
+      {
+        "coverType": "banner",
+        "url": "/MediaCover/2/banner.jpg?lastWrite=639312942967795694",
+        "remoteUrl": "https://redacted.invalid/18.jpg"
+      },
+      {
+        "coverType": "poster",
+        "url": "/MediaCover/2/poster.jpg?lastWrite=639312942968165695",
+        "remoteUrl": "https://redacted.invalid/19.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "url": "/MediaCover/2/fanart.jpg?lastWrite=639312942977795730",
+        "remoteUrl": "https://redacted.invalid/20.jpg"
+      }
+    ],
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "seasons": [
+      {
+        "seasonNumber": 0,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 1,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 1,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 39,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      }
+    ],
+    "year": 1954,
+    "path": "/redacted/21",
+    "qualityProfileId": 1,
+    "seasonFolder": true,
+    "monitored": false,
+    "monitorNewItems": "all",
+    "useSceneNumbering": false,
+    "runtime": 30,
+    "tvdbId": 73529,
+    "tvRageId": 12318,
+    "tvMazeId": 22618,
+    "tmdbId": 6560,
+    "firstAired": "1954-10-18T00:00:00Z",
+    "lastAired": "1955-10-17T00:00:00Z",
+    "seriesType": "standard",
+    "cleanTitle": "redacted-22",
+    "imdbId": "tt0046642",
+    "titleSlug": "redacted-23",
+    "rootFolderPath": "/redacted/12",
+    "genres": [
+      "redacted-24",
+      "redacted-25",
+      "redacted-26",
+      "redacted-27"
+    ],
+    "tags": [],
+    "added": "2026-11-26T12:51:36Z",
+    "ratings": {
+      "votes": 1307,
+      "value": 7.5
+    },
+    "statistics": {
+      "seasonCount": 1,
+      "episodeFileCount": 0,
+      "episodeCount": 0,
+      "totalEpisodeCount": 40,
+      "sizeOnDisk": 0,
+      "releaseGroups": [],
+      "percentOfEpisodes": 0
+    },
+    "languageProfileId": 1,
+    "id": 2
+  },
+  {
+    "title": "redacted-28",
+    "alternateTitles": [],
+    "sortTitle": "redacted-29",
+    "status": "ended",
+    "ended": true,
+    "overview": "redacted-30",
+    "network": "redacted-31",
+    "images": [
+      {
+        "coverType": "banner",
+        "url": "/MediaCover/3/banner.jpg?lastWrite=639312942972765712",
+        "remoteUrl": "https://redacted.invalid/32.jpg"
+      },
+      {
+        "coverType": "poster",
+        "url": "/MediaCover/3/poster.jpg?lastWrite=639312942973065713",
+        "remoteUrl": "https://redacted.invalid/33.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "url": "/MediaCover/3/fanart.jpg?lastWrite=639312942973435714",
+        "remoteUrl": "https://redacted.invalid/34.jpg"
+      },
+      {
+        "coverType": "clearlogo",
+        "url": "/MediaCover/3/clearlogo.png?lastWrite=639312942973875716",
+        "remoteUrl": "https://redacted.invalid/35.png"
+      }
+    ],
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "seasons": [
+      {
+        "seasonNumber": 0,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 30,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 1,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 32,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 2,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 3,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 4,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 5,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 6,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 7,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 33,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 8,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 9,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 34,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 10,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 30,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 11,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 28,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 12,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 28,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 13,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 26,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 14,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 16,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      }
+    ],
+    "year": 1959,
+    "path": "/redacted/36",
+    "qualityProfileId": 6,
+    "seasonFolder": true,
+    "monitored": true,
+    "monitorNewItems": "all",
+    "useSceneNumbering": false,
+    "runtime": 48,
+    "tvdbId": 73378,
+    "tvRageId": 2868,
+    "tvMazeId": 4378,
+    "tmdbId": 1018,
+    "firstAired": "1959-09-12T00:00:00Z",
+    "lastAired": "1973-01-16T00:00:00Z",
+    "seriesType": "standard",
+    "cleanTitle": "redacted-29",
+    "imdbId": "tt0052451",
+    "titleSlug": "redacted-29",
+    "rootFolderPath": "/redacted/12",
+    "certification": "TV-PG",
+    "genres": [
+      "redacted-37",
+      "redacted-38",
+      "redacted-39"
+    ],
+    "tags": [],
+    "added": "2026-11-26T12:51:37Z",
+    "ratings": {
+      "votes": 12868,
+      "value": 7.3
+    },
+    "statistics": {
+      "seasonCount": 14,
+      "episodeFileCount": 0,
+      "episodeCount": 0,
+      "totalEpisodeCount": 461,
+      "sizeOnDisk": 0,
+      "releaseGroups": [],
+      "percentOfEpisodes": 0
+    },
+    "languageProfileId": 1,
+    "id": 3
+  },
+  {
+    "title": "redacted-40",
+    "alternateTitles": [],
+    "sortTitle": "redacted-41",
+    "status": "ended",
+    "ended": true,
+    "overview": "redacted-42",
+    "previousAiring": "1999-04-23T08:00:00Z",
+    "network": "redacted-43",
+    "airTime": "17:00",
+    "images": [
+      {
+        "coverType": "banner",
+        "url": "/MediaCover/4/banner.jpg?lastWrite=639312942976745726",
+        "remoteUrl": "https://redacted.invalid/44.jpg"
+      },
+      {
+        "coverType": "poster",
+        "url": "/MediaCover/4/poster.jpg?lastWrite=639312942977085727",
+        "remoteUrl": "https://redacted.invalid/45.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "url": "/MediaCover/4/fanart.jpg?lastWrite=639312942977635729",
+        "remoteUrl": "https://redacted.invalid/46.jpg"
+      },
+      {
+        "coverType": "clearlogo",
+        "url": "/MediaCover/4/clearlogo.png?lastWrite=639312942978045731",
+        "remoteUrl": "https://redacted.invalid/47.png"
+      }
+    ],
+    "originalLanguage": {
+      "id": 8,
+      "name": "Japanese"
+    },
+    "seasons": [
+      {
+        "seasonNumber": 0,
+        "monitored": false,
+        "statistics": {
+          "episodeFileCount": 0,
+          "episodeCount": 0,
+          "totalEpisodeCount": 4,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      },
+      {
+        "seasonNumber": 1,
+        "monitored": true,
+        "statistics": {
+          "previousAiring": "1999-04-23T08:00:00Z",
+          "episodeFileCount": 0,
+          "episodeCount": 26,
+          "totalEpisodeCount": 26,
+          "sizeOnDisk": 0,
+          "releaseGroups": [],
+          "percentOfEpisodes": 0
+        }
+      }
+    ],
+    "year": 1998,
+    "path": "/redacted/48",
+    "qualityProfileId": 6,
+    "seasonFolder": true,
+    "monitored": true,
+    "monitorNewItems": "all",
+    "useSceneNumbering": false,
+    "runtime": 25,
+    "tvdbId": 76885,
+    "tvRageId": 3157,
+    "tvMazeId": 1121,
+    "tmdbId": 30991,
+    "firstAired": "1998-04-03T00:00:00Z",
+    "lastAired": "1999-04-23T00:00:00Z",
+    "seriesType": "anime",
+    "cleanTitle": "redacted-49",
+    "imdbId": "tt0213338",
+    "titleSlug": "redacted-50",
+    "rootFolderPath": "/redacted/12",
+    "certification": "TV-MA",
+    "genres": [
+      "redacted-37",
+      "redacted-38",
+      "redacted-51",
+      "redacted-52",
+      "redacted-13",
+      "redacted-25",
+      "redacted-53",
+      "redacted-39"
+    ],
+    "tags": [],
+    "added": "2026-11-26T12:51:37Z",
+    "ratings": {
+      "votes": 175525,
+      "value": 8.9
+    },
+    "statistics": {
+      "seasonCount": 1,
+      "episodeFileCount": 0,
+      "episodeCount": 26,
+      "totalEpisodeCount": 30,
+      "sizeOnDisk": 0,
+      "releaseGroups": [],
+      "percentOfEpisodes": 0
+    },
+    "languageProfileId": 1,
+    "id": 4
+  }
+]
