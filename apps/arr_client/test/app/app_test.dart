@@ -1,10 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:arr_client/app/app.dart';
+import 'package:arr_client/app/bootstrap.dart';
+import 'package:arr_client/app/composition.dart';
+import 'package:core/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
+
+import 'support.dart';
 
 const deviceColor = Color(0xFFB3261E);
 
@@ -25,75 +29,110 @@ void useDevicePalette(WidgetTester tester) {
   );
 }
 
-ThemeData themeOf(WidgetTester tester) =>
-    Theme.of(tester.element(find.byType(Scaffold)));
+BuildContext screenOf(WidgetTester tester) =>
+    tester.element(find.byType(Scaffold).first);
+
+ThemeData themeOf(WidgetTester tester) => Theme.of(screenOf(tester));
 
 void main() {
-  testWidgets('the app starts on an empty screen', (tester) async {
-    await tester.pumpWidget(const ArrClientApp());
-
-    expect(find.byType(Scaffold), findsOneWidget);
-  });
-
   testWidgets('follows the system brightness', (tester) async {
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
     addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    final app = await TestApp.start(tester);
 
-    await tester.pumpWidget(const ArrClientApp());
+    await app.pump(tester);
 
     expect(themeOf(tester).brightness, Brightness.dark);
+    await app.stop(tester);
   });
 
   testWidgets('a changed theme setting applies to the running app', (
     tester,
   ) async {
-    await tester.pumpWidget(const ArrClientApp(themeMode: ThemeMode.light));
+    final app = await TestApp.start(tester);
+    await app.services.preferences.setThemeMode(AppThemeMode.light);
+    await app.pump(tester);
     expect(themeOf(tester).brightness, Brightness.light);
 
-    await tester.pumpWidget(
-      const ArrClientApp(themeMode: ThemeMode.dark, trueBlack: true),
-    );
+    await app.services.preferences.setThemeMode(AppThemeMode.dark);
+    await app.services.preferences.setTrueBlack(true);
     await tester.pumpAndSettle();
 
     expect(themeOf(tester).brightness, Brightness.dark);
     expect(themeOf(tester).scaffoldBackgroundColor, const Color(0xFF000000));
+    await app.stop(tester);
   });
 
-  testWidgets('uses the device colours only when dynamic colour is on', (
+  testWidgets('uses the device colours only while dynamic colour is on', (
     tester,
   ) async {
     useDevicePalette(tester);
-    final own = ArrTheme.light().colorScheme.primary;
-
-    await tester.pumpWidget(const ArrClientApp(themeMode: ThemeMode.light));
-    await tester.pumpAndSettle();
-    expect(themeOf(tester).colorScheme.primary, own);
-
-    await tester.pumpWidget(
-      const ArrClientApp(themeMode: ThemeMode.light, dynamicColor: true),
-    );
-    await tester.pumpAndSettle();
+    final app = await TestApp.start(tester);
+    await app.services.preferences.setThemeMode(AppThemeMode.light);
+    await app.pump(tester);
     expect(themeOf(tester).colorScheme.primary, deviceColor);
-  });
 
-  testWidgets('keeps its own colours on a device without dynamic colour', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      const ArrClientApp(themeMode: ThemeMode.light, dynamicColor: true),
-    );
+    await app.services.preferences.setDynamicColor(false);
     await tester.pumpAndSettle();
 
     expect(
       themeOf(tester).colorScheme.primary,
       ArrTheme.light().colorScheme.primary,
     );
+    await app.stop(tester);
   });
 
-  testWidgets('screens can read the localized strings', (tester) async {
-    await tester.pumpWidget(const ArrClientApp());
-    final context = tester.element(find.byType(Scaffold));
+  testWidgets('creates a first profile and shows its name', (tester) async {
+    final app = await TestApp.start(tester);
 
-    expect(UiLocalizations.of(context).cancel, 'Cancel');
+    await app.pump(tester);
+
+    expect(find.widgetWithText(AppBar, 'Default'), findsOneWidget);
+    expect(UiLocalizations.of(screenOf(tester)).cancel, 'Cancel');
+    await app.stop(tester);
+  });
+
+  testWidgets('resuming applies what was saved meanwhile', (tester) async {
+    final app = await TestApp.start(tester);
+    await app.add(movies, 'Films');
+    await app.pump(tester);
+    expect(find.text('Library'), findsOneWidget);
+    // Behind the back of the database's change notifications, as another
+    // isolate would write.
+    await app.services.database.customStatement(
+      'UPDATE instances SET enabled = 0',
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Library'), findsOneWidget);
+
+    tester.binding
+      ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+      ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Library'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('a failed start says so and can be tried again', (tester) async {
+    TestApp? app;
+    var attempts = 0;
+    Future<AppServices> start() async {
+      if (attempts++ == 0) throw StateError('no storage');
+      return (app = await TestApp.start(tester)).services;
+    }
+
+    await tester.pumpWidget(Bootstrap(start: start));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('could not open its data'), findsOneWidget);
+
+    await tester.tap(find.text('Retry'));
+    await tester.pumpAndSettle();
+
+    expect(find.widgetWithText(AppBar, 'Default'), findsOneWidget);
+    // The bootstrap closes what it started when it is taken down.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await settle(tester);
+    expect(app, isNotNull);
   });
 }
