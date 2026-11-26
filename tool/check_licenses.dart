@@ -11,8 +11,11 @@
 /// extra or changed wording makes it unknown. To accept another license, check
 /// that it is GPL-3.0 compatible and add it to [identifyLicense].
 ///
-/// Maven artifacts that Gradle resolves on behalf of other Maven artifacts are
-/// not visible here; only coordinates written in a package's Gradle files are.
+/// Proprietary SDKs are found with deny-lists, of package names and of Maven
+/// groups written in Android build files. A deny-list only catches what it
+/// names: a passing check does not show that no proprietary SDK is present, so
+/// review the Maven dependencies of every new Android plugin. Artifacts that
+/// Gradle resolves on behalf of other artifacts are not visible here at all.
 library;
 
 import 'dart:convert';
@@ -27,14 +30,15 @@ final _proprietaryPackage = RegExp(
   r'|google_mlkit_.*|google_maps_flutter.*|google_sign_in.*'
   r'|google_api_availability.*|in_app_(purchase|review|update).*|huawei_.*'
   r'|play_(integrity|install_referrer|asset_delivery).*|purchases_flutter'
-  r'|onesignal_flutter|appsflyer_sdk)$',
+  r'|onesignal_flutter|appsflyer_sdk|interactive_media_ads)$',
 );
 
-/// Maven groups of proprietary SDKs.
+/// Deny-list of Maven groups of proprietary SDKs.
 final _proprietaryMaven = RegExp(
-  r'\b(com\.google\.android\.(gms|play|libraries)|com\.google\.firebase'
-  r'|com\.google\.mlkit|com\.google\.gms|com\.android\.billingclient'
-  r'|com\.android\.installreferrer|com\.crashlytics|com\.huawei)\b',
+  r'\b(com\.google\.android\.(gms|play|libraries|ads|ump|recaptcha)'
+  r'|com\.google\.(firebase|mlkit|gms|ads|ar)|com\.android\.billingclient'
+  r'|com\.android\.installreferrer|com\.crashlytics|com\.huawei'
+  r'|com\.facebook\.android|com\.unity3d\.ads|com\.applovin)\b',
 );
 
 final _licenseFileName = RegExp(
@@ -78,6 +82,12 @@ final _copyrightStatement = RegExp(
   unicode: true,
 );
 
+/// The unfilled copyright line of the Apache appendix, newer and older form.
+const _appendixPlaceholders = {
+  'Copyright [yyyy] [name of copyright owner]',
+  'Copyright {yyyy} {name of copyright owner}',
+};
+
 /// The Apache appendix has its own copyright line, directly above this one.
 const _appendixNext = 'Licensed under the Apache License';
 
@@ -111,7 +121,7 @@ String normalizeLicense(String text) {
       above--;
     }
     if (above >= 0 &&
-        (body[above] == 'Copyright [yyyy] [name of copyright owner]' ||
+        (_appendixPlaceholders.contains(body[above]) ||
             _copyrightStatement.hasMatch(body[above]))) {
       body.removeAt(above);
       i = above;

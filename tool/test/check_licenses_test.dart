@@ -229,6 +229,13 @@ void main() {
       });
     }
 
+    test('accepts the older Apache appendix placeholder', () {
+      final apache = licenseOf('clock');
+      final older = apache.replaceAll('[', '{').replaceAll(']', '}');
+      expect(older, contains('Copyright {yyyy} {name of copyright owner}'));
+      expect(identifyLicense(older), 'Apache-2.0');
+    });
+
     test('rejects Apache-2.0 with text added after it', () {
       expect(
         identifyLicense('${licenseOf('clock')}\nNot for military use.'),
@@ -326,6 +333,47 @@ dependencies {
       expect(workspace.check(), [
         startsWith('locator: proprietary SDK com.google.android.gms in '),
       ]);
+    });
+
+    const coordinates = {
+      'com.google.ads.interactivemedia.v3:interactivemedia': 'com.google.ads',
+      'com.google.android.ads:mobile-ads-lite': 'com.google.android.ads',
+      'com.google.android.ump:user-messaging-platform':
+          'com.google.android.ump',
+      'com.google.android.recaptcha:recaptcha': 'com.google.android.recaptcha',
+      'com.google.ar:core': 'com.google.ar',
+      'com.facebook.android:facebook-login': 'com.facebook.android',
+      'com.unity3d.ads:unity-ads': 'com.unity3d.ads',
+      'com.applovin:applovin-sdk': 'com.applovin',
+    };
+    for (final MapEntry(key: artifact, value: group) in coordinates.entries) {
+      test('rejects the Maven artifact $artifact', () {
+        final workspace = Workspace()..add('wrapper', license: bsd3);
+        workspace.write(
+          'cache/wrapper-1.0.0/android/build.gradle.kts',
+          'dependencies { implementation("$artifact:1.0.0") }',
+        );
+        expect(workspace.check(), [
+          startsWith('wrapper: proprietary SDK $group in '),
+        ]);
+      });
+    }
+
+    test('allows free libraries from the same vendors', () {
+      final workspace = Workspace()..add('free');
+      workspace.write('cache/free-1.0.0/android/build.gradle', '''
+dependencies {
+    implementation 'com.facebook.fresco:fresco:3.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+}
+''');
+      expect(workspace.check(), isEmpty);
+    });
+
+    test('rejects the Interactive Media Ads plugin by name', () {
+      final workspace = Workspace()
+        ..add('interactive_media_ads', license: bsd3);
+      expect(workspace.check(), [contains('denied by name')]);
     });
 
     test('rejects a proprietary SDK added by our own Android project', () {
