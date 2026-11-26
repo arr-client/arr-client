@@ -13,8 +13,12 @@ dependencies:
   dio: ^5.11.1
   # The database of instances, preferences and the cache. MIT.
   drift: ^2.35.4
+  # The file type of flutter_cache_manager's storage. BSD-3-Clause.
+  file: ^7.0.1
   flutter:
     sdk: flutter
+  # The disk cache of artwork (research R10). MIT.
+  flutter_cache_manager: ^3.5.0
   # SQLite bindings, whose build hook the workspace pubspec configures. MIT.
   sqlite3: ^3.9.2
 

@@ -1,6 +1,8 @@
 /// Module contract, connections and shared services of arr-client.
 library;
 
+export 'src/artwork/artwork_cache.dart';
+export 'src/artwork/artwork_exception.dart';
 export 'src/artwork/artwork_loader.dart';
 export 'src/cache/cache_entry.dart';
 export 'src/cache/cache_repository.dart';
