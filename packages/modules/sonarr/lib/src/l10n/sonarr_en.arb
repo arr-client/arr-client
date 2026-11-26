@@ -2,46 +2,46 @@
   "@@locale": "en",
   "monitorAll": "All episodes",
   "@monitorAll": {
-    "description": "Choice of what to monitor when adding a series: every episode."
+    "description": "Choice of what to monitor in a series, being added or already there: every episode."
   },
   "monitorFuture": "Future episodes",
   "@monitorFuture": {
-    "description": "Choice of what to monitor when adding a series: episodes that have not aired yet."
+    "description": "Choice of what to monitor in a series, being added or already there: episodes that have not aired yet."
   },
   "monitorMissing": "Missing episodes",
   "@monitorMissing": {
-    "description": "Choice of what to monitor when adding a series: episodes without a file, and those not aired yet."
+    "description": "Choice of what to monitor in a series, being added or already there: episodes without a file, and those not aired yet."
   },
   "monitorExisting": "Existing episodes",
   "@monitorExisting": {
-    "description": "Choice of what to monitor when adding a series: episodes with a file, and those not aired yet."
+    "description": "Choice of what to monitor in a series, being added or already there: episodes with a file, and those not aired yet."
   },
   "monitorRecent": "Recent episodes",
   "@monitorRecent": {
-    "description": "Choice of what to monitor when adding a series: recently aired episodes, and those not aired yet."
+    "description": "Choice of what to monitor in a series, being added or already there: recently aired episodes, and those not aired yet."
   },
   "monitorPilot": "Pilot episode",
   "@monitorPilot": {
-    "description": "Choice of what to monitor when adding a series: only the first episode."
+    "description": "Choice of what to monitor in a series, being added or already there: only the first episode."
   },
   "monitorFirstSeason": "First season",
   "@monitorFirstSeason": {
-    "description": "Choice of what to monitor when adding a series: only the episodes of the first season."
+    "description": "Choice of what to monitor in a series, being added or already there: only the episodes of the first season."
   },
   "monitorLastSeason": "Last season",
   "@monitorLastSeason": {
-    "description": "Choice of what to monitor when adding a series: only the episodes of the last season."
+    "description": "Choice of what to monitor in a series, being added or already there: only the episodes of the last season."
   },
   "monitorSpecials": "Monitor specials",
   "@monitorSpecials": {
-    "description": "Choice of what to monitor when adding a series: the special episodes as well."
+    "description": "Choice of what to monitor in a series, being added or already there: the special episodes as well."
   },
   "unmonitorSpecials": "Unmonitor specials",
   "@unmonitorSpecials": {
-    "description": "Choice of what to monitor when adding a series: no longer the special episodes."
+    "description": "Choice of what to monitor in a series, being added or already there: no longer the special episodes."
   },
   "monitorNone": "None",
   "@monitorNone": {
-    "description": "Choice of what to monitor when adding a series: no episodes."
+    "description": "Choice of what to monitor in a series, being added or already there: no episodes."
   }
 }

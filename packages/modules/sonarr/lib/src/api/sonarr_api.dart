@@ -7,8 +7,9 @@ import '../models/json_fields.dart';
 
 const _apiPath = 'api/v3';
 
-// How `episode?episodeIds=` says that it has no such episode: with status 500.
-const _noSuchEpisode = 'Expected query to return 1 rows but returned 0';
+// How Sonarr says, with status 500, that it does not have the one record named:
+// to `episode?episodeIds=`, and to a delete or a season pass of a series.
+const _noSuchRecord = 'Expected query to return 1 rows but returned 0';
 
 /// Sonarr's requests for one instance.
 ///
@@ -114,13 +115,8 @@ final class SonarrApi {
       'includeEpisodeFile': ['true'],
       'includeImages': ['true'],
     },
-    classify: (error) => switch (error.response) {
-      final response?
-          when response.statusCode == 500 &&
-              response.text.contains(_noSuchEpisode) =>
-        const NotFound(),
-      _ => error.failure,
-    },
+    classify: (error) =>
+        _saysNoSuchRecord(error) ? const NotFound() : error.failure,
   );
 
   /// The episode files of a series, as received.
@@ -156,9 +152,99 @@ final class SonarrApi {
   /// Quality profiles, root folders and tags.
   ServiceResult<List<ServerOption>> options() => _shared.options();
 
+  /// Reads the series [id], lets [change] alter it and writes all of it back.
+  ServiceResult<void> updateSeries(
+    int id,
+    void Function(JsonObject series) change,
+  ) => _shared.update('series/$id', change);
+
+  /// [updateSeries] with the fields set in [changes].
+  ServiceResult<void> editSeries(int id, ItemEdit changes) =>
+      _shared.edit('series/$id', changes);
+
+  /// Changes the series [ids] at once.
+  ServiceResult<void> editAllSeries(List<int> ids, BulkEdit changes) =>
+      _shared.bulkEdit(
+        'series/editor',
+        idsField: 'seriesIds',
+        ids: ids,
+        changes: changes,
+      );
+
+  /// Turns monitoring of the episodes [ids] on or off.
+  ServiceResult<void> monitorEpisodes(
+    List<int> ids, {
+    required bool monitored,
+  }) => _write(
+    HttpMethod.put,
+    'episode/monitor',
+    body: JsonBody({'episodeIds': ids, 'monitored': monitored}),
+  );
+
+  /// Has the series [id] monitored as [monitor] says. A series the server does
+  /// not have is [NotFound].
+  ServiceResult<void> seasonPass(int id, {required String monitor}) => _write(
+    HttpMethod.post,
+    'seasonpass',
+    body: JsonBody({
+      'series': [
+        {'id': id},
+      ],
+      'monitoringOptions': {'monitor': monitor},
+    }),
+    classify: (error) => switch (error.failure) {
+      _ when _saysNoSuchRecord(error) => const NotFound(),
+      // The path names no series, so this does not say that it is gone.
+      NotFound() => const ServerError(statusCode: 404),
+      final failure => failure,
+    },
+  );
+
+  /// Deletes the series [id]. One the server does not have is [NotFound].
+  ///
+  /// Both flags are always sent: what is deleted never rests on a default.
+  ServiceResult<void> deleteSeries(
+    int id, {
+    required bool deleteFiles,
+    required bool addImportListExclusion,
+  }) => _write(
+    HttpMethod.delete,
+    'series/$id',
+    query: {
+      'deleteFiles': ['$deleteFiles'],
+      'addImportListExclusion': ['$addImportListExclusion'],
+    },
+    classify: (error) =>
+        _saysNoSuchRecord(error) ? const NotFound() : error.failure,
+  );
+
+  /// Deletes the episode file [id].
+  ServiceResult<void> deleteEpisodeFile(int id) =>
+      _write(HttpMethod.delete, 'episodefile/$id');
+
   static Map<String, List<String>> _ofSeries(int id) => {
     'seriesId': ['$id'],
   };
+
+  /// One write, sent once. What a successful one answers is not read.
+  ServiceResult<void> _write(
+    HttpMethod method,
+    String path, {
+    Map<String, List<String>> query = const {},
+    RequestBody? body,
+    ServiceFailure Function(HttpError error)? classify,
+  }) async {
+    final request = ServiceRequest(
+      method,
+      '$_apiPath/$path',
+      query: query,
+      body: body,
+    );
+    return switch (await _http.send(request)) {
+      Ok() => const Ok(null),
+      Err(:final error) => Err(classify?.call(error) ?? error.failure),
+    };
+  }
 
   ServiceResult<T> _get<T>(
     String path,
@@ -183,6 +269,13 @@ final class SonarrApi {
         }
     }
   }
+}
+
+bool _saysNoSuchRecord(HttpError error) {
+  final response = error.response;
+  return response != null &&
+      response.statusCode == 500 &&
+      response.text.contains(_noSuchRecord);
 }
 
 /// Whether a refused add names the validator for a series the server has. Its

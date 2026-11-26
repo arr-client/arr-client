@@ -1,0 +1,23 @@
+{
+  "name": "SeriesSearch",
+  "commandName": "Series Search",
+  "body": {
+    "seriesId": 1,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "isLongRunning": false,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "name": "SeriesSearch",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T15:39:40Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 7
+}

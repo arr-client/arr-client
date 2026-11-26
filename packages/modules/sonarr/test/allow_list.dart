@@ -263,7 +263,8 @@ final allowList = AllowList([
   AllowedRequest.write(
     HttpMethod.delete,
     'api/v3/series/{id}',
-    query: {'deleteFiles': _flag, 'addImportListExclusion': _flag},
+    // Both stated: what is deleted never rests on a server default.
+    query: {'deleteFiles': _statedFlag, 'addImportListExclusion': _statedFlag},
   ),
   AllowedRequest.write(
     HttpMethod.put,

@@ -10,6 +10,7 @@ import 'package:servarr/servarr.dart';
 import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
+import 'src/adapters/manage.dart';
 import 'src/adapters/overview.dart';
 import 'src/api/sonarr_api.dart';
 
@@ -65,6 +66,8 @@ final class SonarrModule implements ServiceModule {
   ) => const {
     CapabilityKind.library,
     CapabilityKind.lookup,
+    CapabilityKind.command,
+    CapabilityKind.release,
     CapabilityKind.queue,
     CapabilityKind.history,
     CapabilityKind.calendar,
@@ -80,6 +83,8 @@ final class SonarrModule implements ServiceModule {
         context.cache,
       ),
       const (LookupProvider) => SonarrLookupAdapter(SonarrApi(context)),
+      const (CommandProvider) => SonarrCommandAdapter(SonarrApi(context)),
+      const (ReleaseProvider) => SonarrReleaseAdapter(SonarrApi(context)),
       const (QueueProvider) => SonarrQueueAdapter(SonarrApi(context)),
       const (HistoryProvider) => SonarrHistoryAdapter(SonarrApi(context)),
       const (CalendarProvider) => SonarrCalendarAdapter(SonarrApi(context)),

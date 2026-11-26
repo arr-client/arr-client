@@ -1,0 +1,25 @@
+{
+  "name": "RescanSeries",
+  "commandName": "Rescan Series",
+  "body": {
+    "seriesId": 2,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "isLongRunning": false,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "name": "RescanSeries",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "started",
+  "result": "unknown",
+  "queued": "2026-11-26T15:39:41Z",
+  "started": "2026-11-26T15:39:41Z",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T15:39:41Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 8
+}
