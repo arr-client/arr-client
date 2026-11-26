@@ -527,7 +527,7 @@
   "@statusApiKeyStopped": { "description": "Under the title that the API key was rejected." },
   "statusSignInStopped": "The app has stopped trying it. Edit the service to correct the sign-in, or retry. Repeated attempts can get this device blocked.",
   "@statusSignInStopped": { "description": "Under the title that the sign-in was rejected." },
-  "statusSignInWait": "A sign-in that has just failed is not sent again for a minute.",
+  "statusSignInWait": "If a sign-in was just sent and failed, the next one waits a minute.",
   "@statusSignInWait": { "description": "Under a failure of a service that signs in." },
   "statusNewerVersion": "Version {version} is newer than the ones the app was tested with.",
   "@statusNewerVersion": { "description": "Version notice of a service.", "placeholders": { "version": { "type": "String" } } },

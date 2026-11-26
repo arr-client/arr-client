@@ -146,6 +146,24 @@ void main() {
     await app.stop(tester);
   });
 
+  testWidgets('keeps what the module says may have caused a rejection', (
+    tester,
+  ) async {
+    const cause = 'The server may have refused the host name.';
+    final module = films()..failure = AuthFailed(hint: (_) => cause);
+    final app = await start(tester, module);
+    final id = await app.add(module, 'Films');
+    await openList(tester, app);
+
+    await app.services.profiles.markAuthFailed(id);
+    await tester.pumpAndSettle();
+    await settle(tester);
+
+    expect(find.textContaining('stopped trying'), findsOneWidget);
+    expect(find.textContaining(cause), findsOneWidget);
+    await app.stop(tester);
+  });
+
   testWidgets('warns of repeated sign-ins and of the wait between them', (
     tester,
   ) async {
@@ -169,7 +187,11 @@ void main() {
     await openList(tester, app);
 
     expect(find.text('Server error'), findsOneWidget);
-    expect(find.textContaining('not sent again for a minute'), findsOneWidget);
+    // Said as a condition: the app does not know that a sign-in was sent.
+    expect(
+      find.textContaining('If a sign-in was just sent and failed'),
+      findsOneWidget,
+    );
 
     await app.services.profiles.markAuthFailed(id);
     await tester.pumpAndSettle();

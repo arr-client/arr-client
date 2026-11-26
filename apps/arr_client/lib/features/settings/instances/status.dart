@@ -88,7 +88,7 @@ class _InstanceStatusState extends ConsumerState<InstanceStatus> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_instance.authFailed)
-          _latched(context)
+          _latched(context, connection)
         else
           ..._connection(context, connection),
         if (newer && version != null)
@@ -100,18 +100,25 @@ class _InstanceStatusState extends ConsumerState<InstanceStatus> {
     );
   }
 
-  Widget _latched(BuildContext context) {
+  Widget _latched(BuildContext context, InstanceConnection? connection) {
     final strings = AppLocalizations.of(context);
     final apiKey = _instance.authKind == AuthKind.apiKey;
+    // What may have caused it, if not the credentials: known only from a check
+    // since the app started.
+    final hint = switch (connection) {
+      ConnectionOffline(failure: AuthFailed(:final hint)) => hint,
+      _ => null,
+    };
     return _Line(
       icon: Icons.lock_outline,
       isProblem: true,
       title: apiKey
           ? strings.testApiKeyRejectedTitle
           : strings.testSignInRejectedTitle,
-      message: apiKey
-          ? strings.statusApiKeyStopped
-          : strings.statusSignInStopped,
+      message: [
+        apiKey ? strings.statusApiKeyStopped : strings.statusSignInStopped,
+        if (hint != null) hint(context),
+      ].join('\n'),
       actions: [
         TextButton(
           onPressed: _retrying ? null : () => unawaited(_retryAuth()),
@@ -198,7 +205,8 @@ class _InstanceStatusState extends ConsumerState<InstanceStatus> {
     );
     final isCertificate =
         failure is CertificateUntrusted || failure is CertificateChanged;
-    // Where a sign-in may have been sent, the next one waits.
+    // Where a sign-in may have been sent, the next one waits. Whether one was
+    // is not known: one sent and not answered is Unreachable too.
     final held =
         _signsIn &&
         !isCertificate &&
