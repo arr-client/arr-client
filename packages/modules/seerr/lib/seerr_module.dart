@@ -5,6 +5,8 @@ library;
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
+import 'src/adapters/discovery.dart';
+import 'src/adapters/requests.dart';
 import 'src/api/probe.dart';
 import 'src/api/refusals.dart';
 import 'src/api/session_handler.dart';
@@ -32,8 +34,7 @@ const _descriptor = ModuleDescriptor(
   testedVersion: '3.5.2',
 );
 
-/// The Seerr service. The adapters are yet to come (T128), and the screens
-/// (T129).
+/// The Seerr service. The screens are yet to come (T129, T130).
 final class SeerrModule implements ServiceModule {
   @override
   String get id => 'seerr';
@@ -61,9 +62,16 @@ final class SeerrModule implements ServiceModule {
   ) => const {CapabilityKind.discovery, CapabilityKind.request};
 
   @override
-  T? capability<T extends Capability>(InstanceContext context) =>
-      throw UnimplementedError('T128');
+  T? capability<T extends Capability>(InstanceContext context) {
+    final Capability? found = switch (T) {
+      const (DiscoveryProvider) => SeerrDiscoveryAdapter(context),
+      const (RequestProvider) => SeerrRequestAdapter(context),
+      _ => null,
+    };
+    return found as T?;
+  }
 
+  // The screens are not built yet.
   @override
-  List<ModuleScreen> routes() => throw UnimplementedError('T129');
+  List<ModuleScreen> routes() => const [];
 }

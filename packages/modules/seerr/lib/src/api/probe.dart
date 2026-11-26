@@ -28,6 +28,10 @@ const _Product _jellyseerr = (
   tested: '2.7.3',
 );
 
+/// The numbers of a released [version], and null of anything else, such as a
+/// development build.
+String? releaseNumbers(String version) => _release.firstMatch(version)?[1];
+
 /// Reads the version, the identity and the settings that bound what it may do.
 /// Nothing is written.
 ///
@@ -55,7 +59,7 @@ ServiceResult<ProbeResult> probeSeerr(
       version = found;
   }
 
-  final numbers = _release.firstMatch(version)?[1];
+  final numbers = releaseNumbers(version);
   if (numbers == null && !_development.hasMatch(version)) {
     return const Err(WrongService());
   }
@@ -72,10 +76,10 @@ ServiceResult<ProbeResult> probeSeerr(
       2 => _jellyseerr,
       _ => detected,
     };
-    if (_compareVersions(numbers, detected.minimum) < 0) {
+    if (compareVersions(numbers, detected.minimum) < 0) {
       return Err(UnsupportedVersion(version: version));
     }
-    newer = _compareVersions(numbers, detected.tested) > 0;
+    newer = compareVersions(numbers, detected.tested) > 0;
   }
 
   // Needs no permission, so a refusal is of the credential itself. Only the
@@ -120,7 +124,7 @@ ServiceResult<ProbeResult> probeSeerr(
 }
 
 /// Compares dotted versions part by part as numbers; a missing part is zero.
-int _compareVersions(String a, String b) {
+int compareVersions(String a, String b) {
   final left = a.split('.').map(int.parse).toList();
   final right = b.split('.').map(int.parse).toList();
   for (var i = 0; i < left.length || i < right.length; i++) {

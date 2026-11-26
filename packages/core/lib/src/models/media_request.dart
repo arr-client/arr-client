@@ -1,7 +1,9 @@
 import 'availability.dart';
 import 'discovery_ref.dart';
 import 'request_status.dart';
+import 'service_permission.dart';
 import 'service_user.dart';
+import 'session_user.dart';
 
 /// A request for a title.
 final class MediaRequest {
@@ -36,4 +38,10 @@ final class MediaRequest {
 
   /// Whether the 4K variant was requested.
   final bool is4k;
+
+  /// Whether [user] is offered to delete it: who manages requests may delete
+  /// any, anyone else only their own while it is pending.
+  bool canBeDeletedBy(SessionUser user) =>
+      user.permissions.contains(ServicePermission.manageRequests) ||
+      (requestedBy.id == user.id && status == RequestStatus.pending);
 }
