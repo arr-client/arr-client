@@ -174,12 +174,59 @@ void main() {
       'MIT with an added clause':
           '$mit\nCommons Clause: the Software may not be sold.',
       'MIT with an added clause in another script': '$mit\n禁止商业使用',
-      'a restriction written as a copyright line':
+      'a restriction after the license, as a copyright line':
           '$mit\nCopyright 2020 Someone, non-commercial use only.',
       'a known license followed by an unknown one': '$mit\n---\n$nonCommercial',
     };
     for (final MapEntry(key: what, value: text) in rejected.entries) {
       test('rejects $what', () => expect(identifyLicense(text), isNull));
+    }
+
+    const restrictions = [
+      'Copyright (c) 2024 Vendor. Redistribution is forbidden.',
+      'Copyright (c) 2024 Vendor. Noncommercial purposes exclusively.',
+      'Copyright 2024 Vendor. For evaluation purposes; resale is banned.',
+      'Copyright (c) 2024 Vendor. Military applications are disallowed.',
+      'Copyright 2024 Vendor, personal and educational purposes exclusively.',
+      '(c) 2024 Vendor. A paid subscription is required after 30 days.',
+    ];
+    for (final line in restrictions) {
+      test('rejects a restriction shaped like a copyright: $line', () {
+        for (final text in [
+          '$line\n$mit',
+          '$mit\n$line',
+          '$line\n---\n$mit',
+          '$mit\n---\n$line',
+          '$line\n$bsd3',
+          '$line\n${licenseOf('clock')}',
+          bsd3.replaceFirst('Google Inc.', line),
+        ]) {
+          expect(identifyLicense(text), isNull);
+        }
+      });
+    }
+
+    test('drops copyright statements only above the license', () {
+      expect(identifyLicense('$mit\nCopyright 2020 Jane Doe'), isNull);
+    });
+
+    const statements = [
+      'Copyright 2014, the Dart project authors. All rights reserved.',
+      'Copyright (c) 2006-2026 Lukas Renggli.',
+      'Copyright (c) 2000 - 2019 The Legion of the Bouncy Castle Inc. '
+          '(https://www.bouncycastle.org)',
+      'Copyright (c) 2020 maRci002, Gergely Padányi-Gulyás (fegyi001)',
+      'Copyright (c) 2021 - 2025 André Sousa, 2025 Luka Stillingfleet '
+          '(JaffaKetchup)',
+      "Copyright (c) 2018-2026, the 'flutter_map' authors and maintainers",
+      'Copyright (c) 2020 Ryan Heise and the project contributors.',
+      'Copyright 2015 Michael Mitterer (office@mikemitterer.at),',
+      '(c) 2018 湖北捷智云技术有限公司',
+    ];
+    for (final line in statements) {
+      test('accepts the header: $line', () {
+        expect(identifyLicense('$line\n\n$bsd2'), 'BSD-2-Clause');
+      });
     }
 
     test('rejects Apache-2.0 with text added after it', () {

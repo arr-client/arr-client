@@ -42,18 +42,6 @@ final _licenseFileName = RegExp(
   caseSensitive: false,
 );
 
-/// A copyright statement, as opposed to license wording that begins with the
-/// word "copyright".
-final _copyrightLine = RegExp(
-  r'^(copyright\s*(\(c\)|©|\d{4}|\[)|(\(c\)|©)\s*\d{4})',
-);
-
-/// A line with one of these words is kept even if it looks like a copyright
-/// statement, so that a restriction cannot hide in one.
-final _restrictionWord = RegExp(
-  r'\b(commercial|licen[cs]ed?|permi\w*|use[ds]?|not?|only|prohibit\w*)\b',
-);
-
 const _titles = {
   'mit license',
   'the mit license',
@@ -64,21 +52,78 @@ const _titles = {
   'all rights reserved',
 };
 
-/// Reduces a license text to its words: no case, layout, punctuation, list
-/// markers, titles or copyright statements. Letters of every script are kept.
+// The shape of a bare copyright statement. Anything it does not describe is
+// treated as license wording, so these accept as little as real holders need.
+const _years = r'(?:19|20)\d\d(?: ?- ?(?:19|20)\d\d)?,?';
+const _token = r'[\p{L}\p{N}_]+';
+const _word = r"(?:\p{Lu}\.|\p{Lu}[\p{L}\p{M}'’-]*)";
+// At most four capitalised words: a name, not a sentence.
+const _name = '$_word(?: (?:of the |of )?$_word){0,3}';
+const _suffix = r'(?:,? (?:Inc\.|Inc|LLC|Ltd\.|Ltd|GmbH|Corp\.))?';
+const _contact =
+    r'(?: (?:\((?:https?://[^\s()]+|[^\s()@]+@[^\s()@]+|[\p{L}\p{N}_]+)\)'
+    r'|<(?:https?://[^\s<>]+|[^\s<>@]+@[^\s<>@]+)>))';
+const _holder =
+    "(?:(?:the )?'?$_token'? (?:project authors|authors and maintainers)"
+    '|$_name$_suffix(?: and the project contributors)?'
+    '|$_token)$_contact?';
+// A further holder must bring its own years or contact.
+const _another =
+    '(?:, $_years $_name$_suffix$_contact?|, $_name$_suffix$_contact)';
+
+final _copyrightStatement = RegExp(
+  r'^(?:(?:Copyright|COPYRIGHT)(?: \([Cc]\)| ©)?|\([Cc]\)|©) '
+  '$_years $_holder(?:$_another)*'
+  r'[.,]?(?: All [Rr]ights [Rr]eserved\.?)?$',
+  unicode: true,
+);
+
+/// The Apache appendix has its own copyright line, directly above this one.
+const _appendixNext = 'Licensed under the Apache License';
+
+/// The owner named by the third BSD clause.
+final _endorser = RegExp(
+  '[Nn]either the name of (?:the copyright holder|(?:the )?$_name$_suffix) '
+  'nor the names of',
+  unicode: true,
+);
+
+/// Reduces a license text to its words: no case, layout, punctuation or list
+/// markers. Titles and bare copyright statements are dropped only where they
+/// head the text. Letters of every script are kept.
 String normalizeLicense(String text) {
-  final kept = <String>[];
-  for (final raw in const LineSplitter().convert(text.toLowerCase())) {
-    final line = raw.trim();
-    if (line.length <= 200 &&
-        _copyrightLine.hasMatch(line) &&
-        !_restrictionWord.hasMatch(line)) {
-      continue;
+  final lines = [
+    for (final line in const LineSplitter().convert(text)) line.trim(),
+  ];
+  final body = lines
+      .skipWhile(
+        (line) =>
+            _titles.contains(_words(line.toLowerCase())) ||
+            _words(line).isEmpty ||
+            _copyrightStatement.hasMatch(line),
+      )
+      .toList();
+
+  for (var i = body.length - 1; i >= 0; i--) {
+    if (!body[i].startsWith(_appendixNext)) continue;
+    var above = i - 1;
+    while (above >= 0 && body[above].isEmpty) {
+      above--;
     }
-    if (_titles.contains(_words(line))) continue;
-    kept.add(line.replaceFirst(RegExp(r'^([*•-]|\d\.)\s+'), ''));
+    if (above >= 0 &&
+        (body[above] == 'Copyright [yyyy] [name of copyright owner]' ||
+            _copyrightStatement.hasMatch(body[above]))) {
+      body.removeAt(above);
+      i = above;
+    }
   }
-  return _words(kept.join(' ').replaceAll('https://', 'http://'));
+
+  final joined = body
+      .map((line) => line.replaceFirst(RegExp(r'^([*•-]|\d\.)\s+'), ''))
+      .join(' ')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .replaceAll(_endorser, 'neither the name of holder nor the names of');
+  return _words(joined.toLowerCase().replaceAll('https://', 'http://'));
 }
 
 String _words(String text) =>
@@ -124,11 +169,11 @@ const _bsdDisclaimer =
     'otherwise arising in any way out of the use of this software even if '
     'advised of the possibility of such damage';
 
-/// The third BSD clause; the only free part is the name of the owner.
+/// The third BSD clause, with the owner's name replaced by [_endorser].
 const _bsdNoEndorsement =
-    r'neither the name of (?:\S+ ){1,8}?nor the names of its contributors may '
-    'be used to endorse or promote products derived from this software without '
-    'specific prior written permission';
+    'neither the name of holder nor the names of its contributors may be used '
+    'to endorse or promote products derived from this software without specific '
+    'prior written permission';
 
 final _bsd2 = RegExp('^$_bsdConditions $_bsdDisclaimer\$');
 final _bsd3 = RegExp('^$_bsdConditions $_bsdNoEndorsement $_bsdDisclaimer\$');
@@ -139,7 +184,7 @@ const _longLicenses = {
   'd3b761037b99e5cb84d7615d780e864d6d33a661f7613e225a5e78983311b5f9':
       'Apache-2.0',
   '6a27e8d798463bfcb1d7336d22261b3416565e3f1285f702ae583afdda156cc1': 'MPL-2.0',
-  '00ac0e3a60ce65df31a81c53efc57671a57f415136c15fe871d338855677d065': 'GPL-3.0',
+  '247c5b7d84c33edca2a78d44b2c8a8bef5475cd1ea2d73b1ba9b3dc7063196b7': 'GPL-3.0',
 };
 
 const _apacheAppendix =
