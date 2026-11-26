@@ -21,21 +21,29 @@ A package starts when everything it needs has merged.
 | Package | Tasks | Needs |
 |---|---|---|
 | P1 workspace and Android project | T001, T003, T004 | nothing |
-| P2 module contract and shared records | T013, T029 | P1 |
-| P3 storage, secrets, cache, preferences, backup exclusion | T014–T017, T020 | P1 |
+| P2 module contract, shared records, redacting log | T013, T021, T029 | P1 |
+| P3 storage, secrets, cache, preferences, backup exclusion | T014–T017, T020 | P2 |
 | P4 theme and localization | T033 | P1 |
 | P5 repository tooling | T005, T006, T011, T012 | P1 |
-| P6 CI check, docs, dev stack, redacting log | T007–T010, T021 | P1 |
-| P7 profiles and instances | T018, T019 | P2, P3 |
-| P8 network client, pinning, cleartext config | T022–T024, T027 | P2, P6 |
+| P6 CI check, docs, dev stack | T007–T010 | P5 |
+| P7 profiles and instances | T018, T019 | P3 |
+| P8 network client, pinning, cleartext config | T022–T024, T027 | P7 |
 | P9 connectivity and local network permission | T025, T026 | P2 |
 | P10 shared widgets | T034 | P2, P4 |
 | P11 allow-list harness | T032 | P2 |
-| P12 session authenticator | T028 | P7, P8 |
-| P13 registry and profile switching | T030 | P7 |
+| P12 session authenticator | T028 | P8 |
+| P13 registry and profile switching | T030 | P12, P14 |
 | P14 artwork loader | T031 | P8 |
 | P15 shared Servarr client | T036, T037 | P8, P11 |
-| P16 app shell and navigation | T035 | P10, P13 |
+| P16 app shell and navigation | T035 | P9, P10, P13 |
+
+P2 also declares the types the module contract refers to but later packages implement:
+`InstanceContext`, the instance and credential records and auth kinds as plain types (P7 adds
+validation and persistence), and the abstract interfaces for the logger, secret store, cache scope,
+artwork loader, connectivity and local network permission.
+
+The foundation is mostly a chain, so fewer than five agents run during parts of it. The user
+stories after it are where five can run steadily.
 
 Packages for the user stories (T038 onwards) are added here when the foundation is in place.
 

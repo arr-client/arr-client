@@ -16,11 +16,17 @@ Code follows the [coding standards](docs/standards/coding-standards.md) and
 
 ## Development environment
 
-With [Nix](https://nixos.org), `nix-shell` provides the pinned Flutter, JDK, Android SDK and tools;
-with direnv, `direnv allow` does it automatically. `.envrc` accepts the Android SDK licences listed
-in `shell.nix`, so read it first. Add `--arg withEmulator true` for an emulator.
+With [Nix](https://nixos.org), `shell.nix` provides the pinned Flutter, JDK, Android SDK and tools.
+It needs you to accept the Android SDK licences listed in that file, so read it first:
 
-Without Nix, install the Flutter version in `.fvmrc`, JDK 17 and the Android SDK.
+```sh
+NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE=1 nix-shell   # accepts the licences
+```
+
+With direnv, `direnv allow` does the same through `.envrc`. Add `--arg withEmulator true` for an
+emulator.
+
+Without Nix, install Flutter 3.50.1, JDK 17 and the Android SDK.
 
 ## Optional tools
 
