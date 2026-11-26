@@ -116,6 +116,13 @@ void main() {
         'a series type it does not know',
         ItemEdit(seriesType: SeriesType.unknown),
       ),
+      (
+        'fields a series does not have',
+        ItemEdit(
+          minimumAvailability: MinimumAvailability.released,
+          metadataProfileId: 1,
+        ),
+      ),
     ]) {
       test('of $name sends nothing', () async {
         final harness = _harness();
@@ -129,6 +136,7 @@ void main() {
     for (final (name, ref) in [
       ('an episode', episodeRef(1)),
       ('a movie', movie.item),
+      ('a series of another instance', elsewhere),
     ]) {
       test('of $name sends nothing', () async {
         final harness = _harness();
@@ -231,6 +239,7 @@ void main() {
     for (final (name, other) in [
       ('an episode', episodeRef(4)),
       ('a movie', movie.item),
+      ('a series of another instance', elsewhere),
     ]) {
       test('with $name among the series sends nothing', () async {
         final harness = ManageHarness();

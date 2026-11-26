@@ -59,6 +59,12 @@ final _unsupported = <String, ServiceResult<Command> Function(CommandProvider)>{
   'a rescan of an episode': (commands) => commands.rescan(episode()),
   'a rescan of a movie': (commands) => commands.rescan(movie),
   'a search for a movie': (commands) => commands.search([movie]),
+  'a search for a series of another instance': (commands) =>
+      commands.search([const MediaTarget(elsewhere)]),
+  'a refresh of a series of another instance': (commands) =>
+      commands.refresh(const MediaTarget(elsewhere)),
+  'a rescan of a series of another instance': (commands) =>
+      commands.rescan(const MediaTarget(elsewhere)),
   'a search for an episode of a season': (commands) =>
       commands.search([MediaTarget(episodeRef(31), seasonNumber: 1)]),
   // One command names one series or season.

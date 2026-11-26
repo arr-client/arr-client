@@ -114,6 +114,7 @@ void main() {
   for (final (name, target) in [
     ('a movie', movie),
     ('an episode of a season', MediaTarget(episodeRef(31), seasonNumber: 1)),
+    ('a series of another instance', const MediaTarget(elsewhere)),
   ]) {
     test('does not monitor $name', () async {
       final harness = _harness();
@@ -235,6 +236,7 @@ void main() {
     for (final (name, ref) in [
       ('an episode', episodeRef(31)),
       ('a movie', movie.item),
+      ('a series of another instance', elsewhere),
     ]) {
       test('is not applied to $name', () async {
         final harness = ManageHarness();
@@ -260,6 +262,25 @@ void main() {
         expect(harness.asked, [line(HttpMethod.post, 'seasonpass')]);
       });
     }
+
+    test('keeps the series when the server has no season pass', () async {
+      final harness = ManageHarness();
+      await ok(harness.library.list());
+      harness.sonarr.writeAnswer = FakeSonarr.body(
+        '',
+        status: 404,
+        write: true,
+      );
+
+      expect(
+        await failureOf(
+          harness.library.applyMonitorOption(seriesRef(1), 'all'),
+        ),
+        isA<ServerError>(),
+      );
+
+      expect(await harness.cachedSeries(), contains(1));
+    });
 
     test('for a series that is gone says so and forgets it', () async {
       final harness = ManageHarness();

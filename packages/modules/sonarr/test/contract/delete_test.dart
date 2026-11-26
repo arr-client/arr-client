@@ -78,6 +78,7 @@ void main() {
     for (final (name, ref) in [
       ('an episode', episodeRef(1)),
       ('a movie', movie.item),
+      ('a series of another instance', elsewhere),
     ]) {
       test('does not take $name for a series', () async {
         final harness = ManageHarness();

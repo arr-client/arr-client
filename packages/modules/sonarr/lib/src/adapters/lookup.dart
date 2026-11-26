@@ -4,33 +4,9 @@ library;
 import 'package:core/core.dart';
 
 import '../api/sonarr_api.dart';
-import '../l10n/generated/sonarr_localizations.dart';
 import '../models/json_fields.dart';
 import '../models/media_record.dart';
-
-/// What the form for adding a series offers in Sonarr's own web UI, as
-/// `addOptions.monitor` takes it.
-final _monitorOptions = List<MonitorOption>.unmodifiable([
-  _option('all', (strings) => strings.monitorAll),
-  _option('future', (strings) => strings.monitorFuture),
-  _option('missing', (strings) => strings.monitorMissing),
-  _option('existing', (strings) => strings.monitorExisting),
-  _option('recent', (strings) => strings.monitorRecent),
-  _option('pilot', (strings) => strings.monitorPilot),
-  _option('firstSeason', (strings) => strings.monitorFirstSeason),
-  _option('lastSeason', (strings) => strings.monitorLastSeason),
-  _option('monitorSpecials', (strings) => strings.monitorSpecials),
-  _option('unmonitorSpecials', (strings) => strings.unmonitorSpecials),
-  _option('none', (strings) => strings.monitorNone),
-]);
-
-MonitorOption _option(
-  String id,
-  String Function(SonarrLocalizations strings) label,
-) => MonitorOption(
-  id: id,
-  label: (context) => label(SonarrLocalizations.of(context)),
-);
+import 'monitor_options.dart';
 
 /// New series.
 final class SonarrLookupAdapter implements LookupProvider {
@@ -77,13 +53,13 @@ final class SonarrLookupAdapter implements LookupProvider {
     return _add(candidate, choices);
   }
 
-  ServiceResult<AddOptions> _addOptions() async =>
-      switch (await _api.options()) {
-        Ok(:final value) => Ok(
-          AddOptions(serverOptions: value, monitorOptions: _monitorOptions),
-        ),
-        Err(:final error) => Err(error),
-      };
+  ServiceResult<AddOptions> _addOptions() async => switch (await _api
+      .options()) {
+    Ok(:final value) => Ok(
+      AddOptions(serverOptions: value, monitorOptions: sonarrMonitorOptions),
+    ),
+    Err(:final error) => Err(error),
+  };
 
   ServiceResult<ItemRef> _add(
     AddCandidate candidate,

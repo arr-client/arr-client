@@ -102,6 +102,10 @@ void main() {
     ('a whole series', series()),
     ('a movie', movie),
     ('an episode of a season', MediaTarget(episodeRef(31), seasonNumber: 1)),
+    (
+      'a season of another instance',
+      const MediaTarget(elsewhere, seasonNumber: 1),
+    ),
   ]) {
     test('does not search for $name', () async {
       final harness = ManageHarness();

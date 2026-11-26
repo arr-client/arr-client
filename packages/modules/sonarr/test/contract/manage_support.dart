@@ -223,3 +223,10 @@ final writeFailures = <String, (Result<ServiceResponse, HttpError>, Type)>{
     OutcomeUnknown,
   ),
 };
+
+/// Series 1 of some other instance, whose id names another series here.
+const elsewhere = ItemRef(
+  instanceId: 'i2',
+  kind: MediaKind.series,
+  remoteId: 1,
+);

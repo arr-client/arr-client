@@ -1,7 +1,7 @@
-/// Sonarr's library reads. The queue and the history are in activity.dart.
+/// Sonarr's library. Its writes are in manage.dart, and the queue and the
+/// history in activity.dart.
 ///
-/// Operations that change something, and the routes to screens, are not built
-/// yet; calling one is a programming error.
+/// The routes to screens are not built yet; calling one is a programming error.
 library;
 
 import 'dart:convert';
@@ -13,6 +13,8 @@ import '../models/episode_record.dart';
 import '../models/json_fields.dart';
 import '../models/media_record.dart';
 import '../models/series_record.dart';
+import 'manage.dart';
+import 'monitor_options.dart';
 
 /// Series and their episodes.
 ///
@@ -21,17 +23,18 @@ import '../models/series_record.dart';
 /// it was: a queued episode would otherwise be shown, and cached, as missing.
 /// An item the server no longer has is removed from the cache.
 final class SonarrLibraryAdapter implements LibraryProvider {
-  /// Reads with [_api] into [_cache].
+  /// Reads with [_api] into [_cache], and writes with it.
   SonarrLibraryAdapter(this._api, this._cache);
 
   final SonarrApi _api;
   final CacheScope _cache;
+  late final _writes = SonarrLibraryWrites(_api, _cache);
 
   @override
   MediaKind get itemKind => MediaKind.series;
 
   @override
-  List<MonitorOption> get monitorOptions => const [];
+  List<MonitorOption> get monitorOptions => sonarrMonitorOptions;
 
   @override
   ServiceResult<List<LibraryItem>> list() async {
@@ -218,29 +221,33 @@ final class SonarrLibraryAdapter implements LibraryProvider {
 
   @override
   ServiceResult<void> setMonitored(MediaTarget target, bool monitored) =>
-      throw UnimplementedError();
+      _writes.setMonitored(target, monitored);
 
   @override
   ServiceResult<void> applyMonitorOption(ItemRef ref, String optionId) =>
-      throw UnimplementedError();
+      _writes.applyMonitorOption(ref, optionId);
 
   @override
   ServiceResult<void> edit(ItemRef ref, ItemEdit changes) =>
-      throw UnimplementedError();
+      _writes.edit(ref, changes);
 
   @override
   ServiceResult<void> bulkEdit(List<ItemRef> refs, BulkEdit changes) =>
-      throw UnimplementedError();
+      _writes.bulkEdit(refs, changes);
 
   @override
   ServiceResult<void> delete(
     ItemRef ref, {
     required bool deleteFiles,
     required bool addImportExclusion,
-  }) => throw UnimplementedError();
+  }) => _writes.delete(
+    ref,
+    deleteFiles: deleteFiles,
+    addImportExclusion: addImportExclusion,
+  );
 
   @override
-  ServiceResult<void> deleteFile(MediaFile file) => throw UnimplementedError();
+  ServiceResult<void> deleteFile(MediaFile file) => _writes.deleteFile(file);
 
   @override
   ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError();
