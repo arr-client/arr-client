@@ -67,6 +67,19 @@ class FakeModule implements ServiceModule {
   /// Makes building a capability throw for the instance of this name.
   String? brokenFor;
 
+  /// Makes every probe throw.
+  var probeThrows = false;
+
+  /// Reports the body of `GET status` as the version.
+  @override
+  ServiceResult<ProbeResult> probe(InstanceContext context) async {
+    if (probeThrows) throw StateError('broken');
+    return switch (await context.http.send(get('status'))) {
+      Ok(:final value) => Ok(ProbeResult(product: 'Fake', version: value.text)),
+      Err(:final error) => Err(error.failure),
+    };
+  }
+
   @override
   ModuleDescriptor get descriptor => ModuleDescriptor(
     displayName: 'Fake',
