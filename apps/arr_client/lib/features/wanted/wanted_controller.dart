@@ -20,6 +20,10 @@ typedef WantedPages = ({List<LibraryItem> items, int pages, bool hasMore});
 
 const WantedPages _nothingRead = (items: [], pages: 0, hasMore: true);
 
+/// Whether [item], or what it belongs to, is among [gone].
+bool isGone(LibraryItem item, Set<ItemRef> gone) =>
+    gone.contains(item.ref) || gone.contains(item.parent);
+
 /// Reads the pages after [from], up to page [upTo] or, without it, to the end
 /// of the list. [onPage] is told how many items there are so far.
 ///
@@ -112,7 +116,8 @@ final wantedProvider = NotifierProvider.autoDispose
 /// Reads each service on its own, so that one that fails or is slow does not
 /// hold up the others. A list is read a page at a time, as the user asks for
 /// more. What was read stays while it is read again, also if that fails, and
-/// it is read again when the app resumes and when the user asks.
+/// it is read again when the app resumes and when the user asks. An item found
+/// to be gone from its server, on whatever screen, leaves the list at once.
 class WantedController extends Notifier<List<WantedList>?> {
   WantedController(this.kind);
 
@@ -124,14 +129,24 @@ class WantedController extends Notifier<List<WantedList>?> {
   final _latest = <String, int>{};
   var _reads = 0;
 
+  /// The items of each instance found to be gone since its list was last read
+  /// from the start or further.
+  final _removed = <String, Set<ItemRef>>{};
+
   @override
   List<WantedList>? build() {
     // Only which instances there are, and as what: the scope is also replaced
     // when no more than a connection changes.
     ref.watch(scopeProvider.select(_servicesKey));
     final lifecycle = AppLifecycleListener(onResume: () => unawaited(reload()));
+    final removals = ref
+        .read(appServicesProvider)
+        .cache
+        .removals
+        .listen(_remove);
     ref.onDispose(() {
       lifecycle.dispose();
+      unawaited(removals.cancel());
       _latest.clear();
     });
 
@@ -195,6 +210,35 @@ class WantedController extends Notifier<List<WantedList>?> {
     state = List.unmodifiable(_lists);
   }
 
+  void _remove(ItemRef gone) {
+    // A list asked for before may still hold it.
+    (_removed[gone.instanceId] ??= {}).add(gone);
+    final list = _list(gone.instanceId);
+    final read = list?.read;
+    if (list == null || read == null) return;
+    final kept = _without(read, {gone});
+    if (kept.items.length == read.items.length) return;
+    _put(
+      WantedList(
+        instanceId: list.instanceId,
+        name: list.name,
+        loading: list.loading,
+        read: kept,
+        fetchedAt: list.fetchedAt,
+        failure: list.failure,
+      ),
+    );
+  }
+
+  static WantedPages _without(WantedPages read, Set<ItemRef> gone) => (
+    items: List.unmodifiable([
+      for (final item in read.items)
+        if (!isGone(item, gone)) item,
+    ]),
+    pages: read.pages,
+    hasMore: read.hasMore,
+  );
+
   Future<void> _load(String instanceId, {bool more = false}) async {
     final number = _latest[instanceId] = ++_reads;
     // There is no state to change until `build` has returned.
@@ -206,6 +250,7 @@ class WantedController extends Notifier<List<WantedList>?> {
     final provider = active?.capability(CapabilityKind.wanted);
     final before = _list(instanceId);
     if (active == null || provider == null || before == null) return;
+    _removed.remove(instanceId);
     _put(
       WantedList(
         instanceId: instanceId,
@@ -227,21 +272,24 @@ class WantedController extends Notifier<List<WantedList>?> {
             upTo: more ? loaded + 1 : max(1, loaded),
           );
     // An edited instance is read anew by `build`.
-    if (result == null || !wanted()) return;
+    // As it is now: items may have left it while this was under way.
+    final now = _list(instanceId);
+    if (result == null || !wanted() || now == null) return;
+    final gone = _removed[instanceId] ?? const {};
     _put(switch (result) {
       Ok(:final value) => WantedList(
         instanceId: instanceId,
-        name: before.name,
+        name: now.name,
         loading: false,
-        read: value,
+        read: _without(value, gone),
         fetchedAt: DateTime.now(),
       ),
       Err(:final error) => WantedList(
         instanceId: instanceId,
-        name: before.name,
+        name: now.name,
         loading: false,
-        read: before.read,
-        fetchedAt: before.fetchedAt,
+        read: now.read,
+        fetchedAt: now.fetchedAt,
         failure: error,
       ),
     });

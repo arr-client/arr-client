@@ -152,6 +152,10 @@ class WantedHarness {
     return WantedHarness._(app, module, ids);
   }
 
+  /// As an item's own screen has it done once the server no longer has it.
+  Future<void> removed(String name, MediaKind kind, int id) =>
+      app.services.cache.scope(ids[name]!).remove(kind, id);
+
   Movie movie(
     String name,
     int id, {
@@ -171,6 +175,11 @@ class WantedHarness {
     title: title,
     sortTitle: '$id',
     parentTitle: 'The Show',
+    parent: ItemRef(
+      instanceId: ids[name]!,
+      kind: MediaKind.series,
+      remoteId: 9,
+    ),
     monitored: true,
     state: ItemState.missing,
     seasonNumber: 1,

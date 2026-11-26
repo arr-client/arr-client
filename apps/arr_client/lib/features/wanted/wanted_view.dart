@@ -33,6 +33,29 @@ class _WantedViewState extends ConsumerState<WantedView>
   @override
   bool get wantKeepAlive => true;
 
+  TabController? _tabs;
+
+  /// Whether this is the tab on screen. The other one stays alive, and must
+  /// then leave Back alone.
+  bool get _shown => _tabs?.index == widget.kind.index;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final tabs = DefaultTabController.of(context);
+    if (identical(tabs, _tabs)) return;
+    _tabs?.removeListener(_tabChanged);
+    _tabs = tabs..addListener(_tabChanged);
+  }
+
+  @override
+  void dispose() {
+    _tabs?.removeListener(_tabChanged);
+    super.dispose();
+  }
+
+  void _tabChanged() => setState(() {});
+
   void _select(Set<ItemRef>? selected) => setState(() => _selected = selected);
 
   void _toggle(ItemRef item) {
@@ -133,7 +156,8 @@ class _WantedViewState extends ConsumerState<WantedView>
           showSearchAll:
               selected == null &&
               instance?.capability(CapabilityKind.command) != null &&
-              (read?.items.isNotEmpty ?? false),
+              read != null &&
+              (read.items.isNotEmpty || read.hasMore),
           onSearchAll: busy || instance == null
               ? null
               : () => unawaited(
@@ -166,7 +190,7 @@ class _WantedViewState extends ConsumerState<WantedView>
         );
       }
       if (read != null) {
-        if (read.items.isEmpty && failure == null) {
+        if (read.items.isEmpty && !read.hasMore && failure == null) {
           rows.add(
             CalendarNote(switch (widget.kind) {
               WantedKind.missing => strings.wantedNoneMissing,
@@ -224,9 +248,10 @@ class _WantedViewState extends ConsumerState<WantedView>
 
     // Back leaves the selection before it leaves the screen.
     return PopScope(
-      canPop: selected == null,
+      canPop: selected == null || !_shown,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) _select(null);
+        // Every tab alive is told of a Back that did not pop.
+        if (!didPop && _shown) _select(null);
       },
       child: RefreshIndicator(
         onRefresh: controller.reload,

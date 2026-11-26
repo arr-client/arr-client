@@ -143,7 +143,18 @@ void main() {
     expect(find.text('2 selected'), findsOneWidget);
     await tester.tap(find.text('Search selected'));
     await tester.pumpAndSettle();
+    expect(find.text('Search for 2 items?'), findsOneWidget);
+    expect(wanted.server('Films').searches, isEmpty);
+    await tester.tap(find.text('Search for 2 items'));
+    await tester.pumpAndSettle();
 
+    expect(
+      find.text(
+        'Films accepted a search for Film 2.\n'
+        'Shows accepted a search for The Show S01E03.',
+      ),
+      findsOneWidget,
+    );
     expect(wanted.server('Films').searches, [
       [2],
     ]);
@@ -154,7 +165,9 @@ void main() {
     await wanted.stop(tester);
   });
 
-  testWidgets('asks before searching for many selected items', (tester) async {
+  testWidgets('sends nothing when the selection is not confirmed', (
+    tester,
+  ) async {
     final wanted = await WantedHarness.start(
       tester,
       names: ['Films'],
@@ -202,10 +215,10 @@ void main() {
 
     await tester.tap(_searchAll);
     await tester.pumpAndSettle();
-    expect(find.text('Search for all missing items?'), findsOneWidget);
+    expect(find.text('Search all missing?'), findsOneWidget);
     expect(find.text('3 items on Films'), findsOneWidget);
-    expect(find.textContaining('1 of them is not released'), findsOneWidget);
-    expect(find.textContaining('1 of them is already down'), findsOneWidget);
+    expect(find.textContaining('1 not released yet.'), findsOneWidget);
+    expect(find.textContaining('1 already downloading.'), findsOneWidget);
     expect(server.searches, isEmpty);
 
     await tester.tap(find.text('Search for 3 items'));
@@ -319,7 +332,10 @@ void main() {
     );
     wanted.server('Films').missing = [
       [wanted.movie('Films', 1, title: 'A very long title that has to wrap')],
-      [wanted.movie('Films', 2)],
+      [
+        wanted.movie('Films', 2, state: ItemState.unreleased),
+        wanted.movie('Films', 3, state: ItemState.downloading),
+      ],
     ];
     wanted.server('Shows').missing = [
       [wanted.episode('Shows', 1, title: 'Another long episode title here')],
@@ -339,8 +355,147 @@ void main() {
     await tester.tap(_searchAll.first);
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
-    expect(find.text('2 items on Films'), findsOneWidget);
+    expect(find.text('3 items on Films'), findsOneWidget);
+    // What is out of the ordinary comes first.
+    expect(
+      find.textContaining(
+        RegExp(r'^1 not released yet\.\n1 already downloading\.\n\n'),
+      ),
+      findsOneWidget,
+    );
     semantics.dispose();
+    await wanted.stop(tester);
+  });
+
+  testWidgets('one message says how the search went on every service', (
+    tester,
+  ) async {
+    final wanted = await WantedHarness.start(tester);
+    wanted.server('Films')
+      ..missing = [
+        [wanted.movie('Films', 1)],
+      ]
+      ..answer = const Err(OutcomeUnknown());
+    wanted.server('Shows').missing = [
+      [wanted.episode('Shows', 3)],
+    ];
+    await wanted.pump(tester);
+    await tester.tap(find.text('Select'));
+    await tester.pump();
+    await tester.tap(find.text('Film 1'));
+    await tester.tap(find.text('The Show'));
+    await tester.pump();
+    await tester.tap(find.text('Search selected'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Search for 2 items'));
+    await tester.pumpAndSettle();
+
+    final message = find.textContaining('may or may not have started');
+    expect(message, findsOneWidget);
+    expect(
+      tester.widget<Text>(message).data,
+      contains('Shows accepted a search for The Show S01E03.'),
+    );
+    expect(wanted.server('Films').searches, hasLength(1));
+    await wanted.stop(tester);
+  });
+
+  testWidgets('Back leaves only the selection of the tab on screen', (
+    tester,
+  ) async {
+    final wanted = await WantedHarness.start(tester, names: ['Films']);
+    wanted.server('Films')
+      ..missing = [
+        [wanted.movie('Films', 1)],
+      ]
+      ..cutoff = [
+        [wanted.movie('Films', 2, state: ItemState.downloaded)],
+      ];
+    await wanted.pump(tester);
+    await tester.tap(find.text('Select'));
+    await tester.pump();
+    await tester.tap(find.text('Film 1'));
+    await tester.pump();
+
+    await tester.tap(find.text('Cutoff unmet'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Select'));
+    await tester.pump();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('Select'), findsOneWidget);
+
+    await tester.tap(find.text('Missing'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 selected'), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('1 selected'), findsNothing);
+    await wanted.stop(tester);
+  });
+
+  testWidgets('an item found gone leaves the list, with its series', (
+    tester,
+  ) async {
+    final wanted = await WantedHarness.start(tester);
+    wanted.server('Films').missing = [
+      [wanted.movie('Films', 1), wanted.movie('Films', 2)],
+    ];
+    wanted.server('Shows').missing = [
+      [wanted.episode('Shows', 3)],
+    ];
+    await wanted.pump(tester);
+
+    await wanted.removed('Films', MediaKind.movie, 1);
+    await wanted.removed('Shows', MediaKind.series, 9);
+    await tester.pumpAndSettle();
+    expect(find.text('Film 1'), findsNothing);
+    expect(find.text('Film 2'), findsOneWidget);
+    expect(find.text('The Show'), findsNothing);
+    await wanted.stop(tester);
+  });
+
+  testWidgets('a read under way does not bring a gone item back', (
+    tester,
+  ) async {
+    final wanted = await WantedHarness.start(tester, names: ['Films']);
+    final server = wanted.server('Films')
+      ..missing = [
+        [wanted.movie('Films', 1), wanted.movie('Films', 2)],
+      ];
+    await wanted.pump(tester);
+    final held = server.held = Completer<void>();
+    await tester.tap(find.byTooltip('Refresh'));
+    await step(tester);
+
+    await wanted.removed('Films', MediaKind.movie, 2);
+    await step(tester);
+    held.complete();
+    await tester.pumpAndSettle();
+    expect(find.text('Film 1'), findsOneWidget);
+    expect(find.text('Film 2'), findsNothing);
+    await wanted.stop(tester);
+  });
+
+  testWidgets('search all leaves out what went before it was confirmed', (
+    tester,
+  ) async {
+    final wanted = await WantedHarness.start(tester, names: ['Films']);
+    final server = wanted.server('Films')
+      ..missing = [
+        [wanted.movie('Films', 1), wanted.movie('Films', 2)],
+      ];
+    await wanted.pump(tester);
+    await tester.tap(_searchAll);
+    await tester.pumpAndSettle();
+
+    await wanted.removed('Films', MediaKind.movie, 2);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Search for 2 items'));
+    await tester.pumpAndSettle();
+    expect(server.searches, [
+      [1],
+    ]);
     await wanted.stop(tester);
   });
 }

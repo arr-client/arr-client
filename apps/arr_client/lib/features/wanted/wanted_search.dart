@@ -11,13 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
+import '../../app/composition.dart';
 import '../../app/providers.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import 'wanted_controller.dart';
 import 'wanted_tile.dart';
-
-/// The most items that selecting them searches without asking again.
-const searchWithoutAsking = 10;
 
 /// The instances a search is being sent to.
 final wantedSearchesProvider = NotifierProvider<WantedSearches, Set<String>>(
@@ -83,9 +81,9 @@ List<LibraryItem> searchable(
 /// The items to search for on one instance.
 typedef SearchBatch = ({ActiveInstance instance, List<LibraryItem> items});
 
-/// Searches for [batches], once confirmed where they are more than
-/// [searchWithoutAsking] items. [onSent] is called when they are about to be
-/// sent. [onRefresh] reads an instance's list again.
+/// Searches for [batches], once confirmed where they are more than one item.
+/// [onSent] is called when they are about to be sent. [onRefresh] reads an
+/// instance's list again.
 ///
 /// [context] must outlive the items' rows.
 Future<void> searchWanted(
@@ -98,24 +96,27 @@ Future<void> searchWanted(
   final strings = AppLocalizations.of(context);
   final items = [for (final batch in batches) ...batch.items];
   if (items.isEmpty) return;
-  if (items.length > searchWithoutAsking) {
-    final confirmed = await showConfirmDialog(
-      context,
-      title: strings.wantedSearchSelectedTitle(items.length),
-      target: [
-        for (final (:instance, items: own) in batches)
-          strings.wantedItemsOn(own.length, instance.instance.name),
-      ].join('\n'),
-      consequence: _consequence(strings, items),
-      confirmLabel: strings.wantedSearchConfirm(items.length),
-      destructive: false,
-    );
-    if (!confirmed || !context.mounted) return;
+  final removals = _Removals(ref.read(appServicesProvider));
+  try {
+    if (items.length > 1) {
+      final confirmed = await showConfirmDialog(
+        context,
+        title: strings.wantedSearchSelectedTitle(items.length),
+        target: [
+          for (final (:instance, items: own) in batches)
+            strings.wantedItemsOn(own.length, instance.instance.name),
+        ].join('\n'),
+        consequence: _consequence(strings, items),
+        confirmLabel: strings.wantedSearchConfirm(items.length),
+        destructive: false,
+      );
+      if (!confirmed || !context.mounted) return;
+    }
+    onSent?.call();
+    await _send(context, ref, removals.without(batches), onRefresh);
+  } finally {
+    removals.close();
   }
-  onSent?.call();
-  await Future.wait([
-    for (final batch in batches) _sendBatch(context, ref, batch, onRefresh),
-  ]);
 }
 
 /// Searches for everything on one list of [instance]: reads the whole of it,
@@ -136,43 +137,78 @@ Future<void> searchAllWanted(
     }
   }
 
-  final result = await showDialog<Result<WantedPages, ServiceFailure>>(
-    context: context,
-    // A tap beside it must not look like an answer.
-    barrierDismissible: false,
-    builder: (context) => _ReadingAll(instance: instance, kind: kind),
-  );
-  if (!instance.isCurrent) return say(strings.releaseServiceChanged(name));
-  if (!context.mounted) return;
-  final List<LibraryItem> items;
-  switch (result) {
-    // The user gave up.
-    case null:
-      return;
-    case Err(:final error):
-      return say(
-        strings.wantedReadAllFailed(name, failureMessage(context, error)),
-      );
-    case Ok(:final value):
-      items = searchable(instance, value.items);
+  // From before the first page: one may go while the others are read.
+  final removals = _Removals(ref.read(appServicesProvider));
+  try {
+    final result = await showDialog<Result<WantedPages, ServiceFailure>>(
+      context: context,
+      // A tap beside it must not look like an answer.
+      barrierDismissible: false,
+      builder: (context) => _ReadingAll(instance: instance, kind: kind),
+    );
+    if (!instance.isCurrent) return say(strings.releaseServiceChanged(name));
+    if (!context.mounted) return;
+    final List<LibraryItem> items;
+    switch (result) {
+      // The user gave up.
+      case null:
+        return;
+      case Err(:final error):
+        return say(
+          strings.wantedReadAllFailed(name, failureMessage(context, error)),
+        );
+      case Ok(:final value):
+        items = removals.left(searchable(instance, value.items));
+    }
+    if (items.isEmpty) {
+      onRefresh(instance.instance.id);
+      return say(strings.wantedNothingToSearch(name));
+    }
+    final confirmed = await showConfirmDialog(
+      context,
+      title: switch (kind) {
+        WantedKind.missing => strings.wantedSearchAllMissingTitle,
+        WantedKind.cutoffUnmet => strings.wantedSearchAllCutoffTitle,
+      },
+      target: strings.wantedItemsOn(items.length, name),
+      consequence: _consequence(strings, items),
+      confirmLabel: strings.wantedSearchConfirm(items.length),
+      destructive: false,
+    );
+    if (!confirmed || !context.mounted) return;
+    await _send(
+      context,
+      ref,
+      removals.without([(instance: instance, items: items)]),
+      onRefresh,
+    );
+  } finally {
+    removals.close();
   }
-  if (items.isEmpty) {
-    onRefresh(instance.instance.id);
-    return say(strings.wantedNothingToSearch(name));
+}
+
+/// The items found to be gone while a search is being prepared, which must
+/// then not be named.
+class _Removals {
+  _Removals(AppServices services) {
+    _subscription = services.cache.removals.listen(_gone.add);
   }
-  final confirmed = await showConfirmDialog(
-    context,
-    title: switch (kind) {
-      WantedKind.missing => strings.wantedSearchAllMissingTitle,
-      WantedKind.cutoffUnmet => strings.wantedSearchAllCutoffTitle,
-    },
-    target: strings.wantedItemsOn(items.length, name),
-    consequence: _consequence(strings, items),
-    confirmLabel: strings.wantedSearchConfirm(items.length),
-    destructive: false,
-  );
-  if (!confirmed || !context.mounted) return;
-  await _sendBatch(context, ref, (instance: instance, items: items), onRefresh);
+
+  final _gone = <ItemRef>{};
+  late final StreamSubscription<ItemRef> _subscription;
+
+  List<LibraryItem> left(List<LibraryItem> items) => [
+    for (final item in items)
+      if (!isGone(item, _gone)) item,
+  ];
+
+  /// A batch with nothing left stays, so that it is said.
+  List<SearchBatch> without(List<SearchBatch> batches) => [
+    for (final (:instance, :items) in batches)
+      (instance: instance, items: left(items)),
+  ];
+
+  void close() => unawaited(_subscription.cancel());
 }
 
 /// What a search leads to, and which of the items the user may not expect.
@@ -181,56 +217,95 @@ String _consequence(AppLocalizations strings, List<LibraryItem> items) {
       items.where((item) => item.state == state).length;
   final unreleased = count(ItemState.unreleased);
   final downloading = count(ItemState.downloading);
-  return [
-    strings.wantedSearchConsequence,
+  final warnings = [
     if (unreleased > 0) strings.wantedIncludesUnreleased(unreleased),
     if (downloading > 0) strings.wantedIncludesDownloading(downloading),
+  ];
+  // What is out of the ordinary first, and close together: large text can put
+  // the rest of a dialog out of sight.
+  return [
+    if (warnings.isNotEmpty) warnings.join('\n'),
+    strings.wantedSearchConsequence,
   ].join('\n\n');
 }
 
-Future<void> _sendBatch(
+/// Sends one search for each of [batches] and says in one message how every
+/// one of them went, as a later message would replace an earlier one.
+Future<void> _send(
   BuildContext context,
   WidgetRef ref,
-  SearchBatch batch,
+  List<SearchBatch> batches,
   void Function(String instanceId) onRefresh,
 ) async {
   final strings = AppLocalizations.of(context);
-  final (:instance, :items) = batch;
-  final id = instance.instance.id;
-  final name = instance.instance.name;
-  if (!instance.isCurrent) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(strings.releaseServiceChanged(name))),
-    );
-    return;
+  final messenger = ScaffoldMessenger.of(context);
+  final searches = ref.read(wantedSearchesProvider.notifier);
+  // A null result is of a search that was not sent.
+  final sent = <(SearchBatch, Future<Result<Command, ServiceFailure>?>)>[];
+  for (final batch in batches) {
+    if (!batch.instance.isCurrent || batch.items.isEmpty) {
+      sent.add((batch, Future.value()));
+    } else if (searches.send(batch.instance, batch.items) case final result?) {
+      sent.add((batch, result));
+    }
+    // Otherwise another search of it got in first, which says how it went.
   }
-  // Null if another search of it got in first, which then says how it went.
-  final sending = ref
-      .read(wantedSearchesProvider.notifier)
-      .send(instance, items);
-  if (sending == null) return;
-  ServiceFailure? failure;
-  await runAction<Command>(
+  if (sent.isEmpty) return;
+
+  String accepted(SearchBatch batch) => switch (batch.items) {
+    [final item] => strings.wantedSearchAcceptedOne(
+      batch.instance.instance.name,
+      wantedItemName(strings, item),
+    ),
+    final items => strings.wantedSearchAccepted(
+      batch.instance.instance.name,
+      items.length,
+    ),
+  };
+  final answers = <(SearchBatch, Result<Command, ServiceFailure>?)>[];
+  String line(SearchBatch batch, Result<Command, ServiceFailure>? result) {
+    final name = batch.instance.instance.name;
+    return switch (result) {
+      null when batch.items.isEmpty => strings.wantedNothingToSearch(name),
+      null => strings.releaseServiceChanged(name),
+      Ok() => accepted(batch),
+      Err(error: OutcomeUnknown()) => strings.wantedSearchUnknown(
+        batch.items.length,
+        name,
+      ),
+      Err(error: NotFound()) => strings.wantedSearchFailed(
+        name,
+        UiLocalizations.of(messenger.context).itemGone,
+      ),
+      Err(:final error) => strings.wantedSearchFailed(
+        name,
+        failureMessage(messenger.context, error),
+      ),
+    };
+  }
+
+  await runAction<void>(
     context,
     action: () async {
-      final result = await sending;
-      if (result case Err(:final error)) failure = error;
-      return result;
+      for (final (batch, result) in sent) {
+        answers.add((batch, await result));
+      }
+      // Any one not accepted makes the message stay until it is dismissed.
+      return answers.every((answer) => answer.$2 is Ok)
+          ? const Ok(null)
+          : const Err(Conflict());
     },
-    acceptedMessage: switch (items) {
-      [final item] => strings.wantedSearchAcceptedOne(
-        name,
-        wantedItemName(strings, item),
-      ),
-      _ => strings.wantedSearchAccepted(name, items.length),
-    },
-    describeFailure: (message) => switch (failure) {
-      OutcomeUnknown() => strings.wantedSearchUnknown(items.length, name),
-      _ => strings.wantedSearchFailed(name, message),
-    },
-    onRefresh: () => onRefresh(id),
-    onGone: () => onRefresh(id),
+    acceptedMessage: [for (final (batch, _) in sent) accepted(batch)]
+        .join('\n'),
+    describeFailure: (_) =>
+        [for (final (batch, result) in answers) line(batch, result)].join('\n'),
+    onRefresh: () {},
   );
+  for (final (batch, result) in answers) {
+    if (result case Err(error: OutcomeUnknown() || NotFound())) {
+      onRefresh(batch.instance.instance.id);
+    }
+  }
 }
 
 /// Reads a whole list, saying how far it is. Closes with what it read, or with
