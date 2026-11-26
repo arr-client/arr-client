@@ -14,6 +14,7 @@ class StaleNotice extends StatefulWidget {
   const StaleNotice({
     required this.staleness,
     required this.onRetry,
+    this.source,
     super.key,
   });
 
@@ -22,6 +23,10 @@ class StaleNotice extends StatefulWidget {
 
   /// Loads again.
   final VoidCallback onRetry;
+
+  /// Whose data it is, such as an instance's name, on a screen that shows
+  /// several.
+  final String? source;
 
   @override
   State<StaleNotice> createState() => _StaleNoticeState();
@@ -76,6 +81,8 @@ class _StaleNoticeState extends State<StaleNotice> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (widget.source case final source?)
+                      Text(source, style: theme.textTheme.titleSmall),
                     Text(_age(l10n), style: theme.textTheme.titleSmall),
                     if (failure != null) ...[
                       const SizedBox(height: 4),
