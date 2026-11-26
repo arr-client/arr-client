@@ -1,0 +1,242 @@
+[
+  {
+    "id": -2,
+    "name": "Original",
+    "nameLower": "redacted-79"
+  },
+  {
+    "id": 0,
+    "name": "Unknown",
+    "nameLower": "redacted-80"
+  },
+  {
+    "id": 26,
+    "name": "Arabic",
+    "nameLower": "redacted-81"
+  },
+  {
+    "id": 41,
+    "name": "Bosnian",
+    "nameLower": "redacted-82"
+  },
+  {
+    "id": 28,
+    "name": "Bulgarian",
+    "nameLower": "redacted-83"
+  },
+  {
+    "id": 38,
+    "name": "Catalan",
+    "nameLower": "redacted-84"
+  },
+  {
+    "id": 10,
+    "name": "Chinese",
+    "nameLower": "redacted-85"
+  },
+  {
+    "id": 39,
+    "name": "Croatian",
+    "nameLower": "redacted-86"
+  },
+  {
+    "id": 25,
+    "name": "Czech",
+    "nameLower": "redacted-87"
+  },
+  {
+    "id": 6,
+    "name": "Danish",
+    "nameLower": "redacted-88"
+  },
+  {
+    "id": 7,
+    "name": "Dutch",
+    "nameLower": "redacted-89"
+  },
+  {
+    "id": 1,
+    "name": "English",
+    "nameLower": "redacted-90"
+  },
+  {
+    "id": 42,
+    "name": "Estonian",
+    "nameLower": "redacted-91"
+  },
+  {
+    "id": 16,
+    "name": "Finnish",
+    "nameLower": "redacted-92"
+  },
+  {
+    "id": 19,
+    "name": "Flemish",
+    "nameLower": "redacted-93"
+  },
+  {
+    "id": 2,
+    "name": "French",
+    "nameLower": "redacted-94"
+  },
+  {
+    "id": 4,
+    "name": "German",
+    "nameLower": "redacted-95"
+  },
+  {
+    "id": 20,
+    "name": "Greek",
+    "nameLower": "redacted-96"
+  },
+  {
+    "id": 23,
+    "name": "Hebrew",
+    "nameLower": "redacted-97"
+  },
+  {
+    "id": 27,
+    "name": "Hindi",
+    "nameLower": "redacted-98"
+  },
+  {
+    "id": 22,
+    "name": "Hungarian",
+    "nameLower": "redacted-99"
+  },
+  {
+    "id": 9,
+    "name": "Icelandic",
+    "nameLower": "redacted-100"
+  },
+  {
+    "id": 44,
+    "name": "Indonesian",
+    "nameLower": "redacted-101"
+  },
+  {
+    "id": 5,
+    "name": "Italian",
+    "nameLower": "redacted-102"
+  },
+  {
+    "id": 8,
+    "name": "Japanese",
+    "nameLower": "redacted-103"
+  },
+  {
+    "id": 21,
+    "name": "Korean",
+    "nameLower": "redacted-104"
+  },
+  {
+    "id": 36,
+    "name": "Latvian",
+    "nameLower": "redacted-105"
+  },
+  {
+    "id": 24,
+    "name": "Lithuanian",
+    "nameLower": "redacted-106"
+  },
+  {
+    "id": 45,
+    "name": "Macedonian",
+    "nameLower": "redacted-107"
+  },
+  {
+    "id": 29,
+    "name": "Malayalam",
+    "nameLower": "redacted-108"
+  },
+  {
+    "id": 15,
+    "name": "Norwegian",
+    "nameLower": "redacted-109"
+  },
+  {
+    "id": 37,
+    "name": "Persian",
+    "nameLower": "redacted-110"
+  },
+  {
+    "id": 12,
+    "name": "Polish",
+    "nameLower": "redacted-111"
+  },
+  {
+    "id": 18,
+    "name": "Portuguese",
+    "nameLower": "redacted-112"
+  },
+  {
+    "id": 33,
+    "name": "Portuguese (Brazil)",
+    "nameLower": "redacted-113"
+  },
+  {
+    "id": 35,
+    "name": "Romanian",
+    "nameLower": "redacted-114"
+  },
+  {
+    "id": 11,
+    "name": "Russian",
+    "nameLower": "redacted-115"
+  },
+  {
+    "id": 40,
+    "name": "Serbian",
+    "nameLower": "redacted-116"
+  },
+  {
+    "id": 31,
+    "name": "Slovak",
+    "nameLower": "redacted-117"
+  },
+  {
+    "id": 46,
+    "name": "Slovenian",
+    "nameLower": "redacted-118"
+  },
+  {
+    "id": 3,
+    "name": "Spanish",
+    "nameLower": "redacted-119"
+  },
+  {
+    "id": 34,
+    "name": "Spanish (Latino)",
+    "nameLower": "redacted-120"
+  },
+  {
+    "id": 14,
+    "name": "Swedish",
+    "nameLower": "redacted-121"
+  },
+  {
+    "id": 43,
+    "name": "Tamil",
+    "nameLower": "redacted-122"
+  },
+  {
+    "id": 32,
+    "name": "Thai",
+    "nameLower": "redacted-123"
+  },
+  {
+    "id": 17,
+    "name": "Turkish",
+    "nameLower": "redacted-124"
+  },
+  {
+    "id": 30,
+    "name": "Ukrainian",
+    "nameLower": "redacted-125"
+  },
+  {
+    "id": 13,
+    "name": "Vietnamese",
+    "nameLower": "redacted-126"
+  }
+]

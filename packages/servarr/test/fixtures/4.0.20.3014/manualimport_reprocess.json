@@ -1,0 +1,114 @@
+[
+  {
+    "path": "/redacted/47.mkv",
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "episodes": [
+      {
+        "seriesId": 1,
+        "tvdbId": 46693,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 8,
+        "title": "redacted-66",
+        "airDate": "1962-11-14",
+        "airDateUtc": "1962-11-15T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-67",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 8,
+        "unverifiedSceneNumbering": false,
+        "id": 20
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "releaseGroup": "redacted-42",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "singleEpisode",
+    "rejections": [
+      {
+        "reason": "redacted-43",
+        "type": "permanent"
+      }
+    ],
+    "id": 764849802
+  },
+  {
+    "path": "/redacted/64.mkv",
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "episodes": [
+      {
+        "seriesId": 1,
+        "tvdbId": 46692,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 7,
+        "title": "redacted-62",
+        "airDate": "1962-11-07",
+        "airDateUtc": "1962-11-08T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-63",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 7,
+        "unverifiedSceneNumbering": false,
+        "id": 19
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "WEBDL-1080p",
+        "source": "web",
+        "resolution": 1080
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "releaseGroup": "redacted-42",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "singleEpisode",
+    "rejections": [
+      {
+        "reason": "redacted-43",
+        "type": "permanent"
+      }
+    ],
+    "id": 1674799021
+  }
+]

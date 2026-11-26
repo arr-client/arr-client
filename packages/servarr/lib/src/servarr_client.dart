@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 
+import 'activity/blocklist_record.dart';
+import 'activity/manual_import_records.dart';
+import 'activity/servarr_import_mapping.dart';
 import 'json_reading.dart';
 import 'records/command_record.dart';
 import 'records/health_record.dart';
@@ -11,15 +14,18 @@ import 'records/queue_record.dart';
 import 'servarr_refs.dart';
 import 'servarr_status.dart';
 
-/// The reads the services of the Servarr family have in common.
+part 'activity/servarr_activity.dart';
+
+/// The requests the services of the Servarr family have in common.
 ///
 /// A failure of the HTTP client is returned unchanged and nothing is retried
 /// here. An answer that cannot be understood is [MalformedResponse].
-final class ServarrClient {
+final class ServarrClient with _ServarrActivity {
   /// A client of the API under [apiPath], such as `api/v3`.
   ///
   /// [includeUnknownParameter] is the service's queue flag for downloads it
-  /// cannot match. [refs] reads the ids of each queue and history record.
+  /// cannot match. [refs] reads the ids of each queue, history and blocklist
+  /// record.
   ServarrClient(
     this._http, {
     required this._apiPath,
@@ -36,6 +42,9 @@ final class ServarrClient {
 
   /// Reads the ids of a queue or history record.
   final ServarrRefs Function(JsonObject record) refs;
+
+  @override
+  ServarrClient get _client => this;
 
   /// The application's name and version.
   ServiceResult<ServarrStatus> status() => read('system/status', (json) {
@@ -158,11 +167,21 @@ final class ServarrClient {
     String path,
     T Function(Object? json) decode, {
     Map<String, List<String>> query = const {},
+  }) => _send(HttpMethod.get, path, decode, query: query);
+
+  /// [decode] throws [FormatException] for a body it cannot understand.
+  ServiceResult<T> _send<T>(
+    HttpMethod method,
+    String path,
+    T Function(Object? json) decode, {
+    Map<String, List<String>> query = const {},
+    RequestBody? body,
   }) async {
     final request = ServiceRequest(
-      HttpMethod.get,
+      method,
       '$_apiPath/$path',
       query: query,
+      body: body,
     );
     switch (await _http.send(request)) {
       case Err(:final error):

@@ -1,6 +1,7 @@
 /// Shared client and models for the Servarr family of services.
 library;
 
+export 'src/activity/servarr_import_mapping.dart';
 export 'src/overview/servarr_calendar.dart';
 export 'src/overview/servarr_health.dart';
 export 'src/overview/servarr_wanted.dart';
