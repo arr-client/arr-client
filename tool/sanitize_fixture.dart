@@ -141,10 +141,7 @@ bool _isSafeString(String value, String field) {
   if (_timestamp.hasMatch(value) || _duration.hasMatch(value)) return true;
   if (_mediaCover.hasMatch(value)) return true;
   if (field.endsWith('version')) return _isVersion(value);
-  if (field == 'imdbid') return _imdbId.hasMatch(value);
-  if (const {'code2', 'code3'}.contains(field)) {
-    return _languageCode.hasMatch(value);
-  }
+  if (_fieldShapes[field]?.hasMatch(value) ?? false) return true;
   // Health checks are identified by class name.
   if (field == 'source' && _healthCheck.hasMatch(value)) return true;
   return _enumFields.contains(field) && _enumValues.contains(value);
@@ -192,6 +189,31 @@ final _mediaCover = RegExp(
 );
 final _imdbId = RegExp(r'^tt\d{7,9}$');
 final _languageCode = RegExp(r'^[a-z]{2,3}$');
+// Bazarr sends these booleans as Python strings and takes original_format back.
+final _pythonBool = RegExp(r'^(True|False)$');
+// Bazarr: a language, optionally with country, script and kind, as in "pt-BR:hi".
+final _subtitleLanguage = RegExp(
+  r'^[a-z]{2,3}(-[A-Z]{2})?(-[A-Z][a-z]{3})?(:(hi|forced))?$',
+);
+final _clockTime = RegExp(r'^([01]\d|2[0-3]):[0-5]\d$');
+// m:ss or h:mm:ss.
+final _runTime = RegExp(r'^(\d{1,2}:[0-5]\d|[0-5]?\d):[0-5]\d$');
+
+/// Shapes that are harmless in the named field only.
+final _fieldShapes = {
+  'airtime': _clockTime,
+  'code2': _languageCode,
+  'code3': _languageCode,
+  'forced': _pythonBool,
+  'hearingimpaired': _pythonBool,
+  'hi': _pythonBool,
+  'imdbid': _imdbId,
+  'language': _subtitleLanguage,
+  'originalformat': _pythonBool,
+  'originallanguage': _languageCode,
+  'runtime': _runTime,
+};
+
 final _healthCheck = RegExp(r'^([A-Z][a-z]+){1,8}Check$');
 final _hexHash = RegExp(r'^([0-9a-fA-F]{32}|[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$');
 final _email = RegExp(r'^[^\s/\\:]+@[^\s/\\:]+$');
@@ -272,6 +294,7 @@ const _enumFields = {
   'commandname',
   'covertype',
   'eventtype',
+  'finaletype',
   'mediatype',
   'minimumavailability',
   'mode',
@@ -314,7 +337,11 @@ const _enumValues = {
   'trackFileDeleted', 'trackFileRenamed', 'albumImportIncomplete',
   'downloadImported', 'bookFileImported', 'bookFileDeleted', 'bookFileRenamed',
   'bookImportIncomplete', 'releaseGrabbed', 'indexerQuery', 'indexerRss',
-  'indexerAuth', 'usenet', 'torrent',
+  'indexerAuth', 'usenet', 'torrent', 'artistFolderImported',
+  'trackFileRetagged', 'bookFileRetagged', 'indexerInfo',
+  // Servarr releases, credits and episodes
+  'permanent', 'temporary', 'cast', 'crew', 'series', 'season', 'midseason',
+  'webRip', 'screener',
   // Servarr command names
   'RefreshSeries', 'RefreshMovie', 'RefreshArtist', 'RefreshAuthor',
   'RescanSeries', 'RescanMovie', 'RescanFolders', 'EpisodeSearch',

@@ -89,6 +89,8 @@ void main() {
       'remoteUrl', 'posterPath', 'added', 'timeleft', 'zzz', 'x_y', 'Weird',
       // A field name does not make its value safe.
       'tmdbId', 'id', 'quality', 'year',
+      'forced', 'hearing_impaired', 'hi', 'original_format', 'language',
+      'originalLanguage', 'airTime', 'runTime', 'finaleType',
     ];
 
     for (final field in fields) {
@@ -254,6 +256,75 @@ void main() {
         'url': '/MediaCover/12/poster-500.jpg?lastWrite=638000000000000000',
       };
       expect(FixtureSanitizer().sanitizeJson(input), input);
+    });
+
+    test('keeps what Bazarr manual search results are sent back with', () {
+      Map<String, Object?> result(String language) => {
+        'forced': 'False',
+        'hearing_impaired': 'True',
+        'hi': 'False',
+        'original_format': 'False',
+        'language': language,
+        'score': 96.5,
+      };
+      final input = {
+        'data': [
+          for (final language in ['en', 'eng', 'en:hi', 'fr:forced', 'pt-BR'])
+            result(language),
+          result('zh-Hant'),
+        ],
+      };
+      expect(FixtureSanitizer().sanitizeJson(input), input);
+    });
+
+    test('keeps those values in their own fields and spelling only', () {
+      for (final input in [
+        {'title': 'True'},
+        {'forced': 'true'},
+        {'language': 'en:nas'},
+        {'language': 'English (US)'},
+        {'airTime': '25:00'},
+        {'title': '21:00'},
+        {'runTime': '42:75'},
+        {'originalLanguage': 'nas1'},
+        {'type': 'webrip.local'},
+      ]) {
+        expect(FixtureSanitizer().sanitizeJson(input), {
+          input.keys.single: 'redacted-1',
+        }, reason: '$input');
+      }
+    });
+
+    test('keeps times and the original language', () {
+      for (final input in [
+        {'airTime': '21:00'},
+        {'runTime': '42:15'},
+        {'runTime': '5:07'},
+        {'runTime': '1:02:03'},
+        {'originalLanguage': 'en'},
+      ]) {
+        expect(FixtureSanitizer().sanitizeJson(input), input);
+      }
+    });
+
+    test('keeps enum words of releases, credits, episodes and history', () {
+      const words = {
+        'source': ['webRip', 'webrip'],
+        'modifier': ['screener'],
+        'type': ['permanent', 'temporary', 'cast', 'crew'],
+        'finaleType': ['series', 'season', 'midseason'],
+        'eventType': [
+          'artistFolderImported',
+          'trackFileRetagged',
+          'bookFileRetagged',
+          'indexerInfo',
+        ],
+      };
+      for (final MapEntry(key: field, value: values) in words.entries) {
+        for (final word in values) {
+          expect(FixtureSanitizer().sanitizeJson({field: word}), {field: word});
+        }
+      }
     });
 
     test('keeps the general shape of what it replaces', () {
