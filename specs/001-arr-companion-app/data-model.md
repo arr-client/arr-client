@@ -104,6 +104,14 @@ first three. When a list was last fetched: it tells a list never fetched from on
 fetch of all entries replaces the kind's earlier fetches by parent, and also records one for each
 parent then cached or named by an entry. Removed with the instance, and with the parent.
 
+### CacheOptions
+instanceId, options (the server's quality profiles, root folders and tags), fetchedAt; keyed by
+instanceId. So that they can be named offline. Removed with the instance and when cached data is
+cleared.
+
+An item the server turns out not to have is removed from the cache, whether or not it was there.
+The cache announces each such removal, and lists held in memory drop the item.
+
 ## In memory
 
 ### LibraryItem (common)

@@ -15,9 +15,10 @@ import '../service_result.dart';
 
 /// Browsing and managing a library.
 ///
-/// [list], [item] and [children] store what they fetch in the instance's cache.
-/// The `cached` reads return it without any network request, for offline and
-/// first display. They complete with null if it was never fetched.
+/// [list], [item], [children] and [options] store what they fetch in the
+/// instance's cache. The `cached` reads return it without any network request,
+/// for offline and first display. They complete with null if it was never
+/// fetched.
 abstract interface class LibraryProvider implements Capability {
   /// The kind of the top-level items.
   MediaKind get itemKind;
@@ -48,6 +49,9 @@ abstract interface class LibraryProvider implements Capability {
 
   /// Profiles, root folders and tags.
   ServiceResult<List<ServerOption>> options();
+
+  /// What [options] last fetched.
+  ServiceResult<Cached<List<ServerOption>>?> cachedOptions();
 
   /// Empty where the server provides none.
   ServiceResult<List<Credit>> credits(ItemRef ref);

@@ -30,7 +30,8 @@ final class LibrarySource {
   /// Why the last load failed.
   final ServiceFailure? failure;
 
-  /// Its quality profiles, root folders and tags; null while not known.
+  /// Its quality profiles, root folders and tags, as saved or as the server
+  /// gave them; null while not known.
   final List<ServerOption>? options;
 
   /// Whether the last read of [options] failed.

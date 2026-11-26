@@ -19,6 +19,7 @@
 // ones. An add is refused for a series it has, a root folder or quality profile
 // it does not have and a monitoring value it does not know.
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -458,7 +459,7 @@ class FakeCache implements CacheScope {
           entry.remoteId,
     ];
     for (final id in gone) {
-      await remove(kind, id);
+      _drop(kind, id);
     }
     for (final entry in entries) {
       _entries[(kind, entry.remoteId)] = entry;
@@ -478,6 +479,13 @@ class FakeCache implements CacheScope {
 
   @override
   Future<void> remove(MediaKind kind, int remoteId) async {
+    _drop(kind, remoteId);
+    _removals.add(
+      ItemRef(instanceId: instanceId, kind: kind, remoteId: remoteId),
+    );
+  }
+
+  void _drop(MediaKind kind, int remoteId) {
     _entries.remove((kind, remoteId));
     final child = _children[kind];
     if (child == null) return;
@@ -486,6 +494,20 @@ class FakeCache implements CacheScope {
       (key, entry) => key.$1 == child && entry.parentRemoteId == remoteId,
     );
   }
+
+  final _removals = StreamController<ItemRef>.broadcast();
+
+  @override
+  Stream<ItemRef> get removals => _removals.stream;
+
+  Cached<List<ServerOption>>? _options;
+
+  @override
+  Future<Cached<List<ServerOption>>?> readOptions() async => _options;
+
+  @override
+  Future<void> replaceOptions(List<ServerOption> options) async =>
+      _options = Cached(options, fetchedAt: DateTime.now().toUtc());
 
   void _check(CacheEntry entry) => expect(entry.instanceId, instanceId);
 }

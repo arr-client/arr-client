@@ -11,11 +11,21 @@ abstract class CachedItemController<T> extends Notifier<ViewState<T>> {
   /// From the server.
   ServiceResult<T> fetch();
 
+  /// The items found to be gone from the server, by this screen or another.
+  Stream<ItemRef> get removals;
+
+  /// What is left of [shown] now that [gone] is; null if it is unaffected.
+  ViewState<T>? without(ViewState<T> shown, ItemRef gone);
+
   DateTime _fetchedAt = DateTime.now();
   Future<void>? _loading;
 
   @override
   ViewState<T> build() {
+    final subscription = removals.listen((gone) {
+      if (without(state, gone) case final next?) state = next;
+    });
+    ref.onDispose(subscription.cancel);
     _loading = _run(_first());
     return const ViewLoading();
   }

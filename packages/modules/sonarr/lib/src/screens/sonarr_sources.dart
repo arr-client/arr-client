@@ -12,6 +12,7 @@ final class SonarrSources {
     required this.history,
     required this.artwork,
     required this.navigator,
+    this.removals = const Stream.empty(),
   });
 
   /// The instance.
@@ -28,6 +29,9 @@ final class SonarrSources {
 
   /// Opens shared flows of the app.
   final AppNavigator navigator;
+
+  /// The instance's items found to be gone from the server.
+  final Stream<ItemRef> removals;
 
   /// The key of the series [id].
   ItemRef series(int id) =>

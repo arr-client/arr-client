@@ -18,6 +18,7 @@
 //
 // The queue also has one download that matches no movie.
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -213,7 +214,24 @@ class FakeCache implements CacheScope {
   @override
   Future<void> remove(MediaKind kind, int remoteId) async {
     entries.remove((kind, remoteId));
+    _removals.add(
+      ItemRef(instanceId: instanceId, kind: kind, remoteId: remoteId),
+    );
   }
+
+  final _removals = StreamController<ItemRef>.broadcast();
+
+  @override
+  Stream<ItemRef> get removals => _removals.stream;
+
+  Cached<List<ServerOption>>? options;
+
+  @override
+  Future<Cached<List<ServerOption>>?> readOptions() async => options;
+
+  @override
+  Future<void> replaceOptions(List<ServerOption> options) async =>
+      this.options = Cached(options, fetchedAt: listFetchedAt);
 }
 
 class _FakeArtwork extends Fake implements ArtworkLoader {}

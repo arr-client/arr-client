@@ -6,7 +6,10 @@ import 'dart:async';
 import '../cache/cache_entry.dart';
 import '../cache/cache_scope.dart';
 import '../cache/cache_snapshot.dart';
+import '../cache/cached.dart';
+import '../models/item_ref.dart';
 import '../models/media_kind.dart';
+import '../models/server_option.dart';
 import '../module/result.dart';
 import '../module/service_failure.dart';
 import '../module/service_result.dart';
@@ -178,6 +181,16 @@ final class LeasedCache implements CacheScope {
   @override
   Future<void> remove(MediaKind kind, int remoteId) =>
       _write(() => _cache.remove(kind, remoteId));
+
+  @override
+  Stream<ItemRef> get removals => _cache.removals;
+
+  @override
+  Future<Cached<List<ServerOption>>?> readOptions() => _cache.readOptions();
+
+  @override
+  Future<void> replaceOptions(List<ServerOption> options) =>
+      _write(() => _cache.replaceOptions(options));
 
   Future<void> _write(Future<void> Function() write) =>
       _lease.isOutdated ? Future.value() : write();

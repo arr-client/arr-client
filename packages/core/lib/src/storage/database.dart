@@ -234,6 +234,20 @@ class CacheFetches extends Table {
   Set<Column<Object>> get primaryKey => {instanceId, kind, parentRemoteId};
 }
 
+/// data-model.md CacheOptions.
+@DataClassName('CacheOptionsRow')
+class CacheOptions extends Table {
+  TextColumn get instanceId =>
+      text().references(Instances, #id, onDelete: KeyAction.cascade)();
+
+  /// A JSON array.
+  TextColumn get options => text()();
+  DateTimeColumn get fetchedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {instanceId};
+}
+
 /// data-model.md PendingSecretDeletion. Keys only, never a secret.
 @DataClassName('PendingSecretDeletionRow')
 class PendingSecretDeletions extends Table {
@@ -260,6 +274,7 @@ class PendingSecretDeletions extends Table {
     EventMarkers,
     CacheEntries,
     CacheFetches,
+    CacheOptions,
     PendingSecretDeletions,
   ],
 )
@@ -268,10 +283,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) await migrator.createTable(cacheOptions);
+    },
     beforeOpen: (details) async {
       // Off by default in SQLite, and the cascades depend on it.
       await customStatement('PRAGMA foreign_keys = ON');

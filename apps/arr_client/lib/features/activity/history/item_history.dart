@@ -84,6 +84,9 @@ class ItemHistoryScreen extends ConsumerWidget {
           child: StateScaffold<List<HistoryEvent>>(
             state: view,
             itemId: item,
+            onGone: () => unawaited(
+              instance.context.cache.remove(item.kind, item.remoteId),
+            ),
             onRetry: () => unawaited(controller.retry()),
             isEmpty: (events) => events.isEmpty && !history.hasMore,
             emptyMessage: strings.historyEmpty,

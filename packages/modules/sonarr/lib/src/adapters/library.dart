@@ -212,7 +212,15 @@ final class SonarrLibraryAdapter implements LibraryProvider {
   }
 
   @override
-  ServiceResult<List<ServerOption>> options() => _api.options();
+  ServiceResult<List<ServerOption>> options() async {
+    final result = await _api.options();
+    if (result case Ok(:final value)) await _cache.replaceOptions(value);
+    return result;
+  }
+
+  @override
+  ServiceResult<Cached<List<ServerOption>>?> cachedOptions() async =>
+      Ok(await _cache.readOptions());
 
   /// Sonarr provides no cast.
   @override

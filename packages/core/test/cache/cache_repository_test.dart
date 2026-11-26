@@ -2,8 +2,11 @@ import 'package:core/src/cache/cache_entry.dart';
 import 'package:core/src/cache/cache_repository.dart';
 import 'package:core/src/cache/cache_scope.dart';
 import 'package:core/src/instances/auth_kind.dart';
+import 'package:core/src/models/item_ref.dart';
 import 'package:core/src/models/item_state.dart';
 import 'package:core/src/models/media_kind.dart';
+import 'package:core/src/models/server_option.dart';
+import 'package:core/src/models/server_option_kind.dart';
 import 'package:core/src/storage/database.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -442,5 +445,152 @@ void main() {
       expect(await scope.entry(MediaKind.movie, 1), isNull);
     }
     expect(await database.select(database.instances).get(), hasLength(2));
+  });
+
+  group('removals', () {
+    const movie = ItemRef(
+      instanceId: 'home',
+      kind: MediaKind.movie,
+      remoteId: 1,
+    );
+
+    test('announce an item once it has left the cache', () async {
+      await cache.replace(MediaKind.movie, [_entry(1)]);
+      final seen = <(ItemRef, bool)>[];
+      final subscription = repository.removals.listen((ref) async {
+        seen.add((ref, await cache.entry(ref.kind, ref.remoteId) != null));
+      });
+      addTearDown(subscription.cancel);
+
+      await cache.remove(MediaKind.movie, 1);
+      await pumpEventQueue();
+
+      expect(seen, [(movie, false)]);
+    });
+
+    test('announce an item that was not cached', () async {
+      final seen = <ItemRef>[];
+      final subscription = cache.removals.listen(seen.add);
+      addTearDown(subscription.cancel);
+
+      await cache.remove(MediaKind.movie, 1);
+      await pumpEventQueue();
+
+      expect(seen, [movie]);
+    });
+
+    test('of one instance are not heard by another', () async {
+      final seen = <ItemRef>[];
+      final subscription = repository.scope('other').removals.listen(seen.add);
+      addTearDown(subscription.cancel);
+
+      await cache.remove(MediaKind.movie, 1);
+      await pumpEventQueue();
+
+      expect(seen, isEmpty);
+    });
+
+    test('do not include what a full fetch drops', () async {
+      await cache.replace(MediaKind.movie, [_entry(1)]);
+      final seen = <ItemRef>[];
+      final subscription = cache.removals.listen(seen.add);
+      addTearDown(subscription.cancel);
+
+      await cache.replace(MediaKind.movie, []);
+      await pumpEventQueue();
+
+      expect(seen, isEmpty);
+    });
+  });
+
+  group('options', () {
+    const profile = ServerOption(
+      kind: ServerOptionKind.qualityProfile,
+      id: 4,
+      label: 'HD',
+    );
+    const folder = ServerOption(
+      kind: ServerOptionKind.rootFolder,
+      id: 1,
+      label: '/media',
+      freeSpace: 5000000000,
+    );
+
+    List<(ServerOptionKind, int, String, int?)> fields(
+      List<ServerOption> options,
+    ) => [
+      for (final option in options)
+        (option.kind, option.id, option.label, option.freeSpace),
+    ];
+
+    test('are null until stored, then kept with their age', () async {
+      expect(await cache.readOptions(), isNull);
+
+      await cache.replaceOptions([profile, folder]);
+
+      final saved = (await cache.readOptions())!;
+      expect(fields(saved.value), fields([profile, folder]));
+      expect(saved.fetchedAt, _first);
+      expect(saved.fetchedAt.isUtc, isTrue);
+    });
+
+    test('are replaced as a whole, also by none', () async {
+      await cache.replaceOptions([profile, folder]);
+      now = _second;
+
+      await cache.replaceOptions([]);
+
+      final saved = (await cache.readOptions())!;
+      expect(saved.value, isEmpty);
+      expect(saved.fetchedAt, _second);
+    });
+
+    test('are those of their instance only', () async {
+      await cache.replaceOptions([profile]);
+
+      expect(await repository.scope('other').readOptions(), isNull);
+    });
+
+    test('leave out what cannot be understood', () async {
+      Future<void> store(String options) => database
+          .into(database.cacheOptions)
+          .insertOnConflictUpdate(
+            CacheOptionsCompanion.insert(
+              instanceId: 'home',
+              options: options,
+              fetchedAt: _first,
+            ),
+          );
+
+      for (final unreadable in ['[', '{}']) {
+        await store(unreadable);
+        expect(await cache.readOptions(), isNull, reason: unreadable);
+      }
+      await store(
+        '[{"kind":"unheardOf","id":1,"label":"a"},{"id":2},'
+        '{"kind":"tag","id":3,"label":"kids"}]',
+      );
+      expect(fields((await cache.readOptions())!.value), [
+        (ServerOptionKind.tag, 3, 'kids', null),
+      ]);
+    });
+
+    test('go when the cache is cleared', () async {
+      await cache.replaceOptions([profile]);
+
+      await repository.clear();
+
+      expect(await cache.readOptions(), isNull);
+    });
+
+    test('go with their instance', () async {
+      await cache.replaceOptions([profile]);
+
+      await (database.delete(
+        database.instances,
+      )..where((row) => row.id.equals('home'))).go();
+
+      expect(await cache.readOptions(), isNull);
+    });
   });
 }

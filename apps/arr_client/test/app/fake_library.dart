@@ -24,6 +24,9 @@ class FakeLibrary implements LibraryProvider {
 
   List<ServerOption> serverOptions;
 
+  /// The options saved before; null if never fetched.
+  Cached<List<ServerOption>>? savedOptions;
+
   /// Why [list] fails; null while it succeeds.
   ServiceFailure? failure;
 
@@ -54,6 +57,10 @@ class FakeLibrary implements LibraryProvider {
     final failure = optionsFailure;
     return failure == null ? Ok(serverOptions) : Err(failure);
   }
+
+  @override
+  ServiceResult<Cached<List<ServerOption>>?> cachedOptions() async =>
+      Ok(savedOptions);
 
   @override
   ModuleRoute detailRoute(ItemRef ref) =>

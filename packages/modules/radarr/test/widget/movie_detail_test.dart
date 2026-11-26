@@ -391,6 +391,24 @@ void main() {
     expect(find.text('File renamed'), findsOneWidget);
   });
 
+  testWidgets('offline, names the quality profile from what was saved', (
+    tester,
+  ) async {
+    final harness = Harness(_server());
+    await save(harness);
+    final options = await succeed(harness.library.options());
+    final profile = options.singleWhere(
+      (option) =>
+          option.kind == ServerOptionKind.qualityProfile && option.id == 4,
+    );
+    harness.server.down = failedAnswer(const Unreachable());
+
+    await pump(tester, harness);
+
+    expect(find.text(profile.label), findsOneWidget);
+    expect(find.text('Retry quality profile'), findsNothing);
+  });
+
   testWidgets('with nothing saved, says why it cannot load', (tester) async {
     final harness = Harness(_server());
     harness.server.down = failedAnswer(const Unreachable());

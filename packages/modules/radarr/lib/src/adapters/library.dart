@@ -132,7 +132,17 @@ final class RadarrLibraryAdapter
       };
 
   @override
-  ServiceResult<List<ServerOption>> options() => _api.options();
+  ServiceResult<List<ServerOption>> options() async {
+    final result = await _api.options();
+    if (result case Ok(:final value)) {
+      await _context.cache.replaceOptions(value);
+    }
+    return result;
+  }
+
+  @override
+  ServiceResult<Cached<List<ServerOption>>?> cachedOptions() async =>
+      Ok(await _context.cache.readOptions());
 
   @override
   ServiceResult<List<Credit>> credits(ItemRef ref) async =>
