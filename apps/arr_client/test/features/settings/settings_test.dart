@@ -208,14 +208,59 @@ void main() {
   });
 
   test("the project's license is bundled where the notice says", () async {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    // The test binding shows no licenses, so this reads what a build bundles.
-    final bundled = await rootBundle.load('NOTICES.Z');
-    final notices = utf8.decode(gzip.decode(Uint8List.sublistView(bundled)));
+    final notices = await _bundledNotices();
 
+    expect(notices, matches(r'arr-client\n\n\s*GNU GENERAL PUBLIC LICENSE'));
+    expect(notices, isNot(contains('arr_client_workspace')));
+  });
+
+  test('the license in NOTICES is the one in LICENSE', () {
+    final sections = _sections(File('../../NOTICES').readAsStringSync());
+    final license = File('../../LICENSE').readAsStringSync();
+
+    expect(sections['arr-client']?.trimRight(), license.trimRight());
+  });
+
+  // The Android build compares the list with the release APK's classpath.
+  test('every listed Android library has a bundled notice', () async {
+    final bundled = _sections(await _bundledNotices());
+    final list = File('android/release_dependencies.txt').readAsLinesSync();
+    final names = {
+      for (final line in list)
+        if (line.isNotEmpty && !line.startsWith('#'))
+          line.substring(line.indexOf(' ') + 1),
+    };
+
+    expect(names, contains('Tink'));
+    expect(bundled.keys, containsAll(names));
+    // Bundled inside the artifacts of others.
     expect(
-      notices,
-      matches(r'arr_client_workspace\n\n\s*GNU GENERAL PUBLIC LICENSE'),
+      bundled.keys,
+      containsAll([
+        'FlatBuffers (in AndroidX Emoji2)',
+        'Protocol Buffers (in Tink)',
+        'ThreeTen (in Kotlin standard library)',
+      ]),
     );
   });
+}
+
+/// What the license page of a build is made from.
+Future<String> _bundledNotices() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  // The test binding shows no licenses, so this reads what a build bundles.
+  final bundled = await rootBundle.load('NOTICES.Z');
+  return utf8.decode(gzip.decode(Uint8List.sublistView(bundled)));
+}
+
+/// The license text of each name, split the way Flutter splits it.
+Map<String, String> _sections(String notices) {
+  final sections = <String, String>{};
+  for (final section in notices.split('\n${'-' * 80}\n')) {
+    final end = section.indexOf('\n\n');
+    for (final name in section.substring(0, end).split('\n')) {
+      sections[name] = section.substring(end + 2);
+    }
+  }
+  return sections;
 }

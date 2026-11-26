@@ -15,7 +15,10 @@
 /// groups written in Android build files. A deny-list only catches what it
 /// names: a passing check does not show that no proprietary SDK is present, so
 /// review the Maven dependencies of every new Android plugin. Artifacts that
-/// Gradle resolves on behalf of other artifacts are not visible here at all.
+/// Gradle resolves on behalf of other artifacts are not visible here at all:
+/// the Android build compares those in the release APK with
+/// apps/arr_client/android/release_dependencies.txt, and their notices are in
+/// NOTICES.
 library;
 
 import 'dart:convert';

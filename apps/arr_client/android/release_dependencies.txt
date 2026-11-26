@@ -1,0 +1,77 @@
+# The Maven libraries of the release APK: Gradle's releaseRuntimeClasspath, without the
+# io.flutter engine artifacts, whose notices Flutter ships. Each line holds the coordinates, then
+# the name under which /NOTICES carries the library's notice.
+#
+# The Android build fails when this list and the classpath differ. Before changing a line, check
+# the library's license (it must be GPL-3.0 compatible, and not a proprietary SDK), look in its
+# artifact for bundled third-party code and NOTICE files, and update /NOTICES.
+androidx.activity:activity:1.8.1 AndroidX
+androidx.annotation:annotation:1.10.0 AndroidX
+androidx.annotation:annotation-experimental:1.4.1 AndroidX
+androidx.annotation:annotation-jvm:1.10.0 AndroidX
+androidx.appcompat:appcompat:1.5.0 AndroidX
+androidx.appcompat:appcompat-resources:1.5.0 AndroidX
+androidx.arch.core:core-common:2.2.0 AndroidX
+androidx.arch.core:core-runtime:2.2.0 AndroidX
+androidx.cardview:cardview:1.0.0 AndroidX
+androidx.collection:collection:1.4.2 AndroidX
+androidx.collection:collection-jvm:1.4.2 AndroidX
+androidx.concurrent:concurrent-futures:1.1.0 AndroidX
+androidx.constraintlayout:constraintlayout:2.0.1 AndroidX
+androidx.constraintlayout:constraintlayout-solver:2.0.1 AndroidX
+androidx.coordinatorlayout:coordinatorlayout:1.1.0 AndroidX
+androidx.core:core:1.18.0 AndroidX
+androidx.core:core-ktx:1.18.0 AndroidX
+androidx.core:core-viewtree:1.0.0 AndroidX
+androidx.cursoradapter:cursoradapter:1.0.0 AndroidX
+androidx.customview:customview:1.1.0 AndroidX
+androidx.documentfile:documentfile:1.0.0 AndroidX
+androidx.drawerlayout:drawerlayout:1.1.1 AndroidX
+androidx.dynamicanimation:dynamicanimation:1.0.0 AndroidX
+androidx.emoji2:emoji2:1.2.0 AndroidX
+androidx.emoji2:emoji2-views-helper:1.2.0 AndroidX
+androidx.exifinterface:exifinterface:1.4.1 AndroidX
+androidx.fragment:fragment:1.7.1 AndroidX
+androidx.interpolator:interpolator:1.0.0 AndroidX
+androidx.legacy:legacy-support-core-utils:1.0.0 AndroidX
+androidx.lifecycle:lifecycle-common:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-common-java8:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-livedata:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-livedata-core:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-process:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-runtime:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-viewmodel:2.7.0 AndroidX
+androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0 AndroidX
+androidx.loader:loader:1.0.0 AndroidX
+androidx.localbroadcastmanager:localbroadcastmanager:1.0.0 AndroidX
+androidx.print:print:1.0.0 AndroidX
+androidx.profileinstaller:profileinstaller:1.3.1 AndroidX
+androidx.recyclerview:recyclerview:1.1.0 AndroidX
+androidx.resourceinspection:resourceinspection-annotation:1.0.1 AndroidX
+androidx.savedstate:savedstate:1.2.1 AndroidX
+androidx.startup:startup-runtime:1.1.1 AndroidX
+androidx.tracing:tracing:1.2.0 AndroidX
+androidx.transition:transition:1.2.0 AndroidX
+androidx.vectordrawable:vectordrawable:1.1.0 AndroidX
+androidx.vectordrawable:vectordrawable-animated:1.1.0 AndroidX
+androidx.versionedparcelable:versionedparcelable:1.1.1 AndroidX
+androidx.viewpager2:viewpager2:1.0.0 AndroidX
+androidx.viewpager:viewpager:1.0.0 AndroidX
+androidx.window.extensions.core:core:1.0.0 AndroidX
+androidx.window:window:1.2.0 AndroidX
+androidx.window:window-java:1.2.0 AndroidX
+com.getkeepsafe.relinker:relinker:1.4.5 ReLinker
+com.google.android.material:material:1.7.0 Material Components for Android
+com.google.code.findbugs:jsr305:3.0.2 JSR 305 annotations
+com.google.code.gson:gson:2.13.2 Gson
+com.google.crypto.tink:tink-android:1.23.0 Tink
+com.google.errorprone:error_prone_annotations:2.41.0 Error Prone annotations
+com.google.guava:listenablefuture:1.0 Guava ListenableFuture
+org.jetbrains:annotations:23.0.0 JetBrains annotations
+org.jetbrains.kotlin:kotlin-stdlib:2.4.20 Kotlin standard library
+org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 kotlinx.coroutines
+org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0 kotlinx.coroutines
+org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 kotlinx.coroutines
+org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0 kotlinx.coroutines
+org.jspecify:jspecify:1.0.0 JSpecify

@@ -158,7 +158,7 @@
   "@shareLogFailed": { "description": "Shown when the share sheet does not open." },
   "licenses": "Licenses",
   "@licenses": { "description": "Entry in Settings that opens the license page." },
-  "appLegalNotice": "arr-client is free software: you may share and change it under the GNU General Public License, version 3. It comes with no warranty. The license text is listed below under arr_client_workspace.",
+  "appLegalNotice": "arr-client is free software: you may share and change it under the GNU General Public License, version 3. It comes with no warranty. The license text is listed below under arr-client.",
   "@appLegalNotice": { "description": "Legal notice on the license page." },
   "search": "Search",
   "@search": { "description": "Button and title of the app-wide search." },
