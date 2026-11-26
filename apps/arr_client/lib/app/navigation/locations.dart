@@ -50,6 +50,16 @@ String editInstanceLocation(String instanceId) =>
 String addServiceFormLocation(String serviceType) =>
     '$addInstanceLocation/$serviceType';
 
+/// The path, under an instance, of the page that stands for an item's screen
+/// until its module has one. Module paths start with the module's id.
+const itemPlaceholderPath = 'item';
+
+/// Where that page is for the item called [title].
+String itemPlaceholderLocation(String instanceId, String title) => Uri(
+  path: '/instances/$instanceId/$itemPlaceholderPath',
+  queryParameters: {'title': title},
+).toString();
+
 /// A shared flow about an item of one instance. No module's paths can collide
 /// with these, as theirs start with the module's id.
 enum InstanceFlow { releases, edit, delete, history }

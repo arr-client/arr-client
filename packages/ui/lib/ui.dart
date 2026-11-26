@@ -10,6 +10,7 @@ export 'src/widgets/action_outcome.dart';
 export 'src/widgets/confirm_dialog.dart';
 export 'src/widgets/failure_message.dart';
 export 'src/widgets/item_gone_view.dart';
+export 'src/widgets/screen_margin.dart';
 export 'src/widgets/stale_notice.dart';
 export 'src/widgets/state_message.dart';
 export 'src/widgets/state_scaffold.dart';

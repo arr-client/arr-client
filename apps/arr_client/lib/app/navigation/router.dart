@@ -122,6 +122,11 @@ GoRouter createRouter(ModuleRegistry modules) {
             },
           );
         }),
+      scoped(
+        '/$itemPlaceholderPath',
+        (context, active, state) =>
+            PlaceholderPage(title: state.uri.queryParameters['title'] ?? ''),
+      ),
       // Any other path under an instance: the instance may be gone, or else
       // there is no such page.
       for (final path in ['', '/:rest(.*)'])
