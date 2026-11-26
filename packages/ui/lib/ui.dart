@@ -1,6 +1,7 @@
 /// Theme, shared widgets and localization helpers of arr-client.
 library;
 
+export 'src/format/date_format.dart';
 export 'src/format/format_bytes.dart';
 export 'src/format/format_duration.dart';
 export 'src/l10n/generated/ui_localizations.dart';

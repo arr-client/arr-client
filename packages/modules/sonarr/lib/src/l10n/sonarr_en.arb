@@ -43,5 +43,341 @@
   "monitorNone": "None",
   "@monitorNone": {
     "description": "Choice of what to monitor in a series, being added or already there: no episodes."
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Button that reads the screen from the server again."
+  },
+  "details": "Details",
+  "@details": {
+    "description": "Heading of the facts about a series."
+  },
+  "seasons": "Seasons",
+  "@seasons": {
+    "description": "Heading of the list of a series' seasons."
+  },
+  "noSeasons": "No seasons",
+  "@noSeasons": {
+    "description": "Shown for a series without seasons."
+  },
+  "noEpisodes": "No episodes in this season",
+  "@noEpisodes": {
+    "description": "Shown for a season without episodes."
+  },
+  "specials": "Specials",
+  "@specials": {
+    "description": "Name of season 0."
+  },
+  "seasonNumber": "Season {number}",
+  "@seasonNumber": {
+    "description": "Name of a season.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "episodeCode": "Season {season}, episode {episode}",
+  "@episodeCode": {
+    "description": "Where an episode stands in its series.",
+    "placeholders": {
+      "season": {
+        "type": "int"
+      },
+      "episode": {
+        "type": "int"
+      }
+    }
+  },
+  "specialCode": "Special {episode}",
+  "@specialCode": {
+    "description": "Where a special episode stands.",
+    "placeholders": {
+      "episode": {
+        "type": "int"
+      }
+    }
+  },
+  "numberedEpisode": "{number}. {title}",
+  "@numberedEpisode": {
+    "description": "An episode in a season's list.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "untitledEpisode": "No title",
+  "@untitledEpisode": {
+    "description": "An episode whose title the server does not know."
+  },
+  "episodeProgress": "{wanted, plural, one{{present} of {wanted} episode} other{{present} of {wanted} episodes}}",
+  "@episodeProgress": {
+    "description": "Episodes of a season that the server has, of those wanted.",
+    "placeholders": {
+      "present": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "wanted": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "episodeTotal": "{count, plural, one{{count} episode} other{{count} episodes}}",
+  "@episodeTotal": {
+    "description": "Episodes of a season of which none is wanted.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "monitored": "Monitored",
+  "@monitored": {
+    "description": "The server watches for this item."
+  },
+  "notMonitored": "Not monitored",
+  "@notMonitored": {
+    "description": "The server does not watch for this item."
+  },
+  "stateDownloading": "Downloading",
+  "@stateDownloading": {
+    "description": "State of an item."
+  },
+  "stateDownloaded": "Downloaded",
+  "@stateDownloaded": {
+    "description": "State of an item."
+  },
+  "statePartial": "Partly downloaded",
+  "@statePartial": {
+    "description": "State of an item."
+  },
+  "stateUnmonitored": "Unmonitored",
+  "@stateUnmonitored": {
+    "description": "State of an item."
+  },
+  "stateUnreleased": "Unreleased",
+  "@stateUnreleased": {
+    "description": "State of an item."
+  },
+  "stateMissing": "Missing",
+  "@stateMissing": {
+    "description": "State of an item."
+  },
+  "statusContinuing": "Continuing",
+  "@statusContinuing": {
+    "description": "A series that is still running."
+  },
+  "statusEnded": "Ended",
+  "@statusEnded": {
+    "description": "A series that has ended."
+  },
+  "statusUpcoming": "Upcoming",
+  "@statusUpcoming": {
+    "description": "A series that has not started."
+  },
+  "statusDeleted": "Removed from the metadata source",
+  "@statusDeleted": {
+    "description": "A series its metadata source no longer lists."
+  },
+  "typeStandard": "Standard",
+  "@typeStandard": {
+    "description": "How a series numbers episodes: by season."
+  },
+  "typeDaily": "Daily",
+  "@typeDaily": {
+    "description": "How a series numbers episodes: by date."
+  },
+  "typeAnime": "Anime",
+  "@typeAnime": {
+    "description": "How a series numbers episodes: absolute numbers."
+  },
+  "rating": "Rating",
+  "@rating": {
+    "description": "Name of a fact about a series."
+  },
+  "ratingFrom": "{source}: {value}",
+  "@ratingFrom": {
+    "description": "A score and who gave it.",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "votes": "{count, plural, one{{count} vote} other{{count} votes}}",
+  "@votes": {
+    "description": "Number of votes behind a score.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "genres": "Genres",
+  "@genres": {
+    "description": "Name of a fact about a series."
+  },
+  "network": "Network",
+  "@network": {
+    "description": "Name of a fact about a series."
+  },
+  "runtime": "Runtime",
+  "@runtime": {
+    "description": "Name of a fact about a series."
+  },
+  "minutes": "{count} min",
+  "@minutes": {
+    "description": "A length in minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "certification": "Certification",
+  "@certification": {
+    "description": "Name of a fact about a series: its age rating."
+  },
+  "seriesType": "Series type",
+  "@seriesType": {
+    "description": "Name of a fact about a series."
+  },
+  "qualityProfile": "Quality profile",
+  "@qualityProfile": {
+    "description": "Name of a fact about a series."
+  },
+  "tags": "Tags",
+  "@tags": {
+    "description": "Name of a fact about a series."
+  },
+  "path": "Path",
+  "@path": {
+    "description": "Where the server stores a series or file."
+  },
+  "sizeOnDisk": "{size} on disk",
+  "@sizeOnDisk": {
+    "description": "Space a series takes on the server.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "openSeries": "Series",
+  "@openSeries": {
+    "description": "Link from an episode to its series when the title is not known."
+  },
+  "airs": "Air date: {date}",
+  "@airs": {
+    "description": "When an episode airs or aired.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dateAndTime": "{date}, {time}",
+  "@dateAndTime": {
+    "description": "A day and a time of day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "file": "File",
+  "@file": {
+    "description": "Heading of the facts about an episode's file."
+  },
+  "noFile": "No file",
+  "@noFile": {
+    "description": "Shown for an episode without a file."
+  },
+  "quality": "Quality",
+  "@quality": {
+    "description": "Name of a fact about a file."
+  },
+  "size": "Size",
+  "@size": {
+    "description": "Name of a fact about a file."
+  },
+  "languages": "Languages",
+  "@languages": {
+    "description": "Name of a fact about a file."
+  },
+  "video": "Video",
+  "@video": {
+    "description": "Name of a fact about a file."
+  },
+  "audio": "Audio",
+  "@audio": {
+    "description": "Name of a fact about a file."
+  },
+  "history": "History",
+  "@history": {
+    "description": "Heading of what happened to an item."
+  },
+  "noHistory": "No history",
+  "@noHistory": {
+    "description": "Shown for an item without history."
+  },
+  "historyFailed": "History could not be loaded.",
+  "@historyFailed": {
+    "description": "Shown instead of history, above the reason."
+  },
+  "retryHistory": "Retry history",
+  "@retryHistory": {
+    "description": "Button that tries to load history again."
+  },
+  "showAllHistory": "Show all history",
+  "@showAllHistory": {
+    "description": "Button that opens the whole history of an item."
+  },
+  "eventGrabbed": "Grabbed",
+  "@eventGrabbed": {
+    "description": "History: a release was sent to a download client."
+  },
+  "eventImported": "Imported",
+  "@eventImported": {
+    "description": "History: a file was imported."
+  },
+  "eventFailed": "Download failed",
+  "@eventFailed": {
+    "description": "History: a download failed."
+  },
+  "eventRenamed": "File renamed",
+  "@eventRenamed": {
+    "description": "History: a file was renamed."
+  },
+  "eventDeleted": "File deleted",
+  "@eventDeleted": {
+    "description": "History: a file was deleted."
+  },
+  "eventOther": "Other event",
+  "@eventOther": {
+    "description": "History: something else."
+  },
+  "separator": " · ",
+  "@separator": {
+    "description": "Between short facts on one line."
+  },
+  "listSeparator": ", ",
+  "@listSeparator": {
+    "description": "Between the items of a list on one line."
   }
 }
