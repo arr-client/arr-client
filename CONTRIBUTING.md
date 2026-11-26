@@ -14,6 +14,20 @@ Read the [constitution](.specify/memory/constitution.md). The two that decide mo
 Code follows the [coding standards](docs/standards/coding-standards.md) and
 [patterns](docs/standards/patterns.md), and UI changes the [UI standard](docs/standards/ui.md).
 
+## Development environment
+
+With [Nix](https://nixos.org), `shell.nix` provides the pinned Flutter, JDK, Android SDK and tools.
+It needs you to accept the Android SDK licences listed in that file, so read it first:
+
+```sh
+NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE=1 nix-shell   # accepts the licences
+```
+
+With direnv, `direnv allow` does the same through `.envrc`. Add `--arg withEmulator true` for an
+emulator.
+
+Without Nix, install Flutter 3.50.1, JDK 17 and the Android SDK.
+
 ## Optional tools
 
 None of these is required.
