@@ -217,6 +217,7 @@ class TestApp {
     WidgetTester tester, {
     Iterable<ServiceModule>? modules,
     LocalNetworkPermission? localNetwork,
+    Future<Directory> Function()? cacheDirectory,
   }) async {
     final sharer = FakeSharer();
     final services = await AppServices.start(
@@ -225,7 +226,8 @@ class TestApp {
       secrets: MemorySecrets(),
       connectivity: FakeConnectivity(),
       localNetwork: localNetwork ?? FakePermission(),
-      cacheDirectory: () async => Directory('build/test-cache'),
+      cacheDirectory:
+          cacheDirectory ?? () async => Directory('build/test-cache'),
       modules: modules ?? [movies, series, subtitles, downloads],
     );
     return TestApp._(services, sharer);
