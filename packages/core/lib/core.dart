@@ -140,6 +140,8 @@ export 'src/module/service_result.dart';
 export 'src/module/session_authenticator.dart';
 export 'src/module/session_handler.dart';
 export 'src/network/certificate_info.dart';
+export 'src/network/client.dart';
+export 'src/network/connection_settings.dart';
 export 'src/network/http_error.dart';
 export 'src/network/http_method.dart';
 export 'src/network/request_body.dart';
