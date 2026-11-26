@@ -172,6 +172,20 @@ void main() {
       expect(await check(), ['problem Slow']);
     });
 
+    test('are not cleared by a history that could not be read', () async {
+      server.download(1, 'Broken', QueueSeverity.error, downloadId: 'a');
+      expect(await check(), ['problem Broken']);
+      server
+        ..queue.clear()
+        ..failed('Broken', downloadId: 'a')
+        ..failing.addAll([historyRead, eventsSinceRead]);
+      expect(await check(), isEmpty);
+
+      server.comeUp();
+
+      expect(await check(), isEmpty);
+    });
+
     test('are not cleared by a queue that could not be read', () async {
       server.download(1, 'Slow', QueueSeverity.warning, downloadId: 'a');
       expect(await check(), ['problem Slow']);

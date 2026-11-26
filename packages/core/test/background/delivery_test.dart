@@ -85,6 +85,23 @@ void main() {
       expect(server.reads, everyElement(isIn([historyRead, eventsSinceRead])));
     });
 
+    test('are offered by what the instance can do', () async {
+      final requests = await world.add(
+        FakeServer('requests'),
+        serviceType: 'requests',
+      );
+
+      expect(world.engine.offered(world.active(id)), {
+        _imported,
+        NotificationEventType.downloadProblem,
+        _health,
+      });
+      expect(world.engine.offered(world.active(requests)), {
+        NotificationEventType.pendingRequest,
+        NotificationEventType.ownRequestUpdate,
+      });
+    });
+
     test('ignore a type the instance does not offer', () async {
       await world.subscribe(id, [NotificationEventType.pendingRequest]);
 
@@ -407,6 +424,67 @@ void main() {
       expect(markers.map((row) => row.instanceId), isNot(contains(copyId)));
       await world.activate(copy);
       expect(await check(), isEmpty);
+    });
+  });
+
+  group('while a check is under way', () {
+    late Future<List<Notice>> checking;
+
+    setUp(() async {
+      await world.subscribe(id, [_imported]);
+      server
+        ..imported('One')
+        ..hold(eventsSinceRead)
+        ..hold(historyRead);
+    });
+
+    Future<void> start() async {
+      checking = world.check();
+      await Future.any([
+        server.arrival(eventsSinceRead),
+        server.arrival(historyRead),
+      ]);
+    }
+
+    void finish() => server
+      ..release(eventsSinceRead)
+      ..release(historyRead);
+
+    test('a second one does not notify the same again', () async {
+      server.reads.clear();
+      await start();
+      final second = world.check();
+      // Both have read the marker before either has an answer.
+      while (server.reads.length < 2) {
+        await pumpEventQueue();
+      }
+      finish();
+
+      expect(described([...await checking, ...await second]), ['imported One']);
+    });
+
+    test('unsubscribing drops what it finds', () async {
+      await start();
+
+      await world.engine.unsubscribe(id, _imported);
+      finish();
+
+      expect(await checking, isEmpty);
+      expect(
+        await world.database.select(world.database.eventMarkers).get(),
+        isEmpty,
+      );
+    });
+
+    // As the app does from its own isolate, which this check does not hear of.
+    test('a switch saved by another isolate drops what it finds', () async {
+      final away = await world.profile('Away');
+      await start();
+
+      await world.preferences.setActiveProfile(away);
+      finish();
+
+      expect(await checking, isEmpty);
     });
   });
 
