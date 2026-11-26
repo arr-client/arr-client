@@ -1,0 +1,176 @@
+{
+  "page": 1,
+  "pageSize": 250,
+  "sortKey": "timeleft",
+  "sortDirection": "descending",
+  "totalRecords": 4,
+  "records": [
+    {
+      "seriesId": 1,
+      "episodeId": 14,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 2097153,
+      "title": "redacted-46",
+      "added": "2026-11-26T13:24:06Z",
+      "status": "queued",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "protocol": "torrent",
+      "downloadClient": "redacted-9",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-12",
+      "episodeHasFile": false,
+      "sizeleft": 2097153,
+      "id": 2081170987
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 15,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 0,
+      "title": "redacted-56",
+      "estimatedCompletionTime": "2026-11-27T15:34:40Z",
+      "added": "2026-11-26T13:24:40Z",
+      "status": "delay",
+      "protocol": "torrent",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-12",
+      "episodeHasFile": false,
+      "sizeleft": 0,
+      "timeleft": "1.02:08:28.2106109",
+      "id": 401329872
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 13,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 25165825,
+      "title": "redacted-53",
+      "estimatedCompletionTime": "2026-11-26T14:27:36Z",
+      "added": "2026-11-26T13:24:04Z",
+      "status": "downloading",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "protocol": "torrent",
+      "downloadClient": "redacted-9",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-12",
+      "episodeHasFile": false,
+      "sizeleft": 24838145,
+      "timeleft": "01:02:33",
+      "id": 105416425
+    },
+    {
+      "languages": [
+        {
+          "id": 0,
+          "name": "Unknown"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 0,
+          "name": "Unknown",
+          "source": "unknown",
+          "resolution": 0
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormatScore": 0,
+      "size": 524288,
+      "title": "redacted-57",
+      "estimatedCompletionTime": "2026-11-26T13:25:03Z",
+      "status": "completed",
+      "trackedDownloadStatus": "warning",
+      "trackedDownloadState": "importBlocked",
+      "statusMessages": [
+        {
+          "title": "redacted-58",
+          "messages": [
+            "redacted-59"
+          ]
+        }
+      ],
+      "downloadId": "ABCDEF0000000000000000000000000000000006",
+      "protocol": "torrent",
+      "downloadClient": "redacted-9",
+      "downloadClientHasPostImportCategory": false,
+      "outputPath": "/redacted/60.mkv",
+      "episodeHasFile": false,
+      "sizeleft": 0,
+      "timeleft": "00:00:00",
+      "id": 1491576350
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "date",
+  "sortDirection": "descending",
+  "totalRecords": 5,
+  "records": [
+    {
+      "movieId": 2,
+      "sourceTitle": "redacted-8",
+      "languages": [
+        {
+          "id": 4,
+          "name": "German"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T13:24:37Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000001",
+      "eventType": "downloadFailed",
+      "data": {
+        "downloadClient": "redacted-9",
+        "downloadClientName": null,
+        "message": "redacted-10",
+        "releaseGroup": "redacted-11",
+        "size": "0",
+        "indexer": "redacted-12"
+      },
+      "id": 5
+    },
+    {
+      "movieId": 4,
+      "sourceTitle": "/redacted/13.mkv",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T13:24:30Z",
+      "eventType": "movieFileDeleted",
+      "data": {
+        "reason": "Manual",
+        "releaseGroup": "redacted-11",
+        "size": "1048576",
+        "indexerFlags": "0"
+      },
+      "id": 4
+    },
+    {
+      "movieId": 4,
+      "sourceTitle": "redacted-14",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T13:24:26Z",
+      "eventType": "downloadFolderImported",
+      "data": {
+        "fileId": "1",
+        "droppedPath": "/redacted/15.mkv",
+        "importedPath": "/redacted/13.mkv",
+        "downloadClient": null,
+        "downloadClientName": null,
+        "releaseGroup": "redacted-11",
+        "customFormatScore": "0",
+        "size": "1048576",
+        "indexerFlags": "0"
+      },
+      "id": 3
+    },
+    {
+      "movieId": 2,
+      "sourceTitle": "redacted-8",
+      "languages": [
+        {
+          "id": 4,
+          "name": "German"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T13:24:01Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000001",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": "redacted-12",
+        "nzbInfoUrl": "http://redacted.invalid/16",
+        "releaseGroup": "redacted-11",
+        "age": "0",
+        "ageHours": "0.08370993483333333",
+        "ageMinutes": "5.022596235",
+        "publishedDate": "2026-11-26T13:19:00Z",
+        "downloadClient": "redacted-9",
+        "downloadClientName": "redacted-9",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/17",
+        "guid": "redacted-18",
+        "tmdbId": "0",
+        "imdbId": "0",
+        "protocol": "2",
+        "customFormatScore": "0",
+        "movieMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "indexerId": "0",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000001"
+      },
+      "id": 2
+    },
+    {
+      "movieId": 1,
+      "sourceTitle": "redacted-19",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T13:23:59Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000002",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": "redacted-12",
+        "nzbInfoUrl": "http://redacted.invalid/16",
+        "releaseGroup": "redacted-11",
+        "age": "0",
+        "ageHours": "0.08373863166666666",
+        "ageMinutes": "5.024318765",
+        "publishedDate": "2026-11-26T13:18:58Z",
+        "downloadClient": "redacted-9",
+        "downloadClientName": "redacted-9",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/20",
+        "guid": "redacted-21",
+        "tmdbId": "0",
+        "imdbId": "0",
+        "protocol": "2",
+        "customFormatScore": "0",
+        "movieMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "indexerId": "0",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000002"
+      },
+      "id": 1
+    }
+  ]
+}

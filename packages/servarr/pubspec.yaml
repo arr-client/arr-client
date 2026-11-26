@@ -7,5 +7,12 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The module contract, shared records and the allow-list harness of the tests.
+  core:
+    path: ../core
   flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
     sdk: flutter
