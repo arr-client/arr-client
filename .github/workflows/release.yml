@@ -47,6 +47,16 @@ jobs:
           flutter build apk --release --split-per-abi
           cd build/app/outputs/flutter-apk
           sha256sum ./*-release.apk > SHA256SUMS
+      - name: Check that every APK is signed
+        run: |
+          apksigner=$(printf '%s\n' "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n 1)
+          shopt -s nullglob
+          apks=(apps/arr_client/build/app/outputs/flutter-apk/*-release.apk)
+          test "${#apks[@]}" -gt 0 || { echo "::error::No release APKs found."; exit 1; }
+          for apk in "${apks[@]}"; do
+            "$apksigner" verify "$apk" || { echo "::error::$apk failed signature verification."; exit 1; }
+            echo "Signed: $apk"
+          done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: apks
