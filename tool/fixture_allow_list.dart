@@ -61,10 +61,12 @@ final _version = RegExp(
   r'^v?(\d{1,2}(?:\.\d{1,5}){1,3})'
   r'(?:-(?:develop|nightly|beta|alpha|rc)(?:\.\d{1,4})?|(?:alpha|beta|rc)\d{1,2})?$',
 );
+// The cache buster is the file's write time, or in newer Radarr and Sonarr the first 20 hex
+// digits, in lower case, of the SHA-256 of the cover's public source URL (MediaCoverService.cs).
 final _mediaCover = RegExp(
   r'^/MediaCover(/Albums|/Books)?(/\d{1,9})?'
   r'/(poster|banner|fanart|cover|logo|clearlogo|disc|screenshot|headshot)'
-  r'(-\d{2,4})?\.(jpg|jpeg|png)(\?lastWrite=\d{1,20})?$',
+  r'(-\d{2,4})?\.(jpg|jpeg|png)(\?(lastWrite=\d{1,20}|h=[0-9a-f]{20}))?$',
 );
 
 final _languageCode = RegExp(r'^[a-z]{2,3}$');
