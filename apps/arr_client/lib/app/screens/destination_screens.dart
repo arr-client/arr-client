@@ -1,5 +1,5 @@
 /// The primary destinations. What is offered of each follows the profile's
-/// capabilities; apart from the library the content is not built yet.
+/// capabilities; not all of their content is built yet.
 library;
 
 import 'dart:async';
@@ -12,6 +12,7 @@ import 'package:ui/ui.dart';
 
 import '../../features/activity/queue/queue_tab.dart';
 import '../../features/calendar/calendar_screen.dart';
+import '../../features/home/home_overview.dart';
 import '../../features/home/profile_switcher.dart';
 import '../../features/home/unreachable_offer.dart';
 import '../../features/library/library_controller.dart';
@@ -29,10 +30,10 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
-    final profile = ref.watch(activeProfileProvider);
+    final saved = ref.watch(profileInstancesProvider);
     return Scaffold(
       appBar: AppBar(
-        title: switch (profile) {
+        title: switch (saved) {
           AsyncData(value: final active?) => ProfileSwitcher(
             active: active.profile,
           ),
@@ -40,9 +41,9 @@ class HomeScreen extends ConsumerWidget {
         },
         actions: _searchActions(context, ref),
       ),
-      body: switch (profile) {
-        AsyncData(value: final active?) when active.hasInstances =>
-          const UnreachableOffer(child: _NotBuilt()),
+      body: switch (saved) {
+        AsyncData(value: final active?) when active.instances.isNotEmpty =>
+          UnreachableOffer(child: HomeOverview(instances: active.instances)),
         AsyncData() => StateMessage(
           icon: Icons.dns_outlined,
           message: strings.noServicesYet,

@@ -188,7 +188,12 @@ void main() {
     await addServer(app, 'Films', library);
 
     await app.pump(tester);
-    await tester.tap(find.text('Library'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Library'),
+      ),
+    );
     await pumpSome(tester);
 
     expect(find.text('Saved'), findsOneWidget);
@@ -233,7 +238,12 @@ void main() {
     await addServer(app, 'Lounge', FakeLibrary(items: [movie('Early')]));
 
     await app.pump(tester);
-    await tester.tap(find.text('Library'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Library'),
+      ),
+    );
     await pumpSome(tester);
 
     expect(find.text('Early'), findsOneWidget);
@@ -255,7 +265,12 @@ void main() {
     final id = await addServer(app, 'Attic', slow);
     await addServer(app, 'Lounge', FakeLibrary(items: [movie('Early')]));
     await app.pump(tester);
-    await tester.tap(find.text('Library'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Library'),
+      ),
+    );
     await pumpSome(tester);
 
     await tester.tap(find.widgetWithText(ChoiceChip, 'Attic'));
@@ -274,7 +289,12 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpWidget(ArrClientApp(services: app.services));
     await pumpSome(tester);
-    await tester.tap(find.text('Library'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Library'),
+      ),
+    );
     await pumpSome(tester);
     expect(
       (await app.services.preferences.view(
@@ -765,7 +785,12 @@ void main() {
       await addServer(app, 'Second', broken);
 
       await app.pump(tester);
-      await tester.tap(find.text('Library'));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(size.width < 600 ? NavigationBar : NavigationRail),
+          matching: find.text('Library'),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
 
