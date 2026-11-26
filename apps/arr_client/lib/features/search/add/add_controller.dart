@@ -45,6 +45,10 @@ class AddController extends Notifier<AddState> {
   /// The client each target was read with: an edited instance has another.
   final _clients = <String, Object>{};
 
+  /// What the form of each instance last held. It outlasts a read that fails,
+  /// so that asking again does not put back other choices.
+  final _drafts = <String, AddDraft>{};
+
   /// The instances to which this controller is sending.
   final _sending = <String>{};
 
@@ -63,13 +67,15 @@ class AddController extends Notifier<AddState> {
         }
       }
     });
-    // What the app has added to before is asked at once, so that the screen
-    // does not offer what an earlier visit added.
-    scheduleMicrotask(_readSent);
+    // What may have changed since the search is asked at once.
+    scheduleMicrotask(_confirm);
     return const AddState();
   }
 
-  void _readSent() {
+  /// Asks the instances that the search showed as having the title, which may
+  /// have been deleted since, and those the app has added to, which the search
+  /// does not know about.
+  void _confirm() {
     if (!ref.mounted) return;
     final sent = ref.read(addSendsProvider).sent;
     for (final (active, _) in addTargets(
@@ -77,7 +83,8 @@ class AddController extends Notifier<AddState> {
       _candidate.kind,
     )) {
       final id = active.instance.id;
-      if (sent.contains(addKey(id, _candidate)) &&
+      if ((sent.contains(addKey(id, _candidate)) ||
+              heldRef(_candidate, id) != null) &&
           !state.targets.containsKey(id)) {
         _read(id);
       }
@@ -163,15 +170,10 @@ class AddController extends Notifier<AddState> {
         _set(instanceId, TargetHeld(value, added: true));
       // The server has it, or may have it: ask it, and send nothing.
       case Err(error: final error && (Conflict() || OutcomeUnknown())):
-        await _read(
-          instanceId,
-          problem: error,
-          draft: ready.draft,
-          checking: true,
-        );
+        await _read(instanceId, problem: error, checking: true);
       // A root folder, say, may be gone: read what can be chosen now.
       case Err(error: final error && Validation()):
-        await _read(instanceId, problem: error, draft: ready.draft);
+        await _read(instanceId, problem: error);
       case Err(:final error):
         _set(
           instanceId,
@@ -198,7 +200,6 @@ class AddController extends Notifier<AddState> {
   Future<void> _read(
     String instanceId, {
     ServiceFailure? problem,
-    AddDraft? draft,
     bool checking = false,
   }) async {
     final (active, lookup) = _target(instanceId);
@@ -217,17 +218,16 @@ class AddController extends Notifier<AddState> {
         .read(addSendsProvider)
         .sent
         .contains(addKey(instanceId, _candidate));
-    final searched = heldRef(_candidate, instanceId);
-    if (!sent && searched != null) {
-      _set(instanceId, TargetHeld(searched));
-      return;
-    }
+    final searched = heldRef(_candidate, instanceId) != null;
     _set(instanceId, TargetLoading(checking: checking));
 
     try {
       var candidate = _candidate;
-      // A target whose search did not give the title looks it up itself.
-      if (sent || !candidate.sourceByInstance.containsKey(instanceId)) {
+      // A target whose search did not give the title looks it up itself. So
+      // does one that may have gained or lost it since.
+      if (sent ||
+          searched ||
+          !candidate.sourceByInstance.containsKey(instanceId)) {
         final found = await lookup.find(candidate);
         if (stale()) return;
         switch (found) {
@@ -257,7 +257,7 @@ class AddController extends Notifier<AddState> {
               candidate: candidate,
               options: options,
               draft:
-                  draft?.fitting(options) ??
+                  _drafts[instanceId]?.fitting(options) ??
                   AddDraft.from(candidate.kind, options, remembered),
               problem: problem,
             ),
@@ -301,8 +301,10 @@ class AddController extends Notifier<AddState> {
     return (null, null);
   }
 
-  void _set(String instanceId, AddTarget target) =>
-      state = state.copyWith(targets: {...state.targets, instanceId: target});
+  void _set(String instanceId, AddTarget target) {
+    if (target is TargetReady) _drafts[instanceId] = target.draft;
+    state = state.copyWith(targets: {...state.targets, instanceId: target});
+  }
 
   void _scopeChanged(ProfileScope? scope) {
     final gone = {
@@ -322,6 +324,7 @@ class AddController extends Notifier<AddState> {
         },
       );
     }
+    scheduleMicrotask(_confirm);
     // The instance that was chosen is asked again, or another is chosen.
     final selected = state.selected;
     if (scope != null &&

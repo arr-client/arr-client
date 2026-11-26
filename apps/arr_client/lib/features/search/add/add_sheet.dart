@@ -13,6 +13,7 @@ import '../../../app/providers.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
 import '../add_request.dart';
 import 'add_controller.dart';
+import 'add_draft.dart';
 import 'add_form.dart';
 import 'add_sends.dart';
 import 'add_state.dart';
@@ -51,6 +52,7 @@ class _AddSheetState extends ConsumerState<AddSheet> {
   /// else in a message.
   Future<void> _submit(String instanceId, String name) async {
     final strings = AppLocalizations.of(context);
+    final title = widget.request.candidate.title;
     // Taken before the wait, after which the sheet may be gone.
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
@@ -64,15 +66,18 @@ class _AddSheetState extends ConsumerState<AddSheet> {
     switch (result) {
       case Ok():
         if (open) navigator.pop();
-        messenger.showSnackBar(SnackBar(content: Text(strings.addAdded(name))));
+        messenger.showSnackBar(
+          SnackBar(content: Text(strings.addAdded(title, name))),
+        );
       case Err(:final error):
         if (open) return;
         messenger.showSnackBar(
           SnackBar(
             content: Text(
               strings.addFailedOn(
+                title,
                 name,
-                failureMessage(messenger.context, error),
+                _addFailure(messenger.context, error),
               ),
             ),
             persist: true,
@@ -132,7 +137,7 @@ class _AddSheetState extends ConsumerState<AddSheet> {
       ),
       TargetHeld(ref: final item, :final added, :final after) => _Held(
         message: added
-            ? strings.addAdded(name)
+            ? strings.addAdded(candidate.title, name)
             : switch (after) {
                 // It may be there because of this add or someone else's.
                 OutcomeUnknown() => strings.addThereNow(name, candidate.title),
@@ -144,20 +149,36 @@ class _AddSheetState extends ConsumerState<AddSheet> {
       TargetReady(:final options, :final draft, :final problem) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (problem != null) ...[
+          // A choice that is gone says by itself why nothing was added.
+          if (problem != null &&
+              !(draft.gone.isNotEmpty && _isUnexplained(problem))) ...[
             _Problem(switch (problem) {
               NotFound() => strings.addNotFound(name),
               OutcomeUnknown() =>
                 '${failureMessage(context, problem)}\n'
                     '${strings.addNotListedYet(name)}',
-              _ => failureMessage(context, problem),
+              _ => _addFailure(context, problem),
             }),
             const SizedBox(height: 16),
           ],
-          if (draft.choices == null) ...[
+          if (optionsOf(options, ServerOptionKind.rootFolder).isEmpty ||
+              optionsOf(options, ServerOptionKind.qualityProfile).isEmpty ||
+              options.monitorOptions.isEmpty) ...[
             _Problem(strings.addNothingToChoose(name)),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
           ],
+          for (final kind in draft.gone)
+            if (optionsOf(options, kind).isNotEmpty) ...[
+              _Problem(switch (kind) {
+                ServerOptionKind.rootFolder => strings.addRootFolderGone(name),
+                ServerOptionKind.metadataProfile =>
+                  strings.addMetadataProfileGone(name),
+                // A tag that is gone is dropped, never asked for again.
+                ServerOptionKind.qualityProfile ||
+                ServerOptionKind.tag => strings.addQualityProfileGone(name),
+              }),
+              const SizedBox(height: 16),
+            ],
           AddForm(
             options: options,
             draft: draft,
@@ -254,6 +275,17 @@ class _AddSheetState extends ConsumerState<AddSheet> {
     );
   }
 }
+
+/// A refusal without a word from the server, which is also how a module says
+/// that it sent nothing because a choice is gone.
+bool _isUnexplained(ServiceFailure failure) =>
+    failure is Validation && failure.messages.isEmpty;
+
+/// What to say about an add that failed.
+String _addFailure(BuildContext context, ServiceFailure failure) =>
+    _isUnexplained(failure)
+    ? AppLocalizations.of(context).addNotAdded
+    : failureMessage(context, failure);
 
 class _Waiting extends StatelessWidget {
   const _Waiting({this.message});

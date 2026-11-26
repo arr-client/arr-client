@@ -296,7 +296,7 @@ void main() {
     expect(choices.seriesType, isNull);
     expect(choices.seasonFolder, isNull);
     expect(choices.tagIds, isEmpty);
-    expect(find.text('Added to Films.'), findsOneWidget);
+    expect(find.text('Added Alien to Films.'), findsOneWidget);
     expect(find.byType(BottomSheet), findsNothing);
     expect(find.text('Open in Films'), findsOneWidget);
     expect(_button('Add'), findsNothing);
@@ -330,8 +330,6 @@ void main() {
     expect(choices.searchNow, isFalse);
     expect(choices.tagIds, {7});
 
-    // The profile chosen before is gone from the server meanwhile.
-    add['Films'].options.removeWhere((option) => option.label == 'HD');
     add.app.services.navigator.router!.pop();
     await tester.pumpAndSettle();
     await add.open(tester);
@@ -340,9 +338,74 @@ void main() {
 
     expect(add['Films'].found, 1);
     expect(find.text('/data/second'), findsOneWidget);
-    expect(find.text('Any'), findsOneWidget);
+    expect(find.text('HD'), findsOneWidget);
     expect(find.text('Monitor second'), findsOneWidget);
     expect(find.text('In cinemas'), findsOneWidget);
+    await add.stop(tester);
+  });
+
+  testWidgets('a remembered profile that is gone has to be chosen again', (
+    tester,
+  ) async {
+    final add = await _Add.start(tester);
+    var saved = false;
+    unawaited(
+      add.app.services.preferences
+          .saveLastAddChoices(
+            add.ids['Films']!,
+            const AddChoices(
+              rootFolderId: 2,
+              qualityProfileId: 99,
+              monitorOptionId: 'first',
+              searchNow: true,
+            ),
+          )
+          .then((_) => saved = true),
+    );
+    await settle(tester, until: () => saved);
+    await add.open(tester);
+    await _openSheet(tester);
+
+    expect(find.textContaining('no longer has the quality'), findsOneWidget);
+    expect(find.textContaining('no root folder'), findsNothing);
+    expect(find.text('Any'), findsNothing);
+    expect(_enabled(tester, 'Add to Films'), isFalse);
+
+    await _tap(tester, find.byType(DropdownButton<int>).at(1));
+    await tester.tap(find.text('HD').last);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('no longer has'), findsNothing);
+    await _send(tester, 'Films');
+    expect(add['Films'].added.single.$2.qualityProfileId, 4);
+    expect(add['Films'].added.single.$2.rootFolderId, 2);
+    await add.stop(tester);
+  });
+
+  testWidgets('asking again after a failed check keeps the choices', (
+    tester,
+  ) async {
+    final add = await _Add.start(tester, films: ['Films', 'Films 4K']);
+    add['Films'].addFailure = const OutcomeUnknown();
+    add['Films'].findFailure = const Unreachable();
+    await add.open(tester);
+    await _openSheet(tester);
+    await _choose(tester, '/data/first (1.0 GiB free)', '/data/second');
+    await _choose(tester, 'Any', 'HD');
+    await _tap(tester, find.text('Search for it now'));
+    await _send(tester, 'Films');
+
+    // Asked again by Retry, and by choosing the service again.
+    await _tap(tester, find.text('Retry'));
+    await _choose(tester, 'Films', 'Films 4K');
+    add['Films'].findFailure = null;
+    await _choose(tester, 'Films 4K', 'Films');
+    add['Films'].addFailure = null;
+    await _send(tester, 'Films');
+
+    final choices = add['Films'].added.last.$2;
+    expect(choices.rootFolderId, 2);
+    expect(choices.qualityProfileId, 4);
+    expect(choices.searchNow, isFalse);
     await add.stop(tester);
   });
 
@@ -394,6 +457,7 @@ void main() {
     tester,
   ) async {
     final add = await _Add.start(tester, films: ['Films', 'Films 4K']);
+    add['Films'].held = 5;
     await add.open(tester, add.candidate(held: ['Films']));
 
     expect(find.text('Already added'), findsOneWidget);
@@ -422,10 +486,49 @@ void main() {
     tester,
   ) async {
     final add = await _Add.start(tester);
+    add['Films'].held = 5;
     await add.open(tester, add.candidate(held: ['Films']));
 
+    expect(add['Films'].found, 1);
     expect(_button('Add'), findsNothing);
     expect(find.textContaining('already has it'), findsOneWidget);
+    await add.stop(tester);
+  });
+
+  testWidgets('what was deleted since the search can be added again', (
+    tester,
+  ) async {
+    final add = await _Add.start(tester);
+    await add.open(tester, add.candidate(held: ['Films']));
+
+    expect(add['Films'].found, 1);
+    expect(find.text('Already added'), findsNothing);
+    expect(find.textContaining('already has it'), findsNothing);
+    await _openSheet(tester);
+    await _send(tester, 'Films');
+
+    final (candidate, _) = add['Films'].added.single;
+    expect(candidate.sourceByInstance[add.ids['Films']], {'foundThere': true});
+    await add.stop(tester);
+  });
+
+  testWidgets('one that cannot confirm what it has is not refused', (
+    tester,
+  ) async {
+    final add = await _Add.start(tester);
+    add['Films'].findFailure = const Unreachable();
+    await add.open(tester, add.candidate(held: ['Films']));
+
+    expect(find.textContaining('already has it'), findsNothing);
+    await _openSheet(tester);
+    expect(find.textContaining('did not answer'), findsOneWidget);
+    expect(find.textContaining('Add to'), findsNothing);
+
+    add['Films'].findFailure = null;
+    add['Films'].held = 5;
+    await _tap(tester, find.text('Retry'));
+    expect(find.text('Films already has Alien.'), findsOneWidget);
+    expect(add['Films'].added, isEmpty);
     await add.stop(tester);
   });
 
@@ -549,7 +652,10 @@ void main() {
     await settle(tester);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Films: The server did not'), findsOneWidget);
+    expect(
+      find.textContaining('Alien on Films: The server did not'),
+      findsOneWidget,
+    );
     await add.stop(tester);
   });
 
@@ -646,7 +752,7 @@ void main() {
     await add.stop(tester);
   });
 
-  testWidgets('refused values: the choices are read again and kept', (
+  testWidgets('a root folder gone while sending is named, not replaced', (
     tester,
   ) async {
     final add = await _Add.start(tester);
@@ -658,10 +764,27 @@ void main() {
     await _choose(tester, 'Any', 'HD');
     await _send(tester, 'Films');
 
-    expect(find.textContaining('rejected the values'), findsOneWidget);
-    expect(find.text('/data/second'), findsOneWidget);
+    // Nothing says that the server rejected anything: nothing was sent to it.
+    expect(find.textContaining('rejected'), findsNothing);
+    expect(find.textContaining('no longer has the root'), findsOneWidget);
+    expect(find.text('/data/second'), findsNothing);
     expect(find.text('HD'), findsOneWidget);
+    expect(_enabled(tester, 'Add to Films'), isFalse);
     expect(add['Films'].askedOptions, 2);
+    await add.stop(tester);
+  });
+
+  testWidgets('refused values are said and the choices kept', (tester) async {
+    final add = await _Add.start(tester);
+    add['Films'].addFailure = const Validation(['Path is taken']);
+    await add.open(tester);
+    await _openSheet(tester);
+    await _choose(tester, 'Any', 'HD');
+    await _send(tester, 'Films');
+
+    expect(find.textContaining('Path is taken'), findsOneWidget);
+    expect(find.text('HD'), findsOneWidget);
+    expect(_enabled(tester, 'Add to Films'), isTrue);
     await add.stop(tester);
   });
 
@@ -676,6 +799,7 @@ void main() {
     );
     tester.platformDispatcher.textScaleFactorTestValue = 2;
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    add['Films'].held = 5;
     await add.open(tester, add.candidate(held: ['Films']));
     expect(tester.takeException(), isNull);
     await expectLater(tester, meetsGuideline(androidTapTargetGuideline));

@@ -56,9 +56,19 @@ class AddScreen extends ConsumerWidget {
             case final item?)
           (active, item),
     ];
-    final holding = {for (final (active, _) in held) active.instance.id};
-    final canTake = targets.any(
-      (target) => !holding.contains(target.$1.instance.id),
+    // Adding is refused only where the instance has just said that it has the
+    // title, or has yet to answer about what the search said. One that cannot
+    // be asked is left to the sheet, which says so.
+    final canTake = targets.any((target) {
+      final id = target.$1.instance.id;
+      return switch (state.targets[id]) {
+        TargetHeld() => false,
+        TargetReady() || TargetFailed() => true,
+        null || TargetLoading() => heldRef(candidate, id) == null,
+      };
+    });
+    final allHaveIt = targets.every(
+      (target) => state.targets[target.$1.instance.id] is TargetHeld,
     );
 
     final quiet = theme.textTheme.bodyLarge?.copyWith(
@@ -129,7 +139,7 @@ class AddScreen extends ConsumerWidget {
                         location: itemLocation(active, item, candidate.title),
                       ),
                   ],
-                  if (targets.isEmpty || !canTake) ...[
+                  if (targets.isEmpty || allHaveIt) ...[
                     const SizedBox(height: 24),
                     Text(
                       targets.isEmpty

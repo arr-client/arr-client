@@ -20,8 +20,8 @@ List<ServerOption> optionsOf(AddOptions options, ServerOptionKind kind) => [
     if (option.kind == kind) option,
 ];
 
-/// What the add form of one instance holds. A required choice is null only
-/// where the server offers nothing to choose.
+/// What the add form of one instance holds. A required choice is null where
+/// the server offers nothing to choose, or no longer offers what was chosen.
 final class AddDraft {
   const AddDraft._({
     required this.kind,
@@ -35,6 +35,7 @@ final class AddDraft {
     required this.seasonFolder,
     required this.minimumAvailability,
     required this.needsMetadataProfile,
+    this.gone = const {},
   });
 
   /// The form for adding a [kind] with [options], with the [remembered]
@@ -93,8 +94,11 @@ final class AddDraft {
   /// Whether the server has metadata profiles, so that one has to be chosen.
   final bool needsMetadataProfile;
 
-  /// What to send, or null while the server offers nothing for a required
-  /// choice.
+  /// The choices that the server no longer offers: the user has to choose
+  /// again, as no other is taken in their place.
+  final Set<ServerOptionKind> gone;
+
+  /// What to send, or null while a required choice is empty.
   AddChoices? get choices {
     final root = rootFolderId;
     final quality = qualityProfileId;
@@ -114,12 +118,17 @@ final class AddDraft {
     );
   }
 
-  /// This draft with only what [options] offers: a choice that is gone gives
-  /// way to the first one, and a tag that is gone is dropped.
+  /// This draft with only what [options] offers. A root folder or profile that
+  /// is gone is left empty and noted in [gone]; where none was chosen yet the
+  /// first is taken. A tag that is gone is dropped.
   AddDraft fitting(AddOptions options) {
+    final missing = <ServerOptionKind>{};
     int? offered(ServerOptionKind kind, int? chosen) {
       final ids = [for (final option in optionsOf(options, kind)) option.id];
-      return ids.contains(chosen) ? chosen : ids.firstOrNull;
+      if (ids.contains(chosen)) return chosen;
+      if (chosen == null && !gone.contains(kind)) return ids.firstOrNull;
+      missing.add(kind);
+      return null;
     }
 
     final monitors = [for (final option in options.monitorOptions) option.id];
@@ -144,6 +153,7 @@ final class AddDraft {
         options,
         ServerOptionKind.metadataProfile,
       ).isNotEmpty,
+      gone: missing,
     );
   }
 
@@ -180,6 +190,12 @@ final class AddDraft {
     seasonFolder: seasonFolder ?? this.seasonFolder,
     minimumAvailability: minimumAvailability ?? this.minimumAvailability,
     needsMetadataProfile: needsMetadataProfile,
+    // What has just been chosen is no longer missing.
+    gone: gone.difference({
+      if (rootFolderId != null) ServerOptionKind.rootFolder,
+      if (qualityProfileId != null) ServerOptionKind.qualityProfile,
+      if (metadataProfileId != null) ServerOptionKind.metadataProfile,
+    }),
   );
 
   // The required choices are given as they are to be, null included.
@@ -190,6 +206,7 @@ final class AddDraft {
     required String? monitorOptionId,
     required Set<int> tagIds,
     required bool needsMetadataProfile,
+    required Set<ServerOptionKind> gone,
     bool? searchNow,
     SeriesType? seriesType,
     bool? seasonFolder,
@@ -206,5 +223,6 @@ final class AddDraft {
     seasonFolder: seasonFolder ?? this.seasonFolder,
     minimumAvailability: minimumAvailability ?? this.minimumAvailability,
     needsMetadataProfile: needsMetadataProfile,
+    gone: gone,
   );
 }
