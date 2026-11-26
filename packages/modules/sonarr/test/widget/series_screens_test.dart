@@ -215,6 +215,58 @@ void main() {
     expect(find.textContaining('Saved data from'), findsNothing);
   });
 
+  testWidgets('offline, names the quality profile from what was saved', (
+    tester,
+  ) async {
+    final screens = Screens();
+    await screens.open(tester, _route(screens, seriesRef(1)));
+    await screens.back(tester);
+    screens.server.goOffline();
+
+    await screens.open(tester, _route(screens, seriesRef(1)));
+
+    await scrollTo(tester, find.text('Quality profile'));
+    final profile = screens.server.qualityProfiles.singleWhere(
+      (p) => p['id'] == 6,
+    );
+    expect(find.text(profile['name']! as String), findsOneWidget);
+  });
+
+  testWidgets('an episode found deleted leaves the season list below', (
+    tester,
+  ) async {
+    final screens = Screens();
+    await screens.open(tester, _season(1));
+    screens.server.episodes[1]!.removeWhere((episode) => episode['id'] == 13);
+
+    await tester.tap(find.text('1. redacted-58'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('This item no longer exists on the server.'),
+      findsOneWidget,
+    );
+    await screens.back(tester);
+    expect(find.text('1. redacted-58'), findsNothing);
+    expect(find.byType(ListTile), findsWidgets);
+  });
+
+  testWidgets('a series found gone is gone on the screens below too', (
+    tester,
+  ) async {
+    final screens = Screens();
+    await screens.open(tester, _season(1));
+
+    // As another screen's read does.
+    await screens.harness.cache.remove(MediaKind.series, 1);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('This item no longer exists on the server.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('with nothing saved, a failure can be retried', (tester) async {
     final screens = Screens()..server.goOffline();
     await screens.open(tester, _route(screens, episodeRef(13)));

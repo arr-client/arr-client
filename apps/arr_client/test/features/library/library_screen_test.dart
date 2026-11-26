@@ -377,6 +377,82 @@ void main() {
     await app.stop(tester);
   });
 
+  testWidgets('an item found gone leaves the list without a refresh', (
+    tester,
+  ) async {
+    final app = await start(tester);
+    final library = FakeLibrary(
+      items: [movie('Stays', id: 1), movie('Goes', id: 2)],
+    );
+    final id = await addServer(app, 'Films', library);
+    await openLibrary(tester, app);
+
+    // As the item's own screen has it done.
+    await app.services.cache.scope(id).remove(MediaKind.movie, 2);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Stays'), findsOneWidget);
+    expect(find.text('Goes'), findsNothing);
+    expect(library.listed, 1);
+    await app.stop(tester);
+  });
+
+  testWidgets('a list asked for before an item was found gone does not bring '
+      'it back', (tester) async {
+    final app = await start(tester);
+    final library = FakeLibrary(
+      items: [movie('Stays', id: 1), movie('Goes', id: 2)],
+    );
+    final id = await addServer(app, 'Films', library);
+    await openLibrary(tester, app);
+    final gate = library.gate = Completer<void>();
+    await tester.tap(find.byTooltip('Refresh'));
+    await pumpSome(tester);
+
+    await app.services.cache.scope(id).remove(MediaKind.movie, 2);
+    await pumpSome(tester);
+    gate.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Stays'), findsOneWidget);
+    expect(find.text('Goes'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('offline, filters by the quality profiles and tags saved', (
+    tester,
+  ) async {
+    final app = await start(tester);
+    final library =
+        FakeLibrary(cached: Cached([movie('Saved')], fetchedAt: DateTime.now()))
+          ..savedOptions = Cached(const [
+            ServerOption(
+              kind: ServerOptionKind.qualityProfile,
+              id: 4,
+              label: 'Saved profile',
+            ),
+            ServerOption(kind: ServerOptionKind.tag, id: 1, label: 'Saved tag'),
+          ], fetchedAt: DateTime.now())
+          ..failure = const Unreachable()
+          ..optionsFailure = const Unreachable();
+    final id = await addServer(app, 'Films', library);
+    final profile = await app.activeProfile;
+    // One the saved options do not have: only the server can say it is gone.
+    final view = LibraryView(
+      filters: LibraryFilters(qualityProfiles: {InstanceOptionId(id, 7)}),
+    );
+    await app.services.preferences.saveView(profile, MediaKind.movie, view);
+
+    await openLibrary(tester, app);
+    await openFilters(tester);
+
+    expect(find.text('Saved profile'), findsOneWidget);
+    expect(find.text('Saved tag'), findsOneWidget);
+    expect(find.text('Unavailable profile 7'), findsOneWidget);
+    expect(await app.services.preferences.view(profile, MediaKind.movie), view);
+    await app.stop(tester);
+  });
+
   testWidgets('without saved items a failure takes the screen and can be '
       'retried', (tester) async {
     final app = await start(tester);

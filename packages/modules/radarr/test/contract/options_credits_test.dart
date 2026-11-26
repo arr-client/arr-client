@@ -230,4 +230,28 @@ void main() {
       );
     });
   });
+
+  group('saved options', () {
+    test('are null until the options were read', () async {
+      final harness = Harness();
+
+      expect(await succeed(harness.library.cachedOptions()), isNull);
+    });
+
+    test('are what the last read gave, without asking again', () async {
+      final harness = Harness();
+      final read = await succeed(harness.library.options());
+      harness.server.down = failedAnswer(const Unreachable());
+      await failureOf(harness.library.options());
+      final asked = harness.server.requests.length;
+
+      final saved = await succeed(harness.library.cachedOptions());
+
+      expect(
+        saved!.value.map((o) => (o.kind, o.id, o.label)),
+        read.map((o) => (o.kind, o.id, o.label)),
+      );
+      expect(harness.server.requests, hasLength(asked));
+    });
+  });
 }

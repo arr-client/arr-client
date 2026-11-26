@@ -126,6 +126,28 @@ void main() {
     }
   });
 
+  group('a movie found to be gone', () {
+    final writes = <String, ServiceResult<void> Function(ManageHarness)>{
+      'a delete': _delete,
+      'an edit': (harness) =>
+          harness.library.edit(movieRef(1), const ItemEdit(monitored: false)),
+      'a monitoring change': (harness) =>
+          harness.library.setMonitored(MediaTarget(movieRef(1)), false),
+    };
+
+    // What is not routed is answered with a 404.
+    for (final MapEntry(key: name, value: write) in writes.entries) {
+      test('by $name leaves the cache', () async {
+        final harness = await _harness();
+        harness.radarr.routes.clear();
+
+        expect(await failureOf(write(harness)), isA<NotFound>());
+
+        expect(_cached(harness), [2]);
+      });
+    }
+  });
+
   group('deleteFile', () {
     test('deletes that file and nothing else', () async {
       final harness = await _harness();

@@ -64,4 +64,21 @@ void main() {
       expect(await failureOf(harness.library.options()), isA<AuthFailed>());
     });
   }
+
+  test('what was read is saved, and read back without asking', () async {
+    final harness = Harness();
+    expect(await ok(harness.library.cachedOptions()), isNull);
+    final read = await ok(harness.library.options());
+    harness.server.goOffline();
+    await failureOf(harness.library.options());
+    final asked = harness.server.requests.length;
+
+    final saved = await ok(harness.library.cachedOptions());
+
+    expect(
+      saved!.value.map((o) => (o.kind, o.id, o.label)),
+      read.map((o) => (o.kind, o.id, o.label)),
+    );
+    expect(harness.server.requests, hasLength(asked));
+  });
 }

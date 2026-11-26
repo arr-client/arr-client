@@ -27,7 +27,10 @@ mixin RadarrLibraryWrites implements LibraryProvider {
   @override
   ServiceResult<void> edit(ItemRef ref, ItemEdit changes) async =>
       _isMovie(ref, context.instance.id)
-      ? await api.shared.edit('movie/${ref.remoteId}', changes)
+      ? await _forgettingGone(
+          ref,
+          api.shared.edit('movie/${ref.remoteId}', changes),
+        )
       : const Err(Validation([]));
 
   @override
@@ -48,10 +51,13 @@ mixin RadarrLibraryWrites implements LibraryProvider {
     required bool addImportExclusion,
   }) async {
     if (!_isMovie(ref, context.instance.id)) return const Err(Validation([]));
-    final deleted = await api.deleteMovie(
-      ref.remoteId,
-      deleteFiles: deleteFiles,
-      addImportExclusion: addImportExclusion,
+    final deleted = await _forgettingGone(
+      ref,
+      api.deleteMovie(
+        ref.remoteId,
+        deleteFiles: deleteFiles,
+        addImportExclusion: addImportExclusion,
+      ),
     );
     if (deleted is Ok) {
       await context.cache.remove(MediaKind.movie, ref.remoteId);
@@ -63,6 +69,18 @@ mixin RadarrLibraryWrites implements LibraryProvider {
   @override
   ServiceResult<void> deleteFile(MediaFile file) =>
       api.deleteMovieFile(file.id);
+
+  /// [write] to [ref], which leaves the cache if it no longer exists.
+  ServiceResult<void> _forgettingGone(
+    ItemRef ref,
+    ServiceResult<void> write,
+  ) async {
+    final result = await write;
+    if (result case Err(error: NotFound())) {
+      await context.cache.remove(MediaKind.movie, ref.remoteId);
+    }
+    return result;
+  }
 }
 
 /// Interactive search and grab for a movie.

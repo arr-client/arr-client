@@ -135,6 +135,14 @@ class MovieDetailController extends Notifier<MovieDetailState> {
         movie: ViewData(movie, staleness: Staleness(fetchedAt: fetchedAt)),
       );
     }
+    // So that the quality profile is named while the server cannot be reached.
+    final options = await source.library.cachedOptions();
+    if (!ref.mounted) return;
+    if (options case Ok(value: Cached(:final value, :final fetchedAt))) {
+      state = state.copyWith(
+        options: ViewData(value, staleness: Staleness(fetchedAt: fetchedAt)),
+      );
+    }
     await refresh();
   }
 

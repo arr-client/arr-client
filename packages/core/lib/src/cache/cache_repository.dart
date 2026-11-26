@@ -1,10 +1,17 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
+import '../models/item_ref.dart';
 import '../models/media_kind.dart';
+import '../models/server_option.dart';
+import '../models/server_option_kind.dart';
 import '../storage/database.dart';
 import 'cache_entry.dart';
 import 'cache_scope.dart';
 import 'cache_snapshot.dart';
+import 'cached.dart';
 
 /// The cached library data of all instances, kept in the database.
 ///
@@ -17,18 +24,26 @@ final class CacheRepository {
 
   final AppDatabase _database;
   final DateTime Function() _now;
+  // Open for as long as the app runs, as the repository is.
+  // ignore: close_sinks
+  final _removals = StreamController<ItemRef>.broadcast();
+
+  /// The items removed from any instance's cache, as [CacheScope.removals]
+  /// announces them.
+  Stream<ItemRef> get removals => _removals.stream;
 
   /// The cache of one instance. Entries are returned ordered by sort title.
   ///
   /// Writing an entry of another instance, kind or parent than asked for is an
   /// [ArgumentError], and nothing is stored.
   CacheScope scope(String instanceId) =>
-      _InstanceCache(_database, _now, instanceId);
+      _InstanceCache(_database, _now, _removals, instanceId);
 
   /// Removes everything cached, for all instances.
   Future<void> clear() => _database.transaction(() async {
     await _database.delete(_database.cacheEntries).go();
     await _database.delete(_database.cacheFetches).go();
+    await _database.delete(_database.cacheOptions).go();
   });
 }
 
@@ -44,10 +59,11 @@ const _childKinds = {
 const _chunkSize = 500;
 
 final class _InstanceCache implements CacheScope {
-  _InstanceCache(this._database, this._now, this._instanceId);
+  _InstanceCache(this._database, this._now, this._removals, this._instanceId);
 
   final AppDatabase _database;
   final DateTime Function() _now;
+  final StreamController<ItemRef> _removals;
   final String _instanceId;
 
   $CacheEntriesTable get _entries => _database.cacheEntries;
@@ -145,8 +161,76 @@ final class _InstanceCache implements CacheScope {
   }
 
   @override
-  Future<void> remove(MediaKind kind, int remoteId) =>
-      _database.transaction(() => _remove(kind, [remoteId]));
+  Future<void> remove(MediaKind kind, int remoteId) async {
+    await _database.transaction(() => _remove(kind, [remoteId]));
+    _removals.add(
+      ItemRef(instanceId: _instanceId, kind: kind, remoteId: remoteId),
+    );
+  }
+
+  @override
+  Stream<ItemRef> get removals =>
+      _removals.stream.where((ref) => ref.instanceId == _instanceId);
+
+  @override
+  Future<Cached<List<ServerOption>>?> readOptions() async {
+    final query = _database.select(_database.cacheOptions)
+      ..where((row) => row.instanceId.equals(_instanceId));
+    final row = await query.getSingleOrNull();
+    if (row == null) return null;
+    final options = _decodeOptions(row.options);
+    return options == null ? null : Cached(options, fetchedAt: row.fetchedAt);
+  }
+
+  @override
+  Future<void> replaceOptions(List<ServerOption> options) => _database
+      .into(_database.cacheOptions)
+      .insertOnConflictUpdate(
+        CacheOptionsCompanion.insert(
+          instanceId: _instanceId,
+          options: jsonEncode([
+            for (final option in options)
+              {
+                'kind': option.kind.name,
+                'id': option.id,
+                'label': option.label,
+                'freeSpace': option.freeSpace,
+              },
+          ]),
+          fetchedAt: _now().toUtc(),
+        ),
+      );
+
+  /// Null for what cannot be read, which is as good as never stored. A kind
+  /// this version does not know is left out.
+  static List<ServerOption>? _decodeOptions(String json) {
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(json);
+    } on FormatException {
+      return null;
+    }
+    if (decoded is! List<Object?>) return null;
+    final kinds = ServerOptionKind.values.asNameMap();
+    return [
+      for (final entry in decoded)
+        if (entry case {
+          'kind': final String name,
+          'id': final int id,
+          'label': final String label,
+        })
+          if (kinds[name] case final kind?)
+            ServerOption(
+              kind: kind,
+              id: id,
+              label: label,
+              freeSpace: switch (entry['freeSpace']) {
+                final int bytes => bytes,
+                _ => null,
+              },
+            ),
+    ];
+  }
 
   /// The parents whose lists a fetch of everything of [kind] answers for: those
   /// cached and those of [entries]. A parent that appears later was not asked

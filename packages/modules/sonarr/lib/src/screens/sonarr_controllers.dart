@@ -27,15 +27,23 @@ final episodeProvider = NotifierProvider.autoDispose
       EpisodeController.new,
     );
 
-/// The server's quality profiles and tags, by whose ids a series names them.
-/// Empty where they cannot be read: the screen then leaves the names out.
-final optionsProvider = FutureProvider.autoDispose
-    .family<List<ServerOption>, SonarrSources>(
-      (ref, sources) async => switch (await sources.library.options()) {
-        Ok(:final value) => value,
-        Err() => const [],
-      },
-    );
+/// The server's quality profiles and tags, by whose ids a series names them:
+/// those saved first, then those the server gives. Empty where there are
+/// neither: the screen then leaves the names out.
+final optionsProvider = StreamProvider.autoDispose
+    .family<List<ServerOption>, SonarrSources>((ref, sources) async* {
+      final saved = switch (await sources.library.cachedOptions()) {
+        Ok(value: Cached(:final value)) => value,
+        _ => null,
+      };
+      if (saved != null) yield saved;
+      switch (await sources.library.options()) {
+        case Ok(:final value):
+          yield value;
+        case Err():
+          if (saved == null) yield const [];
+      }
+    });
 
 /// The newest events of a series or episode.
 final historyProvider = FutureProvider.autoDispose
@@ -78,6 +86,13 @@ final class SeriesController extends CachedItemController<Series> {
   @override
   ServiceResult<Series> fetch() async =>
       _item(await key.$1.library.item(key.$2));
+
+  @override
+  Stream<ItemRef> get removals => key.$1.removals;
+
+  @override
+  ViewState<Series>? without(ViewState<Series> shown, ItemRef gone) =>
+      gone == key.$2 ? const ViewError(NotFound()) : null;
 }
 
 /// Holds the episodes of one series.
@@ -104,6 +119,25 @@ final class EpisodesController extends CachedItemController<List<Episode>> {
         Ok(:final value) => Ok(_episodes(value)),
         Err(:final error) => Err(error),
       };
+
+  @override
+  Stream<ItemRef> get removals => key.$1.removals;
+
+  @override
+  ViewState<List<Episode>>? without(
+    ViewState<List<Episode>> shown,
+    ItemRef gone,
+  ) {
+    if (gone == key.$2) return const ViewError(NotFound());
+    if (shown case ViewData(:final value, :final staleness)
+        when value.any((episode) => episode.ref == gone)) {
+      return ViewData([
+        for (final episode in value)
+          if (episode.ref != gone) episode,
+      ], staleness: staleness);
+    }
+    return null;
+  }
 }
 
 /// Holds one episode.
@@ -120,4 +154,16 @@ final class EpisodeController extends CachedItemController<Episode> {
   @override
   ServiceResult<Episode> fetch() async =>
       _item(await key.$1.library.item(key.$2));
+
+  @override
+  Stream<ItemRef> get removals => key.$1.removals;
+
+  // An episode goes with its series.
+  @override
+  ViewState<Episode>? without(ViewState<Episode> shown, ItemRef gone) {
+    final series = shown is ViewData<Episode> ? shown.value.parent : null;
+    return gone == key.$2 || gone == series
+        ? const ViewError(NotFound())
+        : null;
+  }
 }

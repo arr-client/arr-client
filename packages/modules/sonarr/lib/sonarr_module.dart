@@ -110,6 +110,7 @@ final class SonarrModule implements ServiceModule {
       history: SonarrHistoryAdapter(SonarrApi(context)),
       artwork: context.artwork,
       navigator: context.navigator,
+      removals: context.cache.removals,
     ),
   );
 }

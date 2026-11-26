@@ -292,6 +292,8 @@ void main() {
       // Its instance is gone: what a module still holds is not stored.
       await context.cache.replace(MediaKind.movie, []);
       expect(await context.cache.read(MediaKind.movie), isNull);
+      await context.cache.replaceOptions([]);
+      expect(await context.cache.readOptions(), isNull);
     });
   });
 

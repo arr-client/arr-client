@@ -21,7 +21,8 @@ final libraryProvider =
     );
 
 /// Shows what is cached first, then what each instance answers, one instance
-/// not waiting for another, and keeps the view the user chose.
+/// not waiting for another, and keeps the view the user chose. An item found to
+/// be gone from its server, on whatever screen, leaves the list at once.
 class LibraryController extends Notifier<LibraryState> {
   LibraryController(this.kind);
 
@@ -57,6 +58,8 @@ class LibraryController extends Notifier<LibraryState> {
     _sortedFrom = const [];
     _filteredFrom = const [];
     ref.listen(scopeProvider, (_, scope) => _apply(scope));
+    final removals = _services.cache.removals.listen(_remove);
+    ref.onDispose(removals.cancel);
     // Not during build, which must not set the state.
     scheduleMicrotask(() {
       if (ref.mounted) _apply(ref.read(scopeProvider));
@@ -240,9 +243,37 @@ class LibraryController extends Notifier<LibraryState> {
         instance.loading = null;
       });
 
+  void _remove(ItemRef gone) {
+    final instance = _sources[gone.instanceId];
+    if (instance == null || gone.kind != kind) return;
+    // A list asked for before may still hold it.
+    instance.removed.add(gone);
+    final entries = instance.source.entries;
+    if (entries == null || !entries.any((entry) => entry.item.ref == gone)) {
+      return;
+    }
+    _update(
+      instance,
+      instance.source.copyWith(
+        entries: [
+          for (final entry in entries)
+            if (entry.item.ref != gone) entry,
+        ],
+      ),
+    );
+  }
+
   Future<void> _fetch(_Instance instance) async {
     final provider = instance.provider;
+    instance.removed.clear();
     _update(instance, instance.source.copyWith(isLoading: true));
+    if (instance.source.options == null) {
+      final saved = await _read(provider.cachedOptions);
+      if (!_isCurrent(instance)) return;
+      if (saved case Ok(value: final saved?)) {
+        _update(instance, instance.source.copyWith(options: saved.value));
+      }
+    }
     if (instance.source.entries == null) {
       final cached = await _read(provider.cachedList);
       if (!_isCurrent(instance)) return;
@@ -263,7 +294,10 @@ class LibraryController extends Notifier<LibraryState> {
     if (_isCurrent(instance)) {
       _update(instance, switch (result) {
         Ok(:final value) => instance.source.copyWith(
-          entries: _entries(value),
+          entries: _entries([
+            for (final item in value)
+              if (!instance.removed.contains(item.ref)) item,
+          ]),
           fetchedAt: () => null,
           failure: () => null,
           isLoading: false,
@@ -288,6 +322,7 @@ class LibraryController extends Notifier<LibraryState> {
     if (!_isCurrent(instance)) return;
     switch (result) {
       case Ok(:final value):
+        instance.optionsAnswered = true;
         _update(
           instance,
           instance.source.copyWith(options: value, optionsFailed: false),
@@ -298,13 +333,14 @@ class LibraryController extends Notifier<LibraryState> {
     }
   }
 
-  /// Drops the saved filter ids that the servers no longer have.
+  /// Drops the saved filter ids that the servers no longer have. Saved options
+  /// do not say what a server has now.
   void _dropUnresolved() {
     final filters = _view?.filters;
     if (filters == null) return;
     final resolved = filters.withoutUnresolved({
       for (final MapEntry(key: id, value: instance) in _sources.entries)
-        id: ?instance.source.options,
+        if (instance.optionsAnswered) id: ?instance.source.options,
     });
     if (resolved != filters) setFilters(resolved);
   }
@@ -403,4 +439,10 @@ final class _Instance {
 
   /// When the last read of the items ended, well or not.
   DateTime? answeredAt;
+
+  /// Whether the server has supplied the options, in this run.
+  var optionsAnswered = false;
+
+  /// The items found to be gone since the last read of the items began.
+  final removed = <ItemRef>{};
 }

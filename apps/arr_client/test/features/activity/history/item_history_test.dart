@@ -94,6 +94,7 @@ void main() {
     WidgetTester tester, {
     Size size = const Size(400, 800),
     void Function(FakeHistory fake)? arrange,
+    void Function()? started,
   }) async {
     tester.view
       ..physicalSize = size
@@ -102,6 +103,7 @@ void main() {
     module = HistoryModule();
     arrange?.call(module.fake);
     app = await TestApp.start(tester, modules: [module]);
+    started?.call();
     instance = await app.add(module, 'Cellar');
     await app.pump(tester);
     app.services.registry.scope!
@@ -316,6 +318,21 @@ void main() {
       find.text('This item no longer exists on the server.'),
       findsOneWidget,
     );
+    await app.stop(tester);
+  });
+
+  testWidgets('has a deleted item forgotten', (tester) async {
+    final gone = <ItemRef>[];
+    late StreamSubscription<ItemRef> subscription;
+    await open(
+      tester,
+      arrange: (fake) => fake.failure = const NotFound(),
+      started: () =>
+          subscription = app.services.cache.removals.listen(gone.add),
+    );
+    addTearDown(subscription.cancel);
+
+    expect(gone, [movie()]);
     await app.stop(tester);
   });
 
