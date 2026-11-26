@@ -24,7 +24,7 @@ final class ServarrClient {
     this._http, {
     required this._apiPath,
     required this._includeUnknownParameter,
-    required this._refs,
+    required this.refs,
   });
 
   static const _queuePageSize = 250;
@@ -33,10 +33,12 @@ final class ServarrClient {
   final ServiceHttpClient _http;
   final String _apiPath;
   final String _includeUnknownParameter;
-  final ServarrRefs Function(JsonObject record) _refs;
+
+  /// Reads the ids of a queue or history record.
+  final ServarrRefs Function(JsonObject record) refs;
 
   /// The application's name and version.
-  ServiceResult<ServarrStatus> status() => _get('system/status', (json) {
+  ServiceResult<ServarrStatus> status() => read('system/status', (json) {
     final status = asObject(json);
     return (
       appName: requireString(status, 'appName'),
@@ -47,12 +49,15 @@ final class ServarrClient {
   /// Quality profiles, root folders and tags. Fails if any of them does.
   ServiceResult<List<ServerOption>> options() async {
     final options = <ServerOption>[];
-    for (final (path, read) in const [
+    for (final (path, option) in const [
       ('qualityprofile', qualityProfileOption),
       ('rootfolder', rootFolderOption),
       ('tag', tagOption),
     ]) {
-      switch (await _get(path, (json) => asObjects(json).map(read).toList())) {
+      switch (await read(
+        path,
+        (json) => asObjects(json).map(option).toList(),
+      )) {
         case Ok(:final value):
           options.addAll(value);
         case Err(:final error):
@@ -69,9 +74,9 @@ final class ServarrClient {
     // answers with an earlier page again.
     final items = <int, QueueItem>{};
     for (var number = 1; ; number++) {
-      final result = await _get(
+      final result = await read(
         'queue',
-        (json) => readPage(json, (record) => queueItem(record, _refs(record))),
+        (json) => readPage(json, (record) => queueItem(record, refs(record))),
         query: {
           'page': ['$number'],
           'pageSize': ['$_queuePageSize'],
@@ -101,17 +106,17 @@ final class ServarrClient {
   ServiceResult<ResultPage<HistoryEvent>> history({
     int page = 1,
     Map<String, List<String>> filter = const {},
-  }) => _get(
+  }) => read(
     'history',
     (json) {
-      final read = readPage(
+      final paged = readPage(
         json,
-        (record) => historyEvent(record, _refs(record)),
+        (record) => historyEvent(record, refs(record)),
       );
       return ResultPage(
-        items: read.records,
+        items: paged.records,
         page: page,
-        hasMore: page * read.pageSize < read.totalRecords,
+        hasMore: page * paged.pageSize < paged.totalRecords,
       );
     },
     query: {
@@ -125,16 +130,16 @@ final class ServarrClient {
 
   /// Where the command [commandId] is.
   ServiceResult<Command> commandStatus(int commandId) =>
-      _get('command/$commandId', (json) => readCommand(asObject(json)));
+      read('command/$commandId', (json) => readCommand(asObject(json)));
 
   /// The events of one item, newest first, from the service's own read at
   /// [path], such as `history/movie`. The server does not page them.
   ServiceResult<List<HistoryEvent>> itemHistory(
     String path, {
     required Map<String, List<String>> query,
-  }) => _get(path, (json) {
+  }) => read(path, (json) {
     final events = [
-      for (final record in asObjects(json)) historyEvent(record, _refs(record)),
+      for (final record in asObjects(json)) historyEvent(record, refs(record)),
     ];
     // The id orders events of the same moment.
     return events..sort((a, b) {
@@ -145,10 +150,11 @@ final class ServarrClient {
 
   /// The problems the server reports.
   ServiceResult<List<HealthIssue>> health() =>
-      _get('health', (json) => asObjects(json).map(healthIssue).toList());
+      read('health', (json) => asObjects(json).map(healthIssue).toList());
 
-  /// [decode] throws [FormatException] for a body it cannot understand.
-  ServiceResult<T> _get<T>(
+  /// One read of [path], below the API path, such as `diskspace`. [decode]
+  /// throws [FormatException] for a body it cannot understand.
+  ServiceResult<T> read<T>(
     String path,
     T Function(Object? json) decode, {
     Map<String, List<String>> query = const {},
