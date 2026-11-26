@@ -13,8 +13,8 @@ final class KeystoreSecretStore implements SecretStore {
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(
       // A key that can no longer unwrap the data is reset, erasing it, and a
-      // value that fails to decrypt is erased. Other Keystore faults, such as
-      // UnrecoverableKeyException, are thrown with nothing reset.
+      // value whose read or write fails is erased. Other Keystore faults, such
+      // as UnrecoverableKeyException, are thrown with nothing reset.
       resetOnError: true,
       // No biometric prompt: background checks read secrets with no UI.
       enforceBiometrics: false,
