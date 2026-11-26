@@ -58,8 +58,17 @@ removed from the list and its secret kept. Not exported.
 activeProfileId, themeMode, trueBlack, dynamicColor, loadThirdPartyArtwork (default true), appLock {enabled,
 delaySeconds}, view (per library)
 {layout, sort, filters, instanceScope}, lastAddChoices per instance.
-`view` is keyed by (profileId, library); profile copy copies it with instance ids remapped. A saved
-scope or server filter id that no longer resolves is dropped (scope falls back to all instances).
+`view` is keyed by (profileId, library), where library is the kind of its top-level items (movie,
+series, artist, author); profile copy copies it with instance ids remapped. Its parts:
+- layout: grid (default) or list.
+- sort: {field (default title), ascending}.
+- filters: {text, states[], monitored?, qualityProfiles[], tags[]}; each quality profile or tag id is
+  a pair (instanceId, optionId).
+- instanceScope: instanceId?; absent means all instances.
+
+A saved scope or server filter id that no longer resolves is dropped (scope falls back to all
+instances). An instance resolves while it is in the view's profile; the quality profile and tag ids of
+an instance whose options are not available, for example an unreachable one, are kept.
 Credential and view data of deleted instances are removed with them.
 
 ### NotificationSubscription
@@ -83,7 +92,15 @@ unreachable), without notifying. Only instances of the active profile are checke
 
 ### CacheEntry
 instanceId, kind, remoteId, parentRemoteId? (episodes, tracks, albums, books), sortTitle, state,
-monitored, qualityProfileId, tagIds, addedAt, rawJson, fetchedAt. Deleted with its instance.
+monitored, qualityProfileId, tagIds, addedAt, rawJson, fetchedAt. Keyed by (instanceId, kind,
+remoteId). Deleted with its instance. The entries under a series, artist, album or author are also
+removed when it is removed or a full fetch no longer has it.
+
+### CacheFetches
+instanceId, kind, parentRemoteId (-1 for a fetch of all entries of the kind), fetchedAt; keyed by the
+first three. When a list was last fetched: it tells a list never fetched from one fetched and empty. A
+fetch of all entries replaces the kind's earlier fetches by parent, and also records one for each
+parent then cached or named by an entry. Removed with the instance, and with the parent.
 
 ## In memory
 
@@ -146,13 +163,16 @@ ImportedItem {itemRef?, title, importedAt, quality} (history import events from 
 day to the next, grouped by item); Credit {person, role, character?, image?};
 MediaFile {id, path, size, quality, languages[], video?, audio?}; BlocklistEntry {id, itemRef?,
 sourceTitle, date, quality, reason};
-Indexer {id, name, protocol, enabled, failureUntil?, lastFailure?}; IndexerCategory {id, name}.
+Indexer {id, name, protocol, enabled, failureUntil?, lastFailure?}; IndexerCategory {id, name};
+MediaImage {type, instancePath? (relative to the instance's url, possibly with a query),
+remoteUrl? (loaded without credentials)}, the element of `images[]`.
 
 ### Request service
 SessionUser {id, name, permissions, quota}; DiscoveryTitle {tmdbId, tvdbId?, year?, mediaId? (the
 server's own media record id, `mediaInfo.id`, present only for
 titles it already knows; issues are filed against it, so issue reporting is offered only when
-present), mediaType, title, posterPath?,
+present), mediaType, title, poster? (a MediaImage; the module turns the server's relative poster
+path into it, research R10),
 availability and availability4k (each: unknown, pending, processing, partial, available, blocklisted, deleted)};
 the request action is decided per variant;
 the wire value is an integer decoded per product, for both variants: 1–5 are unknown, pending,
