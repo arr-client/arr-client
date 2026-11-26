@@ -82,11 +82,15 @@ ServiceResult<ProbeResult> probeSeerr(
     newer = compareVersions(numbers, detected.tested) > 0;
   }
 
-  // Needs no permission, so a refusal is of the credential itself. Only the
-  // core latches the instance, by the rules of the descriptor and the session.
+  // Needs no permission, so a refusal of an account's session is of the account.
+  // The core already reports a rejected API key as such: a refusal left over is
+  // something else's, such as a firewall's, and says nothing about the key.
+  // Only the core latches the instance, by the rules of the descriptor and the
+  // session.
   final Map<String, Object?> me;
   switch (await api.readObject('auth/me')) {
-    case Err(error: Forbidden()):
+    case Err(error: Forbidden())
+        when context.instance.authKind != AuthKind.apiKey:
       return const Err(AuthFailed());
     case Err(:final error):
       return Err(error);

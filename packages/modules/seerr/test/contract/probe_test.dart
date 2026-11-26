@@ -198,14 +198,40 @@ void main() {
   });
 
   group('authentication', () {
-    // A wrong key gets the same 403 as a missing permission, but auth/me
-    // needs none.
-    test('reports a rejected API key', () async {
-      final http = FakeSeerr()
-        ..set('GET api/v1/auth/me', answered(403, fixture('auth_me_rejected')));
+    // auth/me needs no permission, so its 403 is of the account.
+    for (final authKind in [
+      AuthKind.userPassword,
+      AuthKind.mediaServerAccount,
+    ]) {
+      test('reports a refused ${authKind.name}', () async {
+        final http = FakeSeerr()
+          ..set(
+            'GET api/v1/auth/me',
+            answered(403, fixture('auth_me_rejected')),
+          );
 
-      expect(failureOf(await _probe(http)), isA<AuthFailed>());
-      expect(http.reads('auth/me'), hasLength(1));
+        expect(
+          failureOf(await _probe(http, authKind: authKind)),
+          isA<AuthFailed>(),
+        );
+        expect(http.reads('auth/me'), hasLength(1));
+      });
+    }
+
+    // The core tells a rejected key from other refusals (session_test.dart), so
+    // one it left as forbidden, such as a firewall's page, is not of the key.
+    test('does not take a firewall\'s page for a rejected API key', () async {
+      final http = FakeSeerr()
+        ..set(
+          'GET api/v1/auth/me',
+          answered(
+            403,
+            '<!DOCTYPE html><html><body>Blocked</body></html>',
+            type: 'text/html',
+          ),
+        );
+
+      expect(failureOf(await _probe(http)), isA<Forbidden>());
     });
 
     // Without a key or cookie the answer is a 401.
