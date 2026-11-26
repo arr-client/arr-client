@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
+import '../../features/activity/history/blocklist_screen.dart';
+import '../../features/activity/history/history_tab.dart';
 import '../../features/activity/queue/queue_tab.dart';
 import '../../features/calendar/calendar_screen.dart';
 import '../../features/home/home_overview.dart';
@@ -152,7 +154,7 @@ class ActivityScreen extends ConsumerWidget {
         for (final tab in tabs)
           switch (tab) {
             ActivityTab.queue => const QueueTab(),
-            ActivityTab.history => const _NotBuilt(),
+            ActivityTab.history => const HistoryTab(),
           },
       ],
     );
@@ -200,6 +202,7 @@ class MorePage extends ConsumerWidget {
       return MessagePage(title: title, message: strings.notOffered);
     }
     if (entry == MoreEntry.calendar) return const CalendarScreen();
+    if (entry == MoreEntry.blocklist) return const BlocklistScreen();
     if (entry == MoreEntry.settings) return const SettingsScreen();
     final owned = switch (entry) {
       MoreEntry.subtitles => [

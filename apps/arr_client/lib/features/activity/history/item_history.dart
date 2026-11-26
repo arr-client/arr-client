@@ -6,10 +6,14 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../../src/l10n/generated/app_localizations.dart';
+import 'history_episodes.dart';
 import 'history_event_tile.dart';
 import 'item_history_controller.dart';
+import 'mark_failed.dart';
+import 'server_changes.dart';
 
-/// The whole history of one item, newest first, a page at a time.
+/// The whole history of one item, newest first, a page at a time. A grab can be
+/// marked as failed.
 class ItemHistoryScreen extends ConsumerWidget {
   const ItemHistoryScreen({
     required this.instance,
@@ -24,6 +28,8 @@ class ItemHistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Named, as the builders below have contexts of their own.
+    final screen = context;
     final strings = AppLocalizations.of(context);
     if (instance.capability(CapabilityKind.history) == null) {
       return Scaffold(
@@ -37,11 +43,11 @@ class ItemHistoryScreen extends ConsumerWidget {
       );
     }
 
-    final provider = itemHistoryProvider((
-      item: item,
-      client: instance.context.http,
-    ));
+    final key = (item: item, client: instance.context.http);
+    final provider = itemHistoryProvider(key);
+    final episodes = ref.watch(historyEpisodesProvider(key));
     final history = ref.watch(provider);
+    final changes = ref.watch(serverChangesProvider);
     final controller = ref.read(provider.notifier);
     final events = history.events;
     final fetchedAt = history.fetchedAt;
@@ -92,8 +98,22 @@ class ItemHistoryScreen extends ConsumerWidget {
             emptyMessage: strings.historyEmpty,
             builder: (context, events, {required isStale}) => _Events(
               events: events,
+              episodes: episodes,
               history: history,
-              canReadOlder: !isStale && !history.refreshing,
+              isCurrent: !isStale && !history.refreshing,
+              isSending: (event) =>
+                  changes.isSending(instance, ChangeKind.markFailed, event.id),
+              // This screen's context, which stays when the row goes.
+              onMarkFailed: (event) => unawaited(
+                markEventFailed(
+                  screen,
+                  ref,
+                  instance,
+                  event,
+                  loaded: events,
+                  episode: episodes[event.itemRef],
+                ),
+              ),
               onOlder: () => unawaited(controller.loadMore()),
               onRetryOlder: () => unawaited(controller.retry(older: true)),
             ),
@@ -107,17 +127,27 @@ class ItemHistoryScreen extends ConsumerWidget {
 class _Events extends StatelessWidget {
   const _Events({
     required this.events,
+    required this.episodes,
     required this.history,
-    required this.canReadOlder,
+    required this.isCurrent,
+    required this.isSending,
+    required this.onMarkFailed,
     required this.onOlder,
     required this.onRetryOlder,
   });
 
   final List<HistoryEvent> events;
+  final Map<ItemRef, Episode> episodes;
   final ItemHistoryState history;
 
-  /// Not while the events shown may be replaced.
-  final bool canReadOlder;
+  /// Whether the events shown are the server's. While they may be replaced,
+  /// nothing older is read and nothing is marked.
+  final bool isCurrent;
+
+  /// Whether an event is being marked.
+  final bool Function(HistoryEvent event) isSending;
+
+  final void Function(HistoryEvent event) onMarkFailed;
 
   final VoidCallback onOlder;
   final VoidCallback onRetryOlder;
@@ -131,10 +161,19 @@ class _Events extends StatelessWidget {
         vertical: 8,
       ),
       itemCount: events.length + (history.hasMore ? 1 : 0),
-      itemBuilder: (context, index) => index < events.length
-          ? HistoryEventTile(events[index], key: ValueKey(events[index].id))
-          : _older(context),
+      itemBuilder: (context, index) =>
+          index < events.length ? _event(events[index]) : _older(context),
     ),
+  );
+
+  Widget _event(HistoryEvent event) => HistoryEventTile(
+    event,
+    episode: episodes[event.itemRef],
+    key: ValueKey(event.id),
+    markable: true,
+    onMarkFailed: isCurrent && !isSending(event)
+        ? () => onMarkFailed(event)
+        : null,
   );
 
   /// What follows the events while the server has older ones.
@@ -162,7 +201,7 @@ class _Events extends StatelessWidget {
             ),
           ),
           TextButton(
-            onPressed: canReadOlder ? onRetryOlder : null,
+            onPressed: isCurrent ? onRetryOlder : null,
             child: Text(strings.historyRetryOlder),
           ),
         ],
@@ -170,7 +209,7 @@ class _Events extends StatelessWidget {
     }
     return Center(
       child: TextButton(
-        onPressed: canReadOlder ? onOlder : null,
+        onPressed: isCurrent ? onOlder : null,
         child: Text(strings.historyShowOlder),
       ),
     );

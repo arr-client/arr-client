@@ -7,6 +7,7 @@ import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import 'server_changes.dart';
 
 /// One item, and the client of its instance. An edited instance has another
 /// client, so that what was read through the old one is not shown for it.
@@ -86,6 +87,11 @@ final class ItemHistoryController extends Notifier<ItemHistoryState> {
 
   @override
   ItemHistoryState build() {
+    // A change may have altered the history, whatever the server answered.
+    ref.listen(
+      serverChangesProvider.select((changes) => changes.answered[key.client]),
+      (_, _) => unawaited(refresh()),
+    );
     // Not at once: there is no state to change until this returns.
     scheduleMicrotask(() {
       if (ref.mounted) unawaited(refresh());

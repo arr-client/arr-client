@@ -7,6 +7,36 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../app/support.dart';
 
+/// The episodes of a series, as saved and as the server has them.
+class FakeEpisodes implements LibraryProvider {
+  var saved = <Episode>[];
+  var onServer = <Episode>[];
+
+  /// Fails the read from the server while set.
+  ServiceFailure? failure;
+
+  /// How often the server was asked.
+  var reads = 0;
+
+  @override
+  MediaKind get itemKind => MediaKind.series;
+
+  @override
+  ServiceResult<List<LibraryItem>> children(ItemRef parent) async {
+    reads++;
+    final failure = this.failure;
+    return failure == null ? Ok(onServer) : Err(failure);
+  }
+
+  @override
+  ServiceResult<Cached<List<LibraryItem>>?> cachedChildren(
+    ItemRef parent,
+  ) async => Ok(Cached(saved, fetchedAt: DateTime.utc(2026)));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 /// A history that answers by page and records what it was asked.
 class FakeHistory implements HistoryProvider {
   /// The events of each page, from 1.
@@ -20,6 +50,15 @@ class FakeHistory implements HistoryProvider {
 
   /// What was asked.
   final reads = <(MediaTarget?, int)>[];
+
+  /// What was marked as failed.
+  final marked = <int>[];
+
+  @override
+  ServiceResult<void> markFailed(int eventId) async {
+    marked.add(eventId);
+    return const Ok(null);
+  }
 
   @override
   ServiceResult<ResultPage<HistoryEvent>> history({
@@ -46,14 +85,18 @@ class FakeHistory implements HistoryProvider {
 }
 
 class HistoryModule extends FakeModule {
-  HistoryModule() : super('films', offers: {CapabilityKind.history});
+  HistoryModule()
+    : super('films', offers: {CapabilityKind.history, CapabilityKind.library});
 
   final fake = FakeHistory();
+
+  final episodes = FakeEpisodes();
 
   @override
   T? capability<T extends Capability>(InstanceContext context) {
     final Capability? found = switch (T) {
       const (HistoryProvider) => fake,
+      const (LibraryProvider) => episodes,
       _ => null,
     };
     return found as T?;
@@ -65,12 +108,16 @@ HistoryEvent event(
   HistoryEventType type = HistoryEventType.grabbed,
   String? title,
   int day = 1,
+  ItemRef? itemRef,
+  String? downloadId,
   Map<String, String> details = const {},
 }) => HistoryEvent(
   id: id,
   eventType: type,
   date: DateTime.utc(2026, 3, day, 12),
   sourceTitle: title ?? 'Release $id',
+  itemRef: itemRef,
+  downloadId: downloadId,
   details: details,
 );
 
@@ -95,6 +142,7 @@ void main() {
     Size size = const Size(400, 800),
     void Function(FakeHistory fake)? arrange,
     void Function()? started,
+    ItemRef Function()? item,
   }) async {
     tester.view
       ..physicalSize = size
@@ -110,7 +158,7 @@ void main() {
         .instance(instance)!
         .context
         .navigator
-        .openHistory(movie())
+        .openHistory((item ?? movie)())
         .ignore();
     // Not pumpAndSettle, which would not end while a progress bar moves.
     await step(tester);
@@ -145,6 +193,132 @@ void main() {
     expect(find.text('Release 1'), findsOneWidget);
     expect(find.textContaining('March 20, 2026'), findsOneWidget);
     expect(find.text('Show older events'), findsNothing);
+    await app.stop(tester);
+  });
+
+  group('a series', () {
+    ItemRef ref(MediaKind kind, int id) =>
+        ItemRef(instanceId: instance, kind: kind, remoteId: id);
+
+    Episode episode(int id, int season, int number) => Episode(
+      ref: ref(MediaKind.episode, id),
+      title: 'Part $number',
+      sortTitle: 'part $number',
+      monitored: true,
+      state: ItemState.missing,
+      seasonNumber: season,
+      episodeNumber: number,
+      hasFile: false,
+    );
+
+    void openSeries() => app.services.registry.scope!
+        .instance(instance)!
+        .context
+        .navigator
+        .openHistory(ref(MediaKind.series, 3))
+        .ignore();
+
+    /// A season pack and a special: the server records an event for each
+    /// episode.
+    Future<void> arrange(
+      WidgetTester tester, {
+      required void Function() episodes,
+    }) async {
+      await open(
+        tester,
+        size: const Size(400, 2000),
+        item: () => ref(MediaKind.series, 3),
+      );
+      episodes();
+      module.fake.pages = [
+        [
+          for (final id in [11, 12, 13])
+            event(id, title: 'Pack', itemRef: ref(MediaKind.episode, id)),
+        ],
+      ];
+      await tester.tap(find.byType(BackButton));
+      await step(tester);
+      openSeries();
+      await step(tester);
+    }
+
+    testWidgets('says which episode each event is for', (tester) async {
+      await arrange(
+        tester,
+        episodes: () => module.episodes.onServer = [
+          episode(11, 2, 1),
+          episode(12, 2, 2),
+          episode(13, 0, 4),
+        ],
+      );
+
+      expect(find.text('Season 2, episode 1'), findsOneWidget);
+      expect(find.text('Season 2, episode 2'), findsOneWidget);
+      expect(find.text('Special 4'), findsOneWidget);
+      await app.stop(tester);
+    });
+
+    testWidgets('uses the saved episodes while they cannot be read', (
+      tester,
+    ) async {
+      await arrange(
+        tester,
+        episodes: () => module.episodes
+          ..saved = [episode(11, 1, 5)]
+          ..failure = const Unreachable(),
+      );
+
+      expect(find.text('Season 1, episode 5'), findsOneWidget);
+      expect(find.text('Pack'), findsNWidgets(3));
+      await app.stop(tester);
+    });
+
+    testWidgets('no episodes are read for a movie', (tester) async {
+      await open(tester);
+
+      expect(module.episodes.reads, 0);
+      await app.stop(tester);
+    });
+  });
+
+  testWidgets('marks a grab as failed and reads the history again', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      size: const Size(400, 2000),
+      arrange: (fake) => fake.pages = [
+        [
+          for (final id in [3, 2])
+            event(
+              id,
+              day: id,
+              downloadId: 'pack',
+              itemRef: const ItemRef(
+                instanceId: 'any',
+                kind: MediaKind.episode,
+                remoteId: 1,
+              ),
+            ),
+          event(1, type: HistoryEventType.imported, downloadId: 'pack'),
+        ],
+      ],
+    );
+    expect(find.text('Mark as failed'), findsNWidgets(2));
+
+    await tester.tap(find.text('Mark as failed').first);
+    await step(tester);
+    expect(find.textContaining('season pack'), findsOneWidget);
+    expect(module.fake.marked, isEmpty);
+    await tester.tap(find.widgetWithText(FilledButton, 'Mark as failed'));
+    await step(tester);
+
+    expect(module.fake.marked, [3]);
+    expect(module.fake.reads, hasLength(2));
+    expect(
+      find.text('Cellar accepted marking the download as failed.'),
+      findsOneWidget,
+    );
     await app.stop(tester);
   });
 
