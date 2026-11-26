@@ -1,0 +1,14 @@
+[
+  {
+    "propertyName": "TmdbId",
+    "errorMessage": "redacted-42",
+    "attemptedValue": 10378,
+    "severity": "error",
+    "errorCode": "MovieExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-43",
+      "propertyValue": 10378
+    }
+  }
+]

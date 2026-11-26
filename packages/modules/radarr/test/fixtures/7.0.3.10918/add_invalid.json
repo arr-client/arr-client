@@ -1,0 +1,14 @@
+[
+  {
+    "propertyName": "QualityProfileId",
+    "errorMessage": "redacted-44",
+    "attemptedValue": 999,
+    "severity": "error",
+    "errorCode": "QualityProfileExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-45",
+      "propertyValue": 999
+    }
+  }
+]
