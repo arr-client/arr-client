@@ -280,6 +280,26 @@ void main() {
       });
     });
 
+    test('${service.name} history is narrowed by a filter', () async {
+      final server = FakeServer.paths({'history': service.object('history')});
+
+      await value(
+        service
+            .client(server)
+            .history(
+              page: 2,
+              filter: {
+                'episodeId': ['11'],
+              },
+            ),
+      );
+
+      final query = server.requests.single.query;
+      expect(query['episodeId'], ['11']);
+      expect(query['page'], ['2']);
+      expect(query['sortDirection'], ['descending']);
+    });
+
     group('${service.name} history paging', () {
       // Three events, two a page.
       for (final (number, ids, more) in [

@@ -96,8 +96,12 @@ final class ServarrClient {
     }
   }
 
-  /// One page of the history, newest first. Pages start at 1.
-  ServiceResult<ResultPage<HistoryEvent>> history({int page = 1}) => _get(
+  /// One page of the history, newest first. Pages start at 1. [filter] narrows
+  /// it by the service's own parameters, such as `episodeId`.
+  ServiceResult<ResultPage<HistoryEvent>> history({
+    int page = 1,
+    Map<String, List<String>> filter = const {},
+  }) => _get(
     'history',
     (json) {
       final read = readPage(
@@ -111,6 +115,7 @@ final class ServarrClient {
       );
     },
     query: {
+      ...filter,
       'page': ['$page'],
       'pageSize': ['$_historyPageSize'],
       'sortKey': ['date'],

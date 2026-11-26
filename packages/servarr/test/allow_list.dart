@@ -36,6 +36,7 @@ AllowList allowList(String includeUnknown) => AllowList([
       'pageSize': _any,
       'sortKey': _any,
       'sortDirection': _any,
+      'episodeId': _any,
     },
   ),
   AllowedRequest.read(
