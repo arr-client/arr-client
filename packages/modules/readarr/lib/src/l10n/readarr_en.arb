@@ -1,0 +1,31 @@
+{
+  "@@locale": "en",
+  "monitorAll": "All books",
+  "@monitorAll": {
+    "description": "Choice of what to monitor of an author, being added or already there: every book."
+  },
+  "monitorFuture": "Future books",
+  "@monitorFuture": {
+    "description": "Choice of what to monitor of an author, being added or already there: books that have not been released yet."
+  },
+  "monitorMissing": "Missing books",
+  "@monitorMissing": {
+    "description": "Choice of what to monitor of an author, being added or already there: books without files, and those not released yet."
+  },
+  "monitorExisting": "Existing books",
+  "@monitorExisting": {
+    "description": "Choice of what to monitor of an author, being added or already there: books with files, and those not released yet."
+  },
+  "monitorFirst": "First book",
+  "@monitorFirst": {
+    "description": "Choice of what to monitor of an author, being added or already there: only the first book."
+  },
+  "monitorLatest": "Latest book",
+  "@monitorLatest": {
+    "description": "Choice of what to monitor of an author, being added or already there: only the latest book."
+  },
+  "monitorNone": "None",
+  "@monitorNone": {
+    "description": "Choice of what to monitor of an author, being added or already there: nothing."
+  }
+}
