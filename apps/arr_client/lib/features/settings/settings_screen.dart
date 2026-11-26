@@ -12,6 +12,7 @@ import 'package:ui/ui.dart';
 import '../../app/navigation/locations.dart';
 import '../../app/providers.dart';
 import '../../src/l10n/generated/app_localizations.dart';
+import 'artwork/third_party_artwork_tile.dart';
 import 'storage/clear_cache_tile.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -64,6 +65,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const Divider(),
+              ThirdPartyArtworkTile(contentPadding: padding),
               ClearCacheTile(contentPadding: padding),
               ListTile(
                 contentPadding: padding,

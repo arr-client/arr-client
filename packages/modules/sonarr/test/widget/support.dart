@@ -47,10 +47,11 @@ class RecordingNavigator extends Fake implements AppNavigator {
 
 /// The app around the module's screens.
 class Screens {
-  Screens({FakeSonarr? server}) : navigator = RecordingNavigator() {
+  Screens({FakeSonarr? server, ArtworkLoader? artwork})
+    : navigator = RecordingNavigator() {
     harness = Harness(
       server: server,
-      artwork: _NoArtwork(),
+      artwork: artwork ?? _NoArtwork(),
       navigator: navigator,
     );
   }
@@ -68,6 +69,9 @@ class Screens {
   ThemeData theme = ArrTheme.light();
 
   FakeSonarr get server => harness.server;
+
+  /// What the app's preference for artwork of public hosts says.
+  final artworkAllowed = ValueNotifier(true);
 
   /// Shows the screen of [route], above an empty first page.
   Future<void> open(
@@ -113,15 +117,21 @@ class Screens {
             ],
             supportedLocales: SonarrLocalizations.supportedLocales,
             routerConfig: router,
-            builder: (context, child) => MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: TextScaler.linear(textScale)),
-              child: DetailSlotScope(
-                builder: (context, slot) {
-                  slots.add(slot);
-                  return const SizedBox.shrink();
-                },
-                child: child!,
+            builder: (context, child) => ValueListenableBuilder(
+              valueListenable: artworkAllowed,
+              builder: (context, allowed, _) => ThirdPartyArtworkScope(
+                allowed: allowed,
+                child: MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(textScaler: TextScaler.linear(textScale)),
+                  child: DetailSlotScope(
+                    builder: (context, slot) {
+                      slots.add(slot);
+                      return const SizedBox.shrink();
+                    },
+                    child: child!,
+                  ),
+                ),
               ),
             ),
           ),

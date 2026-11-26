@@ -32,7 +32,8 @@ final class ArtworkCache {
   /// the system may empty and does not back up.
   ///
   /// [loadRemote] is asked whenever artwork of a public host is wanted
-  /// (`Preferences.loadThirdPartyArtwork`). [maximumBytes] limits what is kept
+  /// (`Preferences.loadThirdPartyArtwork`): while it says no, none is fetched,
+  /// and what was saved of it is not read. [maximumBytes] limits what is kept
   /// of one instance, and [freshFor] how long a file is used before it is read
   /// again.
   ArtworkCache({
@@ -151,14 +152,27 @@ final class _Loader implements ArtworkLoader {
     if (url == null || !_cache._loadRemote() || !isRemoteAddress(url)) {
       return null;
     }
-    return _provider('remote\n$url', () => _fromRemote(url));
+    return _provider(
+      'remote\n$url',
+      () => _fromRemote(url),
+      allowed: _cache._loadRemote,
+    );
   }
 
-  ArtworkImage _provider(String name, ArtworkSource source) => ArtworkImage(
+  /// [allowed] is asked before anything is read, the saved file included: an
+  /// image may have been made before it was switched off.
+  ArtworkImage _provider(
+    String name,
+    ArtworkSource source, {
+    bool Function()? allowed,
+  }) => ArtworkImage(
     owner: _cache,
     instanceId: _instanceId,
     key: _digest(name),
-    store: () => _cache._store(_instanceId),
+    store: () async {
+      if (allowed?.call() == false) throw const ArtworkException(_switchedOff);
+      return _cache._store(_instanceId);
+    },
     source: source,
   );
 
@@ -174,12 +188,15 @@ final class _Loader implements ArtworkLoader {
   Future<Uint8List> _fromRemote(Uri url) async {
     // It may have been switched off since the image was made.
     if (!_cache._loadRemote()) {
-      throw const ArtworkException('remote artwork is switched off');
+      throw const ArtworkException(_switchedOff);
     }
     final int status;
     final Uint8List bytes;
     try {
-      final response = await _cache._remote.get(url);
+      final response = await _cache._remote.get(
+        url,
+        allowed: _cache._loadRemote,
+      );
       status = response.statusCode;
       bytes = response.bytes;
     } catch (error) {
@@ -195,6 +212,8 @@ final class _Loader implements ArtworkLoader {
     return _picture(bytes);
   }
 }
+
+const _switchedOff = 'remote artwork is switched off';
 
 /// [bytes] if they begin as a picture does. Anything else, such as the page of a
 /// captive portal, must not be stored, nor replace a picture that is.

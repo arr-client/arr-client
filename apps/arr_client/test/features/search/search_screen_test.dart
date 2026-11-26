@@ -471,6 +471,38 @@ void main() {
     await search.stop(tester);
   });
 
+  testWidgets('the add screen follows the artwork preference', (tester) async {
+    final search = await Search.start(tester, instances: {'Films': 'movies'});
+    await typeAndWait(tester, 'alien');
+    search['Films'].answer([
+      search.movie(
+        'Films',
+        'Alien',
+        1,
+        images: [
+          MediaImage(
+            type: MediaImageType.poster,
+            remoteUrl: Uri.parse('https://images.invalid/alien.jpg'),
+          ),
+        ],
+      ),
+    ]);
+    await step(tester);
+    await tester.tap(find.text('Alien'));
+    await step(tester);
+    await step(tester);
+    expect(find.widgetWithText(AppBar, 'Add'), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
+
+    await search.app.services.preferences.setLoadThirdPartyArtwork(false);
+    await settle(tester);
+
+    expect(find.byType(Image), findsNothing);
+    // The cache of the first picture has a timer.
+    await tester.pump(const Duration(seconds: 11));
+    await search.stop(tester);
+  });
+
   testWidgets('artwork of another host follows the preference', (tester) async {
     final search = await Search.start(tester, instances: {'Films': 'movies'});
     await typeAndWait(tester, 'alien');

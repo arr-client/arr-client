@@ -70,6 +70,11 @@ class _ArrClientAppState extends State<ArrClientApp> {
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             routerConfig: _router,
+            // Above the navigator, so that every screen is told.
+            builder: (context, child) => ThirdPartyArtworkScope(
+              allowed: preferences.loadThirdPartyArtwork,
+              child: child!,
+            ),
           ),
         );
       },

@@ -108,7 +108,12 @@ class PreferencesNotifier extends Notifier<Preferences> {
   Preferences build() {
     final services = ref.watch(appServicesProvider);
     final changes = services.preferences.watch().listen(
-      (value) => state = value,
+      (value) {
+        // Whoever rebuilds on this must find what is built on the preferences,
+        // such as the artwork loaders, agreeing already.
+        services.currentPreferences = value;
+        state = value;
+      },
       // The composition root logs it.
       onError: (Object _) {},
     );

@@ -15,11 +15,6 @@ class SearchPoster extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The loader reads the preference when it makes the image: made again when
-    // it changes.
-    ref.watch(
-      preferencesProvider.select((value) => value.loadThirdPartyArtwork),
-    );
     final id = hit.artworkInstanceId;
     final artwork = id == null
         ? null
