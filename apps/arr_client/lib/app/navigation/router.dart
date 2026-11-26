@@ -10,7 +10,9 @@ import '../../features/onboarding/service_picker_screen.dart';
 import '../../features/search/add/add_screen.dart';
 import '../../features/search/add_request.dart';
 import '../../features/search/search_screen.dart';
+import '../../features/settings/diagnostics/diagnostic_log_screen.dart';
 import '../../features/settings/instances/instances_screen.dart';
+import '../../features/settings/licenses_screen.dart';
 import '../../features/settings/profiles/profiles_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../screens/destination_screens.dart';
@@ -70,6 +72,19 @@ GoRouter createRouter(ModuleRegistry modules) {
                   builder: (context, state) => entry == MoreEntry.services
                       ? const InstancesScreen()
                       : MorePage(entry: entry),
+                  routes: [
+                    if (entry == MoreEntry.settings) ...[
+                      GoRoute(
+                        path: diagnosticLogPath,
+                        builder: (context, state) =>
+                            const DiagnosticLogScreen(),
+                      ),
+                      GoRoute(
+                        path: licensesPath,
+                        builder: (context, state) => const LicensesScreen(),
+                      ),
+                    ],
+                  ],
                 ),
             ],
           ),
