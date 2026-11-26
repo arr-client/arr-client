@@ -8,13 +8,17 @@
 ///
 /// Both what each pubspec.yaml declares and what its Dart files import are
 /// checked: a pub workspace shares one package configuration, so an undeclared
-/// import of another workspace package still compiles.
+/// import of another workspace package still compiles. What could hide such an
+/// import from the check is rejected too: a symlink under apps/ or packages/,
+/// an import of a file the check does not read, and a file that does not parse.
 ///
 /// Run from the repository root: `dart run tool/check_dependencies.dart`
 library;
 
 import 'dart:io';
 
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:yaml/yaml.dart';
 
 const _servarrFamily = {'sonarr', 'radarr', 'lidarr', 'readarr', 'prowlarr'};
@@ -96,14 +100,19 @@ List<String> checkDependencies(Directory root) {
     }
   }
 
-  // A package left out of the workspace list would otherwise go unchecked.
+  // A package left out of the workspace list would otherwise go unchecked, and
+  // a link can bring another package's files in under an allowed path.
   for (final top in ['apps', 'packages']) {
     final directory = Directory.fromUri(rootUri.resolve('$top/'));
-    for (final file in _files(directory)) {
-      if (file.uri.pathSegments.last != 'pubspec.yaml') continue;
-      final path = _relative(rootUri, file.uri.resolve('.'));
-      if (!members.contains(path)) {
-        errors.add('$path: has a pubspec.yaml but is not a workspace member');
+    for (final entity in _entries(directory)) {
+      if (entity is Link) {
+        final path = _relative(rootUri, entity.uri);
+        errors.add('$path: symlinks are not allowed');
+      } else if (entity.uri.pathSegments.last == 'pubspec.yaml') {
+        final path = _relative(rootUri, entity.uri.resolve('.'));
+        if (!members.contains(path)) {
+          errors.add('$path: has a pubspec.yaml but is not a workspace member');
+        }
       }
     }
   }
@@ -116,9 +125,12 @@ List<String> checkDependencies(Directory root) {
     byName[package.name] = package;
   }
 
+  Uri baseOf(_Package package) => package.role == _Role.workspace
+      ? rootUri
+      : rootUri.resolve('${package.path}/');
+
   for (final package in packages) {
-    final isRoot = package.role == _Role.workspace;
-    final base = isRoot ? rootUri : rootUri.resolve('${package.path}/');
+    final base = baseOf(package);
     final pubspecName = _relative(rootUri, base.resolve('pubspec.yaml'));
 
     for (final section in _dependencySections) {
@@ -136,33 +148,59 @@ List<String> checkDependencies(Directory root) {
     }
 
     // The root package owns only what lies outside the member directories.
-    final outside = isRoot
+    final outside = package.role == _Role.workspace
         ? [base.resolve('apps/'), base.resolve('packages/')]
         : const <Uri>[];
-    final dartFiles = _files(
+    final dartFiles = _entries(
       Directory.fromUri(base),
       skip: {for (final directory in outside) directory.toFilePath()},
-    ).where((file) => file.path.endsWith('.dart'));
+    ).whereType<File>().where((file) => file.path.endsWith('.dart'));
 
     for (final file in dartFiles) {
       final name = _relative(rootUri, file.uri);
-      for (final target in directiveUris(file.readAsStringSync())) {
+      final directives = readDirectives(file.readAsStringSync());
+      if (!directives.parsed) errors.add('$name: does not parse');
+
+      for (final target in directives.uris) {
         final uri = Uri.tryParse(target);
         if (uri == null) {
           errors.add('$name: unreadable import $target');
-        } else if (uri.scheme == 'package') {
+          continue;
+        }
+        if (uri.scheme == 'dart') continue;
+
+        // The file the directive names, and the package that must hold it.
+        final Uri owner;
+        final Uri imported;
+        if (uri.scheme == 'package') {
           final other = byName[uri.pathSegments.firstOrNull];
-          if (other != null && !package.mayUse(other)) {
+          if (other == null) continue;
+          if (!package.mayUse(other)) {
             errors.add('$name: ${package.name} must not import $target');
+            continue;
           }
-        } else if (uri.scheme != 'dart') {
+          owner = baseOf(other);
+          imported = owner.replace(
+            pathSegments: [
+              ...owner.pathSegments.where((segment) => segment.isNotEmpty),
+              'lib',
+              ...uri.pathSegments.skip(1),
+            ],
+          );
+        } else {
           // A relative path can reach another package without naming it.
-          final resolved = uri.hasScheme ? null : '${file.uri.resolveUri(uri)}';
+          final resolved = uri.hasScheme ? null : file.uri.resolveUri(uri);
           if (resolved == null ||
-              !resolved.startsWith('$base') ||
-              outside.any((other) => resolved.startsWith('$other'))) {
+              !'$resolved'.startsWith('$base') ||
+              outside.any((other) => '$resolved'.startsWith('$other'))) {
             errors.add('$name: import leaves the package: $target');
+            continue;
           }
+          owner = base;
+          imported = resolved;
+        }
+        if (!_isRead(owner, imported)) {
+          errors.add('$name: imports a file this check does not read: $target');
         }
       }
     }
@@ -177,28 +215,48 @@ YamlMap? _readPubspec(Uri uri) {
   return yaml is YamlMap ? yaml : null;
 }
 
-/// Files under [directory], without hidden directories, links, the directories
-/// whose paths are in [skip], or a package's build output. Only the `build`
-/// directory beside a pubspec.yaml is output; elsewhere it is source.
-Iterable<File> _files(
+/// Files and links under [directory], without what is in hidden directories,
+/// in the directories whose paths are in [skip] or in a package's build output.
+/// Links are not followed.
+Iterable<FileSystemEntity> _entries(
   Directory directory, {
   Set<String> skip = const {},
 }) sync* {
   if (!directory.existsSync()) return;
-  final isPackage = File.fromUri(directory.uri.resolve('pubspec.yaml'))
-      .existsSync();
   for (final entity in directory.listSync(followLinks: false)) {
-    if (entity is File) {
+    if (entity is! Directory) {
       yield entity;
-    } else if (entity is Directory) {
-      final name = entity.uri.pathSegments.lastWhere((s) => s.isNotEmpty);
-      if (!name.startsWith('.') &&
-          !(isPackage && name == 'build') &&
-          !skip.contains(entity.uri.toFilePath())) {
-        yield* _files(entity, skip: skip);
-      }
+      continue;
+    }
+    final name = entity.uri.pathSegments.lastWhere((s) => s.isNotEmpty);
+    if (!_isSkipped(directory.uri, name) &&
+        !skip.contains(entity.uri.toFilePath())) {
+      yield* _entries(entity, skip: skip);
     }
   }
+}
+
+/// Whether the directory [name] inside [parent] is left unread. Only the
+/// `build` directory beside a pubspec.yaml is output; elsewhere it is source.
+bool _isSkipped(Uri parent, String name) =>
+    name.startsWith('.') ||
+    (name == 'build' &&
+        File.fromUri(parent.resolve('pubspec.yaml')).existsSync());
+
+/// Whether [file], inside the package at [base], is one the check reads: a Dart
+/// file outside every skipped directory.
+bool _isRead(Uri base, Uri file) {
+  // The last segment of a directory URI is empty.
+  final segments = file.pathSegments
+      .skip(base.pathSegments.length - 1)
+      .toList();
+  if (segments.isEmpty || !segments.last.endsWith('.dart')) return false;
+  var directory = base;
+  for (final segment in segments.take(segments.length - 1)) {
+    if (_isSkipped(directory, segment)) return false;
+    directory = directory.resolve('${Uri.encodeComponent(segment)}/');
+  }
+  return true;
 }
 
 String _relative(Uri root, Uri uri) {
@@ -206,108 +264,30 @@ String _relative(Uri root, Uri uri) {
   return path.endsWith('/') ? path.substring(0, path.length - 1) : path;
 }
 
-final _token = RegExp(
-  r'(?<space>\s+|//[^\n]*)'
-  r'|(?<comment>/\*)'
-  r"""|(?<string>r?(?:'{3}[\s\S]*?'{3}|"{3}[\s\S]*?"{3}"""
-  r"""|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"))"""
-  r'|(?<word>[A-Za-z_$][A-Za-z0-9_$]*)'
-  r'|(?<symbol>.)',
-);
-
-typedef _Token = ({String text, bool isString});
-
 /// The URIs named by the `import`, `export` and `part` directives of [source],
-/// including every branch of a conditional import.
+/// including every branch of a conditional import, with string escapes decoded.
 ///
-/// Directives precede all declarations, so reading stops at the first token
-/// that is not part of one. Comments and strings elsewhere are never matched.
-List<String> directiveUris(String source) {
-  final tokens = _tokens(source);
-  final uris = <String>[];
-  var i = 0;
-
-  String text(int at) => at < tokens.length ? tokens[at].text : '';
-
-  while (i < tokens.length) {
-    if (text(i) == '@') {
-      // An annotation: a dotted name, then perhaps an argument list.
-      i += 2;
-      while (text(i) == '.') {
-        i += 2;
-      }
-      if (text(i) == '(') {
-        var depth = 0;
-        do {
-          if (text(i) == '(') depth++;
-          if (text(i) == ')') depth--;
-          i++;
-        } while (depth > 0 && i < tokens.length);
-      }
-    } else if (const {
-      'library',
-      'import',
-      'export',
-      'part',
-    }.contains(text(i))) {
-      var depth = 0;
-      String? uri;
-      for (i++; i < tokens.length && text(i) != ';'; i++) {
-        if (text(i) == '(') depth++;
-        if (text(i) == ')') depth--;
-        // Strings inside a condition's parentheses are values, not URIs.
-        if (tokens[i].isString && depth == 0) {
-          // Adjacent strings are one literal.
-          uri = (uri ?? '') + _unquote(text(i));
-        } else if (uri != null) {
-          uris.add(uri);
-          uri = null;
-        }
-      }
-      if (uri != null) uris.add(uri);
-      i++;
-    } else {
-      break;
-    }
-  }
-  return uris;
-}
-
-List<_Token> _tokens(String source) {
-  final tokens = <_Token>[];
-  // Skip a script tag.
-  var at = source.startsWith('#!') ? source.indexOf('\n') : 0;
-  if (at < 0) return tokens;
-  while (at < source.length) {
-    final match = _token.matchAsPrefix(source, at) as RegExpMatch?;
-    if (match == null) break;
-    at = match.end;
-    if (match.namedGroup('space') != null) continue;
-    if (match.namedGroup('comment') != null) {
-      // Block comments nest in Dart.
-      var depth = 1;
-      while (depth > 0 && at < source.length) {
-        if (source.startsWith('/*', at)) {
-          depth++;
-          at += 2;
-        } else if (source.startsWith('*/', at)) {
-          depth--;
-          at += 2;
-        } else {
-          at++;
-        }
-      }
-      continue;
-    }
-    tokens.add((text: match[0]!, isString: match.namedGroup('string') != null));
-  }
-  return tokens;
-}
-
-String _unquote(String literal) {
-  final body = literal.startsWith('r') ? literal.substring(1) : literal;
-  final quotes = body.startsWith("'''") || body.startsWith('"""') ? 3 : 1;
-  return body.substring(quotes, body.length - quotes);
+/// `parsed` is false when [source] has syntax errors or a URI is not a plain
+/// string, so that a directive may be missing from `uris`.
+({List<String> uris, bool parsed}) readDirectives(String source) {
+  final result = parseString(content: source, throwIfDiagnostics: false);
+  final literals = <StringLiteral>[
+    for (final directive in result.unit.directives)
+      ...switch (directive) {
+        NamespaceDirective() => [
+          directive.uri,
+          for (final branch in directive.configurations) branch.uri,
+        ],
+        UriBasedDirective() => [directive.uri],
+        PartOfDirective(:final uri?) => [uri],
+        _ => const <StringLiteral>[],
+      },
+  ];
+  final uris = [for (final literal in literals) ?literal.stringValue];
+  return (
+    uris: uris,
+    parsed: result.errors.isEmpty && uris.length == literals.length,
+  );
 }
 
 void main(List<String> arguments) {

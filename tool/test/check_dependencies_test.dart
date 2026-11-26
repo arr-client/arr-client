@@ -148,6 +148,17 @@ void main() {
     ('a relative import', "import '../../radarr/lib/radarr_module.dart';"),
     ('a relative part', "part '../../radarr/lib/radarr_module.dart';"),
     ('a file URI', "import 'file:///srv/radarr_module.dart';"),
+    ('an escaped URI', r"import 'package:\x72adarr/radarr_module.dart';"),
+    (
+      'an import after a generic annotation',
+      '@A<int>()\nlibrary;\n'
+          "import 'package:radarr/radarr_module.dart';",
+    ),
+    (
+      'an import after nested quotes in an annotation',
+      '@Deprecated(\'\${f(\')\')}\')\nlibrary;\n'
+          "import 'package:radarr/radarr_module.dart';",
+    ),
   ]) {
     test('rejects $what that reaches another package', () {
       write('packages/modules/sonarr/lib/a.dart', '$directive\n');
@@ -155,6 +166,60 @@ void main() {
       expect(check().single, contains('packages/modules/sonarr/lib/a.dart'));
     });
   }
+
+  for (final (what, path, target) in [
+    ('a hidden directory', 'lib/.h/a.dart', '.h/a.dart'),
+    (
+      'a hidden directory by package',
+      'lib/.h/a.dart',
+      'package:sonarr/.h/a.dart',
+    ),
+    ('an encoded hidden directory', 'lib/.h/a.dart', '%2Eh/a.dart'),
+    ('build output', 'build/a.dart', '../build/a.dart'),
+    ('a file that is not Dart', 'lib/a.txt', 'a.txt'),
+  ]) {
+    test('rejects an import of $what', () {
+      write(
+        'packages/modules/sonarr/$path',
+        "import 'package:radarr/radarr_module.dart';\n",
+      );
+      write('packages/modules/sonarr/lib/b.dart', "import '$target';\n");
+
+      expect(check().single, endsWith('does not read: $target'));
+    });
+  }
+
+  test("rejects an import of another package's hidden directory", () {
+    write(
+      'packages/modules/sonarr/lib/a.dart',
+      "import 'package:core/.h/a.dart';\n",
+    );
+
+    expect(check().single, contains('does not read'));
+  });
+
+  for (final (what, link, target) in [
+    ('a directory', 'lib/other', '../../radarr/lib'),
+    ('a file', 'lib/a.dart', '../../radarr/lib/radarr_module.dart'),
+    ('a build directory in lib', 'lib/build', '../../radarr/lib'),
+  ]) {
+    test('rejects a symlink to $what inside a package', () {
+      write('packages/modules/radarr/lib/radarr_module.dart', '');
+      Link('${root.path}/packages/modules/sonarr/$link')
+          .createSync(target, recursive: true);
+
+      expect(
+        check().single,
+        'packages/modules/sonarr/$link: symlinks are not allowed',
+      );
+    });
+  }
+
+  test('rejects a file that does not parse', () {
+    write('packages/modules/sonarr/lib/a.dart', 'class {\n');
+
+    expect(check().single, contains('does not parse'));
+  });
 
   test('ignores directives in comments and strings', () {
     write(

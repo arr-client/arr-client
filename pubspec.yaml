@@ -22,9 +22,11 @@ workspace:
   - packages/ui
 
 dev_dependencies:
+  # tool/check_dependencies.dart parses Dart directives with it.
+  analyzer: ^14.7.0
   # The root analysis_options.yaml includes it.
   flutter_lints: ^6.0.0
   # Runs the tests of the repository tools in tool/test/.
   test: ^1.26.0
-  # The repository tools read pubspec.yaml and pubspec.lock with it.
+  # The repository tools read pubspec.yaml files with it.
   yaml: ^3.1.3
