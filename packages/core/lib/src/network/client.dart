@@ -78,15 +78,9 @@ final class InstanceHttpClient implements ServiceHttpClient {
   }) : this(
          settings: () async {
            final found = await profiles.instanceWithCredential(instanceId);
-           if (found == null) return null;
-           final instance = found.instance;
-           return ConnectionSettings(
-             url: instance.url,
-             authKind: instance.authKind,
-             credential: found.credential ?? const Credential(),
-             certPin: instance.certPin,
-             customCa: instance.customCa,
-           );
+           return found == null
+               ? null
+               : ConnectionSettings.saved(found.instance, found.credential);
          },
          apiKeyHeader: apiKeyHeader,
          log: log,
@@ -133,6 +127,15 @@ final class InstanceHttpClient implements ServiceHttpClient {
     if (settings == null) {
       return _unsent(request, const Unreachable(), 'there are no settings');
     }
+    return sendWith(settings, request);
+  }
+
+  /// [send] with the settings given, which are not loaded. For a caller that
+  /// has to know which settings an answer is for.
+  Future<Result<ServiceResponse, HttpError>> sendWith(
+    ConnectionSettings settings,
+    ServiceRequest request,
+  ) async {
     // Before anything uses it, or can log it.
     _log.addCredential(settings.credential);
 

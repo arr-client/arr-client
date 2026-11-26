@@ -44,7 +44,8 @@ token, not `Host` or `Content-Length`), sessionCookie?.
 Rules: secrets are sent only to the instance's saved url, or the url being tested in its form, and
 never to another host by redirect. Editing the url in the app keeps the secrets: saving or testing
 the form is the user's decision to use them there. A session cookie is discarded when the url's
-origin changes. For imports see contracts/backup-format.md. `customHeaders` and basic auth count as
+origin, the authKind or what the user enters changes; saving the edit form never takes one from the
+form. For imports see contracts/backup-format.md. `customHeaders` and basic auth count as
 secrets. A qBittorrent API key uses `Authorization`, so basicUser cannot be combined with it; for
 password login on qBittorrent 5.2+ see spec Edge Cases.
 

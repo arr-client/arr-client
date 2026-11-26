@@ -76,8 +76,8 @@
 /// - `authFailed` is cleared by `retryAuth`, or by an update whose credential
 ///   differs from the stored one in what the user enters (not the session
 ///   cookie). Nothing else clears it.
-/// - When the origin changes, the session cookie is dropped, also from a given
-///   credential that only carries the stored cookie over.
+/// - An update never takes the session cookie of the given credential. It drops
+///   the stored one when the origin, authKind or what the user enters changes.
 /// - Basic auth is refused with `AuthKind.apiKey` where the module sends its
 ///   API key in `Authorization`. Rules never test a module id: links go from a
 ///   `subtitles` module to at most one `movies` and one `series` instance.

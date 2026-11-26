@@ -163,4 +163,5 @@ export 'src/preferences/library_view.dart';
 export 'src/preferences/preferences.dart';
 export 'src/preferences/preferences_repository.dart';
 export 'src/secrets/secret_store.dart';
+export 'src/session/instance_session.dart';
 export 'src/storage/database.dart' show AppDatabase;
