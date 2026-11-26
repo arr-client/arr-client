@@ -12,9 +12,18 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
+  # Translations of the Flutter widgets; imported by the generated localizations.
+  flutter_localizations:
+    sdk: flutter
+  # Imported by the generated localizations.
+  intl: ^0.20.2
 
 dev_dependencies:
   # An in-memory database for the tests that run the module in a session. MIT.
   drift: ^2.35.4
   flutter_test:
     sdk: flutter
+
+flutter:
+  # `flutter pub get` runs gen-l10n with l10n.yaml.
+  generate: true
