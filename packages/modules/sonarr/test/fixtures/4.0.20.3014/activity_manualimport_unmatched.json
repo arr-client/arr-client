@@ -1,0 +1,41 @@
+[
+  {
+    "path": "/redacted/4.mkv",
+    "relativePath": "redacted-62",
+    "name": "redacted-63",
+    "size": 2097152,
+    "releaseGroup": "redacted-31",
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "HDTV-720p",
+        "source": "television",
+        "resolution": 720
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 0,
+        "name": "Unknown"
+      }
+    ],
+    "qualityWeight": 8,
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "unknown",
+    "rejections": [
+      {
+        "reason": "redacted-64",
+        "type": "permanent"
+      }
+    ],
+    "id": 1848701923
+  }
+]

@@ -1,0 +1,118 @@
+[
+  {
+    "path": "/redacted/28.mkv",
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "episodes": [
+      {
+        "seriesId": 1,
+        "tvdbId": 46694,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 9,
+        "title": "redacted-65",
+        "airDate": "1962-11-21",
+        "airDateUtc": "1962-11-22T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-66",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 9,
+        "unverifiedSceneNumbering": false,
+        "id": 21
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "releaseGroup": "redacted-31",
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "multiEpisode",
+    "rejections": [
+      {
+        "reason": "redacted-67",
+        "type": "permanent"
+      },
+      {
+        "reason": "redacted-8",
+        "type": "permanent"
+      }
+    ],
+    "id": 335673929
+  },
+  {
+    "path": "/redacted/37.mkv",
+    "seriesId": 1,
+    "seasonNumber": 1,
+    "episodes": [
+      {
+        "seriesId": 1,
+        "tvdbId": 46693,
+        "episodeFileId": 1,
+        "seasonNumber": 1,
+        "episodeNumber": 8,
+        "title": "redacted-60",
+        "airDate": "1962-11-14",
+        "airDateUtc": "1962-11-15T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-61",
+        "hasFile": true,
+        "monitored": true,
+        "absoluteEpisodeNumber": 8,
+        "unverifiedSceneNumbering": false,
+        "id": 20
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "WEBDL-1080p",
+        "source": "web",
+        "resolution": 1080
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "releaseGroup": "redacted-31",
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "releaseType": "multiEpisode",
+    "rejections": [
+      {
+        "reason": "redacted-18",
+        "type": "permanent"
+      }
+    ],
+    "id": 1555648781
+  }
+]
