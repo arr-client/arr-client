@@ -173,6 +173,16 @@ void main() {
     expect(find.text('Search started'), findsNothing);
   });
 
+  testWidgets('the message leaves the primary scroll controller alone', (
+    tester,
+  ) async {
+    await start(tester);
+    await answer(tester, const Ok(null));
+
+    final context = tester.element(find.text('Search'));
+    expect(PrimaryScrollController.of(context).positions, isEmpty);
+  });
+
   testWidgets('reports after the screen has been left', (tester) async {
     await start(tester);
     await tester.pumpWidget(testApp(const Text('Elsewhere')));

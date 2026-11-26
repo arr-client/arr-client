@@ -14,7 +14,7 @@ Widget scaffold(
   ViewState<List<String>> state, {
   VoidCallback? onRetry,
   VoidCallback? onGone,
-  Object itemId = 'alien',
+  Object? itemId = 'alien',
   String? emptyMessage,
 }) => StateScaffold<List<String>>(
   state: state,
@@ -210,6 +210,83 @@ void main() {
       expect(forgotten, 1);
     });
   }
+
+  testWidgets('without an item, not found is an error that can be retried', (
+    tester,
+  ) async {
+    var retries = 0;
+    await tester.pumpWidget(
+      testApp(
+        scaffold(
+          const ViewError(NotFound()),
+          itemId: null,
+          onRetry: () => retries++,
+        ),
+      ),
+    );
+
+    expect(find.textContaining('could not find'), findsOneWidget);
+    expect(find.text(gone), findsNothing);
+    await tester.tap(find.text('Retry'));
+    expect(retries, 1);
+  });
+
+  testWidgets('without an item, not found keeps the saved data', (
+    tester,
+  ) async {
+    var retries = 0;
+    await tester.pumpWidget(
+      testApp(
+        scaffold(
+          ViewData(const [
+            'Alien',
+          ], staleness: stale(Duration.zero, const NotFound())),
+          itemId: null,
+          onRetry: () => retries++,
+        ),
+      ),
+    );
+
+    expect(find.text('Alien'), findsOneWidget);
+    expect(find.textContaining('Saved data'), findsOneWidget);
+    expect(find.textContaining('could not find'), findsOneWidget);
+    expect(find.text(gone), findsNothing);
+    expect(searchEnabled(tester), isFalse);
+    await tester.tap(find.text('Retry'));
+    expect(retries, 1);
+  });
+
+  testWidgets('only the content takes the primary scroll controller', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      testApp(
+        scaffold(
+          ViewData(const [
+            'Alien',
+          ], staleness: stale(Duration.zero, const Unreachable())),
+        ),
+      ),
+    );
+
+    final controller = PrimaryScrollController.of(
+      tester.element(find.byType(StateScaffold<List<String>>)),
+    );
+    expect(controller.positions, hasLength(1));
+    expect(
+      controller.position,
+      same(
+        tester
+            .state<ScrollableState>(
+              find.descendant(
+                of: find.byType(ListView),
+                matching: find.byType(Scrollable),
+              ),
+            )
+            .position,
+      ),
+    );
+  });
 
   testWidgets('each gone item shown in the same place is reported', (
     tester,

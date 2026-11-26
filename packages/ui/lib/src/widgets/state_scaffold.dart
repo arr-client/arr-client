@@ -9,8 +9,12 @@ import 'state_message.dart';
 import 'view_state.dart';
 
 /// The body of a screen in each of its states: loading, empty, error, stale
-/// and current. A [NotFound] failure shows the item as gone, even when there
-/// is saved data for it.
+/// and current.
+///
+/// A screen about one item must pass [itemId]: a [NotFound] failure then shows
+/// the item as gone, even when there is saved data for it. Without [itemId],
+/// as on a list or dashboard, [NotFound] is a failure like any other: it can be
+/// retried and saved data stays on screen.
 ///
 /// It fills the space it is given, which must be bounded; put it in the body
 /// of a `Scaffold`. It watches one source only, so a screen that combines
@@ -46,8 +50,8 @@ class StateScaffold<T> extends StatelessWidget {
   /// The localized text for the empty state; say what is empty.
   final String? emptyMessage;
 
-  /// Which item [state] is about, such as its `ItemRef`, on a screen about one
-  /// item. Compared with `==`. Required with [onGone].
+  /// Which item [state] is about, such as its `ItemRef`. Compared with `==`.
+  /// Pass it on every screen about one item, and only there.
   final Object? itemId;
 
   /// Called once when the item turns out to be gone, so that the caller can
@@ -65,7 +69,7 @@ class StateScaffold<T> extends StatelessWidget {
       ViewError(failure: NotFound()) ||
       ViewData(
         staleness: Staleness(failure: NotFound()),
-      ) => ItemGoneView(itemId: itemId, onGone: onGone),
+      ) when itemId != null => ItemGoneView(itemId: itemId, onGone: onGone),
       ViewError(:final failure) => StateMessage(
         icon: Icons.error_outline,
         message: failureMessage(context, failure),
@@ -103,6 +107,8 @@ class StateScaffold<T> extends StatelessWidget {
             child: staleness == null
                 ? const SizedBox.shrink()
                 : SingleChildScrollView(
+                    // The content is the screen's primary scroll view.
+                    primary: false,
                     child: StaleNotice(staleness: staleness, onRetry: onRetry),
                   ),
           ),

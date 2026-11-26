@@ -62,7 +62,11 @@ Future<Result<T, ServiceFailure>> runAction<T>(
         // Server messages can be long.
         content: ConstrainedBox(
           constraints: BoxConstraints(maxHeight: maxHeight),
-          child: SingleChildScrollView(child: Text(message)),
+          child: SingleChildScrollView(
+            // Not the screen's primary scroll view.
+            primary: false,
+            child: Text(message),
+          ),
         ),
         persist: failed,
         showCloseIcon: failed,
