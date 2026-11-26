@@ -49,8 +49,9 @@ const _attemptSteps = 10;
 ///
 /// Nothing is written to an https connection before its certificate has been
 /// accepted: against `certPin` alone if the settings have one, and else against
-/// the system's roots and `customCa`. A pin or authority asks for a certificate,
-/// so a send with either to an http address fails and sends nothing.
+/// the system's roots and `customCa`. A pin says which certificate to expect, so
+/// a send with one to an http address fails and sends nothing. An authority only
+/// adds trust, and is ignored there.
 final class InstanceHttpClient implements ServiceHttpClient {
   /// A client of settings of the caller's choosing, loaded for every send.
   ///
@@ -144,13 +145,12 @@ final class InstanceHttpClient implements ServiceHttpClient {
         url.userInfo.isNotEmpty) {
       return _unsent(request, const Unreachable(), 'the address is not usable');
     }
-    // Fails closed: there is no certificate to check.
-    if (!url.isScheme('https') &&
-        (settings.certPin != null || settings.customCa != null)) {
+    // Fails closed: there is no certificate to check against the pin.
+    if (!url.isScheme('https') && settings.certPin != null) {
       return _unsent(
         request,
         const Unreachable(),
-        'a certificate pin or authority needs https',
+        'a certificate pin needs https',
       );
     }
     final headers = _headers(request, settings);
@@ -180,8 +180,11 @@ final class InstanceHttpClient implements ServiceHttpClient {
   /// The client of the trust that [settings] ask for.
   Dio _clientFor(ConnectionSettings settings) {
     final certPin = settings.certPin;
-    // A pin alone decides, so an authority beside it is not even read.
-    final customCa = certPin == null ? settings.customCa : null;
+    // A pin alone decides, and http has no certificate: the authority is then
+    // not even read.
+    final customCa = certPin == null && settings.url.isScheme('https')
+        ? settings.customCa
+        : null;
     return _clients[(certPin, customCa)] ??= _newDio(
       _timeout,
       newHttpClient(certPin: certPin, customCa: customCa),
@@ -448,12 +451,20 @@ _Fault _faultOf(DioException exception) => switch (exception) {
   DioException(error: HandshakeException() || CertificateException()) =>
     _Fault.notConnected,
   DioException(error: HttpException(:final message))
-      when message.startsWith('Connection closed') ||
-          message.startsWith('Socket closed') =>
-    _Fault.lost,
-  DioException(error: HttpException() || FormatException()) => _Fault.malformed,
+      when _unreadable.hasMatch(message) =>
+    _Fault.malformed,
+  DioException(error: FormatException()) => _Fault.malformed,
   _ => _Fault.lost,
 };
+
+// The messages of `dart:io`'s HTTP parser about an answer that is not HTTP. Any
+// other HttpException is a connection that failed, and may carry the operating
+// system's own text, such as "Connection reset by peer".
+final _unreadable = RegExp(
+  '^(Invalid |Failed to parse HTTP|Illegal value |Chunk size overflows|'
+  'Content-Length |The Content-Length header occurred more than once)|'
+  r'exceeds the \d+ size limit$',
+);
 
 Dio _newDio(Duration timeout, HttpClient httpClient) =>
     Dio(

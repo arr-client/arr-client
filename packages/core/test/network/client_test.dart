@@ -168,14 +168,15 @@ void main() {
     expect(server.requests, hasLength(1));
   });
 
-  for (final (name, certPin, customCa) in [
-    ('pin', '0' * 64, null),
-    ('authority', null, 'a certificate'),
+  // A pin says which certificate to expect, and there is none.
+  for (final (name, customCa) in [
+    ('', null),
+    (' and an authority', 'a certificate'),
   ]) {
-    test('a certificate $name over plain HTTP sends nothing', () async {
+    test('a certificate pin$name over plain HTTP sends nothing', () async {
       final server = await RawServer.start();
       final client = clientFor(
-        settingsFor(server.url(), certPin: certPin, customCa: customCa),
+        settingsFor(server.url(), certPin: '0' * 64, customCa: customCa),
         timeout: const Duration(seconds: 2),
       );
 
@@ -185,6 +186,17 @@ void main() {
       expect(server.bytes, isEmpty);
     });
   }
+
+  // An authority only adds trust, so plain HTTP loses nothing without it. An
+  // instance keeps it when its address is changed to http.
+  test('a certificate authority is ignored over plain HTTP', () async {
+    final server = await TestServer.start();
+    final client = clientFor(settingsFor(server.url(), customCa: 'not read'));
+
+    expectOk(await client.send(get()));
+
+    expect(server.requests.single.headers['x-api-key'], apiKey);
+  });
 
   test('the path and query are percent-encoded per RFC 3986', () async {
     final server = await TestServer.start();

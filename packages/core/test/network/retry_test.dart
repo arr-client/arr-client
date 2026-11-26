@@ -5,6 +5,7 @@
 library;
 
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,7 +22,21 @@ final _losses = <String, void Function(Socket socket)>{
     socket.flush().whenComplete(socket.destroy);
   },
   'no answer comes in time': (_) {},
+  'the connection is reset': _reset,
+  'the connection is reset in the body': (socket) {
+    socket.write('HTTP/1.1 200 OK\r\ncontent-length: 9\r\n\r\n{');
+    socket.flush().whenComplete(() => _reset(socket));
+  },
 };
+
+/// Closes with a reset instead of an orderly end: `SO_LINGER` of no time.
+void _reset(Socket socket) {
+  final (level, option) = Platform.isMacOS ? (0xffff, 0x80) : (1, 13);
+  final linger = Int32List.fromList([1, 0]).buffer.asUint8List();
+  socket
+    ..setRawOption(RawSocketOption(level, option, linger))
+    ..destroy();
+}
 
 void main() {
   for (final MapEntry(key: name, value: lose) in _losses.entries) {
@@ -47,6 +62,16 @@ void main() {
       expect(server.requests.length, inInclusiveRange(1, 2));
     });
   }
+
+  test('a read whose connection is reset is tried once more', () async {
+    final server = await RawServer.start((socket, _) => _reset(socket));
+    final client = clientFor(settingsFor(server.url()), timeout: _timeout);
+
+    expectFailure<Unreachable>(await client.send(get()));
+
+    await pause();
+    expect(server.requests, hasLength(2));
+  });
 
   for (final method in writeMethods) {
     test('${method.name} is not repeated on a reused connection', () async {

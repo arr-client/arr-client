@@ -28,8 +28,8 @@ A secret is erased only after the deletion of its records is saved; see PendingS
 | url | URL | http or https, may include sub-path; no userinfo, query or fragment |
 | authKind | enum | apiKey, userPassword, mediaServerAccount, none |
 | authFailed | bool | set by any rejected token or login; blocks all automatic requests that authenticate (polling, probes, background) until the credentials are edited or the user retries; persisted, so background work honours it |
-| certPin | sha256? | accepted self-signed leaf certificate; cleared when the url's scheme, host or port changes |
-| customCa | PEM? | optional private CA for this instance; at most 64 KiB |
+| certPin | sha256? | accepted self-signed leaf certificate; cleared when the url's scheme, host or port changes. Nothing is sent to an http url while one is set |
+| customCa | PEM? | optional private CA for this instance; at most 64 KiB. Trusted in addition to the system's roots for an https url; kept but ignored for an http url |
 | enabled | bool | default true |
 | sortOrder | int | |
 | detectedVersion | string? | from last successful test |

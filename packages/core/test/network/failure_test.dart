@@ -232,6 +232,14 @@ void main() {
   for (final (name, answer) in [
     ('that is not HTTP', 'SSH-2.0-OpenSSH_9.9\r\n\r\n'),
     (
+      'with two lengths',
+      'HTTP/1.1 200 OK\r\ncontent-length: 1\r\ncontent-length: 2\r\n\r\n{}',
+    ),
+    (
+      'whose chunks are broken',
+      'HTTP/1.1 200 OK\r\ntransfer-encoding: chunked\r\n\r\nzz\r\n',
+    ),
+    (
       'whose compression is broken',
       'HTTP/1.1 200 OK\r\ncontent-encoding: gzip\r\n'
           'content-length: 9\r\nconnection: close\r\n\r\nnot gzip!',
