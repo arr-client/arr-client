@@ -67,6 +67,7 @@
 library;
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -147,6 +148,41 @@ void main() {
       expect(sent, isNot(contains(apiKey)));
       expect(sent, isNot(contains(username)));
       expect(sent, isNot(contains(password)));
+    });
+  }
+
+  test('a proxy of the environment gets nothing', () async {
+    final proxy = await RawServer.start();
+    final server = await TestServer.start();
+
+    // What the environment variables would make `HttpClient` do by default.
+    await HttpOverrides.runZoned(() async {
+      final client = clientFor(
+        settingsFor(server.url()),
+        timeout: const Duration(seconds: 2),
+      );
+      expectOk(await client.send(get()));
+    }, findProxyFromEnvironment: (_, _) => 'PROXY 127.0.0.1:${proxy.port}');
+
+    expect(proxy.connections, 0);
+    expect(server.requests, hasLength(1));
+  });
+
+  for (final (name, certPin, customCa) in [
+    ('pin', '0' * 64, null),
+    ('authority', null, 'a certificate'),
+  ]) {
+    test('a certificate $name over plain HTTP sends nothing', () async {
+      final server = await RawServer.start();
+      final client = clientFor(
+        settingsFor(server.url(), certPin: certPin, customCa: customCa),
+        timeout: const Duration(seconds: 2),
+      );
+
+      expectError(await client.send(get()));
+
+      await pause();
+      expect(server.bytes, isEmpty);
     });
   }
 

@@ -7,6 +7,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The HTTP client of each instance (research R4). MIT.
+  dio: ^5.11.1
   # The database of instances, preferences and the cache. MIT.
   drift: ^2.35.4
   flutter:

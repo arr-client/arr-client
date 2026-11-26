@@ -25,10 +25,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'support.dart';
 
-/// Sent by ASP.NET Core's host filtering, which the Servarr services run on.
+/// Sent by ASP.NET Core's host filtering, which the Servarr services run on, as
+/// recorded from Radarr 7.0.3.10918 and Sonarr 4.0.20.3014.
 const _invalidHostname =
-    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">\r\n'
-    '<HTML><HEAD><TITLE>Bad Request</TITLE></HEAD>\r\n'
+    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"'
+    '"http://www.w3.org/TR/html4/strict.dtd">\r\n'
+    '<HTML><HEAD><TITLE>Bad Request</TITLE>\r\n'
+    '<META HTTP-EQUIV="Content-Type" Content="text/html; charset=us-ascii">'
+    '</ HEAD >\r\n'
     '<BODY><h2>Bad Request - Invalid Hostname</h2>\r\n'
     '<hr><p>HTTP Error 400. The request hostname is invalid.</p>\r\n'
     '</BODY></HTML>';
