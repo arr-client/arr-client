@@ -1,0 +1,67 @@
+# HTTPS with a self-signed certificate in front of the services. The nginx image fills in the
+# ${...} values. Upstreams are variables so that nginx starts, and keeps serving the others, when a
+# service is stopped (it answers 502 for that one).
+resolver ${NGINX_LOCAL_RESOLVERS} valid=5s;
+
+server {
+    listen 443 ssl;
+
+    ssl_certificate /certs/server.crt;
+    ssl_certificate_key /certs/server.key;
+
+    absolute_redirect off;
+    client_max_body_size 20m;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+
+    # Sub-paths: the prefix is removed before the request is forwarded.
+    location /sonarr/ {
+        set $upstream http://sonarr:8989;
+        rewrite ^/sonarr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /radarr/ {
+        set $upstream http://radarr:7878;
+        rewrite ^/radarr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /lidarr/ {
+        set $upstream http://lidarr:8686;
+        rewrite ^/lidarr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /readarr/ {
+        set $upstream http://readarr:8787;
+        rewrite ^/readarr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /prowlarr/ {
+        set $upstream http://prowlarr:9696;
+        rewrite ^/prowlarr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /bazarr/ {
+        set $upstream http://bazarr:6767;
+        rewrite ^/bazarr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /seerr/ {
+        set $upstream http://seerr:5055;
+        rewrite ^/seerr(/.*)$ $1 break;
+        proxy_pass $upstream;
+    }
+    location /qbittorrent/ {
+        set $upstream http://qbittorrent:${QBITTORRENT_PORT};
+        rewrite ^/qbittorrent(/.*)$ $1 break;
+        # qBittorrent checks the port in Host against its own.
+        proxy_set_header Host localhost:${QBITTORRENT_PORT};
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass $upstream;
+    }
+
+    location / {
+        set $upstream http://radarr:7878;
+        proxy_pass $upstream;
+    }
+}
