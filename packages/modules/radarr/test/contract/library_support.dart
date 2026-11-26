@@ -233,7 +233,7 @@ class _SilentLogger implements Logger {
 /// The module's capabilities for one instance of [server], behind the Radarr
 /// allow-list. Create it inside the test.
 class Harness {
-  Harness() {
+  Harness([FakeRadarr? server]) : server = server ?? FakeRadarr() {
     context = InstanceContext(
       instance: Instance(
         id: instanceId,
@@ -245,7 +245,7 @@ class Harness {
         createdAt: DateTime.utc(2026),
         updatedAt: DateTime.utc(2026),
       ),
-      http: AllowListClient(allowList, server),
+      http: AllowListClient(allowList, this.server),
       artwork: _FakeArtwork(),
       navigator: _FakeNavigator(),
       cache: cache,
@@ -253,7 +253,7 @@ class Harness {
     );
   }
 
-  final server = FakeRadarr();
+  final FakeRadarr server;
   final cache = FakeCache();
   late final InstanceContext context;
 

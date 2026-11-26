@@ -61,6 +61,7 @@ void main() {
 
     expect(offered, {
       CapabilityKind.library,
+      CapabilityKind.lookup,
       CapabilityKind.queue,
       CapabilityKind.history,
     });
