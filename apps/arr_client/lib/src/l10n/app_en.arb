@@ -828,6 +828,10 @@
   "@deleteProfile": { "description": "Button that confirms deleting a profile." },
   "lastProfile": "The only profile cannot be deleted.",
   "@lastProfile": { "description": "Shown when deleting the only profile is refused." },
+  "tryAgain": "Try again",
+  "@tryAgain": { "description": "Button that checks unreachable services once more." },
+  "checkingAgain": "Checking",
+  "@checkingAgain": { "description": "In place of the button while unreachable services are being checked." },
   "profileUnreachable": "{count, plural, =1{Cannot reach {name}.} other{Cannot reach {count} services.}} Another profile may have addresses that work from here.",
   "@profileUnreachable": { "description": "On Home, when services of the active profile do not answer. name is one of them, used when there is only one.", "placeholders": { "count": { "type": "int" }, "name": { "type": "String" } } }
 }

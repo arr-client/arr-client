@@ -1,6 +1,8 @@
 /// Profiles and the Home switcher (spec story 1, scenarios 4, 5 and 10).
 library;
 
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -8,20 +10,32 @@ import 'package:material_ui/material_ui.dart';
 import '../../app/navigation_test.dart' show bar, open, usePhone;
 import '../../app/support.dart';
 
-/// Answers only for instances whose name does not start with `Lan` or `Locked`.
+/// Does not answer for instances whose name starts with `Lan`, until they are
+/// [back], nor for those whose name starts with `Locked`.
 class _FlakyModule extends FakeModule {
   _FlakyModule() : super('flaky', offers: {CapabilityKind.library});
+
+  var back = false;
+
+  /// While set, probes wait for it.
+  Completer<void>? hold;
+
+  /// The names of the instances probed, one for each probe.
+  final probed = <String>[];
 
   @override
   ServiceResult<ProbeResult> probe(InstanceContext context) async {
     final name = context.instance.name;
-    if (name.startsWith('Lan')) return const Err(Unreachable());
+    probed.add(name);
+    await hold?.future;
+    if (name.startsWith('Lan') && !back) return const Err(Unreachable());
     if (name.startsWith('Locked')) return const Err(AuthFailed());
     return super.probe(context);
   }
 }
 
-final _flaky = _FlakyModule();
+/// A new one for each test.
+late _FlakyModule _flaky;
 
 Future<List<String>> _names(TestApp app) async => [
   for (final profile in await app.services.profiles.profiles()) profile.name,
@@ -62,8 +76,29 @@ Finder _activeTile(String name) => find.ancestor(
   matching: find.widgetWithText(ListTile, name),
 );
 
+Future<void> _resume(WidgetTester tester) async {
+  tester.binding
+    ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+    ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   late TestApp app;
+
+  setUp(() => _flaky = _FlakyModule());
+
+  /// An unreachable instance in the active profile and another profile.
+  Future<String> startUnreachable(WidgetTester tester) async {
+    usePhone(tester);
+    app = await TestApp.start(tester, modules: [movies, _flaky]);
+    final id = await app.add(_flaky, 'Lan films');
+    await app.addProfile('Away');
+    await app.pump(tester);
+    expect(find.textContaining('Cannot reach'), findsOneWidget);
+    _flaky.probed.clear();
+    return id;
+  }
 
   Future<void> start(WidgetTester tester) async {
     usePhone(tester);
@@ -317,6 +352,75 @@ void main() {
     await _tap(tester, find.text('Switch to Away'));
 
     expect(find.textContaining('Cannot reach'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('trying again finds that a service is back', (tester) async {
+    await startUnreachable(tester);
+
+    await _tap(tester, find.text('Try again'));
+    // Still gone: one probe, and the offer stays.
+    expect(_flaky.probed, ['Lan films']);
+    expect(find.textContaining('Cannot reach'), findsOneWidget);
+
+    _flaky.back = true;
+    await _tap(tester, find.text('Try again'));
+
+    expect(_flaky.probed, ['Lan films', 'Lan films']);
+    expect(find.textContaining('Cannot reach'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('the offer stays while a service is checked again', (
+    tester,
+  ) async {
+    await startUnreachable(tester);
+    final hold = _flaky.hold = Completer<void>();
+
+    await _tap(tester, find.text('Try again'));
+
+    expect(find.textContaining('Cannot reach'), findsOneWidget);
+    expect(find.text('Switch to Away'), findsOneWidget);
+    expect(
+      tester
+          .widget<TextButton>(find.widgetWithText(TextButton, 'Checking'))
+          .onPressed,
+      isNull,
+    );
+
+    _flaky.back = true;
+    hold.complete();
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Cannot reach'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('resuming checks once more only what failed', (tester) async {
+    await startUnreachable(tester);
+    await app.add(_flaky, 'Films');
+    await tester.pumpAndSettle();
+    _flaky.probed.clear();
+
+    await _resume(tester);
+    expect(_flaky.probed, ['Lan films']);
+    expect(find.textContaining('Cannot reach'), findsOneWidget);
+
+    _flaky.back = true;
+    await _resume(tester);
+
+    expect(_flaky.probed, ['Lan films', 'Lan films']);
+    expect(find.textContaining('Cannot reach'), findsNothing);
+    await app.stop(tester);
+  });
+
+  testWidgets('resuming sends nothing for a latched service', (tester) async {
+    final films = await startUnreachable(tester);
+    await app.services.profiles.markAuthFailed(films);
+    await tester.pumpAndSettle();
+
+    await _resume(tester);
+
+    expect(_flaky.probed, isEmpty);
     await app.stop(tester);
   });
 

@@ -9,23 +9,40 @@ import '../../src/l10n/generated/app_localizations.dart';
 import '../settings/profiles/switch_profile.dart';
 
 /// [child], below an offer to switch profile while instances of the active one
-/// cannot be reached and there is another to switch to (spec, edge cases). The
-/// app never switches by itself.
-class UnreachableOffer extends ConsumerWidget {
+/// cannot be reached and there is another to switch to (spec, edge cases). They
+/// can also be checked again. The app never switches by itself.
+class UnreachableOffer extends ConsumerStatefulWidget {
   const UnreachableOffer({required this.child, super.key});
 
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UnreachableOffer> createState() => _UnreachableOfferState();
+}
+
+class _UnreachableOfferState extends ConsumerState<UnreachableOffer> {
+  /// The ids of the instances last found unreachable, which stay so while they
+  /// are checked again.
+  var _unreachable = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
     final scope = ref.watch(scopeProvider);
-    // Only failures that another address could mend.
+    final instances = scope?.instances ?? const <ActiveInstance>[];
+    _unreachable = {
+      for (final active in instances)
+        if (switch (active.connection) {
+          // Only failures that another address could mend.
+          ConnectionOffline(:final failure) =>
+            failure is Unreachable || failure is DnsFailure,
+          ConnectionProbing() => _unreachable.contains(active.instance.id),
+          ConnectionUnknown() || ConnectionOnline() => false,
+        })
+          active.instance.id,
+    };
     final unreachable = [
-      for (final active in scope?.instances ?? const <ActiveInstance>[])
-        if (active.connection case ConnectionOffline(
-          failure: Unreachable() || DnsFailure(),
-        ))
-          active.instance.name,
+      for (final active in instances)
+        if (_unreachable.contains(active.instance.id)) active,
     ];
     final others = [
       for (final profile
@@ -45,7 +62,7 @@ class UnreachableOffer extends ConsumerWidget {
             )
           else
             const SizedBox.shrink(),
-          Expanded(child: child),
+          Expanded(child: widget.child),
         ],
       ),
     );
@@ -55,22 +72,39 @@ class UnreachableOffer extends ConsumerWidget {
 class _Offer extends ConsumerWidget {
   const _Offer({required this.unreachable, required this.others});
 
-  final List<String> unreachable;
+  final List<ActiveInstance> unreachable;
   final List<Profile> others;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
+    final checking = unreachable.any(
+      (active) => active.connection is ConnectionProbing,
+    );
     return MaterialBanner(
       leading: const Icon(Icons.cloud_off_outlined),
       forceActionsBelow: true,
       content: Semantics(
         liveRegion: true,
         child: Text(
-          strings.profileUnreachable(unreachable.length, unreachable.first),
+          strings.profileUnreachable(
+            unreachable.length,
+            unreachable.first.instance.name,
+          ),
         ),
       ),
       actions: [
+        TextButton(
+          onPressed: checking
+              ? null
+              : () {
+                  final prober = ref.read(appServicesProvider).prober;
+                  for (final active in unreachable) {
+                    prober.probe(active.instance.id);
+                  }
+                },
+          child: Text(checking ? strings.checkingAgain : strings.tryAgain),
+        ),
         for (final profile in others)
           TextButton(
             onPressed: () => unawaited(switchProfile(context, ref, profile.id)),
