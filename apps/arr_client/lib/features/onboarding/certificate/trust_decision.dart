@@ -21,6 +21,7 @@ class TrustDecision extends StatefulWidget {
     required this.sha256,
     this.refusingIsPrimary = false,
     this.replacesPin = false,
+    this.kept,
     super.key,
   });
 
@@ -42,6 +43,9 @@ class TrustDecision extends StatefulWidget {
 
   /// A certificate is accepted already, which an authority would replace.
   final bool replacesPin;
+
+  /// The accepted fingerprint, which the button that refuses answers with.
+  final String? kept;
 
   @override
   State<TrustDecision> createState() => _TrustDecisionState();
@@ -69,7 +73,10 @@ class _TrustDecisionState extends State<TrustDecision> {
             CertificateTrust.certificate(widget.sha256),
           )
         : null;
-    void refuse() => Navigator.pop(context);
+    void refuse() => Navigator.pop(context, switch (widget.kept) {
+      null => null,
+      final pin => CertificateTrust.certificate(pin),
+    });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

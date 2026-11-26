@@ -126,8 +126,10 @@ final class Testing extends TestStatus {
 }
 
 final class TestPassed extends TestStatus {
-  const TestPassed(this.probe);
+  const TestPassed(this.input, this.probe);
 
+  /// What was tested.
+  final ConnectionInput input;
   final ProbeResult probe;
 }
 
@@ -199,7 +201,7 @@ class InstanceFormController extends Notifier<InstanceFormState> {
     _running = null;
     state = InstanceFormState(
       test: switch (answer) {
-        Ok(:final value) => TestPassed(value),
+        Ok(:final value) => TestPassed(input, value),
         Err(:final error) => TestFailed(input, error),
       },
     );
@@ -243,13 +245,14 @@ class InstanceFormController extends Notifier<InstanceFormState> {
   /// passed one its probe, a rejected sign-in the latch that keeps the app
   /// from sending it again by itself. The caller must [invalidate] when what
   /// was tested changes. [removeCertPin] says that the user gave up the stored
-  /// certificate.
+  /// certificate, [keptCertPin] that one stays which the test was made without.
   ///
   /// Throws what the storage throws.
   Future<Result<Instance, RuleViolation>> save(
     FormReady seed,
     String name,
     ConnectionInput input, {
+    String? keptCertPin,
     bool removeCertPin = false,
   }) async {
     final services = ref.read(appServicesProvider);
@@ -266,7 +269,7 @@ class InstanceFormController extends Notifier<InstanceFormState> {
         authKind: input.authKind,
         // Null keeps the stored one, unless it is removed or the origin
         // changed.
-        acceptedCertPin: input.certPin,
+        acceptedCertPin: input.certPin ?? keptCertPin,
         removeCertPin: removeCertPin,
         customCa: input.customCa,
         probe: tested is TestPassed

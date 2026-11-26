@@ -92,6 +92,8 @@ class _AuthorityImportScreenState extends ConsumerState<AuthorityImportScreen> {
     final problem = switch (_read) {
       Err(error: CertificateAuthorityProblem.notACertificate) =>
         strings.authorityNotACertificate,
+      Err(error: CertificateAuthorityProblem.notAnAuthority) =>
+        strings.authorityNotAnAuthority,
       Err(error: CertificateAuthorityProblem.privateKey) =>
         strings.authorityPrivateKey,
       Err(error: CertificateAuthorityProblem.tooLarge) =>

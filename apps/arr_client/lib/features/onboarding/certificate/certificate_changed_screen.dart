@@ -16,6 +16,7 @@ class CertificateChangedScreen extends StatelessWidget {
     required this.url,
     required this.certificate,
     required this.pinned,
+    this.hasCustomCa = false,
     super.key,
   });
 
@@ -24,6 +25,10 @@ class CertificateChangedScreen extends StatelessWidget {
 
   /// The fingerprint that was accepted.
   final String? pinned;
+
+  /// An imported authority, which was to replace the accepted certificate, did
+  /// not vouch for this one.
+  final bool hasCustomCa;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +42,10 @@ class CertificateChangedScreen extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(strings.certificateChangedCauses),
+        if (hasCustomCa) ...[
+          const SizedBox(height: 12),
+          CertificateWarning(strings.certificateAuthorityNotEnough),
+        ],
         const SizedBox(height: 24),
         if (pinned case final pinned?) ...[
           Fingerprint(
@@ -61,6 +70,7 @@ class CertificateChangedScreen extends StatelessWidget {
           refuse: strings.certificateKeep,
           refusingIsPrimary: true,
           replacesPin: true,
+          kept: pinned,
           url: url,
           sha256: certificate.sha256,
         ),

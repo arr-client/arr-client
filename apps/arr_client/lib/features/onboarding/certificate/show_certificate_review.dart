@@ -28,6 +28,7 @@ Future<CertificateTrust?> showCertificateReview(
       url: url,
       certificate: certificate,
       pinned: pinned,
+      hasCustomCa: hasCustomCa,
     ),
     _ => throw ArgumentError.value(failure, 'failure', 'not a certificate'),
   };

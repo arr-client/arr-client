@@ -15,7 +15,8 @@ final certificateFileProvider = Provider<ChooseCertificateFile>(
   (ref) => _chooseFile,
 );
 
-// No type filter: certificate files come with many types, or none.
+// No type filter: certificate files come with many types, or none. The Android
+// plugin reads the whole file into memory before its size can be checked.
 Future<Uint8List?> _chooseFile() async {
   final file = await openFile();
   if (file == null) return null;

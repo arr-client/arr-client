@@ -9,7 +9,8 @@ import 'certificate/show_certificate_review.dart';
 
 /// What the user decided to trust for one instance.
 final class CertificateTrust {
-  /// The user accepted the certificate with the fingerprint [certPin].
+  /// The user accepted the certificate with the fingerprint [certPin], or
+  /// keeps it, having accepted it before.
   const CertificateTrust.certificate(String this.certPin) : customCa = null;
 
   /// The user trusts the authority [customCa], in place of any accepted
@@ -26,8 +27,8 @@ final class CertificateTrust {
 
 /// Shows the certificate that [url] presented, which [failure] carries as a
 /// [CertificateUntrusted] or [CertificateChanged]. [pinned] is the accepted
-/// fingerprint it was compared with, and [hasCustomCa] whether the test had an
-/// authority. Answers what to trust, or null to trust nothing. The form then
+/// fingerprint it differs from, and [hasCustomCa] whether an authority was
+/// tried and did not vouch for the certificate. Answers what to trust, or null to trust nothing. The form then
 /// tests again with the answer, and saves it with the instance.
 typedef CertificateReview = Future<CertificateTrust?> Function(
   BuildContext context, {

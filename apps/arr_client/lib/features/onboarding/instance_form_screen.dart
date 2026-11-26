@@ -15,6 +15,8 @@ import '../../app/screens/message_page.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import 'address.dart';
 import 'certificate/authority_import_screen.dart';
+import 'certificate/certificate_widgets.dart';
+import 'certificate/form_trust.dart';
 import 'certificate/trust_section.dart';
 import 'certificate_review.dart';
 import 'connection_tester.dart';
@@ -101,11 +103,7 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
   late AuthKind _authKind;
   late bool _advanced;
 
-  /// The accepted certificates, by the origin each was accepted for. The saved
-  /// one stays while another address is tried, so that a changed certificate
-  /// is not later taken for a new one.
-  final _pins = <String, String>{};
-  String? _customCa;
+  late final FormTrust _trust;
 
   var _submitted = false;
   String? _nameError;
@@ -136,10 +134,7 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     ];
     _authKind = instance?.authKind ?? _module.descriptor.authKinds.first;
     _advanced = _headers.isNotEmpty || _hasBasicAuth;
-    if (instance case Instance(:final certPin?, :final url)) {
-      _pins[url.origin] = certPin;
-    }
-    _customCa = instance?.customCa;
+    _trust = FormTrust(instance);
   }
 
   @override
@@ -208,8 +203,8 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
               header.name.text.trim(): header.value.text.trim(),
         },
       ),
-      certPin: url.isScheme('https') ? _pins[url.origin] : null,
-      customCa: _customCa,
+      certPin: _trust.pinFor(url),
+      customCa: _trust.customCa,
     );
   }
 
@@ -261,21 +256,38 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     return goOn ?? false;
   }
 
+  /// A certificate that nothing vouches for is a changed one, not a new one,
+  /// while the accepted one it differs from is not yet let go of.
+  TestStatus _asSeen(TestStatus status) {
+    if (status case TestFailed(
+      :final input,
+      failure: CertificateUntrusted(:final certificate),
+    )) {
+      final accepted = _trust.unprovenPin(input.url);
+      if (accepted != null && accepted != certificate.sha256) {
+        return TestFailed(input, CertificateChanged(certificate));
+      }
+    }
+    return status;
+  }
+
   Future<void> _reviewCertificate(TestFailed failed) async {
     final input = failed.input;
     final trust = await ref.read(certificateReviewProvider)(
       context,
       url: input.url,
       failure: failed.failure,
-      pinned: input.certPin,
-      hasCustomCa: input.customCa != null,
+      pinned: input.certPin ?? _trust.unprovenPin(input.url),
+      // With a certificate pinned, the authority had no say.
+      hasCustomCa: input.certPin == null && input.customCa != null,
     );
     if (trust == null || !mounted) return;
     if (trust.certPin case final pin?) {
-      _pins[input.url.origin] = pin;
+      // Kept, and it is what was just tested with.
+      if (pin == input.certPin) return;
+      _trust.accept(input.url, pin);
     } else {
-      _pins.remove(input.url.origin);
-      _customCa = trust.customCa;
+      _trust.useAuthority(input.url, trust.customCa!);
     }
     _changed();
     await _test();
@@ -287,40 +299,69 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     Err() => null,
   };
 
-  /// The accepted certificate for [url]. Without an address, any there is.
-  String? _pinAt(Uri? url) =>
-      url == null ? _pins.values.firstOrNull : _pins[url.origin];
-
-  void _forgetPin() {
-    final url = _url;
-    url == null ? _pins.clear() : _pins.remove(url.origin);
-  }
-
-  /// An accepted certificate would take precedence over the authority, so
-  /// importing one gives up the certificate accepted for the address.
   Future<void> _importAuthority() async {
     final url = _url;
     final pem = await importAuthority(
       context,
       url: url,
-      replacesPin: _pinAt(url) != null,
+      replacesPin: _trust.pinShown(url) != null,
     );
     if (pem == null || !mounted) return;
-    _forgetPin();
-    _customCa = pem;
+    _trust.useAuthority(url, pem);
     _changed();
   }
 
-  /// Whether the user gave up the saved certificate, which saving then removes.
-  bool get _gaveUpSavedPin => switch (_instance) {
-    Instance(certPin: _?, :final url) => !_pins.containsKey(url.origin),
-    _ => false,
-  };
+  /// Whether to keep [pin], which an untried authority was to replace; null to
+  /// not save.
+  Future<bool?> _confirmKeeping(String pin) {
+    final strings = AppLocalizations.of(context);
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        scrollable: true,
+        title: Text(strings.untriedTitle),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(strings.untriedExplanation),
+            const SizedBox(height: 16),
+            Fingerprint(
+              label: strings.certificateAcceptedFingerprint,
+              sha256: pin,
+              copy: false,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(UiLocalizations.of(context).cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(strings.untriedGiveUp),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(strings.untriedKeep),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<void> _save() async {
     FocusManager.instance.primaryFocus?.unfocus();
     final input = _read();
     if (input == null) return;
+    String? kept;
+    if (input.certPin == null) {
+      if (_trust.unprovenPin(input.url) case final pin?) {
+        final keep = await _confirmKeeping(pin);
+        if (keep == null || !mounted) return;
+        if (keep) kept = pin;
+      }
+    }
     final strings = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final name = _name.text.trim();
@@ -330,7 +371,11 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
         widget.seed,
         name,
         input,
-        removeCertPin: _gaveUpSavedPin,
+        keptCertPin: kept,
+        removeCertPin:
+            input.certPin == null &&
+            kept == null &&
+            _trust.gaveUpSavedPin(_instance),
       );
     } catch (error) {
       if (!mounted) return;
@@ -427,6 +472,13 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     final descriptor = _module.descriptor;
 
     ref.listen(instanceFormProvider(widget.target), (before, after) {
+      if (after.test case TestPassed(:final input)) {
+        _trust.testPassed(
+          input.url,
+          certPin: input.certPin,
+          authority: input.customCa,
+        );
+      }
       if (before?.test.runtimeType != after.test.runtimeType &&
           after.test is! NotTested) {
         _reveal(() => _result.currentContext);
@@ -470,9 +522,11 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
                             KeyedSubtree(
                               key: _result,
                               child: TestResult(
-                                status: state.test,
+                                status: _asSeen(state.test),
                                 service: descriptor.displayName,
-                                onReviewCertificate: switch (state.test) {
+                                onReviewCertificate: switch (_asSeen(
+                                  state.test,
+                                )) {
                                   final TestFailed failed => () => unawaited(
                                     _reviewCertificate(failed),
                                   ),
@@ -632,15 +686,15 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
         children: [
           const SizedBox(height: 8),
           CertificateTrustSection(
-            pin: _pinAt(_url),
-            customCa: _customCa,
+            pin: _trust.pinShown(_url),
+            customCa: _trust.customCa,
             onImport: () => unawaited(_importAuthority()),
             onForgetPin: () {
-              _forgetPin();
+              _trust.forgetPin(_url);
               _changed();
             },
             onRemoveAuthority: () {
-              _customCa = null;
+              _trust.removeAuthority();
               _changed();
             },
           ),

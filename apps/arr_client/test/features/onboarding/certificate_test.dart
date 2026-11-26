@@ -255,7 +255,7 @@ void main() {
 
     expect(find.textContaining('signed for $host'), findsOneWidget);
     expect(button('Use this authority'), findsNothing);
-    expect(find.textContaining('no longer used'), findsNothing);
+    expect(find.textContaining('takes the place of'), findsNothing);
     await enter(tester, 'authorityText', caPem);
     await tester.pumpAndSettle();
     expect(find.text('CN=arr-client test CA'), findsNWidgets(2));
@@ -280,7 +280,7 @@ void main() {
     serve(films, newPin, signed: true);
     await press(tester, find.text('Advanced'));
     await press(tester, button('Import certificate authority'));
-    expect(find.textContaining('no longer used'), findsOneWidget);
+    expect(find.textContaining('takes the place of'), findsOneWidget);
 
     await importPasted(tester);
     await press(tester, button('Test connection'));
@@ -302,7 +302,7 @@ void main() {
     await press(tester, button('Review certificate'));
 
     await press(tester, button('Import a certificate authority instead'));
-    expect(find.textContaining('no longer used'), findsOneWidget);
+    expect(find.textContaining('takes the place of'), findsOneWidget);
     await importPasted(tester);
 
     expect(find.text('Connected to Films 5.1'), findsOneWidget);
@@ -312,6 +312,149 @@ void main() {
     final stored = await reload(app, instance);
     expect(stored.certPin, isNull);
     expect(stored.customCa, storedCa);
+    await app.stop(tester);
+  });
+
+  /// A pinned service whose certificate changed, for which an authority that
+  /// does not vouch for it was imported from the review.
+  Future<(TestApp, FormModule, Instance)> importUseless(
+    WidgetTester tester,
+  ) async {
+    final (app, films, instance) = await editPinned(tester);
+    serve(films, newPin);
+    await press(tester, button('Test connection'));
+    await press(tester, button('Review certificate'));
+    await press(tester, button('Import a certificate authority instead'));
+    await importPasted(tester);
+    return (app, films, instance);
+  }
+
+  testWidgets('an authority that does not vouch leaves a change a change', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final (app, films, instance) = await importUseless(tester);
+
+    expect(films.probed.last.customCa, storedCa);
+    expect(find.text('Certificate changed'), findsOneWidget);
+    expect(find.text('Certificate not trusted'), findsNothing);
+    await press(tester, button('Review certificate'));
+    expect(find.textContaining('no longer presents'), findsOneWidget);
+    expect(find.textContaining('does not vouch'), findsOneWidget);
+    expect(fingerprint(oldPrint), findsOneWidget);
+    expect(fingerprint(newPrint), findsOneWidget);
+    expect(enabled(tester, 'Trust the new certificate'), isFalse);
+
+    // Keeping brings the accepted certificate back into the test.
+    await press(tester, button('Keep the accepted certificate'));
+    expect(films.probed.last.certPin, oldPin);
+    await press(tester, button('Save anyway'));
+
+    expect(find.text('Keep the accepted certificate?'), findsNothing);
+    expect((await reload(app, instance)).certPin, oldPin);
+    semantics.dispose();
+    await app.stop(tester);
+  });
+
+  testWidgets('saving past an untried authority asks about the certificate', (
+    tester,
+  ) async {
+    final (app, _, instance) = await importUseless(tester);
+
+    await press(tester, button('Save anyway'));
+    expect(find.text('Keep the accepted certificate?'), findsOneWidget);
+    await press(tester, button('Cancel'));
+    expect((await reload(app, instance)).customCa, isNull);
+
+    await press(tester, button('Save anyway'));
+    await press(tester, button('Save and keep it'));
+
+    final stored = await reload(app, instance);
+    expect(stored.certPin, oldPin);
+    expect(stored.customCa, storedCa);
+    await app.stop(tester);
+  });
+
+  testWidgets('the certificate can be given up for an untried authority', (
+    tester,
+  ) async {
+    final (app, _, instance) = await importUseless(tester);
+
+    await press(tester, button('Save anyway'));
+    await press(tester, button('Save without it'));
+
+    final stored = await reload(app, instance);
+    expect(stored.certPin, isNull);
+    expect(stored.customCa, storedCa);
+    await app.stop(tester);
+  });
+
+  testWidgets('an authority from Advanced does not make a change new', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final (app, films, instance) = await editPinned(tester);
+    serve(films, newPin);
+    await press(tester, find.text('Advanced'));
+    await press(tester, button('Import certificate authority'));
+    await importPasted(tester);
+
+    await press(tester, button('Test connection'));
+    expect(find.text('Certificate changed'), findsOneWidget);
+    await press(tester, button('Review certificate'));
+    expect(fingerprint(oldPrint), findsOneWidget);
+    // Leaving decides nothing: it stays a change.
+    await back(tester);
+    expect(find.text('Certificate changed'), findsOneWidget);
+    await press(tester, button('Save anyway'));
+    await press(tester, button('Save and keep it'));
+
+    expect((await reload(app, instance)).certPin, oldPin);
+    semantics.dispose();
+    await app.stop(tester);
+  });
+
+  testWidgets('removing the authority brings the certificate back', (
+    tester,
+  ) async {
+    final (app, films, instance) = await editPinned(tester);
+    serve(films, newPin);
+    await press(tester, find.text('Advanced'));
+    await press(tester, button('Import certificate authority'));
+    await importPasted(tester);
+
+    await press(tester, button('Remove certificate authority'));
+    expect(button('Stop trusting this certificate'), findsOneWidget);
+    await press(tester, button('Save without testing'));
+
+    final stored = await reload(app, instance);
+    expect(stored.certPin, oldPin);
+    expect(stored.customCa, isNull);
+    await app.stop(tester);
+  });
+
+  // The same in a service that is not saved yet.
+  testWidgets('a certificate accepted in the form is remembered too', (
+    tester,
+  ) async {
+    final (app, films) = await start(tester);
+    serve(films, oldPin);
+    await addSecure(tester);
+    await press(tester, button('Test connection'));
+    await press(tester, button('Review certificate'));
+    await tick(tester);
+    await press(tester, button('Trust this certificate'));
+    serve(films, newPin);
+    await press(tester, find.text('Advanced'));
+    await press(tester, button('Import certificate authority'));
+    await importPasted(tester);
+
+    await press(tester, button('Test connection'));
+    expect(find.text('Certificate changed'), findsOneWidget);
+    await press(tester, button('Save anyway'));
+    await press(tester, button('Save and keep it'));
+
+    expect((await saved(app)).single.certPin, oldPin);
     await app.stop(tester);
   });
 
