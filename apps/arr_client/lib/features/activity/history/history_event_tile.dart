@@ -5,15 +5,36 @@ import 'package:ui/ui.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
 import 'server_text.dart';
 
+/// Which episode of its series [episode] is.
+String historyEpisodeLabel(AppLocalizations strings, Episode episode) =>
+    episode.seasonNumber == 0
+    ? strings.historySpecialCode(episode.episodeNumber)
+    : strings.historyEpisodeCode(episode.seasonNumber, episode.episodeNumber);
+
 /// One event of a history: what happened, to which release, when, and what the
-/// server says about it.
+/// server says about it. A grab that is [markable] can be marked as failed.
 class HistoryEventTile extends StatelessWidget {
-  const HistoryEventTile(this.event, {this.episode, super.key});
+  const HistoryEventTile(
+    this.event, {
+    this.episode,
+    this.instanceName,
+    this.markable = false,
+    this.onMarkFailed,
+    super.key,
+  });
 
   final HistoryEvent event;
 
   /// The episode the event is about, in the history of a whole series.
   final Episode? episode;
+
+  /// Set where several instances are shown.
+  final String? instanceName;
+
+  final bool markable;
+
+  /// Null while the event cannot be marked.
+  final VoidCallback? onMarkFailed;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +73,7 @@ class HistoryEventTile extends StatelessWidget {
         strings.historyReleaseGroup(value),
     ];
 
-    return MergeSemantics(
+    final tile = MergeSemantics(
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         titleAlignment: ListTileTitleAlignment.top,
@@ -62,14 +83,7 @@ class HistoryEventTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (episode case final episode?)
-              Text(
-                episode.seasonNumber == 0
-                    ? strings.historySpecialCode(episode.episodeNumber)
-                    : strings.historyEpisodeCode(
-                        episode.seasonNumber,
-                        episode.episodeNumber,
-                      ),
-              ),
+              Text(historyEpisodeLabel(strings, episode)),
             if (serverText(event.sourceTitle) case final title?) Text(title),
             Text(
               strings.historyDateAndTime(
@@ -78,9 +92,35 @@ class HistoryEventTile extends StatelessWidget {
               ),
             ),
             for (final line in details) Text(line),
+            if (instanceName case final name?) Text(name),
           ],
         ),
       ),
+    );
+    if (!markable || event.eventType != HistoryEventType.grabbed) return tile;
+
+    // What a screen reader says of the button, which is not read as a part of
+    // the event.
+    final target = [
+      serverText(event.sourceTitle) ?? strings.historyUntitled,
+      if (episode case final episode?) historyEpisodeLabel(strings, episode),
+      ?instanceName,
+    ].join(', ');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        tile,
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: TextButton(
+            onPressed: onMarkFailed,
+            child: Text(
+              strings.historyMarkFailed,
+              semanticsLabel: strings.historyMarkFailedOf(target),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

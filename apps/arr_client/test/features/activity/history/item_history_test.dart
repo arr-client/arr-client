@@ -51,6 +51,15 @@ class FakeHistory implements HistoryProvider {
   /// What was asked.
   final reads = <(MediaTarget?, int)>[];
 
+  /// What was marked as failed.
+  final marked = <int>[];
+
+  @override
+  ServiceResult<void> markFailed(int eventId) async {
+    marked.add(eventId);
+    return const Ok(null);
+  }
+
   @override
   ServiceResult<ResultPage<HistoryEvent>> history({
     MediaTarget? target,
@@ -100,6 +109,7 @@ HistoryEvent event(
   String? title,
   int day = 1,
   ItemRef? itemRef,
+  String? downloadId,
   Map<String, String> details = const {},
 }) => HistoryEvent(
   id: id,
@@ -107,6 +117,7 @@ HistoryEvent event(
   date: DateTime.utc(2026, 3, day, 12),
   sourceTitle: title ?? 'Release $id',
   itemRef: itemRef,
+  downloadId: downloadId,
   details: details,
 );
 
@@ -268,6 +279,38 @@ void main() {
       expect(module.episodes.reads, 0);
       await app.stop(tester);
     });
+  });
+
+  testWidgets('marks a grab as failed and reads the history again', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      size: const Size(400, 2000),
+      arrange: (fake) => fake.pages = [
+        [
+          event(3, day: 3, downloadId: 'pack'),
+          event(2, day: 2, downloadId: 'pack'),
+          event(1, type: HistoryEventType.imported, downloadId: 'pack'),
+        ],
+      ],
+    );
+    expect(find.text('Mark as failed'), findsNWidgets(2));
+
+    await tester.tap(find.text('Mark as failed').first);
+    await step(tester);
+    expect(find.textContaining('season pack'), findsOneWidget);
+    expect(module.fake.marked, isEmpty);
+    await tester.tap(find.widgetWithText(FilledButton, 'Mark as failed'));
+    await step(tester);
+
+    expect(module.fake.marked, [3]);
+    expect(module.fake.reads, hasLength(2));
+    expect(
+      find.text('Cellar accepted marking the download as failed.'),
+      findsOneWidget,
+    );
+    await app.stop(tester);
   });
 
   testWidgets('shows named details only, as harmless text', (tester) async {
