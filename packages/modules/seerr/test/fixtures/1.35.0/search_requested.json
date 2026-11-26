@@ -1,0 +1,88 @@
+{
+  "page": 1,
+  "totalPages": 3,
+  "totalResults": 50,
+  "results": [
+    {
+      "id": 10331,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        27
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-9",
+      "overview": "redacted-10",
+      "popularity": 8.174,
+      "releaseDate": "1968-10-04",
+      "title": "redacted-9",
+      "video": false,
+      "voteAverage": 7.6,
+      "voteCount": 2906,
+      "backdropPath": "/redacted/11.jpg",
+      "posterPath": "/redacted/12.jpg",
+      "mediaInfo": {
+        "downloadStatus": [],
+        "downloadStatus4k": [],
+        "id": 8,
+        "mediaType": "movie",
+        "tmdbId": 10331,
+        "tvdbId": null,
+        "imdbId": null,
+        "status": 2,
+        "status4k": 1,
+        "createdAt": "2026-11-26T22:09:36.000Z",
+        "updatedAt": "2026-11-26T22:09:36.000Z",
+        "lastSeasonChange": "2026-11-26T22:09:36.000Z",
+        "mediaAddedAt": null,
+        "serviceId": null,
+        "serviceId4k": null,
+        "externalServiceId": null,
+        "externalServiceId4k": null,
+        "externalServiceSlug": null,
+        "externalServiceSlug4k": null,
+        "ratingKey": null,
+        "ratingKey4k": null,
+        "seasons": []
+      }
+    },
+    {
+      "id": 1645603,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        27
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-9",
+      "overview": "redacted-10",
+      "popularity": 3.2671,
+      "releaseDate": "2026-07-03",
+      "title": "redacted-9",
+      "video": false,
+      "voteAverage": 4.9,
+      "voteCount": 77,
+      "backdropPath": "/redacted/13.jpg",
+      "posterPath": "/redacted/14.jpg"
+    },
+    {
+      "id": 19185,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        27
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-9",
+      "overview": "redacted-10",
+      "popularity": 4.659,
+      "releaseDate": "1990-10-19",
+      "title": "redacted-9",
+      "video": false,
+      "voteAverage": 6.882,
+      "voteCount": 1051,
+      "backdropPath": "/redacted/15.jpg",
+      "posterPath": "/redacted/16.jpg"
+    }
+  ]
+}

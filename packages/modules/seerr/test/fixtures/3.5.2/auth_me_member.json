@@ -1,0 +1,42 @@
+{
+  "permissions": 4194336,
+  "warnings": [],
+  "id": 2,
+  "email": "redacted",
+  "plexUsername": null,
+  "jellyfinUsername": null,
+  "username": "redacted-10",
+  "recoveryLinkExpirationDate": null,
+  "userType": 2,
+  "plexId": null,
+  "jellyfinUserId": null,
+  "avatar": "https://redacted.invalid/11",
+  "avatarETag": null,
+  "avatarVersion": null,
+  "movieQuotaLimit": 2,
+  "movieQuotaDays": 7,
+  "tvQuotaLimit": 3,
+  "tvQuotaDays": 7,
+  "createdAt": "2026-11-26T22:06:52.000Z",
+  "updatedAt": "2026-11-26T22:09:29.000Z",
+  "requestCount": 0,
+  "displayName": "redacted-10",
+  "settings": {
+    "locale": "",
+    "discoverRegion": null,
+    "streamingRegion": null,
+    "originalLanguage": null,
+    "notificationTypes": {
+      "email": 0,
+      "discord": 0,
+      "pushbullet": 0,
+      "pushover": 0,
+      "slack": 0,
+      "telegram": 0,
+      "webhook": 0,
+      "webpush": 8190
+    },
+    "watchlistSyncMovies": null,
+    "watchlistSyncTv": null
+  }
+}

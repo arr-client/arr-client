@@ -155,7 +155,22 @@ final _fieldShapes = <String, RegExp>{
 /// Exact words that are harmless in the named field only.
 final _fieldValues = <String, Set<String>>{
   'appname': {'Sonarr', 'Radarr', 'Lidarr', 'Readarr', 'Prowlarr'},
-  'message': {'invalid csrf token'}, // Seerr
+  // Seerr says only in words why it refused. INVALID_CREDENTIALS is a code.
+  'message': {
+    'invalid csrf token',
+    'Access denied.',
+    'INVALID_CREDENTIALS',
+    "cookie 'connect.sid' required",
+    'Request for this media already exists.',
+    'Movie Quota exceeded.',
+    'You do not have permission to make 4K movie requests.',
+    'This media is blocklisted.',
+    'Only pending requests can be approved or declined.',
+    'You do not have permission to delete this request.',
+    'Request not found.',
+    'Media does not exist.',
+  },
+  'error': {'You do not have permission to access this endpoint'}, // Seerr
   'name': {
     ..._commandNames,
     ..._qualityNames,

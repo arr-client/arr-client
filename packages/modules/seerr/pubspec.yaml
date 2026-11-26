@@ -7,5 +7,14 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The module contract, and the request allow-list harness the tests use.
+  core:
+    path: ../../core
   flutter:
+    sdk: flutter
+
+dev_dependencies:
+  # An in-memory database for the tests that run the module in a session. MIT.
+  drift: ^2.35.4
+  flutter_test:
     sdk: flutter

@@ -109,10 +109,11 @@ capture; fixtures pass through `tool/sanitize_fixture.dart` before commit.
 (quickstart.md, Limits of the dev stack).
 
 ## R16 Items to confirm during implementation
-These are not settled by this research and each has a task:
-- Seerr media-server sign-in request bodies and permission bit values.
+Nothing is left open here.
 
-Settled since: qBittorrent login responses by version and API key use (5.2+), checked against its
+Settled since: Seerr sign-in request bodies and permission bit values, checked against the source
+(Seerr 3.0.0 and 3.5.2, Jellyseerr 2.0.0 and 2.7.3, Overseerr 1.34.0 and 1.35.0) and servers of
+Seerr 3.5.2, Jellyseerr 2.7.3 and Overseerr 1.35.0; see contracts/upstream-apis.md. qBittorrent login responses by version and API key use (5.2+), checked against its
 source (4.4.0 to 5.3.1) and a 5.3.1 server; see contracts/upstream-apis.md.
 
 ## R17 SQLite from source
@@ -125,7 +126,10 @@ When the server enables CSRF protection, every non-GET request needs the `_csrf`
 `X-XSRF-TOKEN` header taken from the `XSRF-TOKEN` cookie, including with an API key. The server
 marks the cookies `Secure` but does not test the transport; the app handles `Set-Cookie` itself and
 returns them to the same configured origin over HTTP as well, since HTTP is a supported choice.
-Verify against a real server over both. `writesRefused` covers a server that still rejects writes.
+`writesRefused` covers a server that still rejects writes. Verified on Seerr 3.5.2, Jellyseerr 2.7.3
+and Overseerr 1.35.0, directly over HTTP and behind a TLS proxy: signing in needs the token too; any
+GET sets `XSRF-TOKEN`, and also `_csrf` when the request brought none; a rejected token is 403
+`{"message":"invalid csrf token"}`.
 
 ## R19 Intents and deep links
 **Decision**: set `flutter_deeplinking_enabled` to false (it is on by default). The app declares no

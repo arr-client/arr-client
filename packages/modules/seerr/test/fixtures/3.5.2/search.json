@@ -1,0 +1,64 @@
+{
+  "page": 1,
+  "totalPages": 3,
+  "totalResults": 50,
+  "results": [
+    {
+      "id": 10331,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        27
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-13",
+      "overview": "redacted-14",
+      "popularity": 8.174,
+      "releaseDate": "1968-10-04",
+      "title": "redacted-13",
+      "video": false,
+      "voteAverage": 7.6,
+      "voteCount": 2906,
+      "backdropPath": "/redacted/15.jpg",
+      "posterPath": "/redacted/16.jpg"
+    },
+    {
+      "id": 1645603,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        27
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-13",
+      "overview": "redacted-14",
+      "popularity": 3.2671,
+      "releaseDate": "2026-07-03",
+      "title": "redacted-13",
+      "video": false,
+      "voteAverage": 4.9,
+      "voteCount": 77,
+      "backdropPath": "/redacted/17.jpg",
+      "posterPath": "/redacted/18.jpg"
+    },
+    {
+      "id": 19185,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        27
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-13",
+      "overview": "redacted-14",
+      "popularity": 4.659,
+      "releaseDate": "1990-10-19",
+      "title": "redacted-13",
+      "video": false,
+      "voteAverage": 6.882,
+      "voteCount": 1051,
+      "backdropPath": "/redacted/19.jpg",
+      "posterPath": "/redacted/20.jpg"
+    }
+  ]
+}

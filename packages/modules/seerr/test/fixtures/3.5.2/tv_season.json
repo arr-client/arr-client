@@ -1,0 +1,34 @@
+{
+  "id": 3607,
+  "name": "redacted-99",
+  "seasonNumber": 1,
+  "airDate": "2005-09-19",
+  "episodes": [
+    {
+      "id": 62756,
+      "airDate": "2005-09-19",
+      "episodeNumber": 1,
+      "name": "redacted-105",
+      "overview": "redacted-106",
+      "productionCode": "redacted-107",
+      "seasonNumber": 1,
+      "showId": 1100,
+      "voteAverage": 7.714,
+      "voteCount": 77,
+      "stillPath": "https://redacted.invalid/108.jpg"
+    },
+    {
+      "id": 62757,
+      "airDate": "2005-09-26",
+      "episodeNumber": 2,
+      "name": "redacted-109",
+      "overview": "redacted-110",
+      "productionCode": "redacted-111",
+      "seasonNumber": 1,
+      "showId": 1100,
+      "voteAverage": 7.46,
+      "voteCount": 62,
+      "stillPath": "https://redacted.invalid/112.jpg"
+    }
+  ]
+}
