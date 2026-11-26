@@ -247,9 +247,14 @@ Map<String, Object> _series(int id) {
     for (final e in episodes)
       if (_isPast(e)) e['airDateUtc']! as String,
   ];
+  // Sonarr takes the next and previous airing from monitored episodes only.
+  final previous = [
+    for (final e in episodes)
+      if (e['monitored']! as bool && _isPast(e)) e['airDateUtc']! as String,
+  ];
   final upcoming = [
     for (final e in episodes)
-      if (!_isPast(e)) e['airDateUtc']! as String,
+      if (e['monitored']! as bool && !_isPast(e)) e['airDateUtc']! as String,
   ];
   final firstAired = episodes.first['airDateUtc']! as String;
 
@@ -262,7 +267,7 @@ Map<String, Object> _series(int id) {
     'ended': status == 'ended',
     'overview': _overview('series', id),
     if (upcoming.isNotEmpty) 'nextAiring': upcoming.first,
-    if (aired.isNotEmpty) 'previousAiring': aired.last,
+    if (previous.isNotEmpty) 'previousAiring': previous.last,
     'network': 'Fake Network ${1 + _pick(id, 31, 20)}',
     'airTime': '20:00',
     'images': _images(id),

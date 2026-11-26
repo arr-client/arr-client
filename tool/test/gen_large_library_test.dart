@@ -110,6 +110,19 @@ void main() {
       expect(statistics['totalEpisodeCount'], own.length);
       expect(statistics['episodeFileCount'], files);
       expect(statistics['seasonCount'], seasons.length);
+
+      // Episodes are in air order. Dates before 2027 count as past.
+      List<Object?> airDates(Iterable<Map<String, Object>> from) => [
+        for (final e in from) e['airDateUtc'],
+      ];
+      bool isPast(Object? date) => (date! as String).compareTo('2027') < 0;
+      final monitored = airDates(own.where((e) => e['monitored'] == true));
+      expect(s['previousAiring'], monitored.where(isPast).lastOrNull);
+      expect(
+        s['nextAiring'],
+        monitored.where((date) => !isPast(date)).firstOrNull,
+      );
+      expect(s['lastAired'], airDates(own).where(isPast).lastOrNull);
       expect(
         seasons.fold<int>(0, (sum, season) {
           final counts = season['statistics']! as Map<String, Object>;
