@@ -25,6 +25,8 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   # Material widgets. package:flutter/material.dart is deprecated.
   material_ui: ^1.11.1
+  platform_local_network:
+    path: ../../packages/platform_local_network
   ui:
     path: ../../packages/ui
 
