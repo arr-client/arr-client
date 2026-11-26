@@ -20,6 +20,9 @@ import 'profile.dart';
 import 'rule_violation.dart';
 import 'uuid.dart';
 
+/// An instance and its credential as read together, to authenticate with.
+typedef InstanceAccess = ({Instance instance, Credential? credential});
+
 /// Stores profiles, their instances and the instances' credentials.
 ///
 /// Records are kept in the database and credentials in the [SecretStore]. Every
@@ -229,13 +232,12 @@ class ProfileRepository {
   /// made through the same database comes between them, and a credential is not
   /// paired with an address it was not saved for. Reading [instance] and then
   /// [credential] does not promise that.
-  Future<({Instance instance, Credential? credential})?> instanceWithCredential(
-    String id,
-  ) => _database.transaction(() async {
-    final found = await instance(id);
-    if (found == null) return null;
-    return (instance: found, credential: await credential(id));
-  });
+  Future<InstanceAccess?> instanceWithCredential(String id) =>
+      _database.transaction(() async {
+        final found = await instance(id);
+        if (found == null) return null;
+        return (instance: found, credential: await credential(id));
+      });
 
   /// Adds an instance after the others of a profile.
   Future<Result<Instance, RuleViolation>> addInstance(
@@ -289,9 +291,11 @@ class ProfileRepository {
   }
 
   /// Saves the edit form of an instance. A null [credential] keeps the stored
-  /// one; otherwise it replaces it as a whole.
+  /// one; otherwise it replaces it as a whole, except for the session cookie.
   ///
-  /// When the scheme, host or port changes, the session cookie is dropped.
+  /// The session is [saveSession]'s to store: that of [credential] is ignored,
+  /// as the form may have read it long ago. The stored one is dropped when the
+  /// scheme, host or port, the authKind or what the user enters changes.
   Future<Result<Instance, RuleViolation>> updateInstance(
     String id,
     InstanceDraft draft, {
@@ -319,7 +323,7 @@ class ProfileRepository {
         if (refused != null) return Err(refused);
       } else {
         switch (await _replaceCredential(
-          id,
+          row,
           draft,
           credential,
           newOrigin,
@@ -401,11 +405,82 @@ class ProfileRepository {
   Future<void> retryAuth(String instanceId) =>
       _setAuthFailed(instanceId, false);
 
-  Future<void> _setAuthFailed(String id, bool failed) async {
-    await (_database.update(_database.instances)
-          ..where((row) => row.id.equals(id)))
-        .write(InstancesCompanion(authFailed: Value(failed)));
+  /// [markAuthFailed] for a rejection of what [used] holds. Does nothing if the
+  /// address, authKind or what the user enters has changed since, as that has
+  /// not been rejected. A credential that cannot be read counts as unchanged.
+  Future<void> rejectAuth(InstanceAccess used) =>
+      _database.transaction(() async {
+        final id = used.instance.id;
+        final found = await instance(id);
+        if (found == null) return;
+        Credential? stored;
+        try {
+          stored = await credential(id);
+        } catch (error) {
+          _warn('A rejected credential could not be compared', error);
+          stored = used.credential;
+        }
+        if (_isUnchanged((instance: found, credential: stored), used)) {
+          await markAuthFailed(id);
+        }
+      });
+
+  /// Stores the session cookie that signing in with [used] gave. False, storing
+  /// nothing, if the instance is gone or its address, authKind or what the user
+  /// enters has changed since: the cookie belongs to those.
+  Future<bool> saveSession(InstanceAccess used, String cookie) {
+    _log.addCredential(Credential(sessionCookie: cookie));
+    return _changing((secrets) async {
+      final current = await instanceWithCredential(used.instance.id);
+      if (current == null || !_isUnchanged(current, used)) return false;
+      await _writeSession(
+        used.instance.id,
+        current.credential,
+        cookie,
+        secrets,
+      );
+      return true;
+    });
   }
+
+  /// Discards the session cookie of [used], unless another has replaced it.
+  Future<void> dropSession(InstanceAccess used) => _changing((secrets) async {
+    final cookie = used.credential?.sessionCookie;
+    final id = used.instance.id;
+    final stored = (await instanceWithCredential(id))?.credential;
+    if (cookie == null || stored?.sessionCookie != cookie) return;
+    await _writeSession(id, stored, null, secrets);
+  });
+
+  /// Gives the instance [id], which has [stored] now, the session [cookie].
+  Future<void> _writeSession(
+    String id,
+    Credential? stored,
+    String? cookie,
+    _SecretChanges secrets,
+  ) => secrets.write(
+    _key(id),
+    encodeCredential(withSession(stored ?? const Credential(), cookie)),
+    previous: stored == null ? null : encodeCredential(stored),
+  );
+
+  /// Whether both would sign in at the same place with the same.
+  static bool _isUnchanged(InstanceAccess a, InstanceAccess b) =>
+      a.instance.url == b.instance.url &&
+      a.instance.authKind == b.instance.authKind &&
+      _entered(a.credential) == _entered(b.credential);
+
+  /// What the user entered of [credential], to compare.
+  static String _entered(Credential? credential) =>
+      encodeCredential(withSession(credential ?? const Credential(), null));
+
+  // In a transaction, which waits for another connection to be done.
+  Future<void> _setAuthFailed(String id, bool failed) =>
+      _database.transaction(() async {
+        await (_database.update(_database.instances)
+              ..where((row) => row.id.equals(id)))
+            .write(InstancesCompanion(authFailed: Value(failed)));
+      });
 
   /// For an edit that keeps the stored credential. It is read only if the edit
   /// can break a rule or must drop the session, so that other edits work even
@@ -421,18 +496,15 @@ class ProfileRepository {
     final newlyExclusive =
         excludesBasicAuth(module, draft.authKind) &&
         !excludesBasicAuth(module, row.authKind);
-    if (!newOrigin && !newlyExclusive) return null;
+    final endsSession = newOrigin || draft.authKind != row.authKind;
+    if (!endsSession && !newlyExclusive) return null;
 
     final stored = await credential(row.id);
     if (stored == null) return null;
     final violation = _checkCredential(draft, stored);
     if (violation != null) return violation;
-    if (newOrigin && stored.sessionCookie != null) {
-      await secrets.write(
-        _key(row.id),
-        encodeCredential(_withoutSession(stored)),
-        previous: encodeCredential(stored),
-      );
+    if (endsSession && stored.sessionCookie != null) {
+      await _writeSession(row.id, stored, null, secrets);
     }
     return null;
   }
@@ -440,7 +512,7 @@ class ProfileRepository {
   /// Stores [given] for an instance. The value is whether it differs from the
   /// stored credential in what the user enters.
   Future<Result<bool, RuleViolation>> _replaceCredential(
-    String id,
+    InstanceRow row,
     InstanceDraft draft,
     Credential given,
     bool newOrigin,
@@ -448,6 +520,7 @@ class ProfileRepository {
   ) async {
     // The user must be able to replace a credential that cannot be read. It
     // then counts as none.
+    final id = row.id;
     Credential? stored;
     var unreadable = false;
     try {
@@ -456,16 +529,18 @@ class ProfileRepository {
       unreadable = true;
       _warn('A stored credential could not be read', error);
     }
-    // A cookie that may be the stored one does not follow to a new origin.
-    final next =
-        newOrigin &&
-            (unreadable || given.sessionCookie == stored?.sessionCookie)
-        ? _withoutSession(given)
-        : given;
+    final before = stored ?? const Credential();
+    final edited = _entered(given) != _entered(before);
+    // Never the given cookie, which may have come from another origin.
+    final keepsSession =
+        !newOrigin && !edited && draft.authKind == row.authKind;
+    final next = withSession(
+      given,
+      keepsSession ? stored?.sessionCookie : null,
+    );
     final violation = _checkCredential(draft, next);
     if (violation != null) return Err(violation);
 
-    final before = stored ?? const Credential();
     final encoded = encodeCredential(next);
     if (unreadable || encoded != encodeCredential(before)) {
       await secrets.write(
@@ -475,10 +550,7 @@ class ProfileRepository {
         restorable: !unreadable,
       );
     }
-    return Ok(
-      encodeCredential(_withoutSession(next)) !=
-          encodeCredential(_withoutSession(before)),
-    );
+    return Ok(edited);
   }
 
   /// Runs [change] in a transaction. If it fails, the secrets it wrote are put
@@ -685,15 +757,6 @@ class ProfileRepository {
   static const _keyPrefix = 'cred/';
 
   static String _key(String instanceId) => '$_keyPrefix$instanceId';
-
-  static Credential _withoutSession(Credential credential) => Credential(
-    apiKey: credential.apiKey,
-    username: credential.username,
-    password: credential.password,
-    basicUser: credential.basicUser,
-    basicPassword: credential.basicPassword,
-    customHeaders: credential.customHeaders,
-  );
 
   static int _after(List<int> sortOrders) =>
       sortOrders.fold(0, (next, order) => order >= next ? order + 1 : next);

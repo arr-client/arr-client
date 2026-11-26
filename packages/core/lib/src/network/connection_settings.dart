@@ -1,5 +1,6 @@
 import '../instances/auth_kind.dart';
 import '../instances/credential.dart';
+import '../instances/instance.dart';
 
 /// Where one request goes, with which credential and under which trust. Holds
 /// secrets: never log it.
@@ -12,6 +13,16 @@ final class ConnectionSettings {
     this.certPin,
     this.customCa,
   });
+
+  /// The settings of a saved [instance].
+  ConnectionSettings.saved(Instance instance, Credential? credential)
+    : this(
+        url: instance.url,
+        authKind: instance.authKind,
+        credential: credential ?? const Credential(),
+        certPin: instance.certPin,
+        customCa: instance.customCa,
+      );
 
   /// The instance's address: http or https, maybe with a sub-path.
   final Uri url;

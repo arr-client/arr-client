@@ -10,6 +10,11 @@ library;
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
+// Experimental in drift, but there is no other way to see what a database in
+// another isolate threw. The tests with two connections would show a change.
+// ignore: experimental_member_use
+import 'package:drift/remote.dart' show DriftRemoteException;
+import 'package:sqlite3/common.dart' show SqliteException;
 
 import '../instances/auth_kind.dart';
 import '../instances/instance_link_type.dart';
@@ -268,6 +273,46 @@ class AppDatabase extends _$AppDatabase {
     beforeOpen: (details) async {
       // Off by default in SQLite, and the cascades depend on it.
       await customStatement('PRAGMA foreign_keys = ON');
+      // For a statement that meets a commit of the other connection. Short, as
+      // it blocks the thread; [transaction] does the longer waiting.
+      await customStatement('PRAGMA busy_timeout = 100');
     },
   );
+
+  /// How long a transaction waits for one of another connection to end.
+  static const _lockWait = Duration(seconds: 5);
+
+  /// The background isolate has its own connection. A transaction takes the
+  /// write lock as it begins, so those of two connections never interleave:
+  /// one that finds the other's under way waits here and starts over.
+  ///
+  /// SQLite's own waiting would block the thread, and is cut short by the
+  /// signals of the Dart profiler.
+  @override
+  Future<T> transaction<T>(
+    Future<T> Function() action, {
+    bool requireNew = false,
+  }) async {
+    final waited = Stopwatch()..start();
+    while (true) {
+      var started = false;
+      try {
+        return await super.transaction(() {
+          started = true;
+          return action();
+        }, requireNew: requireNew);
+      } on Exception catch (error) {
+        // Once the action has run, nothing is repeated.
+        if (started || !_isBusy(error) || waited.elapsed > _lockWait) rethrow;
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+      }
+    }
+  }
+
+  static bool _isBusy(Exception error) {
+    // Wrapped where the database runs in another isolate.
+    final cause = error is DriftRemoteException ? error.remoteCause : error;
+    // 5 is SQLITE_BUSY.
+    return cause is SqliteException && cause.resultCode == 5;
+  }
 }

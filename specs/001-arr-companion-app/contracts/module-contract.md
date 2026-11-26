@@ -17,6 +17,11 @@ abstract interface class ServiceModule {
 `authNotes` are localizable warnings the module attaches to an auth kind, optionally only when HTTP
 basic authentication is filled in. The add and edit form shows them without checking a module id.
 
+Where a service rejects a wrong API key with a status other than 401 (qBittorrent: 403), the
+descriptor's API key header names it as `rejectionStatus`. The core client then reports
+`authFailed` for an instance that authenticates with the key, and the saved instance is latched
+(data-model Instance.authFailed).
+
 ## Navigation intents (declared in core)
 
 Modules never import the app. A module screen requests shared flows through `AppNavigator`, supplied

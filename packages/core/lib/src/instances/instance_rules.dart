@@ -55,6 +55,18 @@ bool excludesBasicAuth(ModuleDescriptor module, AuthKind authKind) =>
 bool hasBasicAuth(Credential credential) =>
     credential.basicUser != null || credential.basicPassword != null;
 
+/// [credential] with [sessionCookie] as its session, or none.
+Credential withSession(Credential credential, String? sessionCookie) =>
+    Credential(
+      apiKey: credential.apiKey,
+      username: credential.username,
+      password: credential.password,
+      basicUser: credential.basicUser,
+      basicPassword: credential.basicPassword,
+      customHeaders: credential.customHeaders,
+      sessionCookie: sessionCookie,
+    );
+
 /// Whether a subtitle instance may link to a module of [category].
 bool isSubtitleTarget(ModuleCategory category) =>
     category == ModuleCategory.movies || category == ModuleCategory.series;
