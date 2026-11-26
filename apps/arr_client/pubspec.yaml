@@ -60,6 +60,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Runs the tests of integration_test/ on a device or emulator. Part of the
+  # Flutter SDK (BSD-3-Clause); release builds leave its Android plugin out.
+  integration_test:
+    sdk: flutter
   # To stand a fake in for url_launcher in tests. Both BSD-3-Clause.
   plugin_platform_interface: ^2.1.8
   url_launcher_platform_interface: ^2.3.2
