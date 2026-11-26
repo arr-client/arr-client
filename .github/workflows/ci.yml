@@ -50,7 +50,7 @@ jobs:
       - name: Test calendar days and imports east and west of UTC
         run: |
           ran=0
-          for dir in packages/servarr packages/modules/*; do
+          for dir in apps/arr_client packages/servarr packages/modules/*; do
             if [ ! -d "$dir/test" ]; then continue; fi
             files=$(cd "$dir" && find test -name '*calendar*_test.dart' -o -name '*import*_test.dart' | sort)
             if [ -z "$files" ]; then continue; fi
