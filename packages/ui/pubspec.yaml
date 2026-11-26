@@ -7,6 +7,9 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # ServiceFailure and Result, which the shared widgets render.
+  core:
+    path: ../core
   flutter:
     sdk: flutter
   # Translations of the Flutter widgets; imported by the generated localizations.
