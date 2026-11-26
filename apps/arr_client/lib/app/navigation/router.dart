@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
+import '../../features/settings/instances/instances_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../screens/destination_screens.dart';
 import '../screens/message_page.dart';
@@ -66,7 +67,9 @@ GoRouter createRouter(ModuleRegistry modules) {
               for (final entry in MoreEntry.values)
                 GoRoute(
                   path: morePath(entry),
-                  builder: (context, state) => MorePage(entry: entry),
+                  builder: (context, state) => entry == MoreEntry.services
+                      ? const InstancesScreen()
+                      : MorePage(entry: entry),
                 ),
             ],
           ),
