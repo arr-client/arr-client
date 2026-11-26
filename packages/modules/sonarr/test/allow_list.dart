@@ -157,10 +157,11 @@ final allowList = AllowList([
       'filterExistingFiles': _flag,
     },
   ),
-  // `lastWrite` is the cache buster of the image addresses the server returns.
+  // The cache buster of the image addresses the server returns: `lastWrite` in
+  // Sonarr 4, `h` in Sonarr 5.
   AllowedRequest.read(
     'api/v3/mediacover/{seriesId}/**',
-    query: {'lastWrite': _any},
+    query: {'h': _any, 'lastWrite': _any},
   ),
 
   // Library, lookup and item history.

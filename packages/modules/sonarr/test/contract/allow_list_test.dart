@@ -47,13 +47,14 @@ void main() {
           'episodeIds': [1],
         },
       ),
-      _send(
-        HttpMethod.get,
-        'mediacover/1/poster.jpg',
-        query: {
-          'lastWrite': ['1'],
-        },
-      ),
+      for (final buster in ['h', 'lastWrite'])
+        _send(
+          HttpMethod.get,
+          'mediacover/1/poster.jpg',
+          query: {
+            buster: ['1'],
+          },
+        ),
     ];
     for (final request in listed) {
       expect(allowList.permits(request), isTrue, reason: request.path);
