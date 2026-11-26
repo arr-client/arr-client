@@ -19,6 +19,7 @@ import 'probe_snapshot.dart';
 import 'probe_snapshot_json.dart';
 import 'profile.dart';
 import 'rule_violation.dart';
+import 'secret_changes.dart';
 import 'uuid.dart';
 
 /// An instance and its credential as read together, to authenticate with.
@@ -581,7 +582,7 @@ class ProfileRepository {
     String id,
     Credential? stored,
     String? cookie,
-    _SecretChanges secrets,
+    SecretChanges secrets,
   ) => secrets.write(
     _key(id),
     encodeCredential(withSession(stored ?? const Credential(), cookie)),
@@ -613,7 +614,7 @@ class ProfileRepository {
     InstanceRow row,
     InstanceDraft draft,
     bool newOrigin,
-    _SecretChanges secrets,
+    SecretChanges secrets,
   ) async {
     // The stored one was checked against the stored authKind.
     final module = _modules[draft.serviceType]!;
@@ -640,7 +641,7 @@ class ProfileRepository {
     InstanceDraft draft,
     Credential given,
     bool newOrigin,
-    _SecretChanges secrets,
+    SecretChanges secrets,
   ) async {
     // The user must be able to replace a credential that cannot be read. It
     // then counts as none.
@@ -679,44 +680,11 @@ class ProfileRepository {
 
   /// Runs [change] in a transaction. If it fails, the secrets it wrote are put
   /// back, as far as the store allows.
-  Future<T> _changing<T>(
-    Future<T> Function(_SecretChanges secrets) change,
-  ) async {
-    final secrets = _SecretChanges(_secrets, _warn);
-    try {
-      return await _database.transaction(() async {
-        try {
-          return await change(secrets);
-        } catch (_) {
-          // Before the transaction ends, so that no other change reads or
-          // overwrites what is being put back.
-          await secrets.undo();
-          rethrow;
-        }
-      });
-    } catch (_) {
-      // For a failed commit; after the above there is nothing left to undo.
-      await secrets.undo();
-      try {
-        await _addPending(secrets.notErased);
-      } catch (error) {
-        // The failure of the change is what the caller must see.
-        _warn('A credential left behind could not be noted', error);
-      }
-      rethrow;
-    }
-  }
+  Future<T> _changing<T>(Future<T> Function(SecretChanges secrets) change) =>
+      changingSecrets(_database, _secrets, _warn, change);
 
-  Future<void> _addPending(Iterable<String> keys) async {
-    for (final key in keys) {
-      await _database
-          .into(_database.pendingSecretDeletions)
-          .insert(
-            PendingSecretDeletionsCompanion.insert(secretKey: key),
-            mode: InsertMode.insertOrIgnore,
-          );
-    }
-  }
+  Future<void> _addPending(Iterable<String> keys) =>
+      addPendingSecretDeletions(_database, keys);
 
   /// Erases the secrets of pending deletions. One that fails stays pending and
   /// does not stop the others.
@@ -888,48 +856,5 @@ class ProfileRepository {
 
   static void _require(bool exists, String id) {
     if (!exists) throw ArgumentError.value(id, 'id', 'does not exist');
-  }
-}
-
-/// The secret writes of one change, so that they can be taken back.
-final class _SecretChanges {
-  _SecretChanges(this._secrets, this._warn);
-
-  final SecretStore _secrets;
-  final void Function(String message, Object error) _warn;
-  final _previous = <String, String?>{};
-
-  /// Keys that [undo] should have erased and could not.
-  final notErased = <String>[];
-
-  /// Writes [value]. [previous] is what [key] holds now, null for nothing; if
-  /// that is unknown, pass `restorable: false`.
-  Future<void> write(
-    String key,
-    String value, {
-    required String? previous,
-    bool restorable = true,
-  }) {
-    // Before the write: a failed one may have removed the previous value.
-    if (restorable) _previous[key] = previous;
-    return _secrets.write(key, value);
-  }
-
-  /// Puts back what was written. Does so once: another call does nothing.
-  Future<void> undo() async {
-    final writes = Map.of(_previous);
-    _previous.clear();
-    for (final MapEntry(:key, value: previous) in writes.entries) {
-      try {
-        if (previous == null) {
-          await _secrets.delete(key);
-        } else {
-          await _secrets.write(key, previous);
-        }
-      } catch (error) {
-        if (previous == null) notErased.add(key);
-        _warn('A credential could not be put back', error);
-      }
-    }
   }
 }

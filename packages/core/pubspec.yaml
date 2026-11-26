@@ -9,6 +9,8 @@ environment:
 dependencies:
   # The SHA-256 of a pinned certificate (research R4). BSD-3-Clause.
   crypto: ^3.0.7
+  # Argon2id and AES-GCM of setup exports (research R14). Apache-2.0.
+  cryptography: ^2.9.0
   # The HTTP client of each instance (research R4). MIT.
   dio: ^5.11.1
   # The database of instances, preferences and the cache. MIT.
@@ -25,9 +27,6 @@ dependencies:
 dev_dependencies:
   # Runs drift_dev. BSD-3-Clause.
   build_runner: ^2.17.1
-  # Argon2id and AES-GCM, to build and open backup files in tests (research
-  # R14). T153 needs it as a dependency. Apache-2.0.
-  cryptography: ^2.9.0
   # Generates the database code and the schema test helpers. MIT.
   drift_dev: ^2.35.3
   flutter_test:

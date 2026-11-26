@@ -26,6 +26,10 @@ enum BackupProblem {
   /// A record breaks the schema or a rule of manual entry.
   invalidContent,
 
+  /// Something saved cannot be read, so an export or import would lose it or
+  /// guess at it.
+  unreadableRecord,
+
   /// What is saved changed after the preview, which no longer holds.
   outdatedPreview,
 }

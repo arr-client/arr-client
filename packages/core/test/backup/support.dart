@@ -1,14 +1,10 @@
 /// Devices to export from and import into, and setup files written by hand.
 ///
 /// The files are built and opened with `package:cryptography` directly, so
-/// that the app's code is not its own judge. Choices the contract does not
-/// make, which these tests make for it:
-///
-/// - the associated data is the UTF-8 text `arr-client-setup:1`;
-/// - base64 is the standard alphabet with padding;
-/// - the passphrase is its UTF-8 bytes, and the key is 32 bytes;
-/// - `golden_v1.arrclient.json` was written with argon2-cffi and Python's
-///   cryptography, not with the packages used here.
+/// that the app's code is not its own judge, with the choices that
+/// contracts/backup-format.md states. `golden_v1.arrclient.json` was written
+/// by `golden_v1.py`, with argon2-cffi and Python's cryptography, not with the
+/// packages used here.
 library;
 
 import 'dart:convert';
