@@ -66,6 +66,55 @@ void main() {
     );
   });
 
+  // The state cannot be told without the queue, so the read fails and the
+  // cache keeps what it had.
+  group('when only the queue cannot be read', () {
+    const failure = ServerError(statusCode: 500);
+
+    Future<Harness> broken([
+      ServiceFailure cause = failure,
+      int status = 500,
+    ]) async {
+      final harness = _queued();
+      await succeed(harness.library.list());
+      harness.server
+        ..queue = []
+        ..answers['api/v3/queue'] = failedAnswer(cause, status: status);
+      return harness;
+    }
+
+    test('a list fails and the cache is left alone', () async {
+      final harness = await broken();
+
+      expect(await failureOf(harness.library.list()), same(failure));
+      expect(harness.cache.entries, hasLength(7));
+      expect(
+        harness.cache.entries[(MediaKind.movie, 3)]!.state,
+        ItemState.downloading,
+      );
+    });
+
+    test('one movie fails and the cache is left alone', () async {
+      final harness = await broken();
+
+      expect(await failureOf(harness.library.item(movieRef(3))), same(failure));
+      expect(
+        harness.cache.entries[(MediaKind.movie, 3)]!.state,
+        ItemState.downloading,
+      );
+    });
+
+    test('a queue that is not found does not say the movie is gone', () async {
+      final harness = await broken(const NotFound(), 404);
+
+      expect(
+        await failureOf(harness.library.item(movieRef(3))),
+        isA<ServerError>(),
+      );
+      expect(harness.cache.entries, contains((MediaKind.movie, 3)));
+    });
+  });
+
   test('follows the queue on the next read', () async {
     final harness = _queued();
     await succeed(harness.library.list());

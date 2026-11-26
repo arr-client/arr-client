@@ -40,6 +40,19 @@ void main() {
     expect(page.items.map((e) => e.id), [10, 9]);
   });
 
+  test('has nothing after its one page, and asks no server', () async {
+    final harness = Harness();
+
+    final page = await succeed(
+      harness.history.history(target: MediaTarget(movieRef(1)), page: 2),
+    );
+
+    expect(page.page, 2);
+    expect(page.items, isEmpty);
+    expect(page.hasMore, isFalse);
+    expect(harness.server.requests, isEmpty);
+  });
+
   test('maps the events of a movie', () async {
     final wire = records(fixture('history_movie_1'));
 

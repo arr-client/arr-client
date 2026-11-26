@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:radarr/radarr_module.dart';
 
 import '../allow_list.dart';
 import 'library_support.dart';
@@ -43,6 +44,30 @@ void main() {
     expect(library.itemKind, MediaKind.movie);
     // The contract: monitoring of a movie is a toggle only.
     expect(library.monitorOptions, isEmpty);
+  });
+
+  test('offers the capabilities it has, and no request', () {
+    final harness = Harness();
+    final module = RadarrModule();
+
+    final offered = module.capabilitiesFor(
+      const ProbeResult(
+        product: 'Radarr',
+        version: '7.0.3.10918',
+        newerThanTested: false,
+      ),
+      null,
+    );
+
+    expect(offered, {CapabilityKind.library, CapabilityKind.history});
+    for (final kind in CapabilityKind.values) {
+      expect(
+        kind.of(module, harness.context),
+        offered.contains(kind) ? isNotNull : isNull,
+        reason: kind.name,
+      );
+    }
+    expect(harness.server.requests, isEmpty);
   });
 
   group('list', () {

@@ -12,6 +12,9 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
+  # The reads the Servarr family has in common: queue, history and options.
+  servarr:
+    path: ../../servarr
 
 dev_dependencies:
   flutter_test:
