@@ -3,7 +3,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../../src/l10n/generated/app_localizations.dart';
-import 'server_text.dart';
 
 /// Which episode of its series [episode] is.
 String historyEpisodeLabel(AppLocalizations strings, Episode episode) =>

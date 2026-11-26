@@ -10,7 +10,6 @@ import 'activity_feed.dart';
 import 'blocklist_removal.dart';
 import 'feed_list.dart';
 import 'server_changes.dart';
-import 'server_text.dart';
 
 /// The blocked releases of every instance that has a blocklist, newest first,
 /// each with why it was blocked, and their removal.

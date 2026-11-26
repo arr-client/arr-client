@@ -13,6 +13,7 @@ import 'package:core/core.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:prowlarr/prowlarr_module.dart';
 import 'package:radarr/radarr_module.dart';
 import 'package:sonarr/sonarr_module.dart';
 
@@ -35,11 +36,12 @@ Future<HttpServer> serveStatus() async {
 }
 
 void main() {
-  test('the app is built with Radarr, Sonarr and qBittorrent', () {
+  test('the app is built with Radarr, Sonarr, qBittorrent and Prowlarr', () {
     expect(serviceModules().map((module) => module.id), [
       'radarr',
       'sonarr',
       'qbittorrent',
+      'prowlarr',
     ]);
   });
 
@@ -55,6 +57,7 @@ void main() {
     // Labels and hints that a module supplies throw without its delegate.
     expect(RadarrLocalizations.of(context).monitorNone, isNotEmpty);
     expect(SonarrLocalizations.of(context).monitorAll, isNotEmpty);
+    expect(ProwlarrLocalizations.of(context).searchTab, isNotEmpty);
     for (final module in serviceModules()) {
       for (final note in module.descriptor.authNotes) {
         expect(note.text(context), isNotEmpty);

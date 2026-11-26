@@ -160,7 +160,7 @@ class _FakeNavigator extends Fake implements AppNavigator {}
 /// The module's capabilities for one instance of [server], behind the Prowlarr
 /// allow-list. Create it inside the test.
 class Harness {
-  Harness() {
+  Harness({FakeProwlarr? server}) : server = server ?? FakeProwlarr() {
     context = InstanceContext(
       instance: Instance(
         id: instanceId,
@@ -172,7 +172,7 @@ class Harness {
         createdAt: DateTime.utc(2026),
         updatedAt: DateTime.utc(2026),
       ),
-      http: AllowListClient(allowList, server),
+      http: AllowListClient(allowList, this.server),
       artwork: _FakeArtwork(),
       navigator: _FakeNavigator(),
       cache: cache,
@@ -180,7 +180,7 @@ class Harness {
     );
   }
 
-  final server = FakeProwlarr();
+  final FakeProwlarr server;
   final cache = UnusedCache();
   final logger = RecordingLogger();
   late final InstanceContext context;

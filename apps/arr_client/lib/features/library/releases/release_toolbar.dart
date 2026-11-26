@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:ui/ui.dart';
 
 import '../../../src/l10n/generated/app_localizations.dart';
 import 'release_view.dart';
@@ -51,7 +52,20 @@ class ReleaseToolbar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        _SortButton(view: view, onChanged: onChanged),
+        ReleaseSortButton(
+          choices: const [
+            ReleaseSort.server,
+            ReleaseSort.score,
+            ReleaseSort.seeders,
+            ReleaseSort.size,
+            ReleaseSort.age,
+            ReleaseSort.title,
+          ],
+          sort: view.sort,
+          ascending: view.ascending,
+          onChanged: (sort, ascending) =>
+              onChanged(view.copyWith(sort: sort, ascending: ascending)),
+        ),
         IconButton(
           tooltip: filters == 0
               ? strings.libraryFilters
@@ -63,58 +77,6 @@ class ReleaseToolbar extends StatelessWidget {
             child: const Icon(Icons.filter_list),
           ),
         ),
-      ],
-    );
-  }
-}
-
-/// A menu of the fields and the two directions.
-class _SortButton extends StatelessWidget {
-  const _SortButton({required this.view, required this.onChanged});
-
-  final ReleaseView view;
-  final ValueChanged<ReleaseView> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final strings = AppLocalizations.of(context);
-    return PopupMenuButton<ReleaseView>(
-      tooltip: strings.librarySort,
-      icon: const Icon(Icons.sort),
-      onSelected: onChanged,
-      itemBuilder: (context) => [
-        for (final sort in ReleaseSort.values)
-          CheckedPopupMenuItem(
-            value: view.copyWith(
-              sort: sort,
-              ascending: sort == view.sort
-                  ? view.ascending
-                  : sort.ascendingFirst,
-            ),
-            checked: sort == view.sort,
-            child: Text(switch (sort) {
-              ReleaseSort.server => strings.releasesSortServer,
-              ReleaseSort.score => strings.releasesSortScore,
-              ReleaseSort.seeders => strings.releasesSortSeeders,
-              ReleaseSort.size => strings.releasesSortSize,
-              ReleaseSort.age => strings.releasesSortAge,
-              ReleaseSort.title => strings.librarySortTitle,
-            }),
-          ),
-        // The server's ranking has one direction.
-        if (view.sort != ReleaseSort.server) ...[
-          const PopupMenuDivider(),
-          for (final ascending in const [true, false])
-            CheckedPopupMenuItem(
-              value: view.copyWith(ascending: ascending),
-              checked: view.ascending == ascending,
-              child: Text(
-                ascending
-                    ? strings.librarySortAscending
-                    : strings.librarySortDescending,
-              ),
-            ),
-        ],
       ],
     );
   }

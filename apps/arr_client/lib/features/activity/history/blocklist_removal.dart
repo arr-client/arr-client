@@ -6,7 +6,6 @@ import 'package:ui/ui.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
 import 'activity_feed.dart';
 import 'server_changes.dart';
-import 'server_text.dart';
 
 /// An entry of an instance's blocklist.
 typedef BlocklistKey = ({String instanceId, int id});

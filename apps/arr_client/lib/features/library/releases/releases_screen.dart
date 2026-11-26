@@ -10,7 +10,6 @@ import 'grab_release.dart';
 import 'release_filter_sheet.dart';
 import 'release_grabs.dart';
 import 'release_search_controller.dart';
-import 'release_tile.dart';
 import 'release_toolbar.dart';
 import 'release_view.dart';
 
@@ -78,7 +77,7 @@ class _ReleasesScreenState extends ConsumerState<ReleasesScreen> {
 
     final Widget body;
     if (releases == null && (search.searching || failure == null)) {
-      body = const _Searching();
+      body = ProgressMessage(message: strings.releasesSearching);
     } else {
       final ViewState<List<Release>> view;
       if (releases != null && fetchedAt != null) {
@@ -190,10 +189,11 @@ class _ReleasesScreenState extends ConsumerState<ReleasesScreen> {
                       const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final release = shown[index];
-                    return ReleaseTile(
+                    return ReleaseRow(
                       key: ObjectKey(release),
                       release: release,
                       mark: marks[grabKey(id, release)],
+                      unknownNote: strings.releaseGrabUnknown,
                       onGrab: canGrab
                           // The screen's context, which outlives the row.
                           ? () => unawaited(
@@ -212,38 +212,6 @@ class _ReleasesScreenState extends ConsumerState<ReleasesScreen> {
           ],
         );
       },
-    );
-  }
-}
-
-/// The wait for the indexers, which can be long. The screen can be left.
-class _Searching extends StatelessWidget {
-  const _Searching();
-
-  @override
-  Widget build(BuildContext context) {
-    final strings = AppLocalizations.of(context);
-    return LayoutBuilder(
-      builder: (context, constraints) => Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(screenMargin(constraints.maxWidth)),
-          child: Column(
-            children: [
-              CircularProgressIndicator(
-                semanticsLabel: UiLocalizations.of(context).loading,
-              ),
-              const SizedBox(height: 16),
-              Semantics(
-                liveRegion: true,
-                child: Text(
-                  strings.releasesSearching,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

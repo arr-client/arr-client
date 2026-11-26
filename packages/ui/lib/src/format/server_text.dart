@@ -2,7 +2,7 @@
 library;
 
 // Line breaks and tabs, which only separate words here.
-final _breaks = RegExp(r'[\t\n\v\f\r\u0085\u2028\u2029]+');
+final _breaks = RegExp(r'[\t\n\v\f\r\u0085  ]+');
 
 // Control, direction and other characters that could disguise what is said.
 final _unprintable = RegExp(r'\p{C}', unicode: true);

@@ -2,42 +2,12 @@
 library;
 
 import 'package:core/core.dart';
-
-import '../../activity/history/server_text.dart';
+import 'package:ui/ui.dart';
 
 /// Whether the user confirms before [release] is grabbed: the server would not
 /// grab it by itself, or could not match it.
 bool needsConfirmation(Release release) =>
     release.rejections.isNotEmpty || !release.downloadAllowed;
-
-/// What releases can be ordered by.
-enum ReleaseSort {
-  /// As the server ranked them.
-  server(ascendingFirst: true),
-  score(ascendingFirst: false),
-  seeders(ascendingFirst: false),
-  size(ascendingFirst: false),
-
-  /// Ascending is newest first.
-  age(ascendingFirst: true),
-  title(ascendingFirst: true);
-
-  const ReleaseSort({required this.ascendingFirst});
-
-  /// The direction chosen with the field.
-  final bool ascendingFirst;
-}
-
-/// The names a release can be filtered by, as they are shown.
-String? indexerName(Release release) => serverText(release.indexer);
-
-/// The name of the quality, if it has one.
-String? qualityName(Release release) => serverText(release.quality?.name);
-
-/// The names of the languages.
-List<String> languageNames(Release release) => [
-  for (final language in release.languages) ?serverText(language.name),
-];
 
 /// How the releases are ordered and which are shown. A set that is empty
 /// filters nothing.
@@ -107,41 +77,17 @@ final class ReleaseView {
       for (final release in releases)
         if (_matches(release, wanted)) release,
     ];
-    if (sort == ReleaseSort.server) return shown;
-    final sign = ascending ? 1 : -1;
-    // `List.sort` is not stable, so the place as given breaks ties.
-    final places = List.generate(shown.length, (place) => place)
-      ..sort((a, b) {
-        final left = _value(shown[a]);
-        final right = _value(shown[b]);
-        final order = switch ((left, right)) {
-          (null, null) => 0,
-          (null, _) => 1,
-          (_, null) => -1,
-          (final left?, final right?) => sign * Comparable.compare(left, right),
-        };
-        return order != 0 ? order : a.compareTo(b);
-      });
-    return [for (final place in places) shown[place]];
+    return sortReleases(shown, sort, ascending: ascending);
   }
 
   bool _matches(Release release, String wanted) =>
       (wanted.isEmpty ||
           (serverText(release.title) ?? '').toLowerCase().contains(wanted) ||
-          (indexerName(release) ?? '').toLowerCase().contains(wanted)) &&
+          (releaseIndexerName(release) ?? '').toLowerCase().contains(wanted)) &&
       (protocols.isEmpty || protocols.contains(release.protocol)) &&
-      (indexers.isEmpty || indexers.contains(indexerName(release))) &&
-      (qualities.isEmpty || qualities.contains(qualityName(release))) &&
-      (languages.isEmpty || languageNames(release).any(languages.contains)) &&
+      (indexers.isEmpty || indexers.contains(releaseIndexerName(release))) &&
+      (qualities.isEmpty || qualities.contains(releaseQualityName(release))) &&
+      (languages.isEmpty ||
+          releaseLanguageNames(release).any(languages.contains)) &&
       !(hideRejected && needsConfirmation(release));
-
-  Comparable<Object>? _value(Release release) => switch (sort) {
-    ReleaseSort.server => null,
-    ReleaseSort.score => release.score,
-    ReleaseSort.seeders => release.seeders,
-    // A size the server does not give is read as 0.
-    ReleaseSort.size => release.size > 0 ? release.size : null,
-    ReleaseSort.age => release.ageHours,
-    ReleaseSort.title => serverText(release.title)?.toLowerCase(),
-  };
 }

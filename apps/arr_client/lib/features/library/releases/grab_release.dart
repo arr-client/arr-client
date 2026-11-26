@@ -8,9 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../../src/l10n/generated/app_localizations.dart';
-import '../../activity/history/server_text.dart';
 import 'release_grabs.dart';
-import 'release_tile.dart';
 import 'release_view.dart';
 
 /// Has [instance] download [release], once the user has confirmed it where the
@@ -29,7 +27,7 @@ Future<void> grabRelease(
   // Taken now: an edit of the instance takes the screen from under the dialog.
   final messenger = ScaffoldMessenger.of(context);
   final name = instance.instance.name;
-  final title = releaseTitle(strings, release);
+  final title = releaseTitle(context, release);
   final mark = ref.read(
     releaseGrabsProvider,
   )[grabKey(instance.instance.id, release)];
@@ -37,7 +35,7 @@ Future<void> grabRelease(
   final unknownBefore = mark == GrabMark.unknown;
 
   if (unknownBefore || needsConfirmation(release)) {
-    final reasons = rejectionReasons(strings, release);
+    final reasons = releaseRejections(context, release);
     final confirmed = await showConfirmDialog(
       context,
       title: reasons.isNotEmpty

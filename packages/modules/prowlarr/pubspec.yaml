@@ -12,10 +12,26 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
-  # The health read the Servarr family has in common.
+  # Translations of the Flutter widgets; imported by the generated localizations.
+  flutter_localizations:
+    sdk: flutter
+  # Screen state (docs/standards/patterns.md). MIT.
+  flutter_riverpod: ^3.5.0
+  # Imported by the generated localizations.
+  intl: ^0.20.2
+  # Material widgets. package:flutter/material.dart is deprecated.
+  material_ui: ^1.11.1
+  # The health read, search and grab the Servarr family has in common.
   servarr:
     path: ../../servarr
+  # Shared widgets of the screens.
+  ui:
+    path: ../../ui
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter:
+  # `flutter pub get` runs gen-l10n with l10n.yaml.
+  generate: true
