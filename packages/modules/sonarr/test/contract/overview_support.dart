@@ -44,6 +44,14 @@ class FakeOverview extends FakeSonarr {
   final healthIssues = records('overview_health');
   final disks = records('overview_diskspace');
 
+  /// Puts a download of the episode [id] in the queue, which otherwise holds
+  /// none of the overview's episodes.
+  void enqueue(int id) => queue.add({...queue.last, 'id': id, 'episodeId': id});
+
+  /// Fails every read of [path], below `api/v3/`.
+  void breaks(String path, {int status = 500}) =>
+      overrides[path] = FakeSonarr.body('{}', status: status);
+
   /// The requests for [path], below `api/v3/`.
   List<ServiceRequest> asked(String path) => [
     for (final request in requests)

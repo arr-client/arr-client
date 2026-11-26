@@ -141,6 +141,16 @@ void main() {
         expect(listed.single.itemRef, episodeRef(81));
       });
 
+      // An import has no state, so a queue that fails must not hide it.
+      test('does not depend on the queue', () async {
+        final server = FakeOverview()..breaks('queue');
+
+        final listed = await imports(server);
+
+        expect(listed, hasLength(_episodes.length));
+        expect(server.asked('queue'), isEmpty);
+      });
+
       test('passes a failure on, asking once', () async {
         final server = FakeOverview()..goOffline();
 

@@ -49,9 +49,14 @@ void main() {
 
     await _events(server);
 
-    final request = server.requests.single;
+    final request = server.asked('calendar').single;
     expect(request.method, HttpMethod.get);
-    expect(request.path, 'api/v3/calendar');
+    // Besides it, only the queue is needed, for the state.
+    expect(server.requests.map((r) => r.path).toSet(), {
+      'api/v3/calendar',
+      'api/v3/queue',
+    });
+    expect(server.writes, isEmpty);
     expect(request.query['includeSeries'], ['true']);
     expect(request.query['start']!.single, endsWith('Z'));
     expect(request.query['end']!.single, endsWith('Z'));
@@ -217,6 +222,45 @@ void main() {
       expect(events.single.state, state);
     });
   }
+
+  for (final hasFile in [true, false]) {
+    final name = hasFile ? 'with' : 'without';
+    test('a queued episode $name a file is downloading', () async {
+      final server = _serving([
+        _episode({'hasFile': hasFile}),
+        _episode({'hasFile': hasFile}, id: 81),
+      ])..enqueue(82);
+
+      final events = await _events(server);
+
+      expect(events.map((event) => (event.itemRef, event.state)), [
+        (episodeRef(82), ItemState.downloading),
+        (episodeRef(81), hasFile ? ItemState.downloaded : ItemState.missing),
+      ]);
+    });
+  }
+
+  // As for the library: a queued episode would otherwise show as missing.
+  for (final path in ['queue', 'calendar']) {
+    test('fails when the $path cannot be read', () async {
+      final server = FakeOverview()..breaks(path);
+
+      expect(
+        await failureOf(Harness(server: server).calendar.events(_from, _to)),
+        isA<ServerError>(),
+      );
+      expect(server.asked(path), hasLength(1));
+    });
+  }
+
+  test('a queue that is not found is a server error', () async {
+    final server = FakeOverview()..breaks('queue', status: 404);
+
+    expect(
+      await failureOf(Harness(server: server).calendar.events(_from, _to)),
+      isA<ServerError>(),
+    );
+  });
 
   for (final field in ['id', 'seasonNumber', 'episodeNumber']) {
     test('cannot understand an episode without $field', () async {

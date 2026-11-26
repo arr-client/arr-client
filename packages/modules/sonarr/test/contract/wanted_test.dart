@@ -51,12 +51,68 @@ void main() {
 
         await read(server);
 
-        final request = server.requests.single;
+        final request = server.asked(list.path).single;
         expect(request.method, HttpMethod.get);
-        expect(request.path, 'api/v3/${list.path}');
         expect(request.query['includeSeries'], ['true']);
         expect(request.query['monitored'], ['true']);
         expect(request.query['page'], ['1']);
+        // Latest aired first, as in Sonarr's web UI and the recordings.
+        expect(request.query['sortKey'], ['episodes.airDateUtc']);
+        expect(request.query['sortDirection'], ['descending']);
+        // Only a list of episodes with files has files to ask for.
+        expect(
+          request.query['includeEpisodeFile'],
+          list.state == ItemState.downloaded ? ['true'] : null,
+        );
+        // Besides it, only the queue is needed, for the state.
+        expect(server.requests.map((r) => r.path).toSet(), {
+          'api/v3/${list.path}',
+          'api/v3/queue',
+        });
+        expect(server.writes, isEmpty);
+      });
+
+      test('marks a queued episode as downloading', () async {
+        final server = FakeOverview()..enqueue(list.ids.first);
+
+        final page = await read(server);
+
+        expect(page.items.first.state, ItemState.downloading);
+        expect(page.items.last.state, list.state);
+      });
+
+      // As for the library: a queued episode would otherwise show as missing.
+      for (final path in ['queue', list.path]) {
+        test('fails when $path cannot be read', () async {
+          final server = FakeOverview()..breaks(path);
+
+          expect(
+            await failureOf(list.read(Harness(server: server).wanted, 1)),
+            isA<ServerError>(),
+          );
+          expect(server.asked(path), hasLength(1));
+        });
+      }
+
+      test('takes a queue that is not found for a server error', () async {
+        final server = FakeOverview()..breaks('queue', status: 404);
+
+        expect(
+          await failureOf(list.read(Harness(server: server).wanted, 1)),
+          isA<ServerError>(),
+        );
+      });
+
+      // One page is not the library.
+      test('does not write to the cache', () async {
+        final harness = Harness(server: FakeOverview());
+
+        await ok(list.read(harness.wanted, 1));
+
+        expect(
+          await harness.cache.entry(MediaKind.episode, list.ids.first),
+          isNull,
+        );
       });
 
       test("lists episodes in the server's order", () async {
