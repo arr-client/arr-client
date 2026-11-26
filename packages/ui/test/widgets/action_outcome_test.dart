@@ -108,15 +108,69 @@ void main() {
     expect((sent, refreshed, gone), (1, 0, 1));
   });
 
-  testWidgets('the latest outcome replaces an earlier one', (tester) async {
-    await start(tester);
-    await answer(tester, const Err(Forbidden()));
+  Future<void> again(
+    WidgetTester tester,
+    Result<void, ServiceFailure> result,
+  ) async {
     server = Completer();
     await tester.tap(find.text('Search'));
-    await answer(tester, const Ok(null));
+    await answer(tester, result);
+  }
 
+  Future<void> dismiss(WidgetTester tester) async {
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('later outcomes wait behind an unread failure', (tester) async {
+    await start(tester);
+    await answer(tester, const Err(OutcomeUnknown()));
+    await again(tester, const Ok(null));
+    await again(tester, const Err(Forbidden()));
+
+    expect(find.textContaining('may or may not'), findsOneWidget);
+    expect(find.text('Search started'), findsNothing);
+
+    await dismiss(tester);
     expect(find.text('Search started'), findsOneWidget);
-    expect(find.textContaining('does not allow'), findsNothing);
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('does not allow'), findsOneWidget);
+    await dismiss(tester);
+    expect(find.byType(SnackBar), findsNothing);
+  });
+
+  for (final (name, result, text) in [
+    ('success', const Ok<void, ServiceFailure>(null), 'Search started'),
+    ('failure', const Err<void, ServiceFailure>(Forbidden()), 'does not allow'),
+  ]) {
+    testWidgets('a $name takes the place of a success', (tester) async {
+      await start(tester);
+      await answer(tester, const Ok(null));
+      await again(tester, result);
+
+      expect(find.textContaining(text), findsOneWidget);
+      expect(find.byType(SnackBar), findsOneWidget);
+      if (result is Ok) {
+        // Not queued: nothing follows it.
+        await tester.pump(const Duration(seconds: 5));
+        await tester.pumpAndSettle();
+        expect(find.byType(SnackBar), findsNothing);
+      }
+    });
+  }
+
+  testWidgets('a success replaces again once failures are dismissed', (
+    tester,
+  ) async {
+    await start(tester);
+    await answer(tester, const Err(Forbidden()));
+    await dismiss(tester);
+    await again(tester, const Ok(null));
+    await again(tester, const Err(Conflict()));
+
+    expect(find.textContaining('clashes'), findsOneWidget);
+    expect(find.text('Search started'), findsNothing);
   });
 
   testWidgets('reports after the screen has been left', (tester) async {

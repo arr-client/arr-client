@@ -24,9 +24,10 @@ class StateScaffold<T> extends StatelessWidget {
     required this.onRetry,
     this.isEmpty,
     this.emptyMessage,
+    this.itemId,
     this.onGone,
     super.key,
-  });
+  }) : assert(onGone == null || itemId != null);
 
   /// What there is to show.
   final ViewState<T> state;
@@ -45,6 +46,10 @@ class StateScaffold<T> extends StatelessWidget {
   /// The localized text for the empty state; say what is empty.
   final String? emptyMessage;
 
+  /// Which item [state] is about, such as its `ItemRef`, on a screen about one
+  /// item. Compared with `==`. Required with [onGone].
+  final Object? itemId;
+
   /// Called once when the item turns out to be gone, so that the caller can
   /// remove it from its list and cache.
   final VoidCallback? onGone;
@@ -60,7 +65,7 @@ class StateScaffold<T> extends StatelessWidget {
       ViewError(failure: NotFound()) ||
       ViewData(
         staleness: Staleness(failure: NotFound()),
-      ) => ItemGoneView(onGone: onGone),
+      ) => ItemGoneView(itemId: itemId, onGone: onGone),
       ViewError(:final failure) => StateMessage(
         icon: Icons.error_outline,
         message: failureMessage(context, failure),

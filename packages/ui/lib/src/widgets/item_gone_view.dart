@@ -5,12 +5,19 @@ import 'state_message.dart';
 
 /// Says that the item no longer exists on the server.
 ///
-/// [onGone] is called once, after the first frame, so that the caller can
-/// remove the item from its list and cache. A way back is offered where there
-/// is a route to return to.
+/// [onGone] is called once for each [itemId], after the first frame in which it
+/// is shown, so that the caller can remove the item from its list and cache. A
+/// way back is offered where there is a route to return to.
 class ItemGoneView extends StatefulWidget {
   /// Creates an [ItemGoneView].
-  const ItemGoneView({this.onGone, super.key});
+  /// [itemId] is required with [onGone]. It is the widget's key, so that
+  /// another item in the same place is reported too.
+  ItemGoneView({this.itemId, this.onGone})
+    : assert(onGone == null || itemId != null),
+      super(key: ValueKey<Object?>(itemId));
+
+  /// Which item is gone, such as its `ItemRef`. Compared with `==`.
+  final Object? itemId;
 
   /// Forgets the item.
   final VoidCallback? onGone;

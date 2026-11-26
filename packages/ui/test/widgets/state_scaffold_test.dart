@@ -14,10 +14,12 @@ Widget scaffold(
   ViewState<List<String>> state, {
   VoidCallback? onRetry,
   VoidCallback? onGone,
+  Object itemId = 'alien',
   String? emptyMessage,
 }) => StateScaffold<List<String>>(
   state: state,
   onRetry: onRetry ?? () {},
+  itemId: itemId,
   onGone: onGone,
   isEmpty: (items) => items.isEmpty,
   emptyMessage: emptyMessage,
@@ -208,6 +210,36 @@ void main() {
       expect(forgotten, 1);
     });
   }
+
+  testWidgets('each gone item shown in the same place is reported', (
+    tester,
+  ) async {
+    final forgotten = <int>[];
+    Future<void> show(int id) async {
+      await tester.pumpWidget(
+        testApp(
+          scaffold(
+            const ViewError(NotFound()),
+            // A new but equal object on each build, as an ItemRef may be.
+            itemId: ItemRef(
+              instanceId: 'a',
+              kind: MediaKind.movie,
+              remoteId: id,
+            ),
+            onGone: () => forgotten.add(id),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    await show(1);
+    await show(1);
+    await show(2);
+    await show(2);
+
+    expect(forgotten, [1, 2]);
+  });
 
   testWidgets('a gone item offers the way back', (tester) async {
     await tester.pumpWidget(testApp(const Text('List')));
