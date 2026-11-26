@@ -1,0 +1,11 @@
+name: prowlarr
+description: Prowlarr service module for arr-client.
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter

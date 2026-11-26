@@ -7,6 +7,8 @@ build/
 .idea/
 .vscode/
 coverage/
+*.log
+.fvm/
 # Generated code
 *.g.dart
 *.freezed.dart
@@ -17,6 +19,10 @@ key.properties
 *.jks
 *.keystore
 **/android/.gradle/
+**/android/.kotlin/
+**/.cxx/
+*.apk
+*.aab
 # Secrets and local settings
 .env
 .env.*
