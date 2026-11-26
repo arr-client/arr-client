@@ -250,6 +250,45 @@ final class RadarrHistoryAdapter implements HistoryProvider {
   ServiceResult<void> unblock(List<int> entryIds) => throw UnimplementedError();
 }
 
+/// The download queue. The queue actions and manual import are not implemented
+/// yet.
+final class RadarrQueueAdapter implements QueueProvider {
+  /// Reads through [_api].
+  RadarrQueueAdapter(this._api);
+
+  final RadarrApi _api;
+
+  @override
+  ServiceResult<List<QueueItem>> queue() => _api.queue();
+
+  @override
+  ServiceResult<void> remove(int queueId, RemoveOptions options) =>
+      throw UnimplementedError();
+
+  @override
+  ServiceResult<void> removeMany(List<int> queueIds, RemoveOptions options) =>
+      throw UnimplementedError();
+
+  @override
+  ServiceResult<void> grabNow(int queueId) => throw UnimplementedError();
+
+  @override
+  ServiceResult<List<ManualImportCandidate>> importCandidates(QueueItem item) =>
+      throw UnimplementedError();
+
+  @override
+  ServiceResult<ImportChoices> importChoices() => throw UnimplementedError();
+
+  @override
+  ServiceResult<List<ManualImportCandidate>> reprocess(
+    List<ManualImportCandidate> candidates,
+  ) => throw UnimplementedError();
+
+  @override
+  ServiceResult<Command> importFiles(List<ManualImportCandidate> candidates) =>
+      throw UnimplementedError();
+}
+
 /// What [read] returns, or [MalformedResponse] for a record it cannot
 /// understand.
 Result<T, ServiceFailure> _decode<T>(T Function() read) {

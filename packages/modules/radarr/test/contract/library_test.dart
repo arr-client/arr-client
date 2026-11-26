@@ -59,7 +59,11 @@ void main() {
       null,
     );
 
-    expect(offered, {CapabilityKind.library, CapabilityKind.history});
+    expect(offered, {
+      CapabilityKind.library,
+      CapabilityKind.queue,
+      CapabilityKind.history,
+    });
     for (final kind in CapabilityKind.values) {
       expect(
         kind.of(module, harness.context),

@@ -55,7 +55,11 @@ final class RadarrModule implements ServiceModule {
   Set<CapabilityKind> capabilitiesFor(
     ProbeResult probe,
     SessionInfo? session,
-  ) => const {CapabilityKind.library, CapabilityKind.history};
+  ) => const {
+    CapabilityKind.library,
+    CapabilityKind.queue,
+    CapabilityKind.history,
+  };
 
   @override
   T? capability<T extends Capability>(InstanceContext context) {
@@ -64,6 +68,7 @@ final class RadarrModule implements ServiceModule {
         RadarrApi(context),
         context,
       ),
+      const (QueueProvider) => RadarrQueueAdapter(RadarrApi(context)),
       const (HistoryProvider) => RadarrHistoryAdapter(RadarrApi(context)),
       _ => null,
     };
