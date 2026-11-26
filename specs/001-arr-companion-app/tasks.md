@@ -77,8 +77,8 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T056 [US2] Implement movie detail screen with `subtitles` and `downloadProgress` slots and `detailRoute` in `packages/modules/radarr/lib/src/screens/movie_detail.dart`
 - [x] T057 [US2] Implement series, season and episode screens with `subtitles` and `downloadProgress` slots and `detailRoute` in `packages/modules/sonarr/lib/src/screens/`
 - [x] T058 [US2] Implement item history view in `apps/arr_client/lib/features/activity/history/item_history.dart`
-- [ ] T059 [US2] Wire cached offline reading, age banner, disabled actions and deleted-item handling in `packages/ui/lib/src/widgets/` and `packages/core/lib/src/cache/`
-- [ ] T060 [US2] Implement the cache-clear action in `apps/arr_client/lib/features/settings/storage/`
+- [x] T059 [US2] Wire cached offline reading, age banner, disabled actions and deleted-item handling in `packages/ui/lib/src/widgets/` and `packages/core/lib/src/cache/`
+- [x] T060 [US2] Implement the cache-clear action in `apps/arr_client/lib/features/settings/storage/`
 - [ ] T061 [US2] Add US2 integration tests (including offline cold start, profile switch with saved filters and cache clear) and large-library performance tests in `apps/arr_client/integration_test/browse_test.dart`
 
 ## Phase 5: US3 Search and add (P1)
@@ -100,10 +100,10 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T073 [US4] Bind activity and import mapping in `packages/modules/radarr/lib/src/adapters/activity.dart`
 - [x] T074 [US4] Bind activity and import mapping in `packages/modules/sonarr/lib/src/adapters/activity.dart`
 - [x] T075 [US4] Implement combined queue with visible-only polling, details, remove options, bulk remove and grab now in `apps/arr_client/lib/features/activity/queue/`
-- [ ] T076 [US4] Implement manual import screen with item, quality and language correction in `apps/arr_client/lib/features/activity/manual_import/`
-- [ ] T077 [US4] Implement history, mark-failed and blocklist screens in `apps/arr_client/lib/features/activity/history/`
+- [x] T076 [US4] Implement manual import screen with item, quality and language correction in `apps/arr_client/lib/features/activity/manual_import/`
+- [x] T077 [US4] Implement history, mark-failed and blocklist screens in `apps/arr_client/lib/features/activity/history/`
 - [ ] T078 [US4] Add US4 integration test in `apps/arr_client/integration_test/activity_test.dart`
-- [ ] T079 [US4] Implement minimal settings (theme, diagnostic log view/share, licenses) in `apps/arr_client/lib/features/settings/`
+- [x] T079 [US4] Implement minimal settings (theme, diagnostic log view/share, licenses) in `apps/arr_client/lib/features/settings/`
 - [ ] T080 [US4] Implement the third-party artwork toggle in `apps/arr_client/lib/features/settings/`
 - [ ] T081 [US4] Pre-release gate: a connection check on the release-built APK, secret and traffic audit (SC-006, SC-007) and a TalkBack/200% text pass over US1–US4; record in `docs/release-checks.md`
 - [ ] T082 [US4] Record Radarr and Sonarr results in `docs/verification-matrix.md`
@@ -119,9 +119,9 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T089 [US5] Bind releases, commands, monitor, edit, bulk edit, delete and file delete in `packages/modules/radarr/lib/src/adapters/manage.dart`
 - [x] T090 [US5] Bind the same plus season/episode monitoring and monitoring option in `packages/modules/sonarr/lib/src/adapters/manage.dart`
 - [x] T091 [US5] Implement interactive search with sort, filter and rejected-grab confirmation in `apps/arr_client/lib/features/library/releases/`
-- [ ] T092 [US5] Implement edit sheet, multi-select actions, delete dialog and command progress in `apps/arr_client/lib/features/library/manage/`
+- [x] T092 [US5] Implement edit sheet, multi-select actions, delete dialog and command progress in `apps/arr_client/lib/features/library/manage/`
 - [x] T093 [US5] Add monitor toggles (revert on rejection), automatic search, refresh, rescan, interactive-search entry, edit and delete-item entry points (`openEdit`, `openDelete`) and file delete with confirmation to movie screens in `packages/modules/radarr/lib/src/screens/`
-- [ ] T094 [US5] Add the same, including edit and delete-item entry points, at series, season and episode level in `packages/modules/sonarr/lib/src/screens/`
+- [x] T094 [US5] Add the same, including edit and delete-item entry points, at series, season and episode level in `packages/modules/sonarr/lib/src/screens/`
 - [ ] T095 [US5] Add US5 integration test in `apps/arr_client/integration_test/manage_test.dart`
 
 ## Phase 8: US6 Home, calendar, wanted (P2)
@@ -134,7 +134,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T101 [US6] Bind overview providers in `packages/modules/sonarr/lib/src/adapters/overview.dart`
 - [ ] T102 [US6] Extend Home with independent per-instance upcoming, downloaded today, recently added, active downloads (library queue), health and disk sections in `apps/arr_client/lib/features/home/`
 - [x] T103 [US6] Implement agenda and month calendar with filters, device time zone and the downloaded-today view with earlier days in `apps/arr_client/lib/features/calendar/`
-- [ ] T104 [US6] Implement wanted lists with single, selected and all search in `apps/arr_client/lib/features/wanted/`
+- [x] T104 [US6] Implement wanted lists with single, selected and all search in `apps/arr_client/lib/features/wanted/`
 - [ ] T105 [US6] Add US6 integration test, asserting every Home section and including one unreachable instance, in `apps/arr_client/integration_test/overview_test.dart`
 
 ## Phase 9: US7 Real download progress (P2)
