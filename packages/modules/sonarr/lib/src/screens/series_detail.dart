@@ -204,7 +204,7 @@ class _Header extends StatelessWidget {
         ),
         if (facts.isNotEmpty) Text(facts.join(strings.separator)),
         const SizedBox(height: 8),
-        StateLine(series.state),
+        ItemStateLine(series.state),
         const SizedBox(height: 4),
         MonitoredLine(monitored: series.monitored),
         if (series.sizeOnDisk > 0) ...[

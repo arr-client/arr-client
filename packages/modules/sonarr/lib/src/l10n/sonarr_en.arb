@@ -138,38 +138,6 @@
       }
     }
   },
-  "monitored": "Monitored",
-  "@monitored": {
-    "description": "The server watches for this item."
-  },
-  "notMonitored": "Not monitored",
-  "@notMonitored": {
-    "description": "The server does not watch for this item."
-  },
-  "stateDownloading": "Downloading",
-  "@stateDownloading": {
-    "description": "State of an item."
-  },
-  "stateDownloaded": "Downloaded",
-  "@stateDownloaded": {
-    "description": "State of an item."
-  },
-  "statePartial": "Partly downloaded",
-  "@statePartial": {
-    "description": "State of an item."
-  },
-  "stateUnmonitored": "Unmonitored",
-  "@stateUnmonitored": {
-    "description": "State of an item."
-  },
-  "stateUnreleased": "Unreleased",
-  "@stateUnreleased": {
-    "description": "State of an item."
-  },
-  "stateMissing": "Missing",
-  "@stateMissing": {
-    "description": "State of an item."
-  },
   "statusContinuing": "Continuing",
   "@statusContinuing": {
     "description": "A series that is still running."

@@ -187,5 +187,21 @@
   "durationMinutes": "{minutes} min",
   "@durationMinutes": {"description": "A length of time of a minute or more.", "placeholders": {"minutes": {"type": "int", "format": "decimalPattern"}}},
   "durationUnderAMinute": "under 1 min",
-  "@durationUnderAMinute": {"description": "A length of time below a minute."}
+  "@durationUnderAMinute": {"description": "A length of time below a minute."},
+  "stateDownloading": "Downloading",
+  "@stateDownloading": {"description": "State of a movie, series or episode."},
+  "stateDownloaded": "Downloaded",
+  "@stateDownloaded": {"description": "State of a movie, series or episode."},
+  "statePartial": "Partly downloaded",
+  "@statePartial": {"description": "State of an item with some of its files."},
+  "stateUnmonitored": "Unmonitored",
+  "@stateUnmonitored": {"description": "State of a movie, series or episode."},
+  "stateUnreleased": "Unreleased",
+  "@stateUnreleased": {"description": "State of a movie, series or episode."},
+  "stateMissing": "Missing",
+  "@stateMissing": {"description": "State of a movie, series or episode."},
+  "monitored": "Monitored",
+  "@monitored": {"description": "The server watches for this item."},
+  "notMonitored": "Not monitored",
+  "@notMonitored": {"description": "The server does not watch for this item."}
 }

@@ -11,5 +11,244 @@
   "monitorNone": "None",
   "@monitorNone": {
     "description": "Monitoring option when adding a movie: monitor nothing."
+  },
+  "movieDetailTitle": "Movie",
+  "@movieDetailTitle": {
+    "description": "Title bar of the screen about one movie."
+  },
+  "movieOnInstance": "On {instance}",
+  "@movieOnInstance": {
+    "description": "Which server holds the movie; instance is the name the user gave it.",
+    "placeholders": {
+      "instance": {
+        "type": "String"
+      }
+    }
+  },
+  "movieGenres": "Genres",
+  "@movieGenres": {
+    "description": "Label."
+  },
+  "movieStudio": "Studio",
+  "@movieStudio": {
+    "description": "Label."
+  },
+  "movieInCinemas": "In cinemas",
+  "@movieInCinemas": {
+    "description": "Label of a release date."
+  },
+  "movieDigitalRelease": "Digital release",
+  "@movieDigitalRelease": {
+    "description": "Label of a release date."
+  },
+  "moviePhysicalRelease": "Physical release",
+  "@moviePhysicalRelease": {
+    "description": "Label of a release date."
+  },
+  "movieQualityProfile": "Quality profile",
+  "@movieQualityProfile": {
+    "description": "Label."
+  },
+  "moviePath": "Path",
+  "@moviePath": {
+    "description": "Label of where the server stores the movie or file."
+  },
+  "movieFileHeading": "File",
+  "@movieFileHeading": {
+    "description": "Heading of the part about the movie file."
+  },
+  "movieNoFile": "No file",
+  "@movieNoFile": {
+    "description": "The movie has no file."
+  },
+  "movieFileQuality": "Quality",
+  "@movieFileQuality": {
+    "description": "Label."
+  },
+  "movieFileSize": "Size",
+  "@movieFileSize": {
+    "description": "Label."
+  },
+  "movieFileLanguages": "Languages",
+  "@movieFileLanguages": {
+    "description": "Label of the audio languages."
+  },
+  "movieFileVideo": "Video",
+  "@movieFileVideo": {
+    "description": "Label of the video codec and format."
+  },
+  "movieFileAudio": "Audio",
+  "@movieFileAudio": {
+    "description": "Label of the audio codec and format."
+  },
+  "movieCast": "Cast",
+  "@movieCast": {
+    "description": "Heading."
+  },
+  "movieCrew": "Crew",
+  "@movieCrew": {
+    "description": "Heading."
+  },
+  "movieAsCharacter": "as {character}",
+  "@movieAsCharacter": {
+    "description": "The part a person played.",
+    "placeholders": {
+      "character": {
+        "type": "String"
+      }
+    }
+  },
+  "movieShowAllCast": "Show all cast ({count})",
+  "@movieShowAllCast": {
+    "description": "Button that shows the rest of the cast.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieShowAllCrew": "Show all crew ({count})",
+  "@movieShowAllCrew": {
+    "description": "Button that shows the rest of the crew.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieHistory": "History",
+  "@movieHistory": {
+    "description": "Heading."
+  },
+  "movieNoHistory": "No history",
+  "@movieNoHistory": {
+    "description": "The server has no history of the movie."
+  },
+  "movieShowAllHistory": "Show all history",
+  "@movieShowAllHistory": {
+    "description": "Button that opens the whole history of a movie."
+  },
+  "movieDateAndTime": "{date}, {time}",
+  "@movieDateAndTime": {
+    "description": "When an event happened; both parts are already formatted.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "movieEventGrabbed": "Grabbed",
+  "@movieEventGrabbed": {
+    "description": "History event: a release was sent to a download client."
+  },
+  "movieEventImported": "Imported",
+  "@movieEventImported": {
+    "description": "History event: files were imported."
+  },
+  "movieEventFailed": "Download failed",
+  "@movieEventFailed": {
+    "description": "History event."
+  },
+  "movieEventRenamed": "File renamed",
+  "@movieEventRenamed": {
+    "description": "History event: files were renamed."
+  },
+  "movieEventDeleted": "File deleted",
+  "@movieEventDeleted": {
+    "description": "History event."
+  },
+  "movieEventOther": "Other event",
+  "@movieEventOther": {
+    "description": "History event of a kind the app does not know."
+  },
+  "movieNotSaved": "Not saved for offline viewing",
+  "@movieNotSaved": {
+    "description": "A part of the screen that is only shown while the server answers."
+  },
+  "movieRefresh": "Refresh",
+  "@movieRefresh": {
+    "description": "Button that reads the screen from the server again."
+  },
+  "movieDetails": "Details",
+  "@movieDetails": {
+    "description": "Heading of the facts about a movie."
+  },
+  "movieRating": "Rating",
+  "@movieRating": {
+    "description": "Label."
+  },
+  "movieRatingFrom": "{source}: {value}",
+  "@movieRatingFrom": {
+    "description": "A score and who gave it.",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "moviePercent": "{value}%",
+  "@moviePercent": {
+    "description": "A score in percent.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "movieVotes": "{count, plural, one{{count} vote} other{{count} votes}}",
+  "@movieVotes": {
+    "description": "Number of votes behind a score.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieRuntime": "Runtime",
+  "@movieRuntime": {
+    "description": "Label."
+  },
+  "movieMinutes": "{count} min",
+  "@movieMinutes": {
+    "description": "A length in minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieCertification": "Certification",
+  "@movieCertification": {
+    "description": "Label of the age rating."
+  },
+  "movieSeparator": " · ",
+  "@movieSeparator": {
+    "description": "Between short facts on one line."
+  },
+  "movieListSeparator": ", ",
+  "@movieListSeparator": {
+    "description": "Between the items of a list on one line."
+  },
+  "movieRetryQualityProfile": "Retry quality profile",
+  "@movieRetryQualityProfile": {
+    "description": "Button that tries to read the name of the quality profile again."
+  },
+  "movieHistoryFailed": "History could not be loaded.",
+  "@movieHistoryFailed": {
+    "description": "Shown instead of history, above the reason."
+  },
+  "movieRetryHistory": "Retry history",
+  "@movieRetryHistory": {
+    "description": "Button that tries to load history again."
   }
 }

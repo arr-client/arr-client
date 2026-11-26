@@ -116,7 +116,7 @@ class _EpisodeRow extends StatelessWidget {
         children: [
           if (episode.airDateUtc case final aired?)
             Text(formatDay(context, aired)),
-          StateLine(episode.state),
+          ItemStateLine(episode.state),
           if (!episode.monitored && episode.state != ItemState.unmonitored)
             const MonitoredLine(monitored: false),
           if (file != null)

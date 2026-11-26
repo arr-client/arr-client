@@ -105,7 +105,7 @@ class _EpisodeBody extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: 8),
-            StateLine(episode.state),
+            ItemStateLine(episode.state),
             const SizedBox(height: 4),
             MonitoredLine(monitored: episode.monitored),
             DetailSlot(

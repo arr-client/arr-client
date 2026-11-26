@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:ui/ui.dart';
 
 import '../l10n/generated/sonarr_localizations.dart';
 
@@ -34,7 +35,7 @@ class SeasonProgress extends StatelessWidget {
               ),
             ),
           ),
-        if (!season.monitored) Text(strings.notMonitored),
+        if (!season.monitored) Text(UiLocalizations.of(context).notMonitored),
       ],
     );
   }
