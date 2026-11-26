@@ -169,6 +169,7 @@ export 'src/progress/match_progress.dart';
 export 'src/registry/active_instance.dart';
 export 'src/registry/aggregate.dart';
 export 'src/registry/instance_connection.dart';
+export 'src/registry/instance_prober.dart';
 export 'src/registry/instance_registry.dart';
 export 'src/registry/module_registry.dart';
 export 'src/registry/profile_scope.dart';
