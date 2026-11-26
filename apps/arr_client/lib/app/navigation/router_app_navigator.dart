@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/search/add_request.dart';
 import 'locations.dart';
 
 /// The [AppNavigator] of the running app. The flows are not built yet: each
@@ -23,12 +24,13 @@ final class RouterAppNavigator implements AppNavigator {
   Future<void> openHistory(ItemRef ref) => _flow(ref, InstanceFlow.history);
 
   @override
-  Future<void> openAdd(AddCandidate candidate) => _push(addLocation);
+  Future<void> openAdd(AddCandidate candidate) =>
+      _push(addLocation, extra: AddRequest(candidate));
 
   Future<void> _flow(ItemRef ref, InstanceFlow flow) =>
       _push(instanceFlowLocation(ref.instanceId, flow));
 
-  Future<void> _push(String location) async {
-    await router?.push<void>(location);
+  Future<void> _push(String location, {Object? extra}) async {
+    await router?.push<void>(location, extra: extra);
   }
 }

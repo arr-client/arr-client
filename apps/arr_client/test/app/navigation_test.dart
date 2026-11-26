@@ -1,6 +1,7 @@
 /// Capability-driven navigation (contracts/navigation.md, spec story 1).
 library;
 
+import 'package:arr_client/features/search/search_screen.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -213,7 +214,7 @@ void main() {
     await tester.tap(find.byTooltip('Search'));
     await tester.pumpAndSettle();
 
-    expect(find.widgetWithText(AppBar, 'Search'), findsOneWidget);
+    expect(find.byType(SearchScreen), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
     await tester.pageBack();
     await tester.pumpAndSettle();
