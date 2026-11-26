@@ -1,4 +1,4 @@
-/// The app's settings (spec story 13, scenarios 4 and 5).
+/// The app's settings (spec story 13, scenarios 4 and 5; story 2, scenario 8).
 library;
 
 import 'dart:async';
@@ -12,6 +12,7 @@ import 'package:ui/ui.dart';
 import '../../app/navigation/locations.dart';
 import '../../app/providers.dart';
 import '../../src/l10n/generated/app_localizations.dart';
+import 'storage/clear_cache_tile.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -63,6 +64,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const Divider(),
+              ClearCacheTile(contentPadding: padding),
               ListTile(
                 contentPadding: padding,
                 leading: const Icon(Icons.article_outlined),
