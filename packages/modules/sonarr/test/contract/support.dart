@@ -507,10 +507,14 @@ class _FakeLogger implements Logger {
 /// The Sonarr module's capabilities against [server], through the allow-list.
 /// Create inside a test or `setUp`.
 class Harness {
-  Harness({FakeSonarr? server, FakeCache? cache})
-    : server = server ?? FakeSonarr(),
-      cache = cache ?? FakeCache() {
-    _context = InstanceContext(
+  Harness({
+    FakeSonarr? server,
+    FakeCache? cache,
+    ArtworkLoader? artwork,
+    AppNavigator? navigator,
+  }) : server = server ?? FakeSonarr(),
+       cache = cache ?? FakeCache() {
+    context = InstanceContext(
       instance: Instance(
         id: instanceId,
         profileId: 'p1',
@@ -522,8 +526,8 @@ class Harness {
         updatedAt: DateTime.utc(2026),
       ),
       http: AllowListClient(allowList, this.server),
-      artwork: _FakeArtwork(),
-      navigator: _FakeNavigator(),
+      artwork: artwork ?? _FakeArtwork(),
+      navigator: navigator ?? _FakeNavigator(),
       cache: this.cache,
       logger: _FakeLogger(),
     );
@@ -531,7 +535,9 @@ class Harness {
 
   final FakeSonarr server;
   final FakeCache cache;
-  late final InstanceContext _context;
+
+  /// What the module is given for the instance.
+  late final InstanceContext context;
 
   LibraryProvider get library => _capability<LibraryProvider>();
 
@@ -552,7 +558,7 @@ class Harness {
   ReleaseProvider get releases => _capability<ReleaseProvider>();
 
   T _capability<T extends Capability>() {
-    final found = SonarrModule().capability<T>(_context);
+    final found = SonarrModule().capability<T>(context);
     expect(found, isNotNull, reason: 'Sonarr provides $T');
     return found!;
   }

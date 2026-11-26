@@ -13,6 +13,8 @@ import 'src/adapters/lookup.dart';
 import 'src/adapters/manage.dart';
 import 'src/adapters/overview.dart';
 import 'src/api/sonarr_api.dart';
+import 'src/screens/sonarr_screens.dart';
+import 'src/screens/sonarr_sources.dart';
 
 // The app adds the delegate to its own, for the names the module supplies.
 export 'src/l10n/generated/sonarr_localizations.dart' show SonarrLocalizations;
@@ -37,6 +39,11 @@ final _versionPattern = RegExp(r'^\d{1,9}(\.\d{1,9})*$');
 
 /// The Sonarr service.
 final class SonarrModule implements ServiceModule {
+  // One for each connection to an instance, which is its client: the app may
+  // build the context anew while a screen is open, as after a rename. The
+  // screens' state is kept under it.
+  final _sources = Expando<SonarrSources>();
+
   @override
   String get id => 'sonarr';
 
@@ -96,7 +103,15 @@ final class SonarrModule implements ServiceModule {
   }
 
   @override
-  List<ModuleScreen> routes() => const [];
+  List<ModuleScreen> routes() => sonarrScreens(
+    (context) => _sources[context.http] ??= SonarrSources(
+      instanceId: context.instance.id,
+      library: SonarrLibraryAdapter(SonarrApi(context), context.cache),
+      history: SonarrHistoryAdapter(SonarrApi(context)),
+      artwork: context.artwork,
+      navigator: context.navigator,
+    ),
+  );
 }
 
 ServiceFailure _classify(HttpError error) {

@@ -1,7 +1,5 @@
 /// Sonarr's library. Its writes are in manage.dart, and the queue and the
 /// history in activity.dart.
-///
-/// The routes to screens are not built yet; calling one is a programming error.
 library;
 
 import 'dart:convert';
@@ -13,6 +11,7 @@ import '../models/episode_record.dart';
 import '../models/json_fields.dart';
 import '../models/media_record.dart';
 import '../models/series_record.dart';
+import '../sonarr_routes.dart';
 import 'manage.dart';
 import 'monitor_options.dart';
 
@@ -250,7 +249,7 @@ final class SonarrLibraryAdapter implements LibraryProvider {
   ServiceResult<void> deleteFile(MediaFile file) => _writes.deleteFile(file);
 
   @override
-  ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError();
+  ModuleRoute detailRoute(ItemRef ref) => itemRoute(ref);
 
   ServiceResult<LibraryItem> _oneSeries(ItemRef ref) async {
     final JsonObject record;
