@@ -65,7 +65,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T047 [US1] Show version notice, authentication-failed retry, not-yet-checked and connection state in `apps/arr_client/lib/features/settings/instances/status.dart`
 - [x] T048 [US1] Implement automatic probing per research R5 (import, re-enable, change, profile activation, first contact per launch) with tests in `packages/core/lib/src/registry/`
 - [x] T049 [US1] Implement the initial Home screen listing instance status and links to configured areas in `apps/arr_client/lib/features/home/`
-- [ ] T050 [US1] Add US1 integration tests, including a distinct message per FR-007 class, HTTP and HTTPS, profile copy, switch and delete, and module visibility, in `apps/arr_client/integration_test/connect_test.dart`
+- [x] T050 [US1] Add US1 integration tests, including a distinct message per FR-007 class, HTTP and HTTPS, profile copy, switch and delete, and module visibility, in `apps/arr_client/integration_test/connect_test.dart`
 
 ## Phase 4: US2 Browse movies and series (P1)
 
@@ -104,7 +104,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T077 [US4] Implement history, mark-failed and blocklist screens in `apps/arr_client/lib/features/activity/history/`
 - [ ] T078 [US4] Add US4 integration test in `apps/arr_client/integration_test/activity_test.dart`
 - [x] T079 [US4] Implement minimal settings (theme, diagnostic log view/share, licenses) in `apps/arr_client/lib/features/settings/`
-- [ ] T080 [US4] Implement the third-party artwork toggle in `apps/arr_client/lib/features/settings/`
+- [x] T080 [US4] Implement the third-party artwork toggle in `apps/arr_client/lib/features/settings/`
 - [ ] T081 [US4] Pre-release gate: a connection check on the release-built APK, secret and traffic audit (SC-006, SC-007) and a TalkBack/200% text pass over US1–US4; record in `docs/release-checks.md`
 - [ ] T082 [US4] Record Radarr and Sonarr results in `docs/verification-matrix.md`
 - [ ] T083 [US4] Owner, only after the pre-release gate passes: create the Android signing key and the `release` environment secrets, wire `key.properties` into the Gradle build, set `version: 0.1.0-beta.1+1` in `apps/arr_client/pubspec.yaml` and tag `v0.1.0-beta.1`, the first pre-release, through `.github/workflows/release.yml`
@@ -132,7 +132,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T099 [US6] Implement CalendarProvider (including recently added and imported-on-day from import history), WantedProvider and HealthProvider in `packages/servarr/lib/src/overview/`
 - [x] T100 [US6] Bind overview providers in `packages/modules/radarr/lib/src/adapters/overview.dart`
 - [x] T101 [US6] Bind overview providers in `packages/modules/sonarr/lib/src/adapters/overview.dart`
-- [ ] T102 [US6] Extend Home with independent per-instance upcoming, downloaded today, recently added, active downloads (library queue), health and disk sections in `apps/arr_client/lib/features/home/`
+- [x] T102 [US6] Extend Home with independent per-instance upcoming, downloaded today, recently added, active downloads (library queue), health and disk sections in `apps/arr_client/lib/features/home/`
 - [x] T103 [US6] Implement agenda and month calendar with filters, device time zone and the downloaded-today view with earlier days in `apps/arr_client/lib/features/calendar/`
 - [x] T104 [US6] Implement wanted lists with single, selected and all search in `apps/arr_client/lib/features/wanted/`
 - [ ] T105 [US6] Add US6 integration test, asserting every Home section and including one unreachable instance, in `apps/arr_client/integration_test/overview_test.dart`
@@ -143,17 +143,17 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T107 [P] [US7] Write matching tests (case, v1 hash, season pack, no match, several clients) for data-model.md DownloadProgress.progress and DownloadProgress.state in `packages/core/test/progress/`
 - [x] T108 [US7] Implement qBittorrent probe, authentication, `authNotes` for the basic-auth cases in spec Edge Cases, and DownloadProgressProvider in `packages/modules/qbittorrent/lib/`
 - [x] T109 [US7] Implement progress matching in `packages/core/lib/src/progress/`
-- [ ] T110 [US7] Show client progress, speed, time remaining, state, whole-download note and unavailable notice in `apps/arr_client/lib/features/activity/queue/`
-- [ ] T111 [US7] Fill the `downloadProgress` detail slot from matched progress in `apps/arr_client/lib/app/slots/`
+- [x] T110 [US7] Show client progress, speed, time remaining, state, whole-download note and unavailable notice in `apps/arr_client/lib/features/activity/queue/`
+- [x] T111 [US7] Fill the `downloadProgress` detail slot from matched progress in `apps/arr_client/lib/app/slots/`
 - [ ] T112 [US7] Add US7 integration test, including that no write request is made, in `apps/arr_client/integration_test/progress_test.dart`
 - [ ] T113 [US7] Record qBittorrent in `docs/verification-matrix.md`
 
 ## Phase 10: US8 Music and books (P2)
 
-- [ ] T114 [P] [US8] Write Lidarr probe (success, wrong service, auth, version) and contract tests for every Servarr capability, including events-since, blocklist and apply-monitoring-option, in `packages/modules/lidarr/test/contract/`
+- [x] T114 [P] [US8] Write Lidarr probe (success, wrong service, auth, version) and contract tests for every Servarr capability, including events-since, blocklist and apply-monitoring-option, in `packages/modules/lidarr/test/contract/`
 - [ ] T115 [P] [US8] Write Readarr/Bookshelf probe (success, wrong service, auth, version) and contract tests for every Servarr capability, including events-since, blocklist and apply-monitoring-option, in `packages/modules/readarr/test/contract/`
-- [ ] T116 [US8] Implement Lidarr probe, library and lookup/add with metadata profile in `packages/modules/lidarr/lib/`
-- [ ] T117 [US8] Implement Lidarr activity, manual import, blocklist, releases, commands, manage, calendar, wanted and health in `packages/modules/lidarr/lib/src/adapters/`
+- [x] T116 [US8] Implement Lidarr probe, library and lookup/add with metadata profile in `packages/modules/lidarr/lib/`
+- [x] T117 [US8] Implement Lidarr activity, manual import, blocklist, releases, commands, manage, calendar, wanted and health in `packages/modules/lidarr/lib/src/adapters/`
 - [ ] T118 [US8] Implement Lidarr `detailRoute` and detail screens (with the `downloadProgress` slot) with monitor toggles, search, refresh, rescan, interactive-search, edit and delete-item entry points and file delete in `packages/modules/lidarr/lib/src/screens/`
 - [ ] T119 [US8] Implement Readarr/Bookshelf probe, library and lookup/add with metadata profile in `packages/modules/readarr/lib/`
 - [ ] T120 [US8] Implement Readarr/Bookshelf activity, manual import, blocklist, releases, commands, manage, calendar, wanted and health in `packages/modules/readarr/lib/src/adapters/`
@@ -177,8 +177,8 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 
 ## Phase 12: US10 Subtitles (P3)
 
-- [ ] T135 [P] [US10] Write Bazarr probe (success, wrong service, auth, version) and contract tests (browse, wanted, history, search, download, delete, sync) in `packages/modules/bazarr/test/contract/`
-- [ ] T136 [US10] Implement Bazarr probe and SubtitleProvider in `packages/modules/bazarr/lib/`
+- [x] T135 [P] [US10] Write Bazarr probe (success, wrong service, auth, version) and contract tests (browse, wanted, history, search, download, delete, sync) in `packages/modules/bazarr/test/contract/`
+- [x] T136 [US10] Implement Bazarr probe and SubtitleProvider in `packages/modules/bazarr/lib/`
 - [ ] T137 [US10] Implement wanted, history, title browse, search, delete and sync screens with `entryRoute` (data-model.md SubtitleFile.mediaType) with confirmations in `packages/modules/bazarr/lib/src/screens/`
 - [ ] T138 [US10] Implement explicit instance linking (data-model.md Instance.links) in `apps/arr_client/lib/features/settings/instances/links.dart`
 - [ ] T139 [US10] Fill the `subtitles` detail slot from SubtitleProvider in `apps/arr_client/lib/app/slots/`
@@ -187,9 +187,9 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 
 ## Phase 13: US11 Indexer search (P3)
 
-- [ ] T142 [P] [US11] Write Prowlarr probe (success, wrong service, auth, version) and contract tests (system status, indexer status, health, categories, search, grab) in `packages/modules/prowlarr/test/contract/`
-- [ ] T143 [US11] Implement Prowlarr probe, IndexerSearchProvider and HealthProvider in `packages/modules/prowlarr/lib/`
-- [ ] T144 [US11] Implement search, grab and read-only indexer status screens with `entryRoute` in `packages/modules/prowlarr/lib/src/screens/`
+- [x] T142 [P] [US11] Write Prowlarr probe (success, wrong service, auth, version) and contract tests (system status, indexer status, health, categories, search, grab) in `packages/modules/prowlarr/test/contract/`
+- [x] T143 [US11] Implement Prowlarr probe, IndexerSearchProvider and HealthProvider in `packages/modules/prowlarr/lib/`
+- [x] T144 [US11] Implement search, grab and read-only indexer status screens with `entryRoute` in `packages/modules/prowlarr/lib/src/screens/`
 - [ ] T145 [US11] Add US11 integration test in `apps/arr_client/integration_test/indexers_test.dart`
 - [ ] T146 [US11] Record Prowlarr in `docs/verification-matrix.md`
 
