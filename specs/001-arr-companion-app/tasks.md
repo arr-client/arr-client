@@ -10,43 +10,43 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 
 ## Phase 1: Setup
 
-- [ ] T001 Create pub workspace in `pubspec.yaml` (exact `environment.flutter` version, matching `.fvmrc`) with app and package skeletons per plan.md and `flutter_lints` as a root dev dependency (the existing root `analysis_options.yaml` includes it, so CI fails without it); extend `.gitignore`
+- [x] T001 Create pub workspace in `pubspec.yaml` (exact `environment.flutter` version, matching `.fvmrc`) with app and package skeletons per plan.md and `flutter_lints` as a root dev dependency (the existing root `analysis_options.yaml` includes it, so CI fails without it); extend `.gitignore`
 - [ ] T002 Owner decision: confirm the immutable application id and developer verification registration (name is `arr-client`); record in `docs/decisions.md`
-- [ ] T003 Create Android project in `apps/arr_client/android/` using the confirmed id, minSdk 26, compile/target 37, declaring `android.permission.INTERNET` in `src/main/AndroidManifest.xml` (the template adds it only to debug and profile builds)
-- [ ] T004 [P] Check that every package is analyzed under the root `analysis_options.yaml` as `docs/standards/coding-standards.md` requires, with no package-level overrides
-- [ ] T005 [P] Write `tool/check_dependencies.dart` enforcing plan.md allowed dependencies, with tests in `tool/test/`
-- [ ] T006 [P] Write `tool/check_licenses.dart` rejecting GPL-incompatible and proprietary dependencies
-- [ ] T007 Verify that the existing `.github/workflows/ci.yml`, once code exists, runs formatting, analysis, package tests, tool tests, the dependency and license checks, a debug APK build and emulator integration tests (`.github/scripts/codegen.sh` builds generated files, which are not committed); add a `pub` entry to `.github/dependabot.yml`
-- [ ] T008 [P] Add build and run instructions to `README.md` and `CONTRIBUTING.md`
-- [ ] T009 [P] Add `docs/verification-matrix.md` listing every service and minimum/best-effort row of spec Supported Services as unverified
-- [ ] T010 [P] Create dev stack in `tool/devstack/compose.yaml` and `tool/devstack/keys.sh`, including a self-signed reverse proxy and an HTML login page proxy
-- [ ] T011 [P] Write `tool/gen_large_library.dart` producing 10,000-movie and 1,000-series fixtures
-- [ ] T012 [P] Write `tool/sanitize_fixture.dart` removing keys, hosts, paths and user data, with tests
+- [x] T003 Create Android project in `apps/arr_client/android/` using the confirmed id, minSdk 26, compile/target 37, declaring `android.permission.INTERNET` in `src/main/AndroidManifest.xml` (the template adds it only to debug and profile builds)
+- [x] T004 [P] Check that every package is analyzed under the root `analysis_options.yaml` as `docs/standards/coding-standards.md` requires, with no package-level overrides
+- [x] T005 [P] Write `tool/check_dependencies.dart` enforcing plan.md allowed dependencies, with tests in `tool/test/`
+- [x] T006 [P] Write `tool/check_licenses.dart` rejecting GPL-incompatible and proprietary dependencies
+- [x] T007 Verify that the existing `.github/workflows/ci.yml`, once code exists, runs formatting, analysis, package tests, tool tests, the dependency and license checks, a debug APK build and emulator integration tests (`.github/scripts/codegen.sh` builds generated files, which are not committed); add a `pub` entry to `.github/dependabot.yml`
+- [x] T008 [P] Add build and run instructions to `README.md` and `CONTRIBUTING.md`
+- [x] T009 [P] Add `docs/verification-matrix.md` listing every service and minimum/best-effort row of spec Supported Services as unverified
+- [x] T010 [P] Create dev stack in `tool/devstack/compose.yaml` and `tool/devstack/keys.sh`, including a self-signed reverse proxy and an HTML login page proxy
+- [x] T011 [P] Write `tool/gen_large_library.dart` producing 10,000-movie and 1,000-series fixtures
+- [x] T012 [P] Write `tool/sanitize_fixture.dart` removing keys, hosts, paths and user data, with tests
 
 ## Phase 2: Foundational (blocks all stories)
 
-- [ ] T013 Define module contract, capabilities, `ServiceFailure`, `AppNavigator`, capability route operations, detail slots and `SessionAuthenticator` interface in `packages/core/lib/src/module/` per contracts/module-contract.md
-- [ ] T014 Configure SQLite source build (research R17) and implement drift database in `packages/core/lib/src/storage/database.dart` with migration test and a CI check that no prebuilt binary is downloaded
-- [ ] T015 Define `SecretStore` in `packages/core/lib/src/secrets/` and implement it in `apps/arr_client/lib/app/platform/secret_store.dart`
+- [x] T013 Define module contract, capabilities, `ServiceFailure`, `AppNavigator`, capability route operations, detail slots and `SessionAuthenticator` interface in `packages/core/lib/src/module/` per contracts/module-contract.md
+- [x] T014 Configure SQLite source build (research R17) and implement drift database in `packages/core/lib/src/storage/database.dart` with migration test and a CI check that no prebuilt binary is downloaded
+- [x] T015 Define `SecretStore` in `packages/core/lib/src/secrets/` and implement it in `apps/arr_client/lib/app/platform/secret_store.dart`
 - [ ] T016 Implement cache repository with fetch age in `packages/core/lib/src/cache/` for data-model.md CacheEntry.instanceId, CacheEntry.kind, CacheEntry.remoteId, CacheEntry.parentRemoteId, CacheEntry.sortTitle, CacheEntry.state, CacheEntry.monitored, CacheEntry.qualityProfileId, CacheEntry.tagIds, CacheEntry.addedAt, CacheEntry.rawJson, CacheEntry.fetchedAt
 - [ ] T017 Implement preference storage in `packages/core/lib/src/preferences/` for data-model.md Preferences.activeProfileId, Preferences.themeMode, Preferences.trueBlack, Preferences.dynamicColor, Preferences.loadThirdPartyArtwork, Preferences.appLock, Preferences.view, Preferences.lastAddChoices
 - [ ] T018 Write profile and instance validation and credential-rule tests in `packages/core/test/instance_test.dart` for data-model.md Profile.id, Profile.name, Instance.id, Instance.profileId, Instance.name, Instance.serviceType, Instance.url, Instance.certPin, Instance.customCa, Credential.customHeaders, including HTTP accepted, profile copy (including views) and delete, the authFailed latch and the last-profile rule
 - [ ] T019 Implement models, validators and the profile repository in `packages/core/lib/src/instances/` for data-model.md Profile.id, Profile.name, Profile.sortOrder, Instance.id, Instance.profileId, Instance.name, Instance.serviceType, Instance.url, Instance.authKind, Instance.authFailed, Instance.certPin, Instance.customCa, Instance.enabled, Instance.sortOrder, Instance.detectedVersion, Instance.lastProbe, Instance.links, Instance.createdAt, Instance.updatedAt, Credential.apiKey, Credential.username, Credential.password, Credential.basicUser, Credential.basicPassword, Credential.customHeaders, Credential.sessionCookie
 - [ ] T020 Exclude secrets and database from backup and device transfer in `apps/arr_client/android/app/src/main/res/xml/` and manifest
-- [ ] T021 Implement redacting diagnostic log in `packages/core/lib/src/logging/` with tests that seeded secrets never appear
+- [x] T021 Implement redacting diagnostic log in `packages/core/lib/src/logging/` with tests that seeded secrets never appear
 - [ ] T022 Write network tests in `packages/core/test/network/`: no bytes before pin match, custom CA, cross-origin redirect, plain HTTP, no write retry, redaction, every `ServiceFailure` classification
 - [ ] T023 Implement per-instance HTTP client with auth, custom headers, redirect policy and failure mapping in `packages/core/lib/src/network/client.dart`
 - [ ] T024 Implement leaf pinning and per-instance custom CA per research R4 in `packages/core/lib/src/network/trust.dart`
-- [ ] T025 Implement connectivity and transport-type adapter in `apps/arr_client/lib/app/platform/connectivity.dart`
-- [ ] T026 Create local plugin `packages/platform_local_network/` (registered, so usable from background isolates) and implement the research R6 flow in `apps/arr_client/lib/app/platform/local_network.dart`, with address classification tests in `apps/arr_client/test/platform/`
-- [ ] T027 Add cleartext network security config in `apps/arr_client/android/app/src/main/res/xml/network_security_config.xml` and set `flutter_deeplinking_enabled=false` in the manifest
+- [x] T025 Implement connectivity and transport-type adapter in `apps/arr_client/lib/app/platform/connectivity.dart`
+- [x] T026 Create local plugin `packages/platform_local_network/` (registered, so usable from background isolates) and implement the research R6 flow in `apps/arr_client/lib/app/platform/local_network.dart`, with address classification tests in `apps/arr_client/test/platform/`
+- [x] T027 Add cleartext network security config in `apps/arr_client/android/app/src/main/res/xml/network_security_config.xml` and set `flutter_deeplinking_enabled=false` in the manifest
 - [ ] T028 Implement `SessionAuthenticator` with secure session storage re-login and the data-model.md Instance.authFailed latch (including from the background isolate) in `packages/core/lib/src/session/` with tests
-- [ ] T029 Implement shared records in `packages/core/lib/src/models/` for data-model.md LibraryItem.state (with precedence), Release.protocol, QueueItem.progress, HistoryEvent.eventType, Command.status, Command.result, DownloadProgress.progress, DownloadProgress.state, ServerOption.kind, DiscoveryTitle.availability, DiscoveryTitle.availability4k, Request.status, SubtitleFile.mediaType
+- [x] T029 Implement shared records in `packages/core/lib/src/models/` for data-model.md LibraryItem.state (with precedence), Release.protocol, QueueItem.progress, HistoryEvent.eventType, Command.status, Command.result, DownloadProgress.progress, DownloadProgress.state, ServerOption.kind, DiscoveryTitle.availability, DiscoveryTitle.availability4k, Request.status, SubtitleFile.mediaType
 - [ ] T030 Implement module registry, active-profile scoping and profile switching (research R5), persisted probe capabilities (data-model.md Instance.lastProbe) and aggregation with per-instance failure isolation in `packages/core/lib/src/registry/`
 - [ ] T031 Implement artwork loader per research R10 (custom FileService on the instance client, credential-free remote client) in `packages/core/lib/src/artwork/`, with redirect, pin and no-credential tests
-- [ ] T032 Write the allow-list test harness in `packages/core/lib/testing/allow_list.dart`: it holds only checking logic and fails any request not in the list each module supplies from `test/allow_list.dart` (contracts/upstream-apis.md)
-- [ ] T033 [P] Implement theme (light, dark, black, dynamic) and localization setup (generated into `lib/src/l10n/generated`) in `packages/ui/lib/src/theme/` and `packages/ui/lib/src/l10n/`
-- [ ] T034 Implement shared loading/empty/error/stale scaffold, confirm dialog, item-gone and action-outcome handling in `packages/ui/lib/src/widgets/`
+- [x] T032 Write the allow-list test harness in `packages/core/lib/testing/allow_list.dart`: it holds only checking logic and fails any request not in the list each module supplies from `test/allow_list.dart` (contracts/upstream-apis.md)
+- [x] T033 [P] Implement theme (light, dark, black, dynamic) and localization setup (generated into `lib/src/l10n/generated`) in `packages/ui/lib/src/theme/` and `packages/ui/lib/src/l10n/`
+- [x] T034 Implement shared loading/empty/error/stale scaffold, confirm dialog, item-gone and action-outcome handling in `packages/ui/lib/src/widgets/`
 - [ ] T035 Implement composition root, module list, `AppNavigator` and capability-driven navigation per contracts/navigation.md in `apps/arr_client/lib/app/`
 - [ ] T036 Write shared Servarr tests (paging, status, options, unmatched queue items, queue read, history read, command status and result including completed-but-unsuccessful, aborted and orphaned, health) in `packages/servarr/test/contract/`
 - [ ] T037 Implement shared Servarr client and those reads in `packages/servarr/lib/src/`

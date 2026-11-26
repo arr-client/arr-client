@@ -1,7 +1,7 @@
 # arr-client wiki
 
-arr-client is a free, open-source mobile client for self-hosted *arr services. It is at the
-specification stage: there is nothing to install yet.
+arr-client is a free, open-source mobile client for self-hosted *arr services. The foundation is being built:
+there is nothing to install yet.
 
 - [Contributing](Contributing)
 - [Roadmap](Roadmap)
