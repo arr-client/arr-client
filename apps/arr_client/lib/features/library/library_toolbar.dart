@@ -15,6 +15,7 @@ class LibraryToolbar extends StatelessWidget {
     required this.onSort,
     required this.onFilters,
     required this.onLayout,
+    this.onSelect,
     super.key,
   });
 
@@ -30,6 +31,9 @@ class LibraryToolbar extends StatelessWidget {
   final ValueChanged<LibrarySort> onSort;
   final VoidCallback onFilters;
   final ValueChanged<LibraryLayout> onLayout;
+
+  /// Starts selecting items; null while there is none to select.
+  final VoidCallback? onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,12 @@ class LibraryToolbar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
+              if (onSelect != null)
+                IconButton(
+                  tooltip: strings.selectionStart,
+                  onPressed: onSelect,
+                  icon: const Icon(Icons.checklist),
+                ),
               _SortButton(sort: view.sort, onSort: onSort),
               IconButton(
                 tooltip: activeFilters == 0

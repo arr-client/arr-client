@@ -89,6 +89,17 @@ class LibraryController extends Notifier<LibraryState> {
     if (instance != null) await _load(instance);
   }
 
+  /// Asks one instance again after a change to it. A read under way may have
+  /// been answered before the change, so another follows it.
+  Future<void> reload(String instanceId) async {
+    final instance = _sources[instanceId];
+    if (instance == null) return;
+    await instance.loading;
+    if (ref.mounted && identical(_sources[instanceId], instance)) {
+      await _load(instance);
+    }
+  }
+
   /// Shows [view] and remembers it for the profile.
   void setView(LibraryView view) {
     if (view == _view) return;
