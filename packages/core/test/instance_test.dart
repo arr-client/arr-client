@@ -16,6 +16,7 @@
 ///     String? acceptedCertPin, // newly accepted for `url`, see below
 ///     String? customCa, // stored as given; null removes it
 ///     ProbeSnapshot? probe, // of a successful test of this draft, else null
+///     bool authRejected = false, // its test refused the token or login
 ///     bool enabled = true,
 ///     List<InstanceLink> links = const [],
 ///   });
@@ -76,6 +77,8 @@
 /// - `authFailed` is cleared by `retryAuth`, or by an update whose credential
 ///   differs from the stored one in what the user enters (not the session
 ///   cookie). Nothing else clears it.
+/// - `authRejected` saves the instance with `authFailed` set, also when the
+///   update changes the credential.
 /// - An update never takes the session cookie of the given credential. It drops
 ///   the stored one when the origin, authKind or what the user enters changes.
 /// - Basic auth is refused with `AuthKind.apiKey` where the module sends its
@@ -201,6 +204,7 @@ InstanceDraft _draft({
   String? customCa,
   ProbeSnapshot? probe,
   bool enabled = true,
+  bool authRejected = false,
   List<InstanceLink> links = const [],
 }) => InstanceDraft(
   name: name,
@@ -211,6 +215,7 @@ InstanceDraft _draft({
   customCa: customCa,
   probe: probe,
   enabled: enabled,
+  authRejected: authRejected,
   links: links,
 );
 
@@ -1527,6 +1532,25 @@ void main() {
     test('stays through edits that leave the credentials', () async {
       await update(instance, _draft(name: 'Films', enabled: false));
       await update(instance, _draft(url: 'https://other.test', probe: _probe));
+
+      expect(await latched(), isTrue);
+    });
+
+    test('is set by adding a draft whose test was refused', () async {
+      final added = await add(
+        _draft(name: 'Other', authRejected: true),
+        credential: _credential,
+      );
+
+      expect(added.authFailed, isTrue);
+    });
+
+    test('is set again when refused new credentials are saved', () async {
+      await update(
+        instance,
+        _draft(authRejected: true),
+        credential: const Credential(apiKey: 'zq-hotel-888'),
+      );
 
       expect(await latched(), isTrue);
     });

@@ -317,6 +317,7 @@ class ProfileRepository {
               serviceType: draft.serviceType,
               url: draft.url.toString(),
               authKind: draft.authKind,
+              authFailed: Value(draft.authRejected),
               certPin: Value(draft.acceptedCertPin),
               customCa: Value(draft.customCa),
               enabled: Value(draft.enabled),
@@ -392,7 +393,9 @@ class ProfileRepository {
           name: Value(draft.name),
           url: Value(draft.url.toString()),
           authKind: Value(draft.authKind),
-          authFailed: credentialEdited
+          authFailed: draft.authRejected
+              ? const Value(true)
+              : credentialEdited
               ? const Value(false)
               : const Value.absent(),
           certPin: draft.acceptedCertPin != null || newOrigin

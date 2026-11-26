@@ -15,6 +15,8 @@ export 'src/instances/instance.dart';
 export 'src/instances/instance_draft.dart';
 export 'src/instances/instance_link.dart';
 export 'src/instances/instance_link_type.dart';
+export 'src/instances/instance_rules.dart'
+    show excludesBasicAuth, isValidHeaderName, isValidInstanceUrl;
 export 'src/instances/probe_snapshot.dart';
 export 'src/instances/profile.dart';
 export 'src/instances/profile_repository.dart';

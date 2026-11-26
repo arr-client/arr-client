@@ -183,12 +183,13 @@ class TestApp {
   static Future<TestApp> start(
     WidgetTester tester, {
     Iterable<ServiceModule>? modules,
+    LocalNetworkPermission? localNetwork,
   }) async {
     final services = await AppServices.start(
       database: NativeDatabase.memory(),
       secrets: MemorySecrets(),
       connectivity: FakeConnectivity(),
-      localNetwork: FakePermission(),
+      localNetwork: localNetwork ?? FakePermission(),
       cacheDirectory: () async => Directory('build/test-cache'),
       modules: modules ?? [movies, series, subtitles, downloads],
     );
