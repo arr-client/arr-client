@@ -386,6 +386,45 @@ void main() {
     });
   });
 
+  // A queued item would otherwise be shown, and cached, as missing.
+  group('a queue that cannot be read', () {
+    for (final (name, status, failure) in [
+      ('fails', 401, isA<AuthFailed>()),
+      // NotFound would say that the item asked for is gone.
+      (
+        'is not there',
+        404,
+        isA<ServerError>().having((e) => e.statusCode, 'status', 404),
+      ),
+    ]) {
+      test('$name: the reads fail and the cache is unchanged', () async {
+        final harness = Harness();
+        await ok(harness.library.list());
+        await ok(harness.library.children(seriesRef(1)));
+        harness.server.series.removeWhere((s) => s['id'] == 2);
+        harness.server.episodes[1]!.removeWhere((e) => e['id'] == 50);
+        harness.server.overrides['queue'] = FakeSonarr.body('', status: status);
+
+        for (final read in [
+          harness.library.list,
+          () => harness.library.item(seriesRef(1)),
+          () => harness.library.item(episodeRef(16)),
+          () => harness.library.children(seriesRef(1)),
+        ]) {
+          expect(await failureOf<Object>(read()), failure);
+        }
+
+        expect((await ok(harness.library.cachedList()))!.value, hasLength(4));
+        final episodes = await ok(harness.library.cachedChildren(seriesRef(1)));
+        expect(episodes!.value, hasLength(12));
+        expect(
+          (await ok(harness.library.cachedItem(episodeRef(16))))!.value.state,
+          ItemState.downloading,
+        );
+      });
+    }
+  });
+
   group('cache', () {
     test('holds nothing before the first fetch', () async {
       final harness = Harness();
