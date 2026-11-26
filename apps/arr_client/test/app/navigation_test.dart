@@ -272,6 +272,48 @@ void main() {
     await app.stop(tester);
   });
 
+  // The shell's Scaffold takes what is at the bottom out of what it gives its
+  // body; the screens must not meet it a second time.
+  for (final (size, keyboard) in [
+    (const Size(400, 800), 300.0),
+    (const Size(800, 400), 200.0),
+  ]) {
+    testWidgets('the bottom inset and keyboard apply once on $size', (
+      tester,
+    ) async {
+      usePhone(tester, size);
+      tester.view
+        ..padding = const FakeViewPadding(bottom: 48)
+        ..viewPadding = const FakeViewPadding(bottom: 48);
+      final app = await TestApp.start(tester);
+      await app.add(movies, 'Films');
+      await app.pump(tester);
+      final wide = size.width >= 600;
+      await open(tester, 'More', wide ? NavigationRail : NavigationBar);
+      final list = find.byType(ListView);
+      double bottomPadding() =>
+          MediaQuery.paddingOf(tester.element(list)).bottom;
+
+      // The bar covers the system's inset; without one the screen must.
+      expect(bottomPadding(), wide ? 48 : 0);
+      expect(
+        tester.getBottomLeft(list).dy,
+        wide ? size.height : tester.getTopLeft(find.byType(NavigationBar)).dy,
+      );
+
+      // As the system reports an open keyboard.
+      tester.view
+        ..padding = FakeViewPadding.zero
+        ..viewInsets = FakeViewPadding(bottom: keyboard);
+      await tester.pumpAndSettle();
+
+      expect(tester.getBottomLeft(list).dy, size.height - keyboard);
+      expect(bottomPadding(), 0);
+      expect(MediaQuery.viewInsetsOf(tester.element(list)).bottom, 0);
+      await app.stop(tester);
+    });
+  }
+
   for (final size in [const Size(360, 640), const Size(640, 360)]) {
     testWidgets('nothing overflows at 200% text on $size', (tester) async {
       usePhone(tester, size);

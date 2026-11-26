@@ -85,10 +85,14 @@ class AppShell extends ConsumerWidget {
           // The rail keeps clear of the left inset, so the screens beside it
           // must not again. Wrapped in both layouts, to keep their state.
           Expanded(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeLeft: wide,
-              child: shell,
+            // The context below the Scaffold: its MediaQuery already lacks the
+            // bottom padding and keyboard that the Scaffold has dealt with.
+            child: Builder(
+              builder: (context) => MediaQuery.removePadding(
+                context: context,
+                removeLeft: wide,
+                child: shell,
+              ),
             ),
           ),
         ],
