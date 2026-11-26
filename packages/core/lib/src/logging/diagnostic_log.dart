@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import '../instances/credential.dart';
 import 'log_entry.dart';
@@ -9,8 +10,12 @@ import 'secret_redactor.dart';
 /// The diagnostic log the user can read and share.
 ///
 /// It keeps the newest entries in memory, redacted by a [SecretRedactor] before
-/// they are stored, and writes nowhere else. Register each credential with
-/// [addCredential] as soon as it is read, entered or issued.
+/// they are stored, and writes nowhere else.
+///
+/// Register first: call [addCredential] as soon as a credential is read, entered
+/// or issued, before anything can log it. Registering later only drops the
+/// stored entries that contain the first characters of a new value. It misses
+/// an entry where redaction or truncation had already left less than those.
 final class DiagnosticLog implements Logger {
   /// Keeps at most [capacity] entries.
   DiagnosticLog({this.capacity = 500, this._clock = DateTime.now});
@@ -21,8 +26,8 @@ final class DiagnosticLog implements Logger {
   /// How many entries are kept.
   final int capacity;
 
-  /// What ends a text that was cut off.
-  static const _ellipsis = '...';
+  /// How much of a value marks a stored entry as containing it.
+  static const _startLength = 6;
 
   final DateTime Function() _clock;
   final _redactor = SecretRedactor();
@@ -31,15 +36,14 @@ final class DiagnosticLog implements Logger {
   /// The entries kept, oldest first.
   List<LogEntry> get entries => List.unmodifiable(_entries);
 
-  /// Registers values to remove from past and future entries.
-  void addSecrets(Iterable<String> secrets) {
-    if (_redactor.addSecrets(secrets)) _redactStored();
-  }
+  /// Registers values to remove from entries logged from now on, and drops
+  /// stored entries that appear to contain them.
+  void addSecrets(Iterable<String> secrets) =>
+      _drop(_redactor.addSecrets(secrets));
 
   /// Registers the secrets of [credential], as [addSecrets] does.
-  void addCredential(Credential credential) {
-    if (_redactor.addCredential(credential)) _redactStored();
-  }
+  void addCredential(Credential credential) =>
+      _drop(_redactor.addCredential(credential));
 
   @override
   void log(
@@ -74,7 +78,7 @@ final class DiagnosticLog implements Logger {
     var end = maximumTextLength;
     // Not between the two halves of a surrogate pair.
     if (redacted.codeUnitAt(end - 1) & 0xFC00 == 0xD800) end--;
-    return '${redacted.substring(0, end)}$_ellipsis';
+    return '${redacted.substring(0, end)}...';
   }
 
   static String _describe(Object error) {
@@ -89,27 +93,19 @@ final class DiagnosticLog implements Logger {
     }
   }
 
-  void _redactStored() {
-    String clean(String text) {
-      if (!text.endsWith(_ellipsis)) return _redactor.redactKnown(text);
-      // The cut may have left the first part of a secret, only now known.
-      final kept = text.substring(0, text.length - _ellipsis.length);
-      return '${_redactor.redactKnown(kept, cutOff: true)}$_ellipsis';
-    }
-
-    String? again(String? text) => text == null ? null : clean(text);
-    final redacted = [
-      for (final entry in _entries)
-        LogEntry(
-          time: entry.time,
-          level: entry.level,
-          message: clean(entry.message),
-          error: again(entry.error),
-          stackTrace: again(entry.stackTrace),
-        ),
-    ];
-    _entries
-      ..clear()
-      ..addAll(redacted);
+  void _drop(Set<String> forms) {
+    if (forms.isEmpty) return;
+    final starts = {
+      for (final form in forms)
+        form.substring(0, min(form.length, _startLength)).toLowerCase(),
+    };
+    _entries.removeWhere((entry) {
+      final text = [
+        entry.message,
+        ?entry.error,
+        ?entry.stackTrace,
+      ].join('\n').toLowerCase();
+      return starts.any(text.contains);
+    });
   }
 }

@@ -94,14 +94,6 @@ void main() {
       });
     }
 
-    test('when registered after they were logged', () {
-      final log = DiagnosticLog();
-      _record(log, 'got $_custom', error: 'also $_custom');
-      log.addSecrets([_custom]);
-
-      expect(log.export(), isNot(contains(_custom)));
-    });
-
     test('when two overlap', () {
       final log = DiagnosticLog()..addSecrets(['abcdef', 'defghi']);
 
@@ -112,6 +104,51 @@ void main() {
       final log = DiagnosticLog()..addSecrets(['', 'a']);
 
       expect(_record(log, 'a banana'), endsWith('a banana'));
+    });
+  });
+
+  group('registering late', () {
+    // Each entry was stored before its secret was known.
+    for (final (name, secret, message) in [
+      ('the value itself', _custom, 'got $_custom'),
+      ('a value a rule had partly rewritten', 'Seed0ne?&3', 'got Seed0ne?&3'),
+      (
+        'a value cut off by truncation',
+        _custom,
+        '${'.' * (DiagnosticLog.maximumTextLength - 6)}$_custom',
+      ),
+    ]) {
+      test('drops an entry holding $name', () {
+        final log = DiagnosticLog()
+          ..log(LogLevel.info, 'unrelated')
+          ..log(LogLevel.info, message)
+          ..log(LogLevel.info, 'x', error: message);
+
+        log.addSecrets([secret]);
+
+        expect(log.entries.map((e) => e.message), ['unrelated']);
+      });
+    }
+
+    test('drops nothing for values already registered', () {
+      final log = DiagnosticLog()
+        ..addCredential(_credential)
+        ..log(LogLevel.info, 'seed');
+
+      log.addCredential(_credential);
+
+      expect(log.entries, hasLength(1));
+    });
+
+    test('registers cookie values, not the whole header', () {
+      final redactor = SecretRedactor()
+        ..addCredential(const Credential(sessionCookie: 'a=seed-1; b=seed-2'));
+
+      final added = redactor.addCredential(
+        const Credential(sessionCookie: 'a=seed-1; b=seed-3'),
+      );
+
+      expect(added, {'seed-3'});
     });
   });
 
@@ -297,34 +334,11 @@ void main() {
       );
     });
 
-    test('removes what was cut short once it is registered', () {
-      for (var kept = 4; kept < _custom.length; kept++) {
-        final log = DiagnosticLog();
-        final padding = '.' * (DiagnosticLog.maximumTextLength - kept);
-        log.log(LogLevel.debug, '$padding$_custom');
-
-        log.addSecrets([_custom]);
-
-        expect(
-          log.entries.single.message,
-          '$padding${SecretRedactor.marker}...',
-        );
-      }
-    });
-
     test('does not cut a surrogate pair in two', () {
       final padding = '.' * (DiagnosticLog.maximumTextLength - 1);
       final log = DiagnosticLog()..log(LogLevel.debug, '$padding\u{1F600}');
 
       expect(log.entries.single.message, '$padding...');
-    });
-
-    test('says whether a secret is new', () {
-      final redactor = SecretRedactor();
-
-      expect(redactor.addCredential(_credential), isTrue);
-      expect(redactor.addCredential(_credential), isFalse);
-      expect(redactor.addSecrets([_custom, 'a']), isFalse);
     });
 
     test('removes a value encoded strictly per RFC 3986', () {

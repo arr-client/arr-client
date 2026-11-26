@@ -21,9 +21,12 @@ final class SecretRedactor {
   final _known = <String, RegExp>{};
 
   /// Registers values to remove, also in their URL and JSON encoded forms.
-  /// Returns whether any of them was new.
-  bool addSecrets(Iterable<String> secrets) {
-    final before = _known.length;
+  /// Returns the forms that were not registered before.
+  ///
+  /// Nothing is ever forgotten, as an old value may still be logged. A renewed
+  /// session adds only the few forms of its new cookie values.
+  Set<String> addSecrets(Iterable<String> secrets) {
+    final added = <String>{};
     for (final secret in secrets) {
       for (final value in {secret, secret.trim()}) {
         if (value.length < minimumSecretLength) continue;
@@ -33,16 +36,18 @@ final class SecretRedactor {
           json.substring(1, json.length - 1),
           ..._urlForms(value),
         ]) {
-          _known[form] ??= _literal(form);
+          if (_known.containsKey(form)) continue;
+          _known[form] = RegExp(RegExp.escape(form), caseSensitive: false);
+          added.add(form);
         }
       }
     }
-    return _known.length > before;
+    return added;
   }
 
-  /// Registers every secret of [credential], including the user names. Returns
-  /// whether any of them was new.
-  bool addCredential(Credential credential) {
+  /// Registers every secret of [credential], including the user names, as
+  /// [addSecrets] does.
+  Set<String> addCredential(Credential credential) {
     final basicUser = credential.basicUser;
     final basicPassword = credential.basicPassword;
     final cookie = credential.sessionCookie;
@@ -55,12 +60,10 @@ final class SecretRedactor {
       if (basicUser != null)
         base64Encode(utf8.encode('$basicUser:${basicPassword ?? ''}')),
       ...credential.customHeaders.values,
-      if (cookie != null) ...[
-        cookie,
-        // Each value may be quoted on its own, without its name.
+      // The values only: the whole header changes whenever any of them does.
+      if (cookie != null)
         for (final pair in cookie.split(';'))
           pair.substring(pair.indexOf('=') + 1),
-      ],
     ]);
   }
 
@@ -70,7 +73,10 @@ final class SecretRedactor {
     // one in half. The rules see neither them nor their markers, so that a
     // registered `pass` or `https` cannot stop a rule from recognising what
     // follows it.
-    final spans = _knownSpans(text);
+    final spans = [
+      for (final pattern in _known.values)
+        for (final match in pattern.allMatches(text)) (match.start, match.end),
+    ];
     var unseen = text;
     for (final rule in _rules) {
       final found = [
@@ -84,21 +90,6 @@ final class SecretRedactor {
     return _replace(text, spans, (_) => marker);
   });
 
-  /// [text] without the registered values only.
-  ///
-  /// If [text] was [cutOff] from a longer one, this also removes its end where
-  /// that is the start of a registered value.
-  String redactKnown(String text, {bool cutOff = false}) => _guarded(() {
-    final spans = _knownSpans(text);
-    if (cutOff) {
-      for (final form in _known.keys) {
-        final start = _startOfCutValue(text, form);
-        if (start != null) spans.add((start, text.length));
-      }
-    }
-    return _replace(text, spans, (_) => marker);
-  });
-
   /// Never lets text through unredacted, and never fails the caller.
   static String _guarded(String Function() redaction) {
     try {
@@ -108,28 +99,6 @@ final class SecretRedactor {
       return marker;
     }
   }
-
-  List<(int, int)> _knownSpans(String text) => [
-    for (final pattern in _known.values)
-      for (final match in pattern.allMatches(text)) (match.start, match.end),
-  ];
-
-  /// Where [text] ends in the first part of [form], if that part is at least
-  /// [minimumSecretLength] long.
-  static int? _startOfCutValue(String text, String form) {
-    final lower = form.toLowerCase();
-    final opening = _literal(form.substring(0, minimumSecretLength));
-    final earliest = text.length > form.length ? text.length - form.length : 0;
-    for (final match in opening.allMatches(text, earliest)) {
-      if (lower.startsWith(text.substring(match.start).toLowerCase())) {
-        return match.start;
-      }
-    }
-    return null;
-  }
-
-  static RegExp _literal(String value) =>
-      RegExp(RegExp.escape(value), caseSensitive: false);
 
   /// Replaces each of [spans], joining those that touch so that overlapping
   /// secrets leave no fragment behind.
