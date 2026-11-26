@@ -1674,6 +1674,80 @@ void main() {
     });
   });
 
+  group('reordering instances', () {
+    late Instance a;
+    late Instance b;
+    late Instance c;
+
+    setUp(() async {
+      a = await add(_draft(name: 'A'));
+      b = await add(_draft(name: 'B'));
+      c = await add(_draft(name: 'C'));
+    });
+
+    Future<List<String>> names([String? profileId]) async => [
+      for (final instance in await repository.instances(profileId ?? home.id))
+        instance.name,
+    ];
+
+    test('stores the order given', () async {
+      await repository.reorderInstances(home.id, [c.id, a.id, b.id]);
+
+      expect(await names(), ['C', 'A', 'B']);
+    });
+
+    test('is not an edit, and later instances still go last', () async {
+      now = DateTime(2027);
+
+      await repository.reorderInstances(home.id, [c.id, b.id, a.id]);
+      await add(_draft(name: 'D'));
+
+      for (final instance in [a, b, c]) {
+        expect((await stored(instance)).updatedAt, instance.updatedAt);
+      }
+      expect(await names(), ['C', 'B', 'A', 'D']);
+    });
+
+    test('puts those not named after the others, as they were', () async {
+      await repository.reorderInstances(home.id, [c.id]);
+
+      expect(await names(), ['C', 'A', 'B']);
+    });
+
+    test('ignores ids of another profile, of none, and repeats', () async {
+      final away = _value(await repository.createProfile('Away'));
+      final x = await add(_draft(name: 'X'), profileId: away.id);
+
+      await repository.reorderInstances(home.id, [
+        x.id,
+        'none',
+        b.id,
+        b.id,
+        a.id,
+      ]);
+
+      expect(await names(), ['B', 'A', 'C']);
+      expect((await stored(x)).sortOrder, x.sortOrder);
+    });
+
+    test('works beside a row that cannot be read', () async {
+      await database.customStatement(
+        "UPDATE instances SET auth_kind = 'other' WHERE id = '${b.id}'",
+      );
+
+      await repository.reorderInstances(home.id, [c.id, a.id]);
+
+      expect(await names(), ['C', 'A']);
+    });
+
+    test('of a profile that does not exist is an error', () async {
+      await expectLater(
+        repository.reorderInstances('none', [a.id]),
+        throwsArgumentError,
+      );
+    });
+  });
+
   group('copying a profile', () {
     late Instance movies;
     late Instance series;

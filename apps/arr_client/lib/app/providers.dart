@@ -40,6 +40,27 @@ final activeProfileProvider = StreamProvider.autoDispose<ActiveProfile?>((ref) {
   });
 });
 
+/// The active profile and all its instances, enabled or not, in their order.
+typedef ProfileInstances = ({Profile profile, List<Instance> instances});
+
+/// Null without an active profile.
+final profileInstancesProvider = StreamProvider.autoDispose<ProfileInstances?>((
+  ref,
+) {
+  final services = ref.watch(appServicesProvider);
+  return _onEveryChange(services.profiles, () async {
+    final id = (await services.preferences.read()).activeProfileId;
+    final profile = (await services.profiles.profiles())
+        .where((profile) => profile.id == id)
+        .firstOrNull;
+    if (profile == null) return null;
+    return (
+      profile: profile,
+      instances: await services.profiles.instances(profile.id),
+    );
+  });
+});
+
 /// A saved instance, its profile and whether that is the active one.
 typedef SavedInstance = ({
   Instance instance,

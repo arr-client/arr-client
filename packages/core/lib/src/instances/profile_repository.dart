@@ -420,6 +420,37 @@ class ProfileRepository {
     });
   }
 
+  /// Puts the instances of a profile in the order of [ids]. Those not named
+  /// follow in the order they had, and ids that are not of the profile are
+  /// ignored, as the list the order was made from may be out of date. It is not
+  /// an edit of the instances: `updatedAt` stays.
+  Future<void> reorderInstances(String profileId, List<String> ids) =>
+      _database.transaction(() async {
+        _require(
+          (await profiles()).any((profile) => profile.id == profileId),
+          profileId,
+        );
+        final table = _database.instances;
+        // The ids alone, as one bad value fails a whole read of rows.
+        final query = _database.selectOnly(table)
+          ..addColumns([table.id])
+          ..where(table.profileId.equals(profileId))
+          ..orderBy([
+            OrderingTerm(expression: table.sortOrder),
+            OrderingTerm(expression: table.id),
+          ]);
+        final stored = await query.map((row) => row.read(table.id)!).get();
+        // A set keeps the order and takes each once.
+        final next = {...ids.where(stored.contains), ...stored};
+        // All of them, as imported ones may share a sortOrder.
+        for (final (order, id) in next.indexed) {
+          await (_database.update(table)..where(
+                (row) => row.id.equals(id) & row.sortOrder.equals(order).not(),
+              ))
+              .write(InstancesCompanion(sortOrder: Value(order)));
+        }
+      });
+
   /// Deletes an instance with its credential, subscriptions, markers, cache and
   /// the saved choices and views that name it.
   Future<void> deleteInstance(String id) async {
