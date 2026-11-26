@@ -201,6 +201,18 @@ void main() {
       expect((await _one({}, without: {'eta'})).eta, isNull);
     });
 
+    // For a finished torrent, qBittorrent's eta is the time until it reaches
+    // its seeding limit.
+    test('has no estimate for a finished torrent', () async {
+      final torrent = await _one({
+        'progress': 1,
+        'state': 'stalledUP',
+        'eta': 3600,
+      });
+
+      expect(torrent.eta, isNull);
+    });
+
     test('ignores fields it does not know', () async {
       final torrent = await _one({
         'someFutureField': {'a': 1},

@@ -51,6 +51,7 @@ final class QbittorrentProgressAdapter implements DownloadProgressProvider {
       final v1 = entry['infohash_v1'];
       final speed = entry['dlspeed'];
       final eta = entry['eta'];
+      final done = DownloadProgress.progressFrom(progress);
       return DownloadProgress(
         instanceId: _instanceId,
         hash: hash,
@@ -61,9 +62,11 @@ final class QbittorrentProgressAdapter implements DownloadProgressProvider {
                 v1.toLowerCase() != hash.toLowerCase()
             ? v1
             : null,
-        progress: DownloadProgress.progressFrom(progress),
+        progress: done,
         downSpeed: speed is int && speed > 0 ? speed : 0,
-        eta: eta is int && eta >= 0 && eta < _noEstimate
+        // Once finished, qBittorrent's figure is the time until the seeding
+        // limit, not until the download completes.
+        eta: done < 1 && eta is int && eta >= 0 && eta < _noEstimate
             ? Duration(seconds: eta)
             : null,
         state: _state(entry['state']),
