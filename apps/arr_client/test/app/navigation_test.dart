@@ -28,10 +28,14 @@ List<String?> tabs(WidgetTester tester) => [
   for (final tab in tester.widgetList<Tab>(find.byType(Tab))) tab.text,
 ];
 
-Future<void> open(WidgetTester tester, String destination) async {
+Future<void> open(
+  WidgetTester tester,
+  String destination, [
+  Type navigation = NavigationBar,
+]) async {
   await tester.tap(
     find.descendant(
-      of: find.byType(NavigationBar),
+      of: find.byType(navigation),
       matching: find.text(destination),
     ),
   );
@@ -236,6 +240,35 @@ void main() {
     // Still where it was.
     expect(rail.selectedIndex, 1);
     expect(tabs(tester), ['Movies']);
+    await app.stop(tester);
+  });
+
+  testWidgets('beside the rail the left inset is not left a second time', (
+    tester,
+  ) async {
+    usePhone(tester, const Size(800, 400));
+    final app = await TestApp.start(tester);
+    await app.add(movies, 'Films');
+    await app.pump(tester);
+    await open(tester, 'More', NavigationRail);
+    final rail = find.byType(NavigationRail);
+    final entry = find.text('Services');
+    final gap = tester.getTopLeft(entry).dx - tester.getTopRight(rail).dx;
+
+    tester.view
+      ..padding = const FakeViewPadding(left: 48)
+      ..viewPadding = const FakeViewPadding(left: 48);
+    await tester.pumpAndSettle();
+
+    // The rail keeps clear of the inset, and the content starts beside it.
+    expect(tester.getTopLeft(rail).dx, 48);
+    expect(tester.getTopLeft(entry).dx - tester.getTopRight(rail).dx, gap);
+
+    // Without a rail the screens keep clear of it themselves.
+    tester.view.physicalSize = const Size(400, 800);
+    await tester.pumpAndSettle();
+    final screen = tester.element(find.byType(ListView));
+    expect(MediaQuery.paddingOf(screen).left, 48);
     await app.stop(tester);
   });
 

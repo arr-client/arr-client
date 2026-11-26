@@ -82,7 +82,15 @@ class AppShell extends ConsumerWidget {
             )
           else
             const SizedBox.shrink(),
-          Expanded(child: shell),
+          // The rail keeps clear of the left inset, so the screens beside it
+          // must not again. Wrapped in both layouts, to keep their state.
+          Expanded(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeLeft: wide,
+              child: shell,
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: wide
