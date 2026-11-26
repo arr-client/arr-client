@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -24,20 +26,35 @@ class MovieDetailScreen extends ConsumerWidget {
     final strings = RadarrLocalizations.of(context);
     final provider = movieDetailProvider(source);
     final state = ref.watch(provider);
+    final controller = ref.read(provider.notifier);
     Future<void> refresh() => ref.read(provider.notifier).refresh();
 
     return Scaffold(
-      // The movie's title is in the body, where it is never cut short.
-      appBar: AppBar(title: Text(strings.movieDetailTitle)),
+      appBar: AppBar(
+        title: Text(switch (state.movie) {
+          ViewData(staleness: Staleness(failure: NotFound())) => '',
+          ViewData(:final value) => value.title,
+          ViewLoading() || ViewError() => '',
+        }),
+        actions: [
+          // Pulling down does this too, which a screen reader cannot.
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: strings.movieRefresh,
+            onPressed: () => unawaited(refresh()),
+          ),
+        ],
+      ),
       body: SafeArea(
         top: false,
-        child: StateScaffold<Movie>(
-          state: state.movie,
-          itemId: source.item,
-          onRetry: refresh,
-          builder: (context, movie, {required isStale}) => RefreshIndicator(
-            onRefresh: refresh,
-            child: _Content(movie, state, source: source, onRetry: refresh),
+        child: RefreshIndicator(
+          onRefresh: refresh,
+          child: StateScaffold<Movie>(
+            state: state.movie,
+            itemId: source.item,
+            onRetry: () => unawaited(refresh()),
+            builder: (context, movie, {required isStale}) =>
+                _Content(movie, state, source: source, controller: controller),
           ),
         ),
       ),
@@ -50,13 +67,13 @@ class _Content extends StatelessWidget {
     this.movie,
     this.state, {
     required this.source,
-    required this.onRetry,
+    required this.controller,
   });
 
   final Movie movie;
   final MovieDetailState state;
   final MovieDetailSource source;
-  final VoidCallback onRetry;
+  final MovieDetailController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -66,19 +83,6 @@ class _Content extends StatelessWidget {
       ViewData(:final staleness?) => staleness.failure != null,
       _ => false,
     };
-    final profile = switch (state.options) {
-      ViewData(:final value) =>
-        value
-            .where(
-              (option) =>
-                  option.kind == ServerOptionKind.qualityProfile &&
-                  option.id == movie.qualityProfileId,
-            )
-            .firstOrNull
-            ?.label,
-      _ => null,
-    };
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final margin = screenMargin(constraints.maxWidth);
@@ -111,7 +115,14 @@ class _Content extends StatelessWidget {
                   ),
                 ),
               ),
-            inset(MovieFacts(movie: movie, qualityProfile: profile)),
+            inset(SectionHeading(strings.movieDetails)),
+            inset(
+              MovieFacts(
+                movie: movie,
+                options: state.options,
+                onRetry: () => unawaited(controller.retryOptions()),
+              ),
+            ),
             inset(SectionHeading(strings.movieFileHeading)),
             inset(
               MovieFiles(
@@ -128,14 +139,15 @@ class _Content extends StatelessWidget {
               MovieCredits(
                 state: state.credits,
                 offline: offline,
-                onRetry: onRetry,
+                onRetry: () => unawaited(controller.retryCredits()),
               ),
             ),
             inset(
               MovieHistory(
                 state: state.history,
-                offline: offline,
-                onRetry: onRetry,
+                onRetry: () => unawaited(controller.retryHistory()),
+                onShowAll: () =>
+                    unawaited(source.instance.navigator.openHistory(movie.ref)),
               ),
             ),
           ],

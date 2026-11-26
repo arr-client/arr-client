@@ -67,8 +67,8 @@ final class MovieDetailState {
   /// Its cast and crew.
   final ViewState<List<Credit>> credits;
 
-  /// Its history, newest first.
-  final ViewState<List<HistoryEvent>> history;
+  /// The first page of its history, newest first.
+  final ViewState<ResultPage<HistoryEvent>> history;
 
   /// The server's options, for the name of the quality profile.
   final ViewState<List<ServerOption>> options;
@@ -78,7 +78,7 @@ final class MovieDetailState {
     ViewState<Movie>? movie,
     ViewState<List<MediaFile>>? files,
     ViewState<List<Credit>>? credits,
-    ViewState<List<HistoryEvent>>? history,
+    ViewState<ResultPage<HistoryEvent>>? history,
     ViewState<List<ServerOption>>? options,
   }) => MovieDetailState(
     movie: movie ?? this.movie,
@@ -148,39 +148,65 @@ class MovieDetailController extends Notifier<MovieDetailState> {
       options: _retrying(state.options),
     );
 
-    Future<void> part<T>(
-      ServiceResult<T> answer,
-      ViewState<T> Function() shown,
-      MovieDetailState Function(ViewState<T> next) put,
-    ) async {
-      final result = await answer;
-      if (current()) state = put(_after(result, shown()));
-    }
-
-    final item = source.item;
     await Future.wait([
       _movie(current),
-      part(
-        source.library.files(item),
-        () => state.files,
-        (next) => state.copyWith(files: next),
-      ),
-      part(
-        source.library.credits(item),
-        () => state.credits,
-        (next) => state.copyWith(credits: next),
-      ),
-      part(
-        _history(),
-        () => state.history,
-        (next) => state.copyWith(history: next),
-      ),
-      part(
-        source.library.options(),
-        () => state.options,
-        (next) => state.copyWith(options: next),
-      ),
+      _files(),
+      _credits(),
+      _history(),
+      _options(),
     ]);
+  }
+
+  /// Asks again for the cast and crew only.
+  Future<void> retryCredits() {
+    state = state.copyWith(credits: _retrying(state.credits));
+    return _credits();
+  }
+
+  /// Asks again for the history only.
+  Future<void> retryHistory() {
+    state = state.copyWith(history: _retrying(state.history));
+    return _history();
+  }
+
+  /// Asks again for the server's options only.
+  Future<void> retryOptions() {
+    state = state.copyWith(options: _retrying(state.options));
+    return _options();
+  }
+
+  Future<void> _files() => _part(
+    () => source.library.files(source.item),
+    () => state.files,
+    (next) => state.copyWith(files: next),
+  );
+
+  Future<void> _credits() => _part(
+    () => source.library.credits(source.item),
+    () => state.credits,
+    (next) => state.copyWith(credits: next),
+  );
+
+  Future<void> _history() => _part(
+    () => source.history.history(target: MediaTarget(source.item)),
+    () => state.history,
+    (next) => state.copyWith(history: next),
+  );
+
+  Future<void> _options() => _part(
+    source.library.options,
+    () => state.options,
+    (next) => state.copyWith(options: next),
+  );
+
+  Future<void> _part<T>(
+    ServiceResult<T> Function() read,
+    ViewState<T> Function() shown,
+    MovieDetailState Function(ViewState<T> next) put,
+  ) async {
+    final load = _load;
+    final result = await read();
+    if (ref.mounted && load == _load) state = put(_after(result, shown()));
   }
 
   Future<void> _movie(bool Function() current) async {
@@ -213,12 +239,6 @@ class MovieDetailController extends Notifier<MovieDetailState> {
       _ => ViewError(error),
     },
   };
-
-  ServiceResult<List<HistoryEvent>> _history() async =>
-      switch (await source.history.history(target: MediaTarget(source.item))) {
-        Ok(:final value) => Ok(value.items),
-        Err(:final error) => Err(error),
-      };
 
   static ViewState<T> _retrying<T>(ViewState<T> state) => switch (state) {
     ViewError() => const ViewLoading(),

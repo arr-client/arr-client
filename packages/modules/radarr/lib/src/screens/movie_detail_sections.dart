@@ -25,53 +25,97 @@ class SectionHeading extends StatelessWidget {
 }
 
 /// What is known about a movie besides its overview. What the server does not
-/// give is left out.
+/// give is left out; the quality profile says when its name could not be read.
 class MovieFacts extends StatelessWidget {
   /// Creates [MovieFacts].
   const MovieFacts({
     required this.movie,
-    required this.qualityProfile,
+    required this.options,
+    required this.onRetry,
     super.key,
   });
 
   /// The movie.
   final Movie movie;
 
-  /// The name of its quality profile, where known.
-  final String? qualityProfile;
+  /// The server's options, which name the quality profile.
+  final ViewState<List<ServerOption>> options;
+
+  /// Reads the options again.
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     final strings = RadarrLocalizations.of(context);
+    final profile = switch (options) {
+      ViewData(:final value) =>
+        value
+            .where(
+              (option) =>
+                  option.kind == ServerOptionKind.qualityProfile &&
+                  option.id == movie.qualityProfileId,
+            )
+            .firstOrNull
+            ?.label,
+      ViewLoading() || ViewError() => null,
+    };
+    final failure = switch (options) {
+      ViewError(:final failure) when movie.qualityProfileId != null => failure,
+      _ => null,
+    };
+    // A release date is a calendar day, which the server writes as midnight
+    // UTC. It is passed on as that day of the device's zone, so that it cannot
+    // become the day before.
+    String? day(DateTime? date) => date == null
+        ? null
+        : formatDay(context, DateTime(date.year, date.month, date.day));
     final ratings = [
       for (final rating in movie.ratings)
         if (rating.value > 0) _rating(strings, rating),
     ];
-    // A release date is a calendar day, which the server writes as midnight
-    // UTC: moved to the device's zone it could become the day before.
-    String? day(DateTime? date) => date == null
-        ? null
-        : MaterialLocalizations.of(context)
-              .formatShortDate(DateTime(date.year, date.month, date.day));
     final facts = <(String, String?)>[
+      (strings.movieRating, ratings.isEmpty ? null : ratings.join('\n')),
       (
         strings.movieGenres,
-        movie.genres.isEmpty ? null : movie.genres.join(', '),
+        movie.genres.isEmpty
+            ? null
+            : movie.genres.join(strings.movieListSeparator),
       ),
       (strings.movieStudio, movie.studio),
-      (strings.movieRatings, ratings.isEmpty ? null : ratings.join('\n')),
+      (
+        strings.movieRuntime,
+        switch (movie.runtime) {
+          final runtime? => strings.movieMinutes(runtime.inMinutes),
+          null => null,
+        },
+      ),
+      (strings.movieCertification, movie.certification),
       (strings.movieInCinemas, day(movie.inCinemas)),
       (strings.movieDigitalRelease, day(movie.digitalRelease)),
       (strings.moviePhysicalRelease, day(movie.physicalRelease)),
-      (strings.movieQualityProfile, qualityProfile),
+      (strings.movieQualityProfile, profile),
       (strings.moviePath, movie.path),
     ];
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
-        for (final (label, value) in facts)
-          if (value != null) _Fact(label, value),
+        FactList([
+          for (final (name, value) in facts)
+            if (value != null) (name, value),
+        ]),
+        if (failure != null) ...[
+          Text(
+            strings.movieQualityProfile,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Text(failureMessage(context, failure)),
+          TextButton(
+            onPressed: onRetry,
+            child: Text(strings.movieRetryQualityProfile),
+          ),
+        ],
       ],
     );
   }
@@ -90,23 +134,25 @@ class MovieFiles extends StatelessWidget {
     final strings = RadarrLocalizations.of(context);
     if (files.isEmpty) return Text(strings.movieNoFile);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final file in files) ...[
-          if (file.quality case final quality?)
-            _Fact(strings.movieFileQuality, quality.name),
-          _Fact(strings.movieFileSize, formatBytes(context, file.size)),
-          if (file.languages.isNotEmpty)
-            _Fact(
-              strings.movieFileLanguages,
-              file.languages.map((language) => language.name).join(', '),
-            ),
-          if (file.video case final video?)
-            _Fact(strings.movieFileVideo, video),
-          if (file.audio case final audio?)
-            _Fact(strings.movieFileAudio, audio),
-          _Fact(strings.moviePath, file.path),
-        ],
+        for (final file in files)
+          FactList([
+            if (file.quality case final quality?)
+              (strings.movieFileQuality, quality.name),
+            if (file.size > 0)
+              (strings.movieFileSize, formatBytes(context, file.size)),
+            if (file.languages.isNotEmpty)
+              (
+                strings.movieFileLanguages,
+                file.languages
+                    .map((language) => language.name)
+                    .join(strings.movieListSeparator),
+              ),
+            if (file.video case final video?) (strings.movieFileVideo, video),
+            if (file.audio case final audio?) (strings.movieFileAudio, audio),
+            (strings.moviePath, file.path),
+          ]),
       ],
     );
   }
@@ -187,62 +233,88 @@ class MovieCredits extends StatelessWidget {
   }
 }
 
-/// What has happened to a movie.
+/// How many events the screen shows before the rest are asked for.
+const _shownEvents = 5;
+
+/// The newest events of a movie, with a way to all of them.
 class MovieHistory extends StatelessWidget {
   /// Creates [MovieHistory].
   const MovieHistory({
     required this.state,
-    required this.offline,
     required this.onRetry,
+    required this.onShowAll,
     super.key,
   });
 
-  /// The events, newest first.
-  final ViewState<List<HistoryEvent>> state;
+  /// The first page of the events, newest first.
+  final ViewState<ResultPage<HistoryEvent>> state;
 
-  /// Whether the screen already says that the server cannot be loaded.
-  final bool offline;
-
-  /// Loads again.
+  /// Reads the history again.
   final VoidCallback onRetry;
+
+  /// Opens the whole history.
+  final VoidCallback onShowAll;
 
   @override
   Widget build(BuildContext context) {
     final strings = RadarrLocalizations.of(context);
-    final material = MaterialLocalizations.of(context);
-    final use24 = MediaQuery.alwaysUse24HourFormatOf(context);
-    String when(DateTime date) {
-      final local = date.toLocal();
-      return strings.movieDateAndTime(
-        material.formatShortDate(local),
-        material.formatTimeOfDay(
-          TimeOfDay.fromDateTime(local),
-          alwaysUse24HourFormat: use24,
-        ),
-      );
-    }
-
+    final failure = switch (state) {
+      ViewError(:final failure) => failure,
+      ViewData(:final staleness) => staleness?.failure,
+      ViewLoading() => null,
+    };
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeading(strings.movieHistory),
-        _SectionStatus(state: state, offline: offline, onRetry: onRetry),
+        if (state is ViewLoading)
+          LinearProgressIndicator(semanticsLabel: strings.movieHistory),
+        if (failure != null) ...[
+          Text(strings.movieHistoryFailed),
+          Text(failureMessage(context, failure)),
+          TextButton(
+            onPressed: onRetry,
+            child: Text(strings.movieRetryHistory),
+          ),
+        ],
         if (state case ViewData(:final value))
-          if (value.isEmpty)
+          if (value.items.isEmpty)
             Text(strings.movieNoHistory)
-          else
-            _Expandable(
-              shown: 5,
-              moreLabel: strings.movieShowAllHistory(value.length),
-              children: [
-                for (final event in value)
-                  _Entry(
-                    title: _eventLabel(strings, event.eventType),
-                    subtitle: '${when(event.date)}\n${event.sourceTitle}',
-                  ),
-              ],
-            ),
+          else ...[
+            for (final event in value.items.take(_shownEvents))
+              _event(context, strings, event),
+            if (value.items.length > _shownEvents || value.hasMore)
+              TextButton(
+                onPressed: onShowAll,
+                child: Text(strings.movieShowAllHistory),
+              ),
+          ],
       ],
+    );
+  }
+
+  Widget _event(
+    BuildContext context,
+    RadarrLocalizations strings,
+    HistoryEvent event,
+  ) {
+    final (label, icon) = _eventLook(strings, event.eventType);
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(icon),
+      title: Text(label),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (event.sourceTitle.isNotEmpty) Text(event.sourceTitle),
+          Text(
+            strings.movieDateAndTime(
+              formatDay(context, event.date),
+              formatTime(context, event.date),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -335,36 +407,6 @@ class _ExpandableState extends State<_Expandable>
   }
 }
 
-/// A label above its value, read as one.
-class _Fact extends StatelessWidget {
-  const _Fact(this.label, this.value);
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return MergeSemantics(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            Text(value, style: theme.textTheme.bodyLarge),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// A line of a list: a name and what goes with it.
 class _Entry extends StatelessWidget {
   const _Entry({required this.title, required this.subtitle});
@@ -396,43 +438,48 @@ class _Entry extends StatelessWidget {
   }
 }
 
-/// A score on its source's own scale. The sources are names, so they are not
-/// translated.
+/// A score and who gave it. The sources are names, so they are not translated.
 String _rating(RadarrLocalizations strings, Rating rating) {
-  final (name, decimals) = switch (rating.source) {
-    'imdb' => ('IMDb', 1),
-    'tmdb' => ('TMDb', 1),
-    'trakt' => ('Trakt', 1),
-    'metacritic' => ('Metacritic', 0),
-    'rottenTomatoes' => ('Rotten Tomatoes', 0),
-    final other => (other, 1),
+  final (name, percent) = switch (rating.source) {
+    'imdb' => ('IMDb', false),
+    'tmdb' => ('TMDb', false),
+    'trakt' => ('Trakt', false),
+    'metacritic' => ('Metacritic', false),
+    'rottenTomatoes' => ('Rotten Tomatoes', true),
+    final other => (other, false),
   };
+  // These two score out of a hundred, in whole numbers.
+  final whole =
+      rating.source == 'metacritic' || rating.source == 'rottenTomatoes';
   final number = NumberFormat.decimalPatternDigits(
     locale: strings.localeName,
-    decimalDigits: decimals,
+    decimalDigits: whole ? 0 : 1,
   ).format(rating.value);
-  final score = switch (rating.source) {
-    'imdb' || 'tmdb' || 'trakt' => strings.movieScoreOutOfTen(number),
-    'metacritic' => strings.movieScoreOutOfHundred(number),
-    'rottenTomatoes' => strings.movieScorePercent(number),
-    _ => number,
-  };
-  return switch (rating.votes) {
-    final votes? when votes > 0 => strings.movieRatingWithVotes(
-      votes,
-      name,
-      score,
-    ),
-    _ => strings.movieRating(name, score),
-  };
+  final value = percent ? strings.moviePercent(number) : number;
+  return [
+    if (name.isEmpty) value else strings.movieRatingFrom(name, value),
+    if (rating.votes case final votes? when votes > 0)
+      strings.movieVotes(votes),
+  ].join(strings.movieSeparator);
 }
 
-String _eventLabel(RadarrLocalizations strings, HistoryEventType type) =>
-    switch (type) {
-      HistoryEventType.grabbed => strings.movieEventGrabbed,
-      HistoryEventType.imported => strings.movieEventImported,
-      HistoryEventType.failed => strings.movieEventFailed,
-      HistoryEventType.renamed => strings.movieEventRenamed,
-      HistoryEventType.deleted => strings.movieEventDeleted,
-      HistoryEventType.other => strings.movieEventOther,
-    };
+(String, IconData) _eventLook(
+  RadarrLocalizations strings,
+  HistoryEventType type,
+) => switch (type) {
+  HistoryEventType.grabbed => (
+    strings.movieEventGrabbed,
+    Icons.cloud_download_outlined,
+  ),
+  HistoryEventType.imported => (
+    strings.movieEventImported,
+    Icons.download_done,
+  ),
+  HistoryEventType.failed => (strings.movieEventFailed, Icons.error_outline),
+  HistoryEventType.renamed => (
+    strings.movieEventRenamed,
+    Icons.drive_file_rename_outline,
+  ),
+  HistoryEventType.deleted => (strings.movieEventDeleted, Icons.delete_outline),
+  HistoryEventType.other => (strings.movieEventOther, Icons.history),
+};

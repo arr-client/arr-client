@@ -12,6 +12,14 @@ import 'package:ui/ui.dart';
 
 import '../contract/library_support.dart';
 
+/// Notes which histories were asked for.
+class _Navigator extends Fake implements AppNavigator {
+  final histories = <ItemRef>[];
+
+  @override
+  Future<void> openHistory(ItemRef ref) async => histories.add(ref);
+}
+
 class _NoArtwork implements ArtworkLoader {
   @override
   ImageProvider<Object>? image(MediaImage image) => null;
@@ -56,13 +64,13 @@ FakeRadarr _server([FakeRadarr? server]) => (server ?? FakeRadarr())
   ..answers['api/v3/movie/1'] = jsonAnswer(_movie())
   ..answers['api/v3/credit'] = jsonAnswer(_credits);
 
-InstanceContext _instance(Harness harness) {
+InstanceContext _instance(Harness harness, [AppNavigator? navigator]) {
   final context = harness.context;
   return InstanceContext(
     instance: context.instance,
     http: context.http,
     artwork: _NoArtwork(),
-    navigator: context.navigator,
+    navigator: navigator ?? context.navigator,
     cache: context.cache,
     logger: context.logger,
   );
@@ -78,11 +86,12 @@ void main() {
     ThemeData? theme,
     Widget Function(Widget child)? wrap,
     bool settle = true,
+    AppNavigator? navigator,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final instance = _instance(harness);
+    final instance = _instance(harness, navigator);
     final screen = RadarrModule().routes().single;
     await tester.pumpWidget(
       ProviderScope(
@@ -131,7 +140,10 @@ void main() {
 
     for (final text in [
       'The Long Voyage Home and Other Stories',
-      '2008 · PG-13 · 2 h 16 min',
+      '2008',
+      '136 min',
+      'PG-13',
+      'Details',
       'Downloaded',
       'Monitored',
       'On Home',
@@ -139,8 +151,8 @@ void main() {
       'Drama, Adventure',
       'Harbour Pictures',
       // A calendar day, in whatever zone the device is.
-      'Apr 10, 2008',
-      'Jul 1, 2008',
+      'Thursday, April 10, 2008',
+      'Tuesday, July 1, 2008',
       '/media/movies/voyage',
       'Bluray-1080p',
       '20.8 MiB',
@@ -158,15 +170,104 @@ void main() {
     ]) {
       expect(find.text(text), findsWidgets, reason: text);
     }
-    expect(find.textContaining('IMDb 6.4/10, 2,269 votes'), findsOneWidget);
+    expect(find.textContaining('IMDb: 6.4 · 2,269 votes'), findsOneWidget);
     expect(find.text('Physical release'), findsNothing);
     final profile =
         records(fixture('qualityprofile'))
                 .singleWhere((profile) => profile['id'] == 4)['name']!
             as String;
     expect(find.text(profile), findsOneWidget);
-    expect(find.text('Renamed'), findsOneWidget);
+    expect(find.text('File renamed'), findsOneWidget);
     expect(find.textContaining('Saved data'), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.text('The Long Voyage Home and Other Stories'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the refresh button asks the server again', (tester) async {
+    final harness = Harness(_server());
+    await pump(tester, harness);
+    harness.server.answers['api/v3/movie/1'] = jsonAnswer({
+      ..._movie(),
+      'overview': 'The crew is home.',
+    });
+
+    await tester.tap(find.byTooltip('Refresh'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('The crew is home.'), findsOneWidget);
+  });
+
+  testWidgets('says when the quality profile cannot be read, and retries', (
+    tester,
+  ) async {
+    final harness = Harness(_server());
+    harness.server.answers['api/v3/qualityprofile'] = failedAnswer(
+      const ServerError(statusCode: 500),
+      status: 500,
+    );
+    await pump(tester, harness);
+
+    expect(find.text('Quality profile'), findsOneWidget);
+    expect(find.textContaining('error 500'), findsOneWidget);
+
+    harness.server.answers.remove('api/v3/qualityprofile');
+    harness.server.requests.clear();
+    await tester.tap(find.text('Retry quality profile'));
+    await tester.pumpAndSettle();
+
+    final profile =
+        records(fixture('qualityprofile'))
+                .singleWhere((profile) => profile['id'] == 4)['name']!
+            as String;
+    expect(find.text(profile), findsOneWidget);
+    expect(find.textContaining('error 500'), findsNothing);
+    expect(
+      harness.server.requests.map((request) => request.path),
+      isNot(contains('api/v3/movie/1')),
+    );
+  });
+
+  testWidgets('says when history cannot be read, and retries it', (
+    tester,
+  ) async {
+    final harness = Harness(_server());
+    harness.server.answers['api/v3/history/movie'] = failedAnswer(
+      const ServerError(statusCode: 500),
+      status: 500,
+    );
+    await pump(tester, harness);
+
+    expect(find.text('History could not be loaded.'), findsOneWidget);
+
+    harness.server.answers.remove('api/v3/history/movie');
+    await tester.tap(find.text('Retry history'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('File renamed'), findsOneWidget);
+    expect(find.text('History could not be loaded.'), findsNothing);
+  });
+
+  testWidgets('shows the newest events and leads to the rest', (tester) async {
+    final harness = Harness(_server());
+    final event = records(fixture('history_movie_1')).first;
+    harness.server.answers['api/v3/history/movie'] = jsonAnswer([
+      for (var i = 1; i <= 6; i++)
+        {...event, 'id': i, 'sourceTitle': 'Release $i'},
+    ]);
+    final navigator = _Navigator();
+    await pump(tester, harness, navigator: navigator);
+
+    expect(find.text('Release 6'), findsOneWidget);
+    expect(find.text('Release 1'), findsNothing);
+
+    await tester.tap(find.text('Show all history'));
+
+    expect(navigator.histories, [movieRef(1)]);
   });
 
   testWidgets('marks the title and the section names as headings', (
@@ -183,7 +284,8 @@ void main() {
       'History',
     ]) {
       expect(
-        tester.getSemantics(find.text(heading)),
+        // The title is in the app bar too, which comes first.
+        tester.getSemantics(find.text(heading).last),
         isSemantics(label: heading, isHeader: true),
         reason: heading,
       );
@@ -248,7 +350,7 @@ void main() {
 
     await pump(tester, waiting, settle: false);
 
-    expect(find.text('The Long Voyage Home and Other Stories'), findsOneWidget);
+    expect(find.text('The Long Voyage Home and Other Stories'), findsWidgets);
     expect(find.textContaining('Saved data'), findsOneWidget);
     // The saved record names its file.
     expect(find.text('Bluray-1080p'), findsOneWidget);
@@ -270,11 +372,14 @@ void main() {
     await pump(tester, harness);
 
     expect(find.textContaining('Saved data'), findsOneWidget);
-    expect(find.textContaining('did not answer'), findsOneWidget);
+    // The notice, the quality profile and the history each give the reason.
+    expect(find.textContaining('did not answer'), findsNWidgets(3));
     expect(find.text('A crew far from port.'), findsOneWidget);
     expect(find.text('Bluray-1080p'), findsOneWidget);
-    // Cast and history are not kept for offline use.
-    expect(find.text('Not saved for offline viewing'), findsNWidgets(2));
+    // Cast, history and the profile's name are not kept for offline use.
+    expect(find.text('Not saved for offline viewing'), findsOneWidget);
+    expect(find.text('History could not be loaded.'), findsOneWidget);
+    expect(find.text('Retry quality profile'), findsOneWidget);
     expect(find.text('Retry'), findsOneWidget);
 
     harness.server.down = null;
@@ -283,7 +388,7 @@ void main() {
 
     expect(find.textContaining('Saved data'), findsNothing);
     expect(find.text('Ada Actor'), findsOneWidget);
-    expect(find.text('Renamed'), findsOneWidget);
+    expect(find.text('File renamed'), findsOneWidget);
   });
 
   testWidgets('with nothing saved, says why it cannot load', (tester) async {
@@ -341,7 +446,7 @@ void main() {
     await pump(tester, harness);
 
     expect(find.text('A crew far from port.'), findsOneWidget);
-    expect(find.text('Renamed'), findsOneWidget);
+    expect(find.text('File renamed'), findsOneWidget);
     expect(find.textContaining('error 500'), findsOneWidget);
 
     harness.server.answers['api/v3/credit'] = jsonAnswer(_credits);
@@ -371,8 +476,9 @@ void main() {
 
     expect(find.text('Cast'), findsNothing);
     expect(find.text('Crew'), findsNothing);
-    expect(find.text('No file on the server'), findsOneWidget);
+    expect(find.text('No file'), findsOneWidget);
     expect(find.text('No history'), findsOneWidget);
+    expect(find.text('Unmonitored'), findsOneWidget);
     expect(find.text('Not monitored'), findsOneWidget);
   });
 
@@ -420,7 +526,7 @@ void main() {
       await tester.tap(find.text('Retry'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
-        find.text('Renamed'),
+        find.text('File renamed'),
         300,
         scrollable: find.byType(Scrollable).first,
       );

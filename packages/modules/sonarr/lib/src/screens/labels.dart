@@ -6,39 +6,6 @@ import 'package:material_ui/material_ui.dart';
 
 import '../l10n/generated/sonarr_localizations.dart';
 
-/// How an item's state looks: a word and an icon, with colour only helping.
-extension StateLook on ItemState {
-  /// The word.
-  String label(SonarrLocalizations strings) => switch (this) {
-    ItemState.downloading => strings.stateDownloading,
-    ItemState.downloaded => strings.stateDownloaded,
-    ItemState.partial => strings.statePartial,
-    ItemState.unmonitored => strings.stateUnmonitored,
-    ItemState.unreleased => strings.stateUnreleased,
-    ItemState.missing => strings.stateMissing,
-  };
-
-  /// The icon.
-  IconData get icon => switch (this) {
-    ItemState.downloading => Icons.downloading,
-    ItemState.downloaded => Icons.check_circle,
-    ItemState.partial => Icons.incomplete_circle,
-    ItemState.unmonitored => Icons.bookmark_border,
-    ItemState.unreleased => Icons.schedule,
-    ItemState.missing => Icons.error_outline,
-  };
-
-  /// The icon's colour.
-  Color color(ColorScheme colors) => switch (this) {
-    ItemState.downloading => colors.tertiary,
-    ItemState.downloaded => colors.primary,
-    ItemState.missing => colors.error,
-    ItemState.partial ||
-    ItemState.unmonitored ||
-    ItemState.unreleased => colors.onSurfaceVariant,
-  };
-}
-
 /// Null for a status the app does not know, which is not shown.
 String? statusLabel(SonarrLocalizations strings, SeriesStatus status) =>
     switch (status) {
