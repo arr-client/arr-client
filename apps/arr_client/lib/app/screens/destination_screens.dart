@@ -17,6 +17,7 @@ import '../../features/home/profile_switcher.dart';
 import '../../features/home/unreachable_offer.dart';
 import '../../features/library/library_controller.dart';
 import '../../features/library/library_view_body.dart';
+import '../../features/settings/settings_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../navigation/destinations.dart';
 import '../navigation/locations.dart';
@@ -199,6 +200,7 @@ class MorePage extends ConsumerWidget {
       return MessagePage(title: title, message: strings.notOffered);
     }
     if (entry == MoreEntry.calendar) return const CalendarScreen();
+    if (entry == MoreEntry.settings) return const SettingsScreen();
     final owned = switch (entry) {
       MoreEntry.subtitles => [
         if (scope != null)

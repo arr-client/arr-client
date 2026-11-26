@@ -14,6 +14,7 @@ import 'navigation/router_app_navigator.dart';
 import 'platform/connectivity.dart';
 import 'platform/local_network.dart';
 import 'platform/secret_store.dart';
+import 'platform/text_sharer.dart';
 
 /// Starts the app's services on the device's own.
 Future<AppServices> startOnDevice() async {
@@ -44,6 +45,7 @@ final class AppServices {
     required SecretStore secrets,
     required NetworkConnectivity connectivity,
     required this.localNetwork,
+    required this.sharer,
     required Future<Directory> Function() cacheDirectory,
   }) {
     artwork = ArtworkCache(
@@ -79,6 +81,7 @@ final class AppServices {
     required LocalNetworkPermission localNetwork,
     required Future<Directory> Function() cacheDirectory,
     Iterable<ServiceModule>? modules,
+    TextSharer sharer = const SystemTextSharer(),
   }) async {
     final log = DiagnosticLog();
     final registered = ModuleRegistry(modules ?? serviceModules());
@@ -100,6 +103,7 @@ final class AppServices {
       secrets: secrets,
       connectivity: connectivity,
       localNetwork: localNetwork,
+      sharer: sharer,
       cacheDirectory: cacheDirectory,
     );
     try {
@@ -122,6 +126,9 @@ final class AppServices {
 
   /// The operating system's local network permission.
   final LocalNetworkPermission localNetwork;
+
+  /// The system's share sheet.
+  final TextSharer sharer;
 
   /// The user's preferences.
   final PreferencesRepository preferences;

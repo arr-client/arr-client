@@ -30,6 +30,17 @@ String morePath(MoreEntry entry) => switch (entry) {
 String moreLocation(MoreEntry entry) =>
     '${destinationLocation(AppDestination.more)}/${morePath(entry)}';
 
+/// The paths of the pages of Settings, relative to it.
+const diagnosticLogPath = 'diagnostic-log';
+const licensesPath = 'licenses';
+
+/// Where the diagnostic log is.
+final diagnosticLogLocation =
+    '${moreLocation(MoreEntry.settings)}/$diagnosticLogPath';
+
+/// Where the licenses are.
+final licensesLocation = '${moreLocation(MoreEntry.settings)}/$licensesPath';
+
 /// The app-wide search.
 const searchLocation = '/search';
 

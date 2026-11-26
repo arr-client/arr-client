@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:arr_client/app/app.dart';
 import 'package:arr_client/app/composition.dart';
+import 'package:arr_client/app/platform/text_sharer.dart';
 import 'package:core/core.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,6 +26,20 @@ class MemorySecrets implements SecretStore {
 
   @override
   Future<void> delete(String key) async => values.remove(key);
+}
+
+/// Keeps what would have gone to the share sheet.
+class FakeSharer implements TextSharer {
+  final shared = <String>[];
+
+  /// What sharing throws, if anything.
+  Exception? failure;
+
+  @override
+  Future<void> share(String text) async {
+    if (failure case final failure?) throw failure;
+    shared.add(text);
+  }
 }
 
 class FakeConnectivity implements NetworkConnectivity {
@@ -192,16 +207,20 @@ final downloads = FakeModule(
 
 /// A running app without a device.
 class TestApp {
-  TestApp._(this.services);
+  TestApp._(this.services, this.sharer);
 
   final AppServices services;
+
+  final FakeSharer sharer;
 
   static Future<TestApp> start(
     WidgetTester tester, {
     Iterable<ServiceModule>? modules,
     LocalNetworkPermission? localNetwork,
   }) async {
+    final sharer = FakeSharer();
     final services = await AppServices.start(
+      sharer: sharer,
       database: NativeDatabase.memory(),
       secrets: MemorySecrets(),
       connectivity: FakeConnectivity(),
@@ -209,7 +228,7 @@ class TestApp {
       cacheDirectory: () async => Directory('build/test-cache'),
       modules: modules ?? [movies, series, subtitles, downloads],
     );
-    return TestApp._(services);
+    return TestApp._(services, sharer);
   }
 
   Future<String> get activeProfile async =>
