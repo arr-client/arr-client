@@ -38,7 +38,10 @@ abstract final class ArrTheme {
               surfaceDim: _black,
               surfaceContainerLowest: _black,
             )
-          : scheme,
+          // In a dark Material 3 scheme surface and surfaceDim are the same
+          // colour. The schemes of dynamic_color break that: their surface is
+          // as light as surfaceContainerLow, which hides cards.
+          : scheme.copyWith(surface: scheme.surfaceDim),
     );
   }
 }

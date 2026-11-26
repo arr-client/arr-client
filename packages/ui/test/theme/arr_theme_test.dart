@@ -63,6 +63,17 @@ void main() {
       expect(ArrTheme.light().colorScheme.primary, isNot(light.primary));
     });
 
+    test('keeps dark cards visible when surface is as light as them', () {
+      // The shape dynamic_color builds: surface from an older, lighter tone.
+      final scheme = dark.copyWith(surface: dark.surfaceContainerLow);
+
+      final colors = ArrTheme.dark(dynamicScheme: scheme).colorScheme;
+
+      expect(colors.surface, dark.surfaceDim);
+      expect(colors.surface, isNot(colors.surfaceContainerLow));
+      expect(colors.surfaceContainerLow, dark.surfaceContainerLow);
+    });
+
     test('keeps its other colours on true black', () {
       final theme = ArrTheme.dark(dynamicScheme: dark, trueBlack: true);
 
