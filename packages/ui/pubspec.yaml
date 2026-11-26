@@ -9,3 +9,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # Translations of the Flutter widgets; imported by the generated localizations.
+  flutter_localizations:
+    sdk: flutter
+  # Imported by the generated localizations.
+  intl: ^0.20.2
+  # Material widgets. package:flutter/material.dart is deprecated.
+  material_ui: ^1.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  # `flutter pub get` runs gen-l10n with l10n.yaml.
+  generate: true
