@@ -1,9 +1,10 @@
-// The history read: one page of `GET history`, newest first.
+// The history reads: one page of `GET history`, newest first, and the history
+// of one item.
 //
 // `eventType` words of the family map to `HistoryEventType`; `details` holds the
 // text values of `data` under the server's keys, but none that may hold a secret:
 // a grab records the indexer's addresses, which carry its API key. Events since a
-// time, item history and mark-failed come with later tasks.
+// time and mark-failed come with later tasks.
 
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -213,6 +214,67 @@ void main() {
 
         expect(
           await failure(service.client(_server(records)).history()),
+          isA<MalformedResponse>(),
+        );
+      });
+    });
+
+    group('${service.name} item history', () {
+      final (path, parameter) = service == radarr
+          ? ('history/movie', 'movieId')
+          : ('history/series', 'seriesId');
+
+      Future<List<HistoryEvent>> read(FakeServer server) => value(
+        service
+            .client(server)
+            .itemHistory(
+              path,
+              query: {
+                parameter: ['11'],
+              },
+            ),
+      );
+
+      test('asks the read of the item', () async {
+        final server = FakeServer.paths({path: <Object>[]});
+
+        expect(await read(server), isEmpty);
+
+        final request = server.requests.single;
+        expect(request.method, HttpMethod.get);
+        expect(request.path, 'api/v3/$path');
+        expect(request.query, {
+          parameter: ['11'],
+        });
+      });
+
+      test('is newest first, then by id', () async {
+        final record = service.records('history').first;
+        final server = FakeServer.paths({
+          path: [
+            {...record, 'id': 1, 'date': '2026-01-01T00:00:00Z'},
+            {...record, 'id': 2, 'date': '2026-01-02T00:00:00Z'},
+            {...record, 'id': 3, 'date': '2026-01-01T00:00:00Z'},
+          ],
+        });
+
+        expect((await read(server)).map((event) => event.id), [2, 3, 1]);
+      });
+
+      test('cannot understand a page', () async {
+        final server = FakeServer.paths({path: service.object('history')});
+
+        expect(
+          await failure(
+            service
+                .client(server)
+                .itemHistory(
+                  path,
+                  query: {
+                    parameter: ['11'],
+                  },
+                ),
+          ),
           isA<MalformedResponse>(),
         );
       });

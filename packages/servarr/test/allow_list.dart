@@ -38,5 +38,13 @@ AllowList allowList(String includeUnknown) => AllowList([
       'sortDirection': _any,
     },
   ),
+  AllowedRequest.read(
+    'api/v3/history/movie',
+    query: {'movieId': const ParamRule.nonEmpty()},
+  ),
+  AllowedRequest.read(
+    'api/v3/history/series',
+    query: {'seriesId': const ParamRule.nonEmpty()},
+  ),
   AllowedRequest.read('api/v3/command/{id}'),
 ]);

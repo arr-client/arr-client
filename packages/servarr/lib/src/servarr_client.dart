@@ -122,6 +122,22 @@ final class ServarrClient {
   ServiceResult<Command> commandStatus(int commandId) =>
       _get('command/$commandId', (json) => readCommand(asObject(json)));
 
+  /// The events of one item, newest first, from the service's own read at
+  /// [path], such as `history/movie`. The server does not page them.
+  ServiceResult<List<HistoryEvent>> itemHistory(
+    String path, {
+    required Map<String, List<String>> query,
+  }) => _get(path, (json) {
+    final events = [
+      for (final record in asObjects(json)) historyEvent(record, _refs(record)),
+    ];
+    // The id orders events of the same moment.
+    return events..sort((a, b) {
+      final byDate = b.date.compareTo(a.date);
+      return byDate != 0 ? byDate : b.id.compareTo(a.id);
+    });
+  }, query: query);
+
   /// The problems the server reports.
   ServiceResult<List<HealthIssue>> health() =>
       _get('health', (json) => asObjects(json).map(healthIssue).toList());
