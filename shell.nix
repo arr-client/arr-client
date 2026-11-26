@@ -1,4 +1,6 @@
-# Development shell for arr-client (NixOS and any Linux or macOS machine with Nix).
+# Development shell for arr-client. Supported: NixOS or x86_64 Linux with Nix. Apple Silicon macOS
+# may work without the emulator (untested). Intel macOS is not supported by this nixpkgs, and the
+# emulator image here is x86_64 only.
 #
 #   nix-shell                              Flutter, Android SDK, JDK and repository tools
 #   nix-shell --arg withEmulator true      also an Android emulator and system image (large)
