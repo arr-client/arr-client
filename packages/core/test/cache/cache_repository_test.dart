@@ -233,6 +233,8 @@ void main() {
       await cache.replace(MediaKind.book, [
         _entry(1, kind: MediaKind.book, parentRemoteId: 10),
       ], parentRemoteId: 10);
+      // An author without books.
+      await cache.put(_entry(30, kind: MediaKind.author));
       now = _second;
       await cache.replace(MediaKind.book, [
         _entry(1, kind: MediaKind.book, parentRemoteId: 10),
@@ -247,6 +249,7 @@ void main() {
         expect(snapshot!.fetchedAt, _second);
       }
       expect(await ids(MediaKind.book, parent: 20), [2]);
+      expect(await cache.read(MediaKind.book, parentRemoteId: 40), isNull);
 
       now = _third;
       await cache.replace(MediaKind.book, [], parentRemoteId: 10);
@@ -257,6 +260,26 @@ void main() {
       );
       expect((await cache.read(MediaKind.book))!.fetchedAt, _second);
       expect(await ids(MediaKind.book), [2]);
+    });
+
+    test('of a parent added after a full fetch were never fetched', () async {
+      await cache.replace(MediaKind.artist, [
+        _entry(1, kind: MediaKind.artist),
+      ]);
+      await cache.replace(MediaKind.album, [
+        _entry(10, kind: MediaKind.album, parentRemoteId: 1),
+      ]);
+
+      await cache.remove(MediaKind.artist, 1);
+      await cache.put(_entry(2, kind: MediaKind.artist));
+
+      for (final artist in [1, 2]) {
+        expect(
+          await cache.read(MediaKind.album, parentRemoteId: artist),
+          isNull,
+        );
+      }
+      expect(await ids(MediaKind.album), isEmpty);
     });
 
     test('can be larger than one statement allows', () async {

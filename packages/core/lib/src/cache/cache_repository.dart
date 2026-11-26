@@ -111,7 +111,7 @@ final class _InstanceCache implements CacheScope {
           entries.map(_row).toList(),
         ),
       );
-      // A fetch of everything covers the earlier fetches by parent.
+      // A fetch of everything replaces the earlier fetches by parent.
       if (parentRemoteId == null) {
         await (_database.delete(_fetches)..where(
               (row) =>
@@ -120,16 +120,21 @@ final class _InstanceCache implements CacheScope {
             ))
             .go();
       }
-      await _database
-          .into(_fetches)
-          .insertOnConflictUpdate(
+      final lists = {
+        parentRemoteId ?? CacheFetches.noParent,
+        if (parentRemoteId == null) ...await _knownParents(kind, entries),
+      };
+      await _database.batch(
+        (batch) => batch.insertAllOnConflictUpdate(_fetches, [
+          for (final parent in lists)
             CacheFetchesCompanion.insert(
               instanceId: _instanceId,
               kind: kind,
-              parentRemoteId: parentRemoteId ?? CacheFetches.noParent,
+              parentRemoteId: parent,
               fetchedAt: fetchedAt,
             ),
-          );
+        ]),
+      );
     });
   }
 
@@ -143,21 +148,33 @@ final class _InstanceCache implements CacheScope {
   Future<void> remove(MediaKind kind, int remoteId) =>
       _database.transaction(() => _remove(kind, [remoteId]));
 
-  /// When the list was last fetched: by itself, or else as part of everything
-  /// of its kind.
-  Future<DateTime?> _fetchedAt(MediaKind kind, int? parentRemoteId) async {
-    for (final parent in [?parentRemoteId, CacheFetches.noParent]) {
-      final query = _database.select(_fetches)
-        ..where(
-          (row) =>
-              row.instanceId.equals(_instanceId) &
-              row.kind.equalsValue(kind) &
-              row.parentRemoteId.equals(parent),
-        );
-      final fetch = await query.getSingleOrNull();
-      if (fetch != null) return fetch.fetchedAt;
+  /// The parents whose lists a fetch of everything of [kind] answers for: those
+  /// cached and those of [entries]. A parent that appears later was not asked
+  /// about. Empty if the kind has no parent.
+  Future<Set<int>> _knownParents(
+    MediaKind kind,
+    List<CacheEntry> entries,
+  ) async {
+    for (final MapEntry(key: parentKind, value: childKind)
+        in _childKinds.entries) {
+      if (childKind != kind) continue;
+      return {
+        ...await _ids((row) => _matches(row, parentKind, null)),
+        for (final entry in entries) ?entry.parentRemoteId,
+      };
     }
-    return null;
+    return const {};
+  }
+
+  Future<DateTime?> _fetchedAt(MediaKind kind, int? parentRemoteId) async {
+    final query = _database.select(_fetches)
+      ..where(
+        (row) =>
+            row.instanceId.equals(_instanceId) &
+            row.kind.equalsValue(kind) &
+            row.parentRemoteId.equals(parentRemoteId ?? CacheFetches.noParent),
+      );
+    return (await query.getSingleOrNull())?.fetchedAt;
   }
 
   Expression<bool> _matches(
