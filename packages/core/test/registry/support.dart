@@ -70,12 +70,25 @@ class FakeModule implements ServiceModule {
   /// Makes every probe throw.
   var probeThrows = false;
 
+  /// Makes every probe find the version too old, or newer than tested.
+  var tooOld = false;
+  var newer = false;
+
   /// Reports the body of `GET status` as the version.
   @override
   ServiceResult<ProbeResult> probe(InstanceContext context) async {
     if (probeThrows) throw StateError('broken');
     return switch (await context.http.send(get('status'))) {
-      Ok(:final value) => Ok(ProbeResult(product: 'Fake', version: value.text)),
+      Ok(:final value) when tooOld => Err(
+        UnsupportedVersion(version: value.text),
+      ),
+      Ok(:final value) => Ok(
+        ProbeResult(
+          product: 'Fake',
+          version: value.text,
+          newerThanTested: newer,
+        ),
+      ),
       Err(:final error) => Err(error.failure),
     };
   }

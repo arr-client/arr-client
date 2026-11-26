@@ -18,6 +18,7 @@ final class Instance {
     this.customCa,
     this.detectedVersion,
     this.lastProbe,
+    this.unsupportedVersion,
     this.authFailed = false,
     this.enabled = true,
     this.sortOrder = 0,
@@ -62,6 +63,11 @@ final class Instance {
 
   /// What the last successful probe found.
   final ProbeSnapshot? lastProbe;
+
+  /// The version of a server that the last probe to find one found too old to
+  /// be supported, which blocks the instance: it offers nothing. Empty if the
+  /// server named none. Null once a probe succeeds or the url changes.
+  final String? unsupportedVersion;
 
   /// Instances this one is explicitly linked to.
   final List<InstanceLink> links;

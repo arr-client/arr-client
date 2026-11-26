@@ -9,6 +9,7 @@ final class ProbeSnapshot {
     required this.version,
     required this.capabilities,
     this.permissions = const {},
+    this.newerThanTested = false,
   });
 
   /// The server's product.
@@ -22,4 +23,8 @@ final class ProbeSnapshot {
 
   /// What that identity was permitted to do.
   final Set<ServicePermission> permissions;
+
+  /// The server was newer than the versions the app had been tested with, which
+  /// the user is told.
+  final bool newerThanTested;
 }

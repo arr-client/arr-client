@@ -213,6 +213,61 @@ void main() {
     });
   });
 
+  group('the server version', () {
+    test('keeps the notice that it is newer than tested', () async {
+      world.radarr.newer = true;
+
+      final id = await add('First', server.url);
+      await reaches<ConnectionOnline>(id);
+      await _until(() => world.active(id).instance.lastProbe != null);
+
+      expect(world.active(id).instance.lastProbe!.newerThanTested, isTrue);
+    });
+
+    test('too old blocks the instance until it is supported again', () async {
+      final id = await world.add('First', server.url);
+      await reaches<ConnectionOnline>(id);
+      expect(registry().scope!.capabilities, {CapabilityKind.health});
+      world.radarr.tooOld = true;
+
+      prober.probe(id);
+      await _until(() => world.active(id).instance.unsupportedVersion != null);
+      await reaches<ConnectionOffline>(id);
+
+      expect(world.active(id).instance.unsupportedVersion, '2');
+      expect(
+        (connection(id) as ConnectionOffline).failure,
+        isA<UnsupportedVersion>(),
+      );
+      expect(world.active(id).capability(CapabilityKind.health), isNull);
+      expect(registry().scope!.capabilities, isEmpty);
+
+      world.radarr.tooOld = false;
+      prober.probe(id);
+      await _until(() => world.active(id).instance.unsupportedVersion == null);
+      await reaches<ConnectionOnline>(id);
+
+      expect(registry().scope!.capabilities, {CapabilityKind.health});
+    });
+
+    test('stays blocked while the server does not answer', () async {
+      world.radarr.tooOld = true;
+      final id = await add('First', server.url);
+      await _until(() => world.active(id).instance.unsupportedVersion != null);
+      await reaches<ConnectionOffline>(id);
+      server.statuses['status'] = 500;
+
+      prober.probe(id);
+      await _until(
+        () =>
+            registry().scope!.instance(id)!.connection is ConnectionOffline &&
+            (connection(id) as ConnectionOffline).failure is ServerError,
+      );
+
+      expect(world.active(id).instance.unsupportedVersion, '2');
+    });
+  });
+
   group('a latched instance', () {
     test('is not probed until the user has it try again', () async {
       await prober.close();

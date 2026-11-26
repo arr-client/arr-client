@@ -15,7 +15,8 @@ File extension `.arrclient.json`, UTF-8 JSON.
 - Without credentials: `encrypted` is false; payload holds no credential fields, custom headers or
   cookies.
 - Decrypted or plain `payload` schema: `profiles[]` are Profile records; `instances[]` are Instance
-  fields (data-model names, including `profileId`; no `lastProbe`, `detectedVersion` or `authFailed`, which are ignored if present), each with,
+  fields (data-model names, including `profileId`; no `lastProbe`, `detectedVersion`,
+  `unsupportedVersion` or `authFailed`, which are ignored if present), each with,
   in encrypted exports only, `credential`:
   `{apiKey?, username?, password?, basicUser?, basicPassword?, customHeaders?}`; `preferences` is
   Preferences without `activeProfileId` and `appLock`; `subscriptions[]` are

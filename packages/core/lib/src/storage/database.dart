@@ -65,8 +65,10 @@ class Instances extends Table {
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   TextColumn get detectedVersion => text().nullable()();
 
-  /// A JSON object: product, version, capabilities and permissions.
+  /// A JSON object: product, version, capabilities, permissions and
+  /// newerThanTested.
   TextColumn get lastProbe => text().nullable()();
+  TextColumn get unsupportedVersion => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 

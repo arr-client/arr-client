@@ -363,6 +363,7 @@ final class InstanceRegistry {
     instance.sortOrder,
     instance.authFailed,
     instance.detectedVersion,
+    instance.unsupportedVersion,
     if (instance.lastProbe case final probe?) encodeProbeSnapshot(probe),
     for (final link in instance.links) [link.type.name, link.instanceId],
   ]);

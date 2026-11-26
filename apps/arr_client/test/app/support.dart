@@ -72,6 +72,7 @@ class FakeModule implements ServiceModule {
     this.itemKind = MediaKind.movie,
     this.permissions = const {},
     this.library,
+    this.sessionHandler,
   });
 
   @override
@@ -83,6 +84,18 @@ class FakeModule implements ServiceModule {
 
   /// The library of an instance; without it an empty one.
   final LibraryProvider Function(InstanceContext context)? library;
+
+  /// How a probe goes instead of succeeding.
+  ServiceFailure? failure;
+
+  /// Whether a probe finds a version newer than tested.
+  var newerThanTested = false;
+
+  /// A probe under way waits for this.
+  Completer<void>? gate;
+
+  /// How many probes were started.
+  var probes = 0;
 
   /// What a saved instance of this service was last found to offer.
   ProbeSnapshot get snapshot => ProbeSnapshot(
@@ -105,16 +118,22 @@ class FakeModule implements ServiceModule {
   );
 
   @override
-  SessionHandler? get sessionHandler => null;
+  final SessionHandler? sessionHandler;
 
   @override
-  ServiceResult<ProbeResult> probe(InstanceContext context) async => Ok(
-    ProbeResult(
-      product: id,
-      version: '1',
-      session: SessionInfo(permissions: permissions),
-    ),
-  );
+  ServiceResult<ProbeResult> probe(InstanceContext context) async {
+    probes++;
+    await gate?.future;
+    if (failure case final failure?) return Err(failure);
+    return Ok(
+      ProbeResult(
+        product: id,
+        version: '1',
+        newerThanTested: newerThanTested,
+        session: SessionInfo(permissions: permissions),
+      ),
+    );
+  }
 
   @override
   Set<CapabilityKind> capabilitiesFor(

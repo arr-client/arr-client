@@ -715,6 +715,120 @@ void main() {
     });
   });
 
+  group('what a probe finds', () {
+    const newer = ProbeSnapshot(
+      product: 'Radarr',
+      version: '9.0.0',
+      capabilities: {CapabilityKind.library},
+      newerThanTested: true,
+    );
+
+    Future<InstanceAccess> access(Instance instance) async =>
+        (await repository.instanceWithCredential(instance.id))!;
+
+    /// A saved instance that was probed and then found too old.
+    Future<Instance> blocked() async {
+      final instance = await add(_draft(probe: _probe));
+      await repository.recordUnsupportedVersion(
+        await access(instance),
+        '1.2.3',
+      );
+      return stored(instance);
+    }
+
+    test('keeps the notice of a newer version', () async {
+      final tested = await add(_draft(probe: newer));
+      expect((await stored(tested)).lastProbe!.newerThanTested, isTrue);
+
+      expect(
+        await repository.recordProbe(await access(tested), _probe),
+        isTrue,
+      );
+      expect((await stored(tested)).lastProbe!.newerThanTested, isFalse);
+
+      await repository.recordProbe(await access(tested), newer);
+      expect((await stored(tested)).lastProbe!.newerThanTested, isTrue);
+    });
+
+    test('blocks a version too old, keeping what was known', () async {
+      final instance = await blocked();
+
+      expect(instance.unsupportedVersion, '1.2.3');
+      expect(instance.detectedVersion, '5.1.0');
+      expect(instance.lastProbe!.capabilities, _probe.capabilities);
+    });
+
+    test('blocks a version the server did not name', () async {
+      final instance = await add(_draft());
+
+      await repository.recordUnsupportedVersion(await access(instance), null);
+
+      expect((await stored(instance)).unsupportedVersion, '');
+    });
+
+    test('is not an edit', () async {
+      final added = await add(_draft());
+      now = now.add(const Duration(days: 1));
+
+      await repository.recordUnsupportedVersion(await access(added), '1');
+
+      expect((await stored(added)).updatedAt, added.updatedAt);
+    });
+
+    test('lifts the block with a successful probe', () async {
+      final instance = await blocked();
+
+      await repository.recordProbe(await access(instance), _probe);
+
+      expect((await stored(instance)).unsupportedVersion, isNull);
+    });
+
+    test('does not block what was edited meanwhile', () async {
+      final instance = await add(_draft());
+      final used = await access(instance);
+      await update(instance, _draft(url: 'https://other.test'));
+
+      expect(await repository.recordUnsupportedVersion(used, '1'), isFalse);
+
+      expect((await stored(instance)).unsupportedVersion, isNull);
+    });
+
+    test('stays blocked through an edit that tests nothing', () async {
+      final instance = await blocked();
+
+      await update(instance, _draft(name: 'Films'));
+
+      expect((await stored(instance)).unsupportedVersion, '1.2.3');
+    });
+
+    test('is unblocked by another address', () async {
+      final instance = await blocked();
+
+      await update(instance, _draft(url: 'https://other.test'));
+
+      expect((await stored(instance)).unsupportedVersion, isNull);
+    });
+
+    test('is unblocked by a passed test', () async {
+      final instance = await blocked();
+
+      await update(instance, _draft(probe: _probe));
+
+      expect((await stored(instance)).unsupportedVersion, isNull);
+    });
+
+    test('is copied with the profile', () async {
+      await blocked();
+
+      final copy = _value(await repository.copyProfile(home.id, name: 'Away'));
+
+      expect(
+        (await repository.instances(copy.id)).single.unsupportedVersion,
+        '1.2.3',
+      );
+    });
+  });
+
   group('certificate pin', () {
     final pin = 'ab' * 32;
     final newPin = 'cd' * 32;

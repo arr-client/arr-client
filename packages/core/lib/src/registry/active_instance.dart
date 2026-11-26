@@ -37,9 +37,11 @@ final class ActiveInstance {
   /// what it still answers must not be shown.
   bool get isCurrent => _isCurrent();
 
-  /// What the last successful probe found it offers; nothing before one.
-  Set<CapabilityKind> get capabilities =>
-      instance.lastProbe?.capabilities ?? const {};
+  /// What the last successful probe found it offers; nothing before one, nor
+  /// while the server's version is too old (`Instance.unsupportedVersion`).
+  Set<CapabilityKind> get capabilities => instance.unsupportedVersion != null
+      ? const {}
+      : instance.lastProbe?.capabilities ?? const {};
 
   /// What the signed-in identity may do, as of that probe.
   Set<ServicePermission> get permissions =>

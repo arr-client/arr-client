@@ -35,6 +35,7 @@ final class ModuleRegistry {
       version: probe.version,
       capabilities: module.capabilitiesFor(probe, probe.session),
       permissions: probe.session?.permissions ?? const {},
+      newerThanTested: probe.newerThanTested,
     );
   }
 }
