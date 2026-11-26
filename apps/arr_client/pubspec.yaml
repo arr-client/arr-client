@@ -9,6 +9,12 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # Tells which network the device is on (Wi-Fi, mobile data, VPN), which the
+  # local network permission and connection state depend on. BSD-3-Clause; on
+  # Android it adds only AndroidX core and ACCESS_NETWORK_STATE.
+  connectivity_plus: ^7.3.2
+  core:
+    path: ../../packages/core
   # Reads the Android dynamic colour palette. Apache-2.0.
   dynamic_color: ^2.1.0
   flutter:
