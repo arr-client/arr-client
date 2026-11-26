@@ -14,6 +14,7 @@
 ///     required Uri url,
 ///     required AuthKind authKind,
 ///     String? acceptedCertPin, // newly accepted for `url`, see below
+///     bool removeCertPin = false, // the user stops trusting the stored one
 ///     String? customCa, // stored as given; null removes it
 ///     ProbeSnapshot? probe, // of a successful test of this draft, else null
 ///     bool authRejected = false, // its test refused the token or login
@@ -70,7 +71,7 @@
 /// - A refused operation returns [Err] and changes nothing. A failed secret
 ///   write throws, and leaves no new profile, instance or secret behind.
 /// - `acceptedCertPin`: if given, it is stored. If null, the stored pin is kept
-///   unless the scheme, host or port of the url changes.
+///   unless the scheme, host or port of the url changes, or `removeCertPin`.
 /// - `probe`: if given, it sets `lastProbe` and `detectedVersion` (its
 ///   version). If null and the url changes, `lastProbe` is kept and
 ///   `detectedVersion` cleared.
@@ -201,6 +202,7 @@ InstanceDraft _draft({
   String url = 'https://nas.test:7878/radarr',
   AuthKind authKind = AuthKind.apiKey,
   String? acceptedCertPin,
+  bool removeCertPin = false,
   String? customCa,
   ProbeSnapshot? probe,
   bool enabled = true,
@@ -212,6 +214,7 @@ InstanceDraft _draft({
   url: Uri.parse(url),
   authKind: authKind,
   acceptedCertPin: acceptedCertPin,
+  removeCertPin: removeCertPin,
   customCa: customCa,
   probe: probe,
   enabled: enabled,
@@ -751,6 +754,48 @@ void main() {
       );
 
       expect((await stored(instance)).certPin, newPin);
+    });
+
+    test('is removed on request, at the same address', () async {
+      final instance = await add(_draft(acceptedCertPin: pin));
+
+      await update(instance, _draft(removeCertPin: true));
+
+      expect((await stored(instance)).certPin, isNull);
+    });
+
+    // The way from an accepted certificate to a private authority.
+    test('gives way to an authority at the same address', () async {
+      final instance = await add(_draft(acceptedCertPin: pin));
+
+      await update(instance, _draft(removeCertPin: true, customCa: 'ca'));
+
+      final read = await stored(instance);
+      expect(read.certPin, isNull);
+      expect(read.customCa, 'ca');
+    });
+
+    test('accepted now is stored, whatever else is asked', () async {
+      final instance = await add(_draft(acceptedCertPin: pin));
+
+      await update(
+        instance,
+        _draft(acceptedCertPin: newPin, removeCertPin: true),
+      );
+
+      expect((await stored(instance)).certPin, newPin);
+    });
+
+    test('is not removed by a refused change', () async {
+      final instance = await add(_draft(acceptedCertPin: pin));
+
+      final result = await repository.updateInstance(
+        instance.id,
+        _draft(name: '', removeCertPin: true),
+      );
+
+      expect(_refusal(result), RuleViolation.nameLength);
+      expect((await stored(instance)).certPin, pin);
     });
   });
 
