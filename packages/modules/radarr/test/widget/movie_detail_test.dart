@@ -169,6 +169,28 @@ void main() {
     expect(find.textContaining('Saved data'), findsNothing);
   });
 
+  testWidgets('marks the title and the section names as headings', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, Harness(_server()));
+
+    for (final heading in [
+      'The Long Voyage Home and Other Stories',
+      'File',
+      'Cast',
+      'Crew',
+      'History',
+    ]) {
+      expect(
+        tester.getSemantics(find.text(heading)),
+        isSemantics(label: heading, isHeader: true),
+        reason: heading,
+      );
+    }
+    semantics.dispose();
+  });
+
   testWidgets('reads only from the instance that holds the movie', (
     tester,
   ) async {

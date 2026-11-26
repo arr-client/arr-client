@@ -17,6 +17,7 @@ class SectionHeading extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(top: 24, bottom: 8),
     child: Semantics(
+      container: true,
       header: true,
       child: Text(text, style: Theme.of(context).textTheme.titleMedium),
     ),

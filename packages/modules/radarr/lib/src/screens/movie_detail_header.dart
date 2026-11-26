@@ -77,7 +77,9 @@ class MovieHeader extends StatelessWidget {
     final details = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Its own node, or the lines below would be read as part of the heading.
         Semantics(
+          container: true,
           header: true,
           child: Text(movie.title, style: theme.textTheme.headlineSmall),
         ),
