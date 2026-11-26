@@ -34,8 +34,14 @@ Future<void> confirmImport(
         strings.manualImportRejected,
         ...candidate.rejections,
       ],
+      if (file.earlierRejections.isNotEmpty) ...[
+        strings.manualImportRejectedBefore,
+        ...file.earlierRejections,
+      ],
     ].join('\n');
   }
+
+  final rejected = files.where((file) => file.isRejected).length;
 
   // What two files must not both be: a movie, or an episode of a series.
   final taken = <Object>{};
@@ -53,16 +59,27 @@ Future<void> confirmImport(
   final confirmed = await showConfirmDialog(
     context,
     title: strings.manualImportConfirmTitle(files.length),
-    target: files.map(describe).join('\n\n'),
+    // Short, so that what will happen is in sight before any scrolling.
+    target: strings.manualImportSummary(files.length, instanceName),
     consequence: [
       strings.manualImportConsequence(instanceName),
-      if (files.any((file) => file.candidate.rejections.isNotEmpty))
-        strings.manualImportConsequenceRejected,
+      if (rejected > 0) strings.manualImportConsequenceRejected(rejected),
       if (files.any((file) => file.unchecked))
         strings.manualImportConsequenceUnchecked,
       if (same) strings.manualImportConsequenceSame,
       if (state.outcomeUnknown) strings.manualImportConsequenceUnknown,
     ].join('\n\n'),
+    options: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final file in files)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(describe(file)),
+          ),
+      ],
+    ),
     confirmLabel: strings.manualImportAction(files.length),
   );
   if (!confirmed || !context.mounted) return;

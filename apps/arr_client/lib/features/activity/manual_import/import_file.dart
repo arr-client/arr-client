@@ -9,6 +9,7 @@ final class ImportFile {
     this.unchecked = false,
     this.checkFailure,
     this.episodesDropped = false,
+    this.earlierRejections = const [],
   });
 
   /// What would be sent.
@@ -28,6 +29,13 @@ final class ImportFile {
   /// Whether the server's evaluation came back without the episodes chosen.
   final bool episodesDropped;
 
+  /// What the server rejected before a correction that it has not evaluated.
+  final List<String> earlierRejections;
+
+  /// Whether the server rejected it, as far as it has said.
+  bool get isRejected =>
+      candidate.rejections.isNotEmpty || earlierRejections.isNotEmpty;
+
   String get path => candidate.path;
 
   /// The last part of the path, of whichever system the server runs on.
@@ -40,14 +48,15 @@ final class ImportFile {
     unchecked: unchecked,
     checkFailure: checkFailure,
     episodesDropped: episodesDropped,
+    earlierRejections: earlierRejections,
   );
 }
 
 /// [candidate] with what the user chose instead.
 ///
 /// Another movie or series takes no episodes with it, as the server does not
-/// check that they belong to it. What the server rejected no longer applies to
-/// a corrected file.
+/// check that they belong to it. The server has rejected nothing of the result:
+/// what it said before is kept in [ImportFile.earlierRejections].
 ManualImportCandidate correctedCandidate(
   ManualImportCandidate candidate, {
   ItemRef? matchedRef,

@@ -497,6 +497,37 @@ void main() {
     await app.stop(tester);
   });
 
+  testWidgets('says what removing many does before naming them', (
+    tester,
+  ) async {
+    await start(tester, size: const Size(360, 800));
+    films.items = [
+      for (var i = 1; i <= 12; i++)
+        entry(i, 'A film with a long release name $i 1080p WEB-DL group'),
+    ];
+    await open(tester);
+    await tester.tap(find.text('Select'));
+    await step(tester);
+    for (var i = 1; i <= 3; i++) {
+      await tester.tap(find.textContaining('release name $i 1080p'));
+    }
+    await step(tester);
+    await tester.tap(button('Remove selected'));
+    await step(tester);
+
+    final view = tester.getRect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(SingleChildScrollView),
+      ),
+    );
+    final consequence = tester.getRect(find.textContaining('cannot be undone'));
+    expect(consequence.top, greaterThanOrEqualTo(view.top));
+    expect(consequence.bottom, lessThanOrEqualTo(view.bottom));
+    expect(find.text('3 entries, listed below'), findsOneWidget);
+    await app.stop(tester);
+  });
+
   testWidgets('long press selects and back stops selecting', (tester) async {
     await start(tester);
     films.items = [entry(1, 'A film')];

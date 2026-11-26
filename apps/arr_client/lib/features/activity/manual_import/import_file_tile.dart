@@ -158,7 +158,8 @@ class ImportFileTile extends StatelessWidget {
                     await controller.correct(file.path, languages: chosen);
                   },
           ),
-        if (candidate.rejections.isNotEmpty)
+        if (candidate.rejections.isNotEmpty ||
+            (!file.checking && file.earlierRejections.isNotEmpty))
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
             child: Row(
@@ -173,8 +174,15 @@ class ImportFileTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(strings.manualImportRejected),
-                      for (final rejection in candidate.rejections)
+                      Text(
+                        candidate.rejections.isNotEmpty
+                            ? strings.manualImportRejected
+                            : strings.manualImportRejectedBefore,
+                      ),
+                      for (final rejection
+                          in candidate.rejections.isNotEmpty
+                              ? candidate.rejections
+                              : file.earlierRejections)
                         Text(rejection),
                     ],
                   ),

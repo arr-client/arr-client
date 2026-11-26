@@ -151,17 +151,20 @@ void main() {
     ];
     await open(tester);
 
-    await askToImport(tester, 2);
+    await tap(tester, find.text('alpha.mkv'));
+    await tap(tester, find.text('again.mkv'));
+    await tap(tester, button('Import 2 files'));
 
     expect(find.text('Import 2 files?'), findsOneWidget);
+    expect(find.text('2 files on Films'), findsOneWidget);
     expect(
       find.textContaining('alpha.mkv\nAlpha (2020)\nWEBDL-1080p · English'),
       findsOneWidget,
     );
     expect(find.textContaining('Films moves or copies'), findsOneWidget);
     expect(find.textContaining('may replace a file'), findsOneWidget);
-    expect(find.textContaining('rejected some of these'), findsOneWidget);
-    expect(find.textContaining('same match'), findsOneWidget);
+    expect(find.textContaining('rejected 1 of these'), findsOneWidget);
+    expect(find.textContaining('Some share a match'), findsOneWidget);
 
     await tap(tester, inDialog('Cancel'));
 
@@ -293,7 +296,7 @@ void main() {
 
     await askToImport(tester);
     expect(
-      find.textContaining('whether the last import reached the server'),
+      find.textContaining('The last import may have arrived.'),
       findsOneWidget,
     );
     await app.stop(tester);
@@ -362,13 +365,24 @@ void main() {
 
     expect(queue.reprocessed, hasLength(1), reason: 'not sent again');
     expect(find.text('Beta (2020)'), findsOneWidget);
-    expect(find.text('Unknown movie'), findsNothing);
+    expect(find.text('Rejected before the correction:'), findsOneWidget);
+    expect(find.text('Unknown movie'), findsOneWidget);
     expect(
       find.textContaining('The server could not check this correction.'),
       findsOneWidget,
     );
-    await askToImport(tester);
-    expect(find.textContaining('has not checked every'), findsOneWidget);
+    expect(enabled(tester, 'Select all ready'), isFalse);
+    await tap(tester, find.text('alpha.mkv'));
+    await tap(tester, button('Import 1 file'));
+    expect(find.textContaining('rejected 1 of these'), findsOneWidget);
+    expect(
+      find.textContaining('Rejected before the correction:\nUnknown movie'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Some corrections are unchecked.'),
+      findsOneWidget,
+    );
     await app.stop(tester);
   });
 
@@ -503,7 +517,8 @@ void main() {
     await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
     await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
 
-    await askToImport(tester);
+    await tap(tester, find.byType(Checkbox));
+    await tap(tester, button('Import 1 file'));
     expect(find.byType(AlertDialog), findsOneWidget);
     await tap(tester, inDialog('Cancel'));
 
@@ -523,6 +538,82 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(queue.reprocessed, isEmpty);
     semantics.dispose();
+    await app.stop(tester);
+  });
+
+  testWidgets('does not select rejected files with the others', (tester) async {
+    await start(tester);
+    queue.files = [
+      candidate(
+        'alpha.mkv',
+        match: module.ref(1),
+        rejections: ['Not an upgrade'],
+      ),
+      candidate('beta.mkv', match: module.ref(2)),
+    ];
+    await open(tester);
+
+    await tap(tester, button('Select all ready'));
+
+    expect(box(tester, 'alpha.mkv').value, isFalse);
+    expect(box(tester, 'beta.mkv').value, isTrue);
+    await app.stop(tester);
+  });
+
+  testWidgets('shows what will happen without scrolling on a phone', (
+    tester,
+  ) async {
+    await start(tester, size: const Size(360, 800));
+    queue.files = [
+      for (var i = 1; i <= 6; i++)
+        candidate(
+          'a.long.release.name.part$i.1080p.WEB-DL.mkv',
+          match: module.ref(1),
+          rejections: ['Not an upgrade for existing movie file'],
+        ),
+    ];
+    await open(tester);
+    for (var i = 1; i <= 6; i++) {
+      await tap(
+        tester,
+        find.text('a.long.release.name.part$i.1080p.WEB-DL.mkv'),
+      );
+    }
+
+    await tap(tester, button('Import 6 files'));
+
+    final view = tester.getRect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(SingleChildScrollView),
+      ),
+    );
+    final warnings = tester.getRect(find.textContaining('moves or copies'));
+    final text = tester
+        .widget<Text>(find.textContaining('moves or copies'))
+        .data!;
+    expect(text, contains('This cannot be undone.'));
+    expect(text, contains('rejected 6 of these'));
+    expect(text, contains('Some share a match'));
+    expect(warnings.top, greaterThanOrEqualTo(view.top));
+    expect(warnings.bottom, lessThanOrEqualTo(view.bottom));
+    await app.stop(tester);
+  });
+
+  testWidgets('reads the episodes again with the files', (tester) async {
+    await start(tester, kind: MediaKind.series);
+    queue.files = [
+      candidate('one.mkv', match: module.ref(1), episodeIds: [11]),
+    ];
+    await open(tester);
+    expect(find.text('S01E01 \u00b7 Pilot'), findsOneWidget);
+
+    module.films.episodes[1] = [
+      episode(module.ref(11, MediaKind.episode), 1, 1, 'Renamed'),
+    ];
+    await tap(tester, find.byTooltip('Reload the files'));
+
+    expect(find.text('S01E01 \u00b7 Renamed'), findsOneWidget);
     await app.stop(tester);
   });
 }

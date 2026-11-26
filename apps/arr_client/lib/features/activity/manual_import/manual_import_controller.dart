@@ -123,6 +123,11 @@ final class ManualImportState {
             candidate.episodeIds.every((id) => episode(match, id) != null));
   }
 
+  /// Whether [file] can be marked together with the others, without being
+  /// looked at on its own.
+  bool isReadyUnrejected(ImportFile file) =>
+      !file.isRejected && isReady(file.candidate);
+
   /// The files marked for import, if every one of them can be imported now;
   /// otherwise none.
   List<ImportFile> get importable {
@@ -167,6 +172,10 @@ final class ManualImportController extends Notifier<ManualImportState> {
   /// Counts the reads of the files, so that what belongs to an older one is
   /// dropped.
   var _generation = 0;
+
+  /// Counts the times the episodes were forgotten, so that a read begun before
+  /// is dropped.
+  var _episodeEpoch = 0;
 
   @override
   ManualImportState build() {
@@ -214,6 +223,11 @@ final class ManualImportController extends Notifier<ManualImportState> {
     _loading = false;
     switch (result) {
       case Ok(:final value):
+        // An import or the server may have changed them.
+        _episodes.clear();
+        _episodeFailures.clear();
+        _readingEpisodes.clear();
+        _episodeEpoch++;
         _files = [for (final candidate in value) ImportFile(candidate)];
         _fetchedAt = DateTime.now();
         _failure = null;
@@ -257,11 +271,12 @@ final class ManualImportController extends Notifier<ManualImportState> {
     (file) => file.withSelected(selected && state.isReady(file.candidate)),
   );
 
-  /// Marks every file that can be imported, or none.
+  /// Marks every file that can be imported and that the server did not reject,
+  /// or none.
   void selectAll(bool selected) {
     _files = [
       for (final file in _files ?? const <ImportFile>[])
-        file.withSelected(selected && state.isReady(file.candidate)),
+        file.withSelected(selected && state.isReadyUnrejected(file)),
     ];
     _publish();
   }
@@ -289,6 +304,10 @@ final class ManualImportController extends Notifier<ManualImportState> {
         candidate.matchedRef != null &&
         (!_needsEpisodes || candidate.episodeIds.isNotEmpty);
     final generation = _generation;
+    // Kept until the server says otherwise.
+    final earlier = before.candidate.rejections.isNotEmpty
+        ? before.candidate.rejections
+        : before.earlierRejections;
     // A file that lost its episodes cannot stay selected.
     _change(
       path,
@@ -300,6 +319,7 @@ final class ManualImportController extends Notifier<ManualImportState> {
             (!_needsEpisodes || candidate.episodeIds.isNotEmpty),
         checking: complete,
         unchecked: true,
+        earlierRejections: earlier,
       ),
     );
     _readEpisodes();
@@ -320,6 +340,7 @@ final class ManualImportController extends Notifier<ManualImportState> {
           candidate,
           selected: file.selected,
           unchecked: true,
+          earlierRejections: earlier,
           checkFailure: switch (result) {
             Err(:final error) => error,
             Ok() => const MalformedResponse(),
@@ -492,10 +513,12 @@ final class ManualImportController extends Notifier<ManualImportState> {
   }
 
   Future<void> _readEpisodesOf(ItemRef series) async {
+    final epoch = _episodeEpoch;
     final result = await _read(
       CapabilityKind.library,
       (library) => library.children(series),
     );
+    if (epoch != _episodeEpoch) return;
     _readingEpisodes.remove(series.remoteId);
     if (result == null) return;
     switch (result) {

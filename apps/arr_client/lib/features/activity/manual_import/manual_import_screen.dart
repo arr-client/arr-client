@@ -197,9 +197,7 @@ class _Import extends ConsumerWidget {
                       onPressed:
                           state.canChange &&
                               (selected.isNotEmpty ||
-                                  files.any(
-                                    (file) => state.isReady(file.candidate),
-                                  ))
+                                  files.any(state.isReadyUnrejected))
                           ? () => controller.selectAll(selected.isEmpty)
                           : null,
                       child: Text(
