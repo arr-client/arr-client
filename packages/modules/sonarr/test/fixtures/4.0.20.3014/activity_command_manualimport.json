@@ -1,0 +1,58 @@
+{
+  "name": "ManualImport",
+  "commandName": "Manual Import",
+  "body": {
+    "files": [
+      {
+        "path": "/redacted/28.mkv",
+        "folderName": "redacted-15",
+        "seriesId": 1,
+        "episodeIds": [
+          21
+        ],
+        "quality": {
+          "quality": {
+            "id": 7,
+            "name": "Bluray-1080p",
+            "source": "bluray",
+            "resolution": 1080
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "languages": [
+          {
+            "id": 4,
+            "name": "German"
+          }
+        ],
+        "releaseGroup": "redacted-31",
+        "indexerFlags": 0,
+        "releaseType": "multiEpisode",
+        "downloadId": "ABCDEF0000000000000000000000000000000004"
+      }
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "importMode": "redacted-68",
+    "updateScheduledTask": true,
+    "isLongRunning": false,
+    "isExclusive": false,
+    "name": "ManualImport",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "high",
+  "status": "started",
+  "result": "unknown",
+  "queued": "2026-11-26T15:13:56Z",
+  "started": "2026-11-26T15:13:56Z",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T15:13:56Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 25
+}

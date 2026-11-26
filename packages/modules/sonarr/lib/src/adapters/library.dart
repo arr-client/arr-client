@@ -1,4 +1,4 @@
-/// Sonarr's library reads, the history of its items and its queue.
+/// Sonarr's library reads. The queue and the history are in activity.dart.
 ///
 /// Operations that change something, and the routes to screens, are not built
 /// yet; calling one is a programming error.
@@ -395,97 +395,6 @@ final class SonarrLibraryAdapter implements LibraryProvider {
     if (failure is NotFound) await _cache.remove(ref.kind, ref.remoteId);
     return Err(failure);
   }
-}
-
-/// The history of a series, a season or an episode. The overall history and
-/// the history actions are not built yet.
-final class SonarrHistoryAdapter implements HistoryProvider {
-  /// Reads with [_api].
-  SonarrHistoryAdapter(this._api);
-
-  final SonarrApi _api;
-
-  @override
-  ServiceResult<ResultPage<HistoryEvent>> history({
-    MediaTarget? target,
-    int page = 1,
-  }) async {
-    if (target == null) throw UnimplementedError();
-    final ref = target.item;
-    switch (ref.kind) {
-      case MediaKind.episode:
-        return _api.episodeHistory(ref.remoteId, page: page);
-      case MediaKind.series:
-        // Sonarr gives the history of a series whole, as the first page.
-        if (page != 1) {
-          return Ok(ResultPage(items: const [], page: page, hasMore: false));
-        }
-        final result = await _api.seriesHistory(
-          ref.remoteId,
-          seasonNumber: target.seasonNumber,
-        );
-        return switch (result) {
-          Ok(:final value) => Ok(
-            ResultPage(items: value, page: page, hasMore: false),
-          ),
-          Err(:final error) => Err(error),
-        };
-      default:
-        throw _notOfSonarr(ref);
-    }
-  }
-
-  @override
-  ServiceResult<void> markFailed(int eventId) => throw UnimplementedError();
-
-  @override
-  ServiceResult<List<HistoryEvent>> eventsSince(DateTime since) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<ResultPage<BlocklistEntry>> blocklist({int page = 1}) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> unblock(List<int> entryIds) => throw UnimplementedError();
-}
-
-/// The download queue.
-final class SonarrQueueAdapter implements QueueProvider {
-  /// Reads with [_api].
-  SonarrQueueAdapter(this._api);
-
-  final SonarrApi _api;
-
-  @override
-  ServiceResult<List<QueueItem>> queue() => _api.queue();
-
-  @override
-  ServiceResult<void> remove(int queueId, RemoveOptions options) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> removeMany(List<int> queueIds, RemoveOptions options) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<void> grabNow(int queueId) => throw UnimplementedError();
-
-  @override
-  ServiceResult<List<ManualImportCandidate>> importCandidates(QueueItem item) =>
-      throw UnimplementedError();
-
-  @override
-  ServiceResult<ImportChoices> importChoices() => throw UnimplementedError();
-
-  @override
-  ServiceResult<List<ManualImportCandidate>> reprocess(
-    List<ManualImportCandidate> candidates,
-  ) => throw UnimplementedError();
-
-  @override
-  ServiceResult<Command> importFiles(List<ManualImportCandidate> candidates) =>
-      throw UnimplementedError();
 }
 
 ArgumentError _notOfSonarr(ItemRef ref) =>

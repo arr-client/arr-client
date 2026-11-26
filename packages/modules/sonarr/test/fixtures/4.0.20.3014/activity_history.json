@@ -1,0 +1,556 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "date",
+  "sortDirection": "descending",
+  "totalRecords": 11,
+  "records": [
+    {
+      "episodeId": 21,
+      "seriesId": 1,
+      "sourceTitle": "redacted-15",
+      "languages": [
+        {
+          "id": 4,
+          "name": "German"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:13:56Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "eventType": "downloadFolderImported",
+      "data": {
+        "fileId": "2",
+        "droppedPath": "/redacted/28.mkv",
+        "importedPath": "/redacted/29.mkv",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "releaseGroup": "redacted-31",
+        "customFormatScore": "0",
+        "size": "2097152",
+        "indexerFlags": "0",
+        "releaseType": "MultiEpisode"
+      },
+      "id": 43
+    },
+    {
+      "episodeId": 49,
+      "seriesId": 1,
+      "sourceTitle": "redacted-20",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:13:45Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "eventType": "downloadFailed",
+      "data": {
+        "downloadClient": "redacted-30",
+        "downloadClientName": null,
+        "message": "redacted-32",
+        "releaseGroup": null,
+        "size": null
+      },
+      "id": 42
+    },
+    {
+      "episodeId": 50,
+      "seriesId": 1,
+      "sourceTitle": "redacted-20",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:13:45Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "eventType": "downloadFailed",
+      "data": {
+        "downloadClient": "redacted-30",
+        "downloadClientName": null,
+        "message": "redacted-32",
+        "releaseGroup": null,
+        "size": null
+      },
+      "id": 41
+    },
+    {
+      "episodeId": 86,
+      "seriesId": 1,
+      "sourceTitle": "redacted-24",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:11:32Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000006",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.0001473505",
+        "ageMinutes": "60.00884109333333",
+        "publishedDate": "2026-11-26T14:11:32Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/33.torrent",
+        "guid": "redacted-34",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "SeasonPack",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000006"
+      },
+      "id": 8
+    },
+    {
+      "episodeId": 85,
+      "seriesId": 1,
+      "sourceTitle": "redacted-24",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:11:32Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000006",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.0001466275277777",
+        "ageMinutes": "60.008797728333334",
+        "publishedDate": "2026-11-26T14:11:32Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/33.torrent",
+        "guid": "redacted-34",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "SeasonPack",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000006"
+      },
+      "id": 7
+    },
+    {
+      "episodeId": 20,
+      "seriesId": 1,
+      "sourceTitle": "redacted-36",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:10:34Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "eventType": "downloadFolderImported",
+      "data": {
+        "fileId": "1",
+        "droppedPath": "/redacted/37.mkv",
+        "importedPath": "/redacted/38.mkv",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "releaseGroup": "redacted-31",
+        "customFormatScore": "0",
+        "size": "2097152",
+        "indexerFlags": "0",
+        "releaseType": "MultiEpisode"
+      },
+      "id": 6
+    },
+    {
+      "episodeId": 50,
+      "seriesId": 1,
+      "sourceTitle": "redacted-20",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:10:31Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.0005315562222221",
+        "ageMinutes": "60.031893438333334",
+        "publishedDate": "2026-11-26T14:10:30Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/39.torrent",
+        "guid": "redacted-40",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "MultiEpisode",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000005"
+      },
+      "id": 5
+    },
+    {
+      "episodeId": 49,
+      "seriesId": 1,
+      "sourceTitle": "redacted-20",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:10:31Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.0005311090277778",
+        "ageMinutes": "60.031866655",
+        "publishedDate": "2026-11-26T14:10:30Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/39.torrent",
+        "guid": "redacted-40",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "MultiEpisode",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000005"
+      },
+      "id": 4
+    },
+    {
+      "episodeId": 21,
+      "seriesId": 1,
+      "sourceTitle": "redacted-5",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:10:29Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000002",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.000530926611111",
+        "ageMinutes": "60.031855713333336",
+        "publishedDate": "2026-11-26T14:10:28Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/41.torrent",
+        "guid": "redacted-42",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "SingleEpisode",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000002"
+      },
+      "id": 3
+    },
+    {
+      "episodeId": 20,
+      "seriesId": 1,
+      "sourceTitle": "redacted-15",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:10:27Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.0005531100277778",
+        "ageMinutes": "60.033186695",
+        "publishedDate": "2026-11-26T14:10:26Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/43.torrent",
+        "guid": "redacted-44",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "MultiEpisode",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000004"
+      },
+      "id": 2
+    },
+    {
+      "episodeId": 19,
+      "seriesId": 1,
+      "sourceTitle": "redacted-15",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-26T15:10:27Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": null,
+        "nzbInfoUrl": null,
+        "releaseGroup": "redacted-31",
+        "age": "0",
+        "ageHours": "1.0005509043333334",
+        "ageMinutes": "60.03305467166667",
+        "publishedDate": "2026-11-26T14:10:26Z",
+        "downloadClient": "redacted-30",
+        "downloadClientName": "redacted-3",
+        "size": "0",
+        "downloadUrl": "http://redacted.invalid/43.torrent",
+        "guid": "redacted-44",
+        "tvdbId": "0",
+        "tvRageId": "redacted-35",
+        "imdbId": null,
+        "protocol": "2",
+        "customFormatScore": "0",
+        "seriesMatchType": "Title",
+        "releaseSource": "ReleasePush",
+        "indexerFlags": "0",
+        "releaseType": "MultiEpisode",
+        "torrentInfoHash": "ABCDEF0000000000000000000000000000000004"
+      },
+      "id": 1
+    }
+  ]
+}

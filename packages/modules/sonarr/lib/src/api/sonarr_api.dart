@@ -29,7 +29,7 @@ final class SonarrApi {
   /// The instance whose items the records are.
   final String instanceId;
 
-  /// The client for the reads the family shares as they are.
+  /// The client for what the family shares as it is.
   ServarrClient get shared => _shared;
 
   final ServiceHttpClient _http;
