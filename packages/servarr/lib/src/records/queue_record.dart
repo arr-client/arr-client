@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 
 import '../json_reading.dart';
 import '../servarr_refs.dart';
+import 'quality_record.dart';
 
 /// A record of `GET queue`.
 QueueItem queueItem(JsonObject record, ServarrRefs refs) {
@@ -34,7 +35,7 @@ QueueItem queueItem(JsonObject record, ServarrRefs refs) {
     itemRef: refs.item,
     parent: refs.parent,
     eta: _timeSpan(optionalString(record, 'timeleft')),
-    quality: _quality(record['quality']),
+    quality: recordQuality(record['quality']),
     downloadClient: optionalString(record, 'downloadClient'),
     messages: _messages(record),
     // As the services' web UI decides it.
@@ -42,15 +43,6 @@ QueueItem queueItem(JsonObject record, ServarrRefs refs) {
         status == QueueStatus.completed && severity == QueueSeverity.warning,
   );
 }
-
-/// `quality.quality` of a record.
-Quality? _quality(Object? json) => switch (json) {
-  {'quality': {'id': final int id, 'name': final String name}} => Quality(
-    id: id,
-    name: name,
-  ),
-  _ => null,
-};
 
 /// The error of the download client, then what each status message says: its
 /// messages, or its title when it has none.

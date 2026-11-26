@@ -1,0 +1,789 @@
+[
+  {
+    "title": "redacted-1",
+    "originalTitle": "redacted-1",
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "alternateTitles": [
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-2",
+        "id": 1
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-3",
+        "id": 2
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-4",
+        "id": 3
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-5",
+        "id": 4
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-6",
+        "id": 5
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-7",
+        "id": 6
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-8",
+        "id": 7
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-9",
+        "id": 8
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-10",
+        "id": 9
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-11",
+        "id": 10
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-12",
+        "id": 11
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-13",
+        "id": 12
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-14",
+        "id": 13
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-15",
+        "id": 14
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-16",
+        "id": 15
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-17",
+        "id": 16
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-18",
+        "id": 17
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-19",
+        "id": 18
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-20",
+        "id": 19
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-21",
+        "id": 20
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-22",
+        "id": 21
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 1,
+        "title": "redacted-23",
+        "id": 22
+      }
+    ],
+    "secondaryYearSourceId": 0,
+    "sortTitle": "redacted-24",
+    "sizeOnDisk": 83886080,
+    "status": "released",
+    "overview": "redacted-25",
+    "inCinemas": "2021-09-15T00:00:00Z",
+    "physicalRelease": "2021-12-22T00:00:00Z",
+    "digitalRelease": "2021-10-21T00:00:00Z",
+    "releaseDate": "2021-09-15T00:00:00Z",
+    "images": [
+      {
+        "coverType": "poster",
+        "remoteUrl": "https://redacted.invalid/26.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "remoteUrl": "https://redacted.invalid/27.jpg"
+      }
+    ],
+    "website": "https://redacted.invalid/28",
+    "year": 2021,
+    "youTubeTrailerId": "redacted-29",
+    "studio": "redacted-30",
+    "path": "/redacted/31",
+    "qualityProfileId": 6,
+    "hasFile": true,
+    "movieFileId": 3,
+    "monitored": true,
+    "minimumAvailability": "tba",
+    "isAvailable": true,
+    "folderName": "/redacted/31",
+    "runtime": 155,
+    "cleanTitle": "redacted-24",
+    "imdbId": "tt1160419",
+    "tmdbId": 438631,
+    "titleSlug": "redacted-32",
+    "certification": "PG-13",
+    "genres": [
+      "redacted-33",
+      "redacted-34"
+    ],
+    "keywords": [
+      "redacted-35",
+      "redacted-36",
+      "redacted-37",
+      "redacted-38",
+      "redacted-39",
+      "redacted-40",
+      "redacted-41",
+      "redacted-42",
+      "redacted-43",
+      "redacted-44",
+      "redacted-45",
+      "redacted-46",
+      "redacted-47",
+      "redacted-48",
+      "redacted-49",
+      "redacted-50",
+      "redacted-51",
+      "redacted-52",
+      "redacted-53",
+      "redacted-54",
+      "redacted-55",
+      "redacted-56",
+      "redacted-57",
+      "redacted-58",
+      "redacted-59",
+      "redacted-60",
+      "redacted-61",
+      "redacted-62",
+      "redacted-63"
+    ],
+    "tags": [],
+    "added": "2026-11-26T13:54:49Z",
+    "ratings": {
+      "imdb": {
+        "votes": 1098044,
+        "value": 8,
+        "type": "user"
+      },
+      "tmdb": {
+        "votes": 15858,
+        "value": 7.786,
+        "type": "user"
+      },
+      "metacritic": {
+        "votes": 0,
+        "value": 74,
+        "type": "user"
+      },
+      "rottenTomatoes": {
+        "votes": 0,
+        "value": 83,
+        "type": "user"
+      },
+      "trakt": {
+        "votes": 57693,
+        "value": 8.14492,
+        "type": "user"
+      }
+    },
+    "movieFile": {
+      "movieId": 1,
+      "relativePath": "redacted-64",
+      "path": "/redacted/65.mkv",
+      "size": 83886080,
+      "dateAdded": "2026-11-26T13:55:41Z",
+      "releaseGroup": "redacted-66",
+      "edition": "",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 15,
+          "name": "WEBRip-1080p",
+          "source": "webrip",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "indexerFlags": 0,
+      "originalFilePath": "redacted-67",
+      "qualityCutoffNotMet": true,
+      "id": 3
+    },
+    "collection": {
+      "title": "redacted-68",
+      "tmdbId": 726871
+    },
+    "popularity": 48.6944,
+    "statistics": {
+      "movieFileCount": 1,
+      "sizeOnDisk": 83886080,
+      "releaseGroups": [
+        "redacted-66"
+      ],
+      "movieFileQualities": [
+        {
+          "id": 15,
+          "name": "WEBRip-1080p",
+          "source": "webrip",
+          "resolution": 1080,
+          "modifier": "none"
+        }
+      ]
+    },
+    "id": 1
+  },
+  {
+    "title": "redacted-69",
+    "originalTitle": "redacted-69",
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "alternateTitles": [
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-70",
+        "id": 23
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-71",
+        "id": 24
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-72",
+        "id": 25
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-73",
+        "id": 26
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-74",
+        "id": 27
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-75",
+        "id": 28
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-76",
+        "id": 29
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-77",
+        "id": 30
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-78",
+        "id": 31
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-79",
+        "id": 32
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-80",
+        "id": 33
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-81",
+        "id": 34
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-82",
+        "id": 35
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-83",
+        "id": 36
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-84",
+        "id": 37
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-85",
+        "id": 38
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-86",
+        "id": 39
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-87",
+        "id": 40
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-88",
+        "id": 41
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-89",
+        "id": 42
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-90",
+        "id": 43
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-91",
+        "id": 44
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-92",
+        "id": 45
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-93",
+        "id": 46
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-94",
+        "id": 47
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-95",
+        "id": 48
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-96",
+        "id": 49
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-97",
+        "id": 50
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-98",
+        "id": 51
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-99",
+        "id": 52
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-100",
+        "id": 53
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 2,
+        "title": "redacted-101",
+        "id": 54
+      }
+    ],
+    "secondaryYearSourceId": 0,
+    "sortTitle": "redacted-102",
+    "sizeOnDisk": 0,
+    "status": "released",
+    "overview": "redacted-103",
+    "inCinemas": "2024-02-27T00:00:00Z",
+    "physicalRelease": "2024-05-14T00:00:00Z",
+    "digitalRelease": "2024-04-15T00:00:00Z",
+    "releaseDate": "2024-02-27T00:00:00Z",
+    "images": [
+      {
+        "coverType": "poster",
+        "remoteUrl": "https://redacted.invalid/104.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "remoteUrl": "https://redacted.invalid/105.jpg"
+      }
+    ],
+    "website": "https://redacted.invalid/106",
+    "year": 2024,
+    "youTubeTrailerId": "redacted-107",
+    "studio": "redacted-30",
+    "path": "/redacted/108",
+    "qualityProfileId": 6,
+    "hasFile": false,
+    "movieFileId": 0,
+    "monitored": true,
+    "minimumAvailability": "tba",
+    "isAvailable": true,
+    "folderName": "/redacted/108",
+    "runtime": 167,
+    "cleanTitle": "redacted-109",
+    "imdbId": "tt15239678",
+    "tmdbId": 693134,
+    "titleSlug": "redacted-110",
+    "certification": "PG-13",
+    "genres": [
+      "redacted-33",
+      "redacted-34"
+    ],
+    "keywords": [
+      "redacted-111",
+      "redacted-112",
+      "redacted-113",
+      "redacted-37",
+      "redacted-39",
+      "redacted-41",
+      "redacted-42",
+      "redacted-43",
+      "redacted-114",
+      "redacted-115",
+      "redacted-48",
+      "redacted-49",
+      "redacted-116",
+      "redacted-52",
+      "redacted-117",
+      "redacted-118",
+      "redacted-119",
+      "redacted-58",
+      "redacted-120",
+      "redacted-121",
+      "redacted-60",
+      "redacted-122"
+    ],
+    "tags": [],
+    "added": "2026-11-26T13:54:50Z",
+    "ratings": {
+      "imdb": {
+        "votes": 807808,
+        "value": 8.4,
+        "type": "user"
+      },
+      "tmdb": {
+        "votes": 9050,
+        "value": 8.142,
+        "type": "user"
+      },
+      "metacritic": {
+        "votes": 0,
+        "value": 79,
+        "type": "user"
+      },
+      "trakt": {
+        "votes": 43102,
+        "value": 8.55313,
+        "type": "user"
+      }
+    },
+    "collection": {
+      "title": "redacted-68",
+      "tmdbId": 726871
+    },
+    "popularity": 52.2283,
+    "statistics": {
+      "movieFileCount": 0,
+      "sizeOnDisk": 0,
+      "releaseGroups": [],
+      "movieFileQualities": []
+    },
+    "id": 2
+  },
+  {
+    "title": "redacted-123",
+    "originalTitle": "redacted-123",
+    "originalLanguage": {
+      "id": 1,
+      "name": "English"
+    },
+    "alternateTitles": [
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-124",
+        "id": 55
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-125",
+        "id": 56
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-126",
+        "id": 57
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-127",
+        "id": 58
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-128",
+        "id": 59
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-129",
+        "id": 60
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-130",
+        "id": 61
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-131",
+        "id": 62
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-132",
+        "id": 63
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-133",
+        "id": 64
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-134",
+        "id": 65
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-135",
+        "id": 66
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-136",
+        "id": 67
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-137",
+        "id": 68
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-138",
+        "id": 69
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-139",
+        "id": 70
+      },
+      {
+        "sourceType": "tmdb",
+        "movieMetadataId": 3,
+        "title": "redacted-140",
+        "id": 71
+      }
+    ],
+    "secondaryYearSourceId": 0,
+    "sortTitle": "redacted-141",
+    "sizeOnDisk": 0,
+    "status": "announced",
+    "overview": "redacted-142",
+    "inCinemas": "2026-12-15T00:00:00Z",
+    "releaseDate": "2026-12-15T00:00:00Z",
+    "images": [
+      {
+        "coverType": "poster",
+        "remoteUrl": "https://redacted.invalid/143.jpg"
+      },
+      {
+        "coverType": "fanart",
+        "remoteUrl": "https://redacted.invalid/144.jpg"
+      }
+    ],
+    "website": "https://redacted.invalid/145",
+    "year": 2026,
+    "youTubeTrailerId": "redacted-146",
+    "studio": "redacted-30",
+    "path": "/redacted/147",
+    "qualityProfileId": 6,
+    "hasFile": false,
+    "movieFileId": 0,
+    "monitored": true,
+    "minimumAvailability": "tba",
+    "isAvailable": true,
+    "folderName": "/redacted/147",
+    "runtime": 150,
+    "cleanTitle": "redacted-148",
+    "imdbId": "tt31378509",
+    "tmdbId": 1170608,
+    "titleSlug": "redacted-149",
+    "certification": "PG-13",
+    "genres": [
+      "redacted-33",
+      "redacted-34"
+    ],
+    "keywords": [
+      "redacted-37",
+      "redacted-42",
+      "redacted-150",
+      "redacted-117",
+      "redacted-151",
+      "redacted-152",
+      "redacted-121",
+      "redacted-59",
+      "redacted-153",
+      "redacted-60"
+    ],
+    "tags": [],
+    "added": "2026-11-26T13:54:50Z",
+    "ratings": {
+      "tmdb": {
+        "votes": 0,
+        "value": 0,
+        "type": "user"
+      }
+    },
+    "collection": {
+      "title": "redacted-68",
+      "tmdbId": 726871
+    },
+    "popularity": 48.0643,
+    "statistics": {
+      "movieFileCount": 0,
+      "sizeOnDisk": 0,
+      "releaseGroups": [],
+      "movieFileQualities": []
+    },
+    "id": 3
+  }
+]
