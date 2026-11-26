@@ -10,7 +10,7 @@ const _apiPath = 'api/v3';
 // How `episode?episodeIds=` says that it has no such episode: with status 500.
 const _noSuchEpisode = 'Expected query to return 1 rows but returned 0';
 
-/// Sonarr's reads for one instance.
+/// Sonarr's requests for one instance.
 ///
 /// As in [ServarrClient], a failure of the HTTP client is returned unchanged,
 /// nothing is retried, and an answer of another shape is [MalformedResponse].
@@ -45,6 +45,45 @@ final class SonarrApi {
 
   /// One series, as received.
   ServiceResult<JsonObject> series(int id) => _get('series/$id', asObject);
+
+  /// The series the server's metadata source finds for [term], which may be
+  /// `tvdb:<id>`. One the server has carries its id.
+  ServiceResult<List<JsonObject>> lookup(String term) => _get(
+    'series/lookup',
+    asObjects,
+    query: {
+      'term': [term],
+    },
+  );
+
+  /// The root folders, as received.
+  ServiceResult<List<JsonObject>> rootFolders() =>
+      _get('rootfolder', asObjects);
+
+  /// Adds [series], sending it once, and gives its id. If the server accepts it
+  /// without saying which series it made, that is [OutcomeUnknown].
+  ServiceResult<int> addSeries(JsonObject series) async {
+    final request = ServiceRequest(
+      HttpMethod.post,
+      '$_apiPath/series',
+      body: JsonBody(series),
+    );
+    switch (await _http.send(request)) {
+      case Err(:final error):
+        return Err(_saysItExists(error) ? const Conflict() : error.failure);
+      case Ok(:final value):
+        final Object? added;
+        try {
+          added = jsonDecode(value.text);
+        } on FormatException {
+          return const Err(OutcomeUnknown());
+        }
+        return switch (added) {
+          {'id': final int id} when id > 0 => Ok(id),
+          _ => const Err(OutcomeUnknown()),
+        };
+    }
+  }
 
   /// The episodes of a series, with files and images. A series the server does
   /// not have gets an empty list.
@@ -141,6 +180,26 @@ final class SonarrApi {
         }
     }
   }
+}
+
+/// Whether a refused add names the validator for a series the server has. Its
+/// other refusals, a folder already in use included, stay as they are.
+bool _saysItExists(HttpError error) {
+  final response = error.response;
+  if (error.failure is! Validation || response == null) return false;
+  final Object? refusals;
+  try {
+    refusals = jsonDecode(response.text);
+  } on FormatException {
+    return false;
+  }
+  return refusals is List<Object?> &&
+      refusals.any(
+        (refusal) => switch (refusal) {
+          {'errorCode': 'SeriesExistsValidator'} => true,
+          _ => false,
+        },
+      );
 }
 
 /// A queue or history record is about an episode of a series.

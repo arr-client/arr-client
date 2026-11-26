@@ -5,6 +5,10 @@ set -euo pipefail
 # packages (core before the others in name order), then the modules, then the app.
 for pubspec in packages/*/pubspec.yaml packages/modules/*/pubspec.yaml apps/*/pubspec.yaml; do
   [ -f "$pubspec" ] || continue
+  # Localizations, in the packages that have strings of their own.
+  if [ -f "$(dirname "$pubspec")/l10n.yaml" ]; then
+    (cd "$(dirname "$pubspec")" && flutter gen-l10n)
+  fi
   if grep -qE '^[[:space:]]+build_runner:' "$pubspec"; then
     (cd "$(dirname "$pubspec")" && dart run build_runner build)
   fi
