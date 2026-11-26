@@ -124,6 +124,10 @@ Login responses differ by version:
 | Address banned | 403 | 403 |
 | Session cookie (default name) | `SID` | `QBT_SID_<qBittorrent's own port>` |
 
+A 401 or 403 at login is `authFailed`, so that it is not tried again: a ban is not retried at the
+rate of polling. A read with a session qBittorrent does not know gets 403 on every version, which is
+what signs in again; a 401 does not.
+
 API keys exist from 5.2.0. The user creates one in qBittorrent's web UI; it is `qbt_` followed by 28
 characters. (The web UI uses `POST app/rotateAPIKey`, which replaces any existing key; the app never
 calls it.) A wrong or replaced key gets 403, not 401.
@@ -134,6 +138,7 @@ There are no **W** operations. Fields used: `hash`, `infohash_v1`, `progress`, `
 ## Host name rejection
 
 qBittorrent (host header validation, including a port mismatch) can refuse a correct credential with
-a bare 401. Name this as a possible cause of any qBittorrent 401; classify `hostRejected` only where
-it can be told apart (password login before 5.2, where a bad password is a 200 "Fails."). Where the response identifies this, map
-it to `hostRejected`.
+a bare 401: body `Unauthorized` on every version, which is also how 5.2 and later answer a wrong
+password. The response does not identify the cause, and at login the version is not yet known (and a
+proxy's basic authentication answers 401 too), so it is not mapped to `hostRejected`. Report any
+qBittorrent 401 as `authFailed` and name the host name as a possible cause.

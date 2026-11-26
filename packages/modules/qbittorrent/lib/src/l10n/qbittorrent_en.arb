@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "apiKeyBasicAuthNote": "qBittorrent's API key and HTTP basic authentication use the same request header, so they cannot be combined.",
+  "@apiKeyBasicAuthNote": {
+    "description": "Warning on the form for adding a qBittorrent server, when an API key is chosen and basic authentication is filled in."
+  },
+  "passwordBasicAuthNote": "qBittorrent 5.2 and later also reads HTTP basic authentication as its own sign-in. This works only if the proxy removes it before forwarding, or both user names and both passwords are identical. Repeated failures can get the proxy's address banned.",
+  "@passwordBasicAuthNote": {
+    "description": "Warning on the form for adding a qBittorrent server, when a user name and password are chosen and basic authentication is filled in."
+  },
+  "unauthorizedHint": "The credentials may not be the cause. qBittorrent answers the same way when it does not allow the host name or port used to reach it (check its Web UI settings), and from 5.2 when it takes HTTP basic authentication for its own sign-in.",
+  "@unauthorizedHint": {
+    "description": "Possible causes shown with a failed sign-in when qBittorrent, or a proxy before it, answered 401."
+  },
+  "signInRefusedHint": "qBittorrent may have banned this address after too many failed sign-ins. Wait for the ban to end, or restart qBittorrent, before trying again.",
+  "@signInRefusedHint": {
+    "description": "Possible cause shown with a failed sign-in when qBittorrent answered 403."
+  }
+}
