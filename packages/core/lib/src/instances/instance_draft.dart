@@ -13,6 +13,7 @@ final class InstanceDraft {
     this.acceptedCertPin,
     this.customCa,
     this.probe,
+    this.authRejected = false,
     this.enabled = true,
     this.links = const [],
   });
@@ -38,6 +39,10 @@ final class InstanceDraft {
 
   /// What a successful test of this draft found, or null if there was none.
   final ProbeSnapshot? probe;
+
+  /// A test of this draft refused its token or login: the instance is saved
+  /// with `authFailed` set, so that nothing sends them again by itself.
+  final bool authRejected;
 
   /// Whether the instance contributes content and traffic.
   final bool enabled;
