@@ -6,8 +6,10 @@ import 'dart:async';
 
 import 'package:arr_client/features/calendar/calendar_screen.dart';
 import 'package:core/core.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:ui/ui.dart';
 
 import 'support.dart';
 
@@ -195,7 +197,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Film'), findsOneWidget);
-    expect(find.text('Showing what was loaded at 12:00 PM.'), findsOneWidget);
+    // Its age, which unlike a time of day also says how many days ago.
+    expect(find.byType(StaleNotice), findsOneWidget);
+    expect(find.textContaining('Saved data from'), findsOneWidget);
     await calendar.stop(tester);
   });
 
@@ -312,6 +316,38 @@ void main() {
     semantics.dispose();
     await calendar.stop(tester);
   });
+
+  // Screen reader and keyboard focus stay on a control only while its element
+  // does.
+  for (final (view, button, shows) in [
+    (CalendarTab.month, 'Previous month', 'October 2026'),
+    (CalendarTab.month, 'Next month', 'December 2026'),
+    (CalendarTab.downloaded, 'Previous day', 'Wednesday, November 25, 2026'),
+  ]) {
+    testWidgets('$button keeps the focus on its button', (tester) async {
+      final calendar = await CalendarHarness.start(tester, now: noon);
+      await calendar.pump(tester, tab: view);
+      final icon = find.descendant(
+        of: find.byTooltip(button),
+        matching: find.byType(Icon),
+      );
+      final element = tester.element(icon);
+      final focus = Focus.of(element)..requestFocus();
+      await tester.pump();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      // Also while the new days are being read.
+      await tester.pump();
+      expect(find.text(shows), findsOneWidget);
+      expect(tester.element(icon), same(element));
+      expect(focus.hasPrimaryFocus, isTrue);
+
+      await tester.pumpAndSettle();
+      expect(tester.element(icon), same(element));
+      expect(focus.hasPrimaryFocus, isTrue);
+      await calendar.stop(tester);
+    });
+  }
 
   testWidgets('a wide window shows the day beside the month', (tester) async {
     final calendar = await CalendarHarness.start(

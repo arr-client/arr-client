@@ -23,10 +23,10 @@ class CalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
-  /// The day selected in the month, and the day of downloads. Null follows
-  /// today, also when the day changes.
-  DateTime? _monthDay;
-  DateTime? _importDay;
+  /// The date selected in the month, and the date of downloads, as
+  /// [calendarDate]s. Null follows today, also when the day changes.
+  DateTime? _monthDate;
+  DateTime? _importDate;
 
   /// The instances filtered out of every view.
   var _hidden = <String>{};
@@ -39,7 +39,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final today = ref.watch(todayProvider);
     // Watched here, so that it lasts while another view is shown.
     final agendaDays = ref.watch(agendaDaysProvider);
-    final importDay = _importDay;
+    // Anew on every build: the device's time zone may have changed.
+    final monthDay = switch (_monthDate) {
+      final date? => localDay(date),
+      null => today,
+    };
+    final importDay = switch (_importDate) {
+      // A clock set back must not leave a day after today.
+      final date? when localDay(date).isBefore(today) => localDay(date),
+      _ => today,
+    };
     return DefaultTabController(
       length: CalendarTab.values.length,
       initialIndex: widget.initialTab.index,
@@ -75,20 +84,21 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             ),
             MonthView(
               today: today,
-              selected: _monthDay ?? today,
-              onSelected: (day) =>
-                  setState(() => _monthDay = day == today ? null : day),
+              selected: monthDay,
+              onSelected: (day) => setState(
+                () => _monthDate = day == today ? null : calendarDate(day),
+              ),
               hidden: _hidden,
               onHiddenChanged: _hide,
             ),
             DownloadedView(
               today: today,
-              // A clock set back must not leave a day after today.
-              day: importDay == null || !importDay.isBefore(today)
-                  ? today
-                  : importDay,
-              onDay: (day) =>
-                  setState(() => _importDay = day.isBefore(today) ? day : null),
+              day: importDay,
+              onDay: (day) => setState(
+                () => _importDate = day.isBefore(today)
+                    ? calendarDate(day)
+                    : null,
+              ),
               hidden: _hidden,
               onHiddenChanged: _hide,
             ),

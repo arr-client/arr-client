@@ -728,8 +728,6 @@
   "@calendarAllHidden": {"description": "Shown when the filter leaves nothing."},
   "calendarRetryService": "Retry {name}",
   "@calendarRetryService": {"description": "Read by screen readers for the retry button of one service.", "placeholders": {"name": {"type": "String"}}},
-  "calendarShowingEarlier": "Showing what was loaded at {time}.",
-  "@calendarShowingEarlier": {"description": "Under a failure, when older data of the service is on screen.", "placeholders": {"time": {"type": "String"}}},
   "calendarToday": "Today",
   "@calendarToday": {"description": "Marks the current day."},
   "calendarTodayDate": "Today, {date}",

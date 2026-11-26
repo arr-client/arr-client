@@ -50,6 +50,16 @@ DateTime dayOf(DateTime instant) {
   return DateTime(local.year, local.month, local.day);
 }
 
+/// The date of [day], to keep a day the user has chosen. Unlike a local
+/// midnight it stays that date when the device's time zone changes.
+DateTime calendarDate(DateTime day) {
+  final local = day.toLocal();
+  return DateTime.utc(local.year, local.month, local.day);
+}
+
+/// Local midnight of a [calendarDate], in the zone the device is in now.
+DateTime localDay(DateTime date) => DateTime(date.year, date.month, date.day);
+
 /// Local midnight [days] days after the day of [day], or before it if negative.
 /// By calendar days, not by hours, so that a change of the clocks does not
 /// shift it.

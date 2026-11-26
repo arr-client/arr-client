@@ -166,7 +166,7 @@ class CalendarNote extends StatelessWidget {
 }
 
 /// Says that one service could not be read, and offers to try it again. What
-/// the others gave stays below it.
+/// the others gave stays below it, as does what this one gave before.
 class ServiceNotice<T> extends StatelessWidget {
   const ServiceNotice({required this.answer, required this.onRetry, super.key});
 
@@ -176,61 +176,52 @@ class ServiceNotice<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strings = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final margin = screenMargin(MediaQuery.sizeOf(context).width);
+    final failure = answer.failure;
     final fetchedAt = answer.fetchedAt;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Material(
         color: theme.colorScheme.surfaceContainerHigh,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: screenMargin(MediaQuery.sizeOf(context).width),
-            vertical: 8,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.error_outline, color: theme.colorScheme.error),
-              const SizedBox(width: 12),
-              Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(margin, 8, margin, 0),
+              child: Text(answer.name, style: theme.textTheme.titleSmall),
+            ),
+            if (answer.value != null && fetchedAt != null)
+              StaleNotice(
+                staleness: Staleness(fetchedAt: fetchedAt, failure: failure),
+                onRetry: onRetry,
+              )
+            else
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: margin, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Semantics(
-                      liveRegion: true,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(answer.name, style: theme.textTheme.titleSmall),
-                          if (answer.failure case final failure?)
-                            Text(failureMessage(context, failure)),
-                          if (fetchedAt != null)
-                            Text(
-                              strings.calendarShowingEarlier(
-                                formatTime(context, fetchedAt),
-                              ),
-                            ),
-                        ],
+                    if (failure != null)
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(failureMessage(context, failure)),
                       ),
-                    ),
                     Align(
                       alignment: AlignmentDirectional.centerEnd,
                       child: TextButton(
                         onPressed: onRetry,
                         child: Text(
                           UiLocalizations.of(context).retry,
-                          semanticsLabel: strings.calendarRetryService(
-                            answer.name,
-                          ),
+                          semanticsLabel: AppLocalizations.of(context)
+                              .calendarRetryService(answer.name),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );

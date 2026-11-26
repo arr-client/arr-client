@@ -12,6 +12,9 @@ import 'service_answer.dart';
 /// The scrolling body of a view over one read: the choice of services, a notice
 /// for each that failed, then the view's own rows. With nothing at all to show
 /// yet it says that it is loading.
+///
+/// A view that steps through days or months keeps this widget and changes only
+/// its [provider], so that its [leading] controls stay and keep the focus.
 class CalendarPage<T> extends ConsumerWidget {
   const CalendarPage({
     required this.provider,

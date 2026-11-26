@@ -93,8 +93,6 @@ class DownloadedView extends StatelessWidget {
     );
 
     return CalendarPage<ImportedItem>(
-      // A view of its own for each day.
-      key: ValueKey(day),
       provider: importedOnProvider(day),
       hidden: hidden,
       onHiddenChanged: onHiddenChanged,

@@ -77,8 +77,6 @@ class MonthView extends StatelessWidget {
     );
 
     return CalendarPage<CalendarEvent>(
-      // A view of its own for each month.
-      key: ValueKey(first),
       provider: calendarEventsProvider((from: first, to: next)),
       hidden: hidden,
       onHiddenChanged: onHiddenChanged,
