@@ -81,4 +81,6 @@ jobs:
         with:
           api-level: 35
           arch: x86_64
-          script: cd apps/arr_client && flutter test integration_test
+          # One file per run: in a single run the files after the first fail to start the Dart
+          # Development Service. The action runs each line of a script in its own shell.
+          script: cd apps/arr_client && files=$(find integration_test -name '*_test.dart' | sort) && test -n "$files" && for file in $files; do flutter test "$file" || exit 1; done
