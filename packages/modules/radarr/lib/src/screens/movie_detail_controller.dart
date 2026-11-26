@@ -15,6 +15,7 @@ final class MovieDetailSource {
     required this.movieId,
     required this.library,
     required this.history,
+    required this.commands,
   });
 
   /// The instance that holds the movie. Everything is read from it.
@@ -28,6 +29,9 @@ final class MovieDetailSource {
 
   /// The instance's history.
   final HistoryProvider history;
+
+  /// Starts and follows the instance's tasks.
+  final CommandProvider commands;
 
   /// The movie's key.
   ItemRef get item => ItemRef(
@@ -136,6 +140,8 @@ class MovieDetailController extends Notifier<MovieDetailState> {
 
   /// Asks the server for everything again. Completes when all has answered.
   Future<void> refresh() async {
+    // A flow or a change may end after the screen was left.
+    if (!ref.mounted) return;
     final load = ++_load;
     bool current() => ref.mounted && load == _load;
 

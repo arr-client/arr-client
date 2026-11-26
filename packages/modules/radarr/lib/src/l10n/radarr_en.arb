@@ -81,6 +81,31 @@
   "@movieFileAudio": {
     "description": "Label of the audio codec and format."
   },
+  "movieDeleteFile": "Delete file",
+  "@movieDeleteFile": {
+    "description": "Button that deletes the movie's file from the server, and the confirm button of its dialog."
+  },
+  "movieDeleteFileTitle": "Delete file?",
+  "@movieDeleteFileTitle": {
+    "description": "Title of the dialog that confirms deleting a movie file."
+  },
+  "movieDeleteFileConsequence": "The server deletes this file of {title}. The movie stays in the library, and if it is monitored the server may download it again.",
+  "@movieDeleteFileConsequence": {
+    "description": "What deleting a file does; title is the movie's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "movieFileDeleted": "The file was deleted",
+  "@movieFileDeleted": {
+    "description": "The server accepted the deletion of a file."
+  },
+  "movieFileChanged": "Nothing was deleted: the file could no longer be confirmed. Check it and try again.",
+  "@movieFileChanged": {
+    "description": "The confirmed file is no longer the one the server lists, or the list cannot be relied on."
+  },
   "movieCast": "Cast",
   "@movieCast": {
     "description": "Heading."
@@ -173,6 +198,133 @@
   "movieRefresh": "Refresh",
   "@movieRefresh": {
     "description": "Button that reads the screen from the server again."
+  },
+  "movieAutomaticSearch": "Search automatically",
+  "@movieAutomaticSearch": {
+    "description": "Button: have the server search for the movie and pick a release itself."
+  },
+  "movieInteractiveSearch": "Interactive search",
+  "@movieInteractiveSearch": {
+    "description": "Button: list the releases of the movie, for the user to pick one."
+  },
+  "movieMoreActions": "More actions",
+  "@movieMoreActions": {
+    "description": "Tooltip of the menu of a movie screen."
+  },
+  "movieEdit": "Edit movie",
+  "@movieEdit": {
+    "description": "Menu entry that opens the movie's settings."
+  },
+  "movieRefreshMetadata": "Refresh metadata",
+  "@movieRefreshMetadata": {
+    "description": "Menu entry: have the server fetch the movie's details again."
+  },
+  "movieRescanFiles": "Rescan files",
+  "@movieRescanFiles": {
+    "description": "Menu entry: have the server look for the movie's files on disk again."
+  },
+  "movieDelete": "Delete movie",
+  "@movieDelete": {
+    "description": "Menu entry that leads to deleting the movie."
+  },
+  "movieMonitorSaving": "Saving monitoring",
+  "@movieMonitorSaving": {
+    "description": "Read by screen readers while a change of monitoring is sent."
+  },
+  "movieMonitorOnAccepted": "The movie is now monitored",
+  "@movieMonitorOnAccepted": {
+    "description": "The server accepted turning monitoring on."
+  },
+  "movieMonitorOffAccepted": "The movie is no longer monitored",
+  "@movieMonitorOffAccepted": {
+    "description": "The server accepted turning monitoring off."
+  },
+  "movieSearchStarted": "Search started",
+  "@movieSearchStarted": {
+    "description": "The server accepted an automatic search."
+  },
+  "movieRefreshStarted": "Metadata refresh started",
+  "@movieRefreshStarted": {
+    "description": "The server accepted a refresh."
+  },
+  "movieRescanStarted": "File rescan started",
+  "@movieRescanStarted": {
+    "description": "The server accepted a rescan."
+  },
+  "movieTaskSearch": "Automatic search",
+  "@movieTaskSearch": {
+    "description": "Name of a server task, used in its progress."
+  },
+  "movieTaskRefresh": "Metadata refresh",
+  "@movieTaskRefresh": {
+    "description": "Name of a server task, used in its progress."
+  },
+  "movieTaskRescan": "File rescan",
+  "@movieTaskRescan": {
+    "description": "Name of a server task, used in its progress."
+  },
+  "movieTaskSending": "{task}: sending",
+  "@movieTaskSending": {
+    "description": "Progress of a task the server has not answered yet.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "movieTaskQueued": "{task}: waiting to start",
+  "@movieTaskQueued": {
+    "description": "Progress of a task in the server's queue.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "movieTaskRunning": "{task}: running",
+  "@movieTaskRunning": {
+    "description": "Progress of a task.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "movieTaskSucceeded": "{task}: finished",
+  "@movieTaskSucceeded": {
+    "description": "A task ended well. A search that finished need not have found anything.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "movieTaskFailed": "{task}: failed",
+  "@movieTaskFailed": {
+    "description": "A task ended badly.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "movieTaskUnknown": "{task}: the server does not say how it ended",
+  "@movieTaskUnknown": {
+    "description": "A task ended in a way that is not known.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "movieTaskLost": "{task}: progress could not be read",
+  "@movieTaskLost": {
+    "description": "The app stopped following a task.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
   },
   "movieDetails": "Details",
   "@movieDetails": {

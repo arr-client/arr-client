@@ -6,6 +6,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../l10n/generated/radarr_localizations.dart';
+import 'movie_actions.dart';
+import 'movie_actions_controller.dart';
 import 'movie_detail_controller.dart';
 import 'movie_detail_header.dart';
 import 'movie_detail_sections.dart';
@@ -43,6 +45,10 @@ class MovieDetailScreen extends ConsumerWidget {
             tooltip: strings.movieRefresh,
             onPressed: () => unawaited(refresh()),
           ),
+          // Not for a movie that is not there.
+          if (state.movie case ViewData(:final value, :final staleness)
+              when staleness?.failure is! NotFound)
+            MovieMenu(source: source, movie: value, isStale: staleness != null),
         ],
       ),
       body: SafeArea(
@@ -53,8 +59,13 @@ class MovieDetailScreen extends ConsumerWidget {
             state: state.movie,
             itemId: source.item,
             onRetry: () => unawaited(refresh()),
-            builder: (context, movie, {required isStale}) =>
-                _Content(movie, state, source: source, controller: controller),
+            builder: (context, movie, {required isStale}) => _Content(
+              movie,
+              state,
+              source: source,
+              controller: controller,
+              isStale: isStale,
+            ),
           ),
         ),
       ),
@@ -62,26 +73,38 @@ class MovieDetailScreen extends ConsumerWidget {
   }
 }
 
-class _Content extends StatelessWidget {
+class _Content extends ConsumerWidget {
   const _Content(
     this.movie,
     this.state, {
     required this.source,
     required this.controller,
+    required this.isStale,
   });
 
   final Movie movie;
   final MovieDetailState state;
   final MovieDetailSource source;
   final MovieDetailController controller;
+  final bool isStale;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final strings = RadarrLocalizations.of(context);
     // Whether the notice above already says that the server cannot be loaded.
     final offline = switch (state.movie) {
       ViewData(:final staleness?) => staleness.failure != null,
       _ => false,
+    };
+    final deleting = ref.watch(
+      movieActionsProvider(source).select((state) => state.deletingFile),
+    );
+    // The screen's own context, which outlives the rows of the list.
+    final screen = context;
+    // Only a file the instance has just listed can be deleted.
+    final listed = switch (state.files) {
+      ViewData(:final value, staleness: null) => value,
+      _ => null,
     };
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -102,6 +125,16 @@ class _Content extends StatelessWidget {
                 movie: movie,
                 instanceName: source.instance.instance.name,
                 artwork: source.instance.artwork,
+              ),
+            ),
+            inset(
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: MovieActions(
+                  source: source,
+                  movie: movie,
+                  isStale: isStale,
+                ),
               ),
             ),
             inset(DetailSlot(DetailSlotName.downloadProgress, item: movie.ref)),
@@ -128,10 +161,12 @@ class _Content extends StatelessWidget {
               MovieFiles(
                 // The movie's own record names its file, also while the list of
                 // files is not there.
-                files: switch (state.files) {
-                  ViewData(:final value, staleness: null) => value,
-                  _ => [?movie.file],
-                },
+                files: listed ?? [?movie.file],
+                onDelete: listed == null || isStale || deleting
+                    ? null
+                    : (file) => unawaited(
+                        deleteMovieFile(screen, ref, source, movie, file),
+                      ),
               ),
             ),
             inset(DetailSlot(DetailSlotName.subtitles, item: movie.ref)),

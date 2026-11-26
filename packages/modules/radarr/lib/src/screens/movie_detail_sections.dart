@@ -124,10 +124,13 @@ class MovieFacts extends StatelessWidget {
 /// The files of a movie, with what is in them.
 class MovieFiles extends StatelessWidget {
   /// Creates [MovieFiles].
-  const MovieFiles({required this.files, super.key});
+  const MovieFiles({required this.files, required this.onDelete, super.key});
 
   /// The files; a movie has one at most.
   final List<MediaFile> files;
+
+  /// Asks to delete a file. Null while no file can be deleted.
+  final ValueChanged<MediaFile>? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +139,7 @@ class MovieFiles extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final file in files)
+        for (final file in files) ...[
           FactList([
             if (file.quality case final quality?)
               (strings.movieFileQuality, quality.name),
@@ -153,6 +156,18 @@ class MovieFiles extends StatelessWidget {
             if (file.audio case final audio?) (strings.movieFileAudio, audio),
             (strings.moviePath, file.path),
           ]),
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            icon: const Icon(Icons.delete_outline),
+            label: Text(strings.movieDeleteFile),
+            onPressed: switch (onDelete) {
+              final delete? => () => delete(file),
+              null => null,
+            },
+          ),
+        ],
       ],
     );
   }
