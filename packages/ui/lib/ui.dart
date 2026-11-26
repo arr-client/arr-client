@@ -8,6 +8,7 @@ export 'src/l10n/generated/ui_localizations.dart';
 export 'src/l10n/localizations_delegates.dart';
 export 'src/theme/arr_theme.dart';
 export 'src/widgets/action_outcome.dart';
+export 'src/widgets/artwork_poster.dart';
 export 'src/widgets/confirm_dialog.dart';
 export 'src/widgets/fact_list.dart';
 export 'src/widgets/failure_message.dart';

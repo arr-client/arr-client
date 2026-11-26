@@ -5,6 +5,8 @@ import 'package:material_ui/material_ui.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
+import '../../features/search/add_request.dart';
+import '../../features/search/search_screen.dart';
 import '../../features/settings/instances/instances_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../screens/destination_screens.dart';
@@ -28,12 +30,6 @@ GoRouter createRouter(ModuleRegistry modules) {
         routes: routes,
       ),
     ],
-  );
-
-  GoRoute page(String path, String Function(AppLocalizations) title) => GoRoute(
-    path: path,
-    builder: (context, state) =>
-        PlaceholderPage(title: title(AppLocalizations.of(context))),
   );
 
   // Everything instance-scoped explains itself when its instance cannot be used.
@@ -75,8 +71,26 @@ GoRouter createRouter(ModuleRegistry modules) {
           ),
         ],
       ),
-      page(searchLocation, (strings) => strings.search),
-      page(addLocation, (strings) => strings.addItem),
+      GoRoute(
+        path: searchLocation,
+        builder: (context, state) => const SearchScreen(),
+      ),
+      // A placeholder until the add flow is built, which works from the
+      // `extra`.
+      GoRoute(
+        path: addLocation,
+        builder: (context, state) {
+          final strings = AppLocalizations.of(context);
+          return switch (state.extra) {
+            AddRequest(:final candidate) => MessagePage(
+              title: strings.addItem,
+              icon: Icons.construction_outlined,
+              message: strings.addNotBuilt(candidate.title),
+            ),
+            _ => PlaceholderPage(title: strings.addItem),
+          };
+        },
+      ),
       GoRoute(
         path: addInstanceLocation,
         builder: (context, state) => const ServicePickerScreen(),
