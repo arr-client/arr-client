@@ -159,10 +159,30 @@ final class SecretRedactor {
     (text) => _afterPrefix(_query, text),
     (text) => _afterPrefix(_fragment, text),
     (text) => _afterPrefix(_headerValueError, text),
-    (text) => _afterPrefix(_scheme, text),
+    // Before the tokens, so that a name taken for one still has its value
+    // removed.
     _namedValues,
+    _schemeTokens,
     (text) => _hexKey.allMatches(text).map((m) => (m.start, m.end)),
   ];
+
+  /// What follows `Bearer` or `Basic`, unless it is itself a sensitive name
+  /// before a colon, as in "Basic Password: ...".
+  static Iterable<(int, int)> _schemeTokens(String text) =>
+      _afterPrefix(_scheme, text).where((span) {
+        final (start, end) = span;
+        return _colon.matchAsPrefix(text, end) == null ||
+            !_isExactName(text.substring(start, end));
+      });
+
+  /// Whether [word] is one of the sensitive names and nothing more: a token may
+  /// well contain one.
+  static bool _isExactName(String word) {
+    final lower = word.toLowerCase();
+    final joined = lower.replaceAll(RegExp('[-_]'), '');
+    return _sensitiveWords.contains(lower) ||
+        _sensitivePart.matchAsPrefix(joined)?.end == joined.length;
+  }
 
   /// Each match of [pattern] without its first group, which is kept, and
   /// without its last [suffix] characters.
@@ -286,12 +306,13 @@ final class SecretRedactor {
     caseSensitive: false,
   );
 
-  // A word in lower case, as in "Basic authentication", is not a token, and nor
-  // is a name before a colon, as in "Basic Password: ...".
+  // A word in lower case, as in "Basic authentication", is not a token.
   static final _scheme = RegExp(
     r'\b((?:[Bb]earer|BEARER|[Bb]asic|BASIC)[ \t]+)(?![a-z]+(?![\w.~+/=-]))'
-    r'''[\w.~+/=-]{6,}(?![\w.~+/=-]|["']?[ \t]*:)''',
+    r'[\w.~+/=-]{6,}',
   );
+
+  static final _colon = RegExp(r'''["']?[ \t]*:''');
 
   static final _hexKey = RegExp(
     r'(?<![0-9A-Za-z])[0-9a-fA-F]{32}(?![0-9A-Za-z])',

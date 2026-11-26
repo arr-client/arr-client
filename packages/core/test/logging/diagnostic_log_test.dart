@@ -170,6 +170,10 @@ void main() {
       'Basic Password: s3cretZ',
       'Basic Authorization: s3cretZ',
       'Bearer Authorization: s3cretZ',
+      'Basic X-Api-Key: s3cretZ',
+      'Bearer s3cretZ123XYZ: rejected',
+      'Bearer my-token-s3cretZ: rejected',
+      'Basic s3cretZ0Zg==: rejected',
       'Cookie: a=1; theme=s3cretZ',
       'Set-Cookie: connect.sid=s3cretZ; Path=/',
       'connect.sid=s3cretZ',
@@ -289,6 +293,15 @@ void main() {
         endsWith('GET api?[redacted] returned 401'),
       );
     });
+
+    for (final name in ['Password', 'Authorization']) {
+      test('the name $name after a scheme', () {
+        expect(
+          _record(DiagnosticLog(), 'Basic $name: s3cretZ'),
+          endsWith('Basic $name: [redacted]'),
+        );
+      });
+    }
 
     test('around a quoted value', () {
       expect(
