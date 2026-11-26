@@ -7,14 +7,18 @@ sealed class Result<T, E> {
 
 /// The operation succeeded with [value].
 final class Ok<T, E> extends Result<T, E> {
+  /// Creates an [Ok].
   const Ok(this.value);
 
+  /// What the operation produced.
   final T value;
 }
 
 /// The operation failed with [error].
 final class Err<T, E> extends Result<T, E> {
+  /// Creates an [Err].
   const Err(this.error);
 
+  /// Why it failed.
   final E error;
 }

@@ -7,6 +7,7 @@ import 'module_category.dart';
 
 /// What is known about a service before connecting to one.
 final class ModuleDescriptor {
+  /// Creates a [ModuleDescriptor].
   const ModuleDescriptor({
     required this.displayName,
     required this.icon,
@@ -22,8 +23,10 @@ final class ModuleDescriptor {
   /// The product's name, which is not translated.
   final String displayName;
 
+  /// Shown wherever the service is listed.
   final IconData icon;
 
+  /// What kind of service it is.
   final ModuleCategory category;
 
   /// The ways to authenticate, the preferred one first.
@@ -32,10 +35,13 @@ final class ModuleDescriptor {
   /// Required when [authKinds] contains [AuthKind.apiKey].
   final ApiKeyHeader? apiKeyHeader;
 
+  /// The port the service listens on unless configured otherwise.
   final int defaultPort;
 
+  /// The oldest supported version.
   final String minimumVersion;
 
+  /// The newest tested version.
   final String testedVersion;
 
   /// Warnings the add and edit form shows.

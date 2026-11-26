@@ -11,15 +11,19 @@ abstract interface class QueueProvider implements Capability {
   /// The whole queue, including downloads the server cannot match.
   ServiceResult<List<QueueItem>> queue();
 
+  /// Removes one entry.
   ServiceResult<void> remove(int queueId, RemoveOptions options);
 
+  /// Removes several entries.
   ServiceResult<void> removeMany(List<int> queueIds, RemoveOptions options);
 
   /// Grabs a delayed item at once.
   ServiceResult<void> grabNow(int queueId);
 
+  /// The files of [item] awaiting import.
   ServiceResult<List<ManualImportCandidate>> importCandidates(QueueItem item);
 
+  /// What candidates can be corrected to.
   ServiceResult<ImportChoices> importChoices();
 
   /// Has the server evaluate corrected candidates again.

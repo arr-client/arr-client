@@ -17,6 +17,7 @@ final class ServiceRequest {
     }
   }
 
+  /// The HTTP method.
   final HttpMethod method;
 
   /// Appended to the instance's address including its sub-path, for example
@@ -31,6 +32,7 @@ final class ServiceRequest {
   /// session cookie.
   final Map<String, String> headers;
 
+  /// What to send.
   final RequestBody? body;
 
   static bool _staysUnderAddress(String path) {

@@ -5,6 +5,7 @@ import 'service_user.dart';
 
 /// A request for a title.
 final class MediaRequest {
+  /// Creates a [MediaRequest].
   const MediaRequest({
     required this.id,
     required this.titleRef,
@@ -15,17 +16,24 @@ final class MediaRequest {
     this.seasons = const [],
   });
 
+  /// The server's id of the request.
   final int id;
 
+  /// The title requested.
   final DiscoveryRef titleRef;
 
+  /// Who asked.
   final ServiceUser requestedBy;
 
+  /// Where the request is.
   final RequestStatus status;
 
+  /// Availability of the requested variant.
   final Availability availability;
 
+  /// Requested seasons; empty for a movie.
   final List<int> seasons;
 
+  /// Whether the 4K variant was requested.
   final bool is4k;
 }

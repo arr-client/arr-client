@@ -13,12 +13,15 @@ abstract interface class HistoryProvider implements Capability {
     int page = 1,
   });
 
+  /// Marks a grab as failed.
   ServiceResult<void> markFailed(int eventId);
 
   /// Events after [since], a time taken from the server, not the device.
   ServiceResult<List<HistoryEvent>> eventsSince(DateTime since);
 
+  /// Blocked releases.
   ServiceResult<ResultPage<BlocklistEntry>> blocklist({int page = 1});
 
+  /// Removes entries from the blocklist.
   ServiceResult<void> unblock(List<int> entryIds);
 }

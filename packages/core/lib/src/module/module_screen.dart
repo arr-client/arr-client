@@ -11,6 +11,7 @@ typedef ModuleScreenBuilder = Widget Function(
 
 /// A screen a module owns.
 final class ModuleScreen {
+  /// Creates a [ModuleScreen].
   const ModuleScreen({required this.path, required this.builder});
 
   /// A router pattern relative to `/instances/:instanceId/`. It starts with the
@@ -18,5 +19,6 @@ final class ModuleScreen {
   /// `radarr/movies/:movieId`.
   final String path;
 
+  /// Builds the screen.
   final ModuleScreenBuilder builder;
 }

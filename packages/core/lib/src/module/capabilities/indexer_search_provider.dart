@@ -7,8 +7,10 @@ import '../service_result.dart';
 
 /// Free-text search across indexers.
 abstract interface class IndexerSearchProvider implements Capability {
+  /// Indexers and their status.
   ServiceResult<List<Indexer>> indexers();
 
+  /// Categories to filter by.
   ServiceResult<List<IndexerCategory>> categories();
 
   /// Empty filters mean all.
@@ -18,7 +20,9 @@ abstract interface class IndexerSearchProvider implements Capability {
     Set<int> indexerIds = const {},
   });
 
+  /// Sends [release] to a download client.
   ServiceResult<void> grab(Release release);
 
+  /// The indexer search screen.
   ModuleRoute entryRoute();
 }

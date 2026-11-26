@@ -1,2 +1,8 @@
 /// What a request service deals in.
-enum DiscoveryMediaType { movie, series }
+enum DiscoveryMediaType {
+  /// A movie.
+  movie,
+
+  /// A series.
+  series,
+}

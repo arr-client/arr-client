@@ -1,2 +1,11 @@
 /// What a subtitle service entry is.
-enum SubtitleKind { movie, series, episode }
+enum SubtitleKind {
+  /// A movie.
+  movie,
+
+  /// A series.
+  series,
+
+  /// An episode.
+  episode,
+}

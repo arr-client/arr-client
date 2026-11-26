@@ -8,6 +8,7 @@ abstract interface class HealthProvider implements Capability {
   /// False where the service reports health only.
   bool get providesDiskSpace;
 
+  /// Problems the server reports.
   ServiceResult<List<HealthIssue>> health();
 
   /// Empty when [providesDiskSpace] is false.

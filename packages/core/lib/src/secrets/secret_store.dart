@@ -5,6 +5,7 @@ abstract interface class SecretStore {
   /// Null if nothing is stored under [key].
   Future<String?> read(String key);
 
+  /// Stores [value] under [key], replacing any.
   Future<void> write(String key, String value);
 
   /// Does nothing if nothing is stored under [key].

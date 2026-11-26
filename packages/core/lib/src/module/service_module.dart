@@ -13,6 +13,7 @@ abstract interface class ServiceModule {
   /// Stable; used in storage and exports.
   String get id;
 
+  /// What is known about the service before connecting.
   ModuleDescriptor get descriptor;
 
   /// How to sign in, for a module whose [ModuleDescriptor.authKinds] include a

@@ -8,6 +8,9 @@ abstract interface class CacheScope {
   /// which differs from fetched and empty.
   Future<CacheSnapshot?> read(MediaKind kind, {int? parentRemoteId});
 
+  /// One entry, or null if it is not cached.
+  Future<CacheEntry?> entry(MediaKind kind, int remoteId);
+
   /// Stores a full fetch: entries of [kind] (under [parentRemoteId], if given)
   /// that are not in [entries] are removed.
   Future<void> replace(

@@ -7,8 +7,10 @@ import 'detail_slot_scope.dart';
 /// A named place a module puts on its detail screen. It shows what the app's
 /// [DetailSlotScope] builds for it, and nothing without one.
 class DetailSlot extends StatelessWidget {
+  /// Creates a [DetailSlot].
   const DetailSlot(this.name, {required this.item, this.parent, super.key});
 
+  /// Which slot this is.
   final DetailSlotName name;
 
   /// The item the screen shows.

@@ -2,6 +2,7 @@ import '../models/session_info.dart';
 
 /// What a successful probe found.
 final class ProbeResult {
+  /// Creates a [ProbeResult].
   const ProbeResult({
     required this.product,
     required this.version,
@@ -13,6 +14,7 @@ final class ProbeResult {
   /// predecessor).
   final String product;
 
+  /// The server's version.
   final String version;
 
   /// Newer than the tested versions: allowed, with a notice.

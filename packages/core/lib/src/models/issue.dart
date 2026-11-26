@@ -6,6 +6,7 @@ import 'service_user.dart';
 
 /// A reported problem with a title.
 final class Issue {
+  /// Creates an [Issue].
   const Issue({
     required this.id,
     required this.type,
@@ -17,20 +18,27 @@ final class Issue {
     this.comments = const [],
   });
 
+  /// The server's id of the issue.
   final int id;
 
+  /// What is wrong.
   final IssueType type;
 
+  /// Open or resolved.
   final IssueStatus status;
 
   /// The title, with its TMDB id.
   final DiscoveryRef mediaRef;
 
+  /// The title concerned.
   final String title;
 
+  /// Who reported it.
   final ServiceUser createdBy;
 
+  /// When it was reported.
   final DateTime createdAt;
 
+  /// The conversation, where loaded.
   final List<IssueComment> comments;
 }

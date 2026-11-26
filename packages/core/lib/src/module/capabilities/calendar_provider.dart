@@ -5,6 +5,7 @@ import '../service_result.dart';
 
 /// Upcoming releases and recent imports.
 abstract interface class CalendarProvider implements Capability {
+  /// Releases dated from [from] to [to].
   ServiceResult<List<CalendarEvent>> events(DateTime from, DateTime to);
 
   /// The latest imports, grouped by item.
