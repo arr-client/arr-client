@@ -1,0 +1,1014 @@
+{
+  "page": 1,
+  "pageSize": 100,
+  "sortKey": "timeleft",
+  "sortDirection": "descending",
+  "totalRecords": 7,
+  "records": [
+    {
+      "languages": [
+        {
+          "id": 0,
+          "name": "Unknown"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 0,
+          "name": "Unknown",
+          "source": "unknown",
+          "resolution": 0
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormatScore": 0,
+      "size": 104857600,
+      "title": "redacted-103",
+      "status": "warning",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "errorMessage": "redacted-104",
+      "downloadId": "ABCDEF0000000000000000000000000000000001",
+      "protocol": "torrent",
+      "downloadClient": "redacted-105",
+      "downloadClientHasPostImportCategory": false,
+      "episodeHasFile": false,
+      "sizeleft": 104857600,
+      "id": 371094
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 18,
+      "seasonNumber": 1,
+      "series": {
+        "title": "redacted-1",
+        "sortTitle": "redacted-2",
+        "status": "ended",
+        "ended": true,
+        "overview": "redacted-3",
+        "network": "redacted-4",
+        "airTime": "19:30",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/5.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/6.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/7.jpg"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 7,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 8,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 9,
+            "monitored": true
+          }
+        ],
+        "year": 1962,
+        "path": "/redacted/9",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 25,
+        "tvdbId": 71471,
+        "tvRageId": 5615,
+        "tvMazeId": 2139,
+        "tmdbId": 1930,
+        "firstAired": "1962-09-26T00:00:00Z",
+        "lastAired": "1971-03-23T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-10",
+        "imdbId": "tt0055662",
+        "titleSlug": "redacted-11",
+        "certification": "TV-G",
+        "genres": [
+          "redacted-13",
+          "redacted-14"
+        ],
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T12:51:34Z",
+        "ratings": {
+          "votes": 12680,
+          "value": 7.3
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "episode": {
+        "seriesId": 1,
+        "tvdbId": 46691,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 6,
+        "title": "redacted-79",
+        "airDate": "1962-10-31",
+        "airDateUtc": "1962-11-01T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-80",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 6,
+        "unverifiedSceneNumbering": false,
+        "id": 18
+      },
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "HDTV-720p",
+          "source": "television",
+          "resolution": 720
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 1468006400,
+      "title": "redacted-106",
+      "added": "2026-11-26T12:53:05Z",
+      "status": "queued",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "downloadId": "ABCDEF0000000000000000000000000000000002",
+      "protocol": "torrent",
+      "downloadClient": "redacted-105",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-107",
+      "episodeHasFile": false,
+      "sizeleft": 1468006400,
+      "id": 1759242772
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 19,
+      "seasonNumber": 1,
+      "series": {
+        "title": "redacted-1",
+        "sortTitle": "redacted-2",
+        "status": "ended",
+        "ended": true,
+        "overview": "redacted-3",
+        "network": "redacted-4",
+        "airTime": "19:30",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/5.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/6.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/7.jpg"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 7,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 8,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 9,
+            "monitored": true
+          }
+        ],
+        "year": 1962,
+        "path": "/redacted/9",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 25,
+        "tvdbId": 71471,
+        "tvRageId": 5615,
+        "tvMazeId": 2139,
+        "tmdbId": 1930,
+        "firstAired": "1962-09-26T00:00:00Z",
+        "lastAired": "1971-03-23T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-10",
+        "imdbId": "tt0055662",
+        "titleSlug": "redacted-11",
+        "certification": "TV-G",
+        "genres": [
+          "redacted-13",
+          "redacted-14"
+        ],
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T12:51:34Z",
+        "ratings": {
+          "votes": 12680,
+          "value": 7.3
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "episode": {
+        "seriesId": 1,
+        "tvdbId": 46692,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 7,
+        "title": "redacted-82",
+        "airDate": "1962-11-07",
+        "airDateUtc": "1962-11-08T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-83",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 7,
+        "unverifiedSceneNumbering": false,
+        "id": 19
+      },
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "HDTV-720p",
+          "source": "television",
+          "resolution": 720
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 1468006400,
+      "title": "redacted-106",
+      "added": "2026-11-26T12:53:05Z",
+      "status": "queued",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "downloadId": "ABCDEF0000000000000000000000000000000002",
+      "protocol": "torrent",
+      "downloadClient": "redacted-105",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-107",
+      "episodeHasFile": false,
+      "sizeleft": 1468006400,
+      "id": 97818252
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 14,
+      "seasonNumber": 1,
+      "series": {
+        "title": "redacted-1",
+        "sortTitle": "redacted-2",
+        "status": "ended",
+        "ended": true,
+        "overview": "redacted-3",
+        "network": "redacted-4",
+        "airTime": "19:30",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/5.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/6.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/7.jpg"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 7,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 8,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 9,
+            "monitored": true
+          }
+        ],
+        "year": 1962,
+        "path": "/redacted/9",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 25,
+        "tvdbId": 71471,
+        "tvRageId": 5615,
+        "tvMazeId": 2139,
+        "tmdbId": 1930,
+        "firstAired": "1962-09-26T00:00:00Z",
+        "lastAired": "1971-03-23T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-10",
+        "imdbId": "tt0055662",
+        "titleSlug": "redacted-11",
+        "certification": "TV-G",
+        "genres": [
+          "redacted-13",
+          "redacted-14"
+        ],
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T12:51:34Z",
+        "ratings": {
+          "votes": 12680,
+          "value": 7.3
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "episode": {
+        "seriesId": 1,
+        "tvdbId": 46687,
+        "episodeFileId": 2,
+        "seasonNumber": 1,
+        "episodeNumber": 2,
+        "title": "redacted-63",
+        "airDate": "1962-10-03",
+        "airDateUtc": "1962-10-03T23:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-64",
+        "hasFile": true,
+        "monitored": true,
+        "absoluteEpisodeNumber": 2,
+        "unverifiedSceneNumbering": false,
+        "id": 14
+      },
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 1468006400,
+      "title": "redacted-108",
+      "added": "2026-11-26T12:52:07Z",
+      "status": "warning",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "errorMessage": "redacted-104",
+      "downloadId": "ABCDEF0000000000000000000000000000000003",
+      "protocol": "torrent",
+      "downloadClient": "redacted-105",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-107",
+      "episodeHasFile": true,
+      "sizeleft": 1468006400,
+      "id": 368489279
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 16,
+      "seasonNumber": 1,
+      "series": {
+        "title": "redacted-1",
+        "sortTitle": "redacted-2",
+        "status": "ended",
+        "ended": true,
+        "overview": "redacted-3",
+        "network": "redacted-4",
+        "airTime": "19:30",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/5.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/6.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/7.jpg"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 7,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 8,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 9,
+            "monitored": true
+          }
+        ],
+        "year": 1962,
+        "path": "/redacted/9",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 25,
+        "tvdbId": 71471,
+        "tvRageId": 5615,
+        "tvMazeId": 2139,
+        "tmdbId": 1930,
+        "firstAired": "1962-09-26T00:00:00Z",
+        "lastAired": "1971-03-23T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-10",
+        "imdbId": "tt0055662",
+        "titleSlug": "redacted-11",
+        "certification": "TV-G",
+        "genres": [
+          "redacted-13",
+          "redacted-14"
+        ],
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T12:51:34Z",
+        "ratings": {
+          "votes": 12680,
+          "value": 7.3
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "episode": {
+        "seriesId": 1,
+        "tvdbId": 46689,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 4,
+        "title": "redacted-71",
+        "airDate": "1962-10-17",
+        "airDateUtc": "1962-10-17T23:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-72",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 4,
+        "unverifiedSceneNumbering": false,
+        "id": 16
+      },
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "HDTV-720p",
+          "source": "television",
+          "resolution": 720
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 734003200,
+      "title": "redacted-109",
+      "added": "2026-11-26T12:52:05Z",
+      "status": "warning",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "errorMessage": "redacted-104",
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "protocol": "torrent",
+      "downloadClient": "redacted-105",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-107",
+      "episodeHasFile": false,
+      "sizeleft": 734003200,
+      "id": 1681750526
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 20,
+      "seasonNumber": 1,
+      "series": {
+        "title": "redacted-1",
+        "sortTitle": "redacted-2",
+        "status": "ended",
+        "ended": true,
+        "overview": "redacted-3",
+        "network": "redacted-4",
+        "airTime": "19:30",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/5.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/6.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/7.jpg"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 7,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 8,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 9,
+            "monitored": true
+          }
+        ],
+        "year": 1962,
+        "path": "/redacted/9",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 25,
+        "tvdbId": 71471,
+        "tvRageId": 5615,
+        "tvMazeId": 2139,
+        "tmdbId": 1930,
+        "firstAired": "1962-09-26T00:00:00Z",
+        "lastAired": "1971-03-23T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-10",
+        "imdbId": "tt0055662",
+        "titleSlug": "redacted-11",
+        "certification": "TV-G",
+        "genres": [
+          "redacted-13",
+          "redacted-14"
+        ],
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T12:51:34Z",
+        "ratings": {
+          "votes": 12680,
+          "value": 7.3
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "episode": {
+        "seriesId": 1,
+        "tvdbId": 46693,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 8,
+        "title": "redacted-85",
+        "airDate": "1962-11-14",
+        "airDateUtc": "1962-11-15T00:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-86",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 8,
+        "unverifiedSceneNumbering": false,
+        "id": 20
+      },
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "HDTV-720p",
+          "source": "television",
+          "resolution": 720
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 734003200,
+      "title": "redacted-110",
+      "estimatedCompletionTime": "2026-11-26T13:05:39Z",
+      "added": "2026-11-26T12:53:05Z",
+      "status": "delay",
+      "protocol": "torrent",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-107",
+      "episodeHasFile": false,
+      "sizeleft": 734003200,
+      "timeleft": "00:12:08.7105710",
+      "id": 968557673
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 17,
+      "seasonNumber": 1,
+      "series": {
+        "title": "redacted-1",
+        "sortTitle": "redacted-2",
+        "status": "ended",
+        "ended": true,
+        "overview": "redacted-3",
+        "network": "redacted-4",
+        "airTime": "19:30",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/5.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/6.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/7.jpg"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 7,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 8,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 9,
+            "monitored": true
+          }
+        ],
+        "year": 1962,
+        "path": "/redacted/9",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 25,
+        "tvdbId": 71471,
+        "tvRageId": 5615,
+        "tvMazeId": 2139,
+        "tmdbId": 1930,
+        "firstAired": "1962-09-26T00:00:00Z",
+        "lastAired": "1971-03-23T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-10",
+        "imdbId": "tt0055662",
+        "titleSlug": "redacted-11",
+        "certification": "TV-G",
+        "genres": [
+          "redacted-13",
+          "redacted-14"
+        ],
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T12:51:34Z",
+        "ratings": {
+          "votes": 12680,
+          "value": 7.3
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "episode": {
+        "seriesId": 1,
+        "tvdbId": 46690,
+        "episodeFileId": 0,
+        "seasonNumber": 1,
+        "episodeNumber": 5,
+        "title": "redacted-74",
+        "airDate": "1962-10-24",
+        "airDateUtc": "1962-10-24T23:30:00Z",
+        "runtime": 25,
+        "overview": "redacted-75",
+        "hasFile": false,
+        "monitored": true,
+        "absoluteEpisodeNumber": 5,
+        "unverifiedSceneNumbering": false,
+        "id": 17
+      },
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "HDTV-720p",
+          "source": "television",
+          "resolution": 720
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 146333,
+      "title": "redacted-111",
+      "estimatedCompletionTime": "2026-11-26T12:53:13Z",
+      "added": "2026-11-26T12:52:20Z",
+      "status": "completed",
+      "trackedDownloadStatus": "warning",
+      "trackedDownloadState": "importPending",
+      "statusMessages": [
+        {
+          "title": "redacted-112",
+          "messages": [
+            "redacted-113"
+          ]
+        }
+      ],
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
+      "protocol": "torrent",
+      "downloadClient": "redacted-105",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-107",
+      "outputPath": "/redacted/114.mkv",
+      "episodeHasFile": false,
+      "sizeleft": 0,
+      "timeleft": "00:00:00",
+      "id": 1570342524
+    }
+  ]
+}

@@ -1,0 +1,305 @@
+[
+  {
+    "seriesId": 4,
+    "tvdbId": 219121,
+    "episodeFileId": 0,
+    "seasonNumber": 1,
+    "episodeNumber": 1,
+    "title": "redacted-94",
+    "airDate": "1998-04-03",
+    "airDateUtc": "1998-04-03T08:00:00Z",
+    "runtime": 25,
+    "overview": "redacted-95",
+    "hasFile": false,
+    "monitored": true,
+    "absoluteEpisodeNumber": 2,
+    "unverifiedSceneNumbering": false,
+    "series": {
+      "title": "redacted-40",
+      "sortTitle": "redacted-41",
+      "status": "ended",
+      "ended": true,
+      "overview": "redacted-42",
+      "network": "redacted-43",
+      "airTime": "17:00",
+      "images": [
+        {
+          "coverType": "banner",
+          "remoteUrl": "https://redacted.invalid/44.jpg"
+        },
+        {
+          "coverType": "poster",
+          "remoteUrl": "https://redacted.invalid/45.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "remoteUrl": "https://redacted.invalid/46.jpg"
+        },
+        {
+          "coverType": "clearlogo",
+          "remoteUrl": "https://redacted.invalid/47.png"
+        }
+      ],
+      "originalLanguage": {
+        "id": 8,
+        "name": "Japanese"
+      },
+      "seasons": [
+        {
+          "seasonNumber": 0,
+          "monitored": false
+        },
+        {
+          "seasonNumber": 1,
+          "monitored": true
+        }
+      ],
+      "year": 1998,
+      "path": "/redacted/48",
+      "qualityProfileId": 6,
+      "seasonFolder": true,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "useSceneNumbering": false,
+      "runtime": 25,
+      "tvdbId": 76885,
+      "tvRageId": 3157,
+      "tvMazeId": 1121,
+      "tmdbId": 30991,
+      "firstAired": "1998-04-03T00:00:00Z",
+      "lastAired": "1999-04-23T00:00:00Z",
+      "seriesType": "anime",
+      "cleanTitle": "redacted-49",
+      "imdbId": "tt0213338",
+      "titleSlug": "redacted-50",
+      "certification": "TV-MA",
+      "genres": [
+        "redacted-37",
+        "redacted-38",
+        "redacted-51",
+        "redacted-52",
+        "redacted-13",
+        "redacted-25",
+        "redacted-53",
+        "redacted-39"
+      ],
+      "tags": [],
+      "added": "2026-11-26T12:51:37Z",
+      "ratings": {
+        "votes": 175525,
+        "value": 8.9
+      },
+      "languageProfileId": 1,
+      "id": 4
+    },
+    "images": [
+      {
+        "coverType": "screenshot",
+        "remoteUrl": "https://redacted.invalid/96.jpg"
+      }
+    ],
+    "id": 789
+  },
+  {
+    "seriesId": 4,
+    "tvdbId": 219122,
+    "episodeFileId": 0,
+    "seasonNumber": 1,
+    "episodeNumber": 2,
+    "title": "redacted-97",
+    "airDate": "1998-04-10",
+    "airDateUtc": "1998-04-10T08:00:00Z",
+    "runtime": 25,
+    "overview": "redacted-98",
+    "hasFile": false,
+    "monitored": true,
+    "absoluteEpisodeNumber": 3,
+    "unverifiedSceneNumbering": false,
+    "series": {
+      "title": "redacted-40",
+      "sortTitle": "redacted-41",
+      "status": "ended",
+      "ended": true,
+      "overview": "redacted-42",
+      "network": "redacted-43",
+      "airTime": "17:00",
+      "images": [
+        {
+          "coverType": "banner",
+          "remoteUrl": "https://redacted.invalid/44.jpg"
+        },
+        {
+          "coverType": "poster",
+          "remoteUrl": "https://redacted.invalid/45.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "remoteUrl": "https://redacted.invalid/46.jpg"
+        },
+        {
+          "coverType": "clearlogo",
+          "remoteUrl": "https://redacted.invalid/47.png"
+        }
+      ],
+      "originalLanguage": {
+        "id": 8,
+        "name": "Japanese"
+      },
+      "seasons": [
+        {
+          "seasonNumber": 0,
+          "monitored": false
+        },
+        {
+          "seasonNumber": 1,
+          "monitored": true
+        }
+      ],
+      "year": 1998,
+      "path": "/redacted/48",
+      "qualityProfileId": 6,
+      "seasonFolder": true,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "useSceneNumbering": false,
+      "runtime": 25,
+      "tvdbId": 76885,
+      "tvRageId": 3157,
+      "tvMazeId": 1121,
+      "tmdbId": 30991,
+      "firstAired": "1998-04-03T00:00:00Z",
+      "lastAired": "1999-04-23T00:00:00Z",
+      "seriesType": "anime",
+      "cleanTitle": "redacted-49",
+      "imdbId": "tt0213338",
+      "titleSlug": "redacted-50",
+      "certification": "TV-MA",
+      "genres": [
+        "redacted-37",
+        "redacted-38",
+        "redacted-51",
+        "redacted-52",
+        "redacted-13",
+        "redacted-25",
+        "redacted-53",
+        "redacted-39"
+      ],
+      "tags": [],
+      "added": "2026-11-26T12:51:37Z",
+      "ratings": {
+        "votes": 175525,
+        "value": 8.9
+      },
+      "languageProfileId": 1,
+      "id": 4
+    },
+    "images": [
+      {
+        "coverType": "screenshot",
+        "remoteUrl": "https://redacted.invalid/99.jpg"
+      }
+    ],
+    "id": 790
+  },
+  {
+    "seriesId": 4,
+    "tvdbId": 219126,
+    "episodeFileId": 0,
+    "seasonNumber": 1,
+    "episodeNumber": 3,
+    "title": "redacted-100",
+    "airDate": "1998-04-17",
+    "airDateUtc": "1998-04-17T08:00:00Z",
+    "runtime": 25,
+    "overview": "redacted-101",
+    "hasFile": false,
+    "monitored": true,
+    "absoluteEpisodeNumber": 7,
+    "unverifiedSceneNumbering": false,
+    "series": {
+      "title": "redacted-40",
+      "sortTitle": "redacted-41",
+      "status": "ended",
+      "ended": true,
+      "overview": "redacted-42",
+      "network": "redacted-43",
+      "airTime": "17:00",
+      "images": [
+        {
+          "coverType": "banner",
+          "remoteUrl": "https://redacted.invalid/44.jpg"
+        },
+        {
+          "coverType": "poster",
+          "remoteUrl": "https://redacted.invalid/45.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "remoteUrl": "https://redacted.invalid/46.jpg"
+        },
+        {
+          "coverType": "clearlogo",
+          "remoteUrl": "https://redacted.invalid/47.png"
+        }
+      ],
+      "originalLanguage": {
+        "id": 8,
+        "name": "Japanese"
+      },
+      "seasons": [
+        {
+          "seasonNumber": 0,
+          "monitored": false
+        },
+        {
+          "seasonNumber": 1,
+          "monitored": true
+        }
+      ],
+      "year": 1998,
+      "path": "/redacted/48",
+      "qualityProfileId": 6,
+      "seasonFolder": true,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "useSceneNumbering": false,
+      "runtime": 25,
+      "tvdbId": 76885,
+      "tvRageId": 3157,
+      "tvMazeId": 1121,
+      "tmdbId": 30991,
+      "firstAired": "1998-04-03T00:00:00Z",
+      "lastAired": "1999-04-23T00:00:00Z",
+      "seriesType": "anime",
+      "cleanTitle": "redacted-49",
+      "imdbId": "tt0213338",
+      "titleSlug": "redacted-50",
+      "certification": "TV-MA",
+      "genres": [
+        "redacted-37",
+        "redacted-38",
+        "redacted-51",
+        "redacted-52",
+        "redacted-13",
+        "redacted-25",
+        "redacted-53",
+        "redacted-39"
+      ],
+      "tags": [],
+      "added": "2026-11-26T12:51:37Z",
+      "ratings": {
+        "votes": 175525,
+        "value": 8.9
+      },
+      "languageProfileId": 1,
+      "id": 4
+    },
+    "images": [
+      {
+        "coverType": "screenshot",
+        "remoteUrl": "https://redacted.invalid/102.jpg"
+      }
+    ],
+    "id": 794
+  }
+]
