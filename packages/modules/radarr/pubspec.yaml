@@ -7,12 +7,12 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The module contract, and the request allow-list harness the tests use.
+  core:
+    path: ../../core
   flutter:
     sdk: flutter
 
 dev_dependencies:
-  # The request allow-list harness, core/testing/allow_list.dart.
-  core:
-    path: ../../core
   flutter_test:
     sdk: flutter

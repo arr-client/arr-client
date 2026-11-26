@@ -1,10 +1,10 @@
 // The Radarr probe against recorded answers (FR-007, spec story 1).
 //
-// fixtures/system_status.json and the rejected-host and 401 and 404 answers
-// below were recorded from the dev stack's Radarr 7.0.3.10918; the JSON went
-// through tool/sanitize_fixture.dart. The core client does not exist in these
-// tests: a fake answers as `ServiceHttpClient` says it does, with success
-// statuses as `Ok` and the rest as a classified `HttpError`.
+// test/fixtures/7.0.3.10918/system_status.json and the rejected-host, 401 and
+// 404 answers below were recorded from the dev stack's Radarr 7.0.3.10918; the
+// JSON went through tool/sanitize_fixture.dart. The core client does not exist
+// in these tests: a fake answers as `ServiceHttpClient` says it does, with
+// success statuses as `Ok` and the rest as a classified `HttpError`.
 
 import 'dart:convert';
 import 'dart:io';
@@ -45,7 +45,7 @@ const _loginPage = '''
 ''';
 
 final Map<String, Object?> _status = jsonDecode(
-  File('test/contract/fixtures/system_status.json').readAsStringSync(),
+  File('test/fixtures/7.0.3.10918/system_status.json').readAsStringSync(),
 ) as Map<String, Object?>;
 
 ServiceResponse _response(int statusCode, String body, {String? type}) =>
