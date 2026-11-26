@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/search/add_request.dart';
 import 'locations.dart';
 
-/// The [AppNavigator] of the running app. The flows are not built yet: each
-/// opens a page that says so, and its future completes when that is closed.
+/// The [AppNavigator] of the running app. A flow's future completes when its
+/// page is closed. Those not built yet open a page that says so.
 final class RouterAppNavigator implements AppNavigator {
   /// Set by the root widget while it is shown. Without it nothing opens.
   GoRouter? router;
@@ -21,7 +21,7 @@ final class RouterAppNavigator implements AppNavigator {
   Future<void> openDelete(ItemRef ref) => _flow(ref, InstanceFlow.delete);
 
   @override
-  Future<void> openHistory(ItemRef ref) => _flow(ref, InstanceFlow.history);
+  Future<void> openHistory(ItemRef ref) => _push(itemHistoryLocation(ref));
 
   @override
   Future<void> openAdd(AddCandidate candidate) =>

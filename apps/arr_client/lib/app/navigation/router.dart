@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../features/activity/history/item_history.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
@@ -130,14 +131,26 @@ GoRouter createRouter(ModuleRegistry modules) {
       for (final flow in InstanceFlow.values)
         scoped('/${flow.name}', (context, active, state) {
           final strings = AppLocalizations.of(context);
-          return PlaceholderPage(
-            title: switch (flow) {
-              InstanceFlow.releases => strings.releases,
-              InstanceFlow.edit => strings.editItem,
-              InstanceFlow.delete => strings.deleteItem,
-              InstanceFlow.history => strings.itemHistory,
+          return switch (flow) {
+            InstanceFlow.releases => PlaceholderPage(title: strings.releases),
+            InstanceFlow.edit => PlaceholderPage(title: strings.editItem),
+            InstanceFlow.delete => PlaceholderPage(title: strings.deleteItem),
+            InstanceFlow.history => switch (itemHistoryRef(
+              active.instance.id,
+              state.uri.queryParameters,
+            )) {
+              final item? => ItemHistoryScreen(
+                // Another item at the same path starts over.
+                key: ValueKey(item),
+                instance: active,
+                item: item,
+              ),
+              null => MessagePage(
+                title: strings.itemHistory,
+                message: strings.pageUnknown,
+              ),
             },
-          );
+          };
         }),
       scoped(
         '/$itemPlaceholderPath',

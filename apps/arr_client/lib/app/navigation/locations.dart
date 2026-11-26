@@ -2,6 +2,8 @@
 /// `ModuleRoute`.
 library;
 
+import 'package:core/core.dart';
+
 import 'destinations.dart';
 
 /// Where a destination is.
@@ -67,6 +69,22 @@ enum InstanceFlow { releases, edit, delete, history }
 /// Where [flow] is for an instance.
 String instanceFlowLocation(String instanceId, InstanceFlow flow) =>
     Uri(path: '/instances/$instanceId/${flow.name}').toString();
+
+/// Where the history of [ref] is.
+String itemHistoryLocation(ItemRef ref) => Uri(
+  path: instanceFlowLocation(ref.instanceId, InstanceFlow.history),
+  queryParameters: {'kind': ref.kind.name, 'item': '${ref.remoteId}'},
+).toString();
+
+/// The item that the query of an [itemHistoryLocation] names, or null if it
+/// names none.
+ItemRef? itemHistoryRef(String instanceId, Map<String, String> query) {
+  final kind = MediaKind.values.asNameMap()[query['kind']];
+  final id = int.tryParse(query['item'] ?? '');
+  return kind == null || id == null
+      ? null
+      : ItemRef(instanceId: instanceId, kind: kind, remoteId: id);
+}
 
 /// Where the entry [queueId] of an instance's queue is. No module's paths can
 /// collide with it, as theirs start with the module's id.
