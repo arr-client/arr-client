@@ -118,3 +118,7 @@ ItemRef? itemQueryRef(String instanceId, Map<String, String> query) {
 /// collide with it, as theirs start with the module's id.
 String queueEntryLocation(String instanceId, int queueId) =>
     Uri(path: '/instances/$instanceId/queue/$queueId').toString();
+
+/// Where the manual import of the download of that entry is.
+String queueImportLocation(String instanceId, int queueId) =>
+    '${queueEntryLocation(instanceId, queueId)}/import';

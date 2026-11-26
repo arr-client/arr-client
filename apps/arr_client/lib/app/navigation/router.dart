@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../features/activity/history/item_history.dart';
+import '../../features/activity/manual_import/manual_import_screen.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
 import '../../features/library/releases/releases_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
@@ -129,6 +130,15 @@ GoRouter createRouter(ModuleRegistry modules) {
         '/queue/:queueId',
         (context, active, state) => QueueDetailsScreen(
           instanceId: active.instance.id,
+          queueId: int.tryParse(state.pathParameters['queueId'] ?? ''),
+        ),
+      ),
+      scoped(
+        '/queue/:queueId/import',
+        (context, active, state) => ManualImportScreen(
+          // Another entry's import at the same path starts over.
+          key: ValueKey(state.pathParameters['queueId']),
+          instance: active,
           queueId: int.tryParse(state.pathParameters['queueId'] ?? ''),
         ),
       ),
