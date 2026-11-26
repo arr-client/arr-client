@@ -27,23 +27,17 @@ jobs:
           persist-credentials: false
       - id: project
         run: |
-          if [ -f pubspec.yaml ]; then echo "present=true" >> "$GITHUB_OUTPUT"
-          else echo "No Flutter code yet; nothing to build."; fi
-          if [ -d apps/arr_client/android ]; then echo "android=true" >> "$GITHUB_OUTPUT"; fi
           if [ -d apps/arr_client/integration_test ]; then echo "integration=true" >> "$GITHUB_OUTPUT"; fi
-      - if: steps.project.outputs.present == 'true'
-        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         with:
           distribution: temurin
           java-version: "17"
-      - if: steps.project.outputs.present == 'true'
-        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
-      - if: steps.project.outputs.present == 'true'
-        run: |
+      - run: |
           flutter pub get
           bash .github/scripts/codegen.sh
           dart format --output=none --set-exit-if-changed .
@@ -54,12 +48,10 @@ jobs:
               (cd "$dir" && flutter test)
             fi
           done
-          if [ -n "$(find tool/test -name '*_test.dart' -print -quit 2>/dev/null)" ]; then dart test tool/test; fi
-          for check in tool/check_dependencies.dart tool/check_licenses.dart; do
-            if [ -f "$check" ]; then dart run "$check"; fi
-          done
-      - if: steps.project.outputs.android == 'true'
-        run: cd apps/arr_client && flutter build apk --debug
+          dart test tool/test
+          dart run tool/check_dependencies.dart
+          dart run tool/check_licenses.dart
+      - run: cd apps/arr_client && flutter build apk --debug
   integration:
     needs: flutter
     if: needs.flutter.outputs.integration == 'true'
