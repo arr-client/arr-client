@@ -425,7 +425,7 @@ void main() {
     await tester.tap(find.text('Alien'));
     await tester.pumpAndSettle();
 
-    final message = find.text('Adding Alien is not built yet.');
+    final message = find.widgetWithText(AppBar, 'Add');
     final extra = GoRouterState.of(tester.element(message)).extra;
     final candidate = (extra! as AddRequest).candidate;
     expect(candidate.externalIds.tmdbId, 1);
@@ -467,7 +467,7 @@ void main() {
 
     await tester.tap(find.text('Alien'));
     await tester.pumpAndSettle();
-    expect(find.text('Adding Alien is not built yet.'), findsOneWidget);
+    expect(find.widgetWithText(AppBar, 'Add'), findsOneWidget);
     await search.stop(tester);
   });
 

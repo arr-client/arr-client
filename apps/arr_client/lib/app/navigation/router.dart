@@ -6,6 +6,7 @@ import '../../features/activity/history/item_history.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
+import '../../features/search/add/add_screen.dart';
 import '../../features/search/add_request.dart';
 import '../../features/search/search_screen.dart';
 import '../../features/settings/instances/instances_screen.dart';
@@ -77,19 +78,20 @@ GoRouter createRouter(ModuleRegistry modules) {
         path: searchLocation,
         builder: (context, state) => const SearchScreen(),
       ),
-      // A placeholder until the add flow is built, which works from the
-      // `extra`.
+      // Works from the `extra`, an [AddRequest].
       GoRoute(
         path: addLocation,
         builder: (context, state) {
           final strings = AppLocalizations.of(context);
           return switch (state.extra) {
-            AddRequest(:final candidate) => MessagePage(
-              title: strings.addItem,
-              icon: Icons.construction_outlined,
-              message: strings.addNotBuilt(candidate.title),
+            final AddRequest request => AddScreen(
+              key: ObjectKey(request),
+              request: request,
             ),
-            _ => PlaceholderPage(title: strings.addItem),
+            _ => MessagePage(
+              title: strings.addItem,
+              message: strings.pageUnknown,
+            ),
           };
         },
       ),

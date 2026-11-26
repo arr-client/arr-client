@@ -58,6 +58,22 @@ final class RadarrLookupAdapter implements LookupProvider {
   }
 
   @override
+  ServiceResult<AddCandidate> find(AddCandidate candidate) async {
+    _checkKind(candidate.kind);
+    switch (await _lookupAgain(candidate)) {
+      case Err(:final error):
+        return Err(error);
+      case Ok(:final value):
+        try {
+          return Ok(readCandidate(value, instanceId: _instanceId));
+        } on FormatException {
+          // The exception may quote the record, so it goes no further.
+          return const Err(MalformedResponse());
+        }
+    }
+  }
+
+  @override
   ServiceResult<AddOptions> addOptions(MediaKind kind) async {
     _checkKind(kind);
     return switch (await _api.options()) {
@@ -116,6 +132,11 @@ final class RadarrLookupAdapter implements LookupProvider {
   /// it gives now for the TMDB id. Another server's record is never posted.
   ServiceResult<JsonObject> _record(AddCandidate candidate) async {
     if (candidate.sourceByInstance[_instanceId] case final own?) return Ok(own);
+    return _lookupAgain(candidate);
+  }
+
+  /// What the instance gives now for the TMDB id of [candidate].
+  ServiceResult<JsonObject> _lookupAgain(AddCandidate candidate) async {
     final tmdbId = candidate.externalIds.tmdbId;
     if (tmdbId == null) return const Err(NotFound());
     switch (await _api.lookup('tmdb:$tmdbId')) {

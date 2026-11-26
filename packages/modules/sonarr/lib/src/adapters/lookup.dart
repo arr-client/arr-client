@@ -36,6 +36,12 @@ final class SonarrLookupAdapter implements LookupProvider {
   }
 
   @override
+  ServiceResult<AddCandidate> find(AddCandidate candidate) {
+    _requireSeries(candidate.kind);
+    return _find(candidate);
+  }
+
+  @override
   ServiceResult<AddOptions> addOptions(MediaKind kind) {
     _requireSeries(kind);
     return _addOptions();
@@ -51,6 +57,20 @@ final class SonarrLookupAdapter implements LookupProvider {
   ServiceResult<ItemRef> add(AddCandidate candidate, AddChoices choices) {
     _requireSeries(candidate.kind);
     return _add(candidate, choices);
+  }
+
+  ServiceResult<AddCandidate> _find(AddCandidate candidate) async {
+    switch (await _lookupAgain(candidate)) {
+      case Err(:final error):
+        return Err(error);
+      case Ok(:final value):
+        try {
+          return Ok(_candidate(value));
+        } on FormatException {
+          // The exception may quote the record, so it goes no further.
+          return const Err(MalformedResponse());
+        }
+    }
   }
 
   ServiceResult<AddOptions> _addOptions() async => switch (await _api
@@ -111,7 +131,11 @@ final class SonarrLookupAdapter implements LookupProvider {
   ServiceResult<JsonObject> _record(AddCandidate candidate) async {
     final own = candidate.sourceByInstance[_api.instanceId];
     if (own != null) return Ok(own);
+    return _lookupAgain(candidate);
+  }
 
+  /// What the instance gives now for the TVDB id of [candidate].
+  ServiceResult<JsonObject> _lookupAgain(AddCandidate candidate) async {
     final tvdbId = candidate.externalIds.tvdbId;
     if (tvdbId == null) return const Err(NotFound());
     switch (await _api.lookup('tvdb:$tvdbId')) {
