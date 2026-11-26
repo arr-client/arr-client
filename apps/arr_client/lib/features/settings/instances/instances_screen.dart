@@ -15,6 +15,7 @@ import '../../../app/providers.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
 import 'change_instance.dart';
 import 'rename_instance_dialog.dart';
+import 'status.dart';
 
 /// Lists every instance of the active profile, disabled ones included.
 class InstancesScreen extends ConsumerWidget {
@@ -115,8 +116,7 @@ class _InstanceListState extends ConsumerState<_InstanceList> {
   ) {
     final strings = AppLocalizations.of(context);
     final instance = instances[index];
-    return ListTile(
-      key: ValueKey(instance.id),
+    final row = ListTile(
       leading: Icon(module?.descriptor.icon ?? Icons.help_outline),
       title: Text(instance.name),
       subtitle: Column(
@@ -183,6 +183,24 @@ class _InstanceListState extends ConsumerState<_InstanceList> {
             ),
         ],
       ),
+    );
+    return Column(
+      key: ValueKey(instance.id),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        row,
+        // A disabled one has no traffic and nothing to say.
+        if (instance.enabled && module != null)
+          Padding(
+            // Under the name, not the icon.
+            padding: const EdgeInsetsDirectional.only(
+              start: 56,
+              end: 16,
+              bottom: 8,
+            ),
+            child: InstanceStatus(instance: instance, module: module),
+          ),
+      ],
     );
   }
 
