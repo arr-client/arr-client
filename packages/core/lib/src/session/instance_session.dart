@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import '../instances/auth_kind.dart';
 import '../instances/credential.dart';
 import '../instances/credential_json.dart';
+import '../instances/instance.dart';
 import '../instances/instance_rules.dart';
 import '../instances/profile_repository.dart';
 import '../logging/diagnostic_log.dart';
@@ -47,7 +50,8 @@ import '../platform/local_network_permission.dart';
 /// If something may have been sent, none is made for [reloginInterval]: what
 /// needs one fails with the same failure and nothing is sent. [login] and an
 /// edit of the address, trust or credential do not wait. This is not stored, so
-/// another object, as after a restart, may try at once.
+/// after a restart, or by an object that shares no [SharedSignIns] with this
+/// one, a sign-in may be tried at once.
 ///
 /// Make one for each instance and isolate. The latch and the session are read
 /// from storage for every request, so another isolate, with its own database
@@ -57,7 +61,7 @@ import '../platform/local_network_permission.dart';
 final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   /// [handler] is the module's `sessionHandler` and [apiKeyHeader] its
   /// descriptor's. [timeout] is that of [InstanceHttpClient]. [now] times the
-  /// sign-ins.
+  /// sign-ins. Give sessions that replace one another the same [signIns].
   InstanceSession({
     required ProfileRepository profiles,
     required String instanceId,
@@ -67,7 +71,9 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
     required LocalNetworkPermission localNetwork,
     Duration timeout = const Duration(seconds: 30),
     this._now = DateTime.now,
-  }) : _profiles = profiles,
+    SharedSignIns? signIns,
+  }) : _signIns = signIns ?? SharedSignIns(),
+       _profiles = profiles,
        _instanceId = instanceId,
        _log = log,
        _client = InstanceHttpClient.saved(
@@ -96,11 +102,13 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
 
   ServiceResult<void>? _signingIn;
 
+  final SharedSignIns _signIns;
+
+  /// For each that waits for the sign-in under way, whether it has given up.
+  final _waiting = <bool Function()>[];
+
   /// A rejection that could not be stored. Nothing is sent until it is.
   InstanceAccess? _unrecorded;
-
-  /// The last sign-in that sent something and failed without a rejection.
-  ({_SignInSettings settings, ServiceFailure failure, DateTime at})? _failed;
 
   /// When an expired session was last signed in again.
   DateTime? _renewedAt;
@@ -114,14 +122,20 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   @override
   ServiceResult<void> login() {
     // The user asks, so a sign-in joined here must not be held back either.
-    _failed = null;
+    _signIns._failed.remove(_instanceId);
     return _signIn(replace: true);
   }
 
+  /// [abandoned], for reads only, says that the answer is no longer wanted.
+  /// Once it does, nothing more is sent for this request, which fails with
+  /// [Unreachable]. A sign-in already sent still finishes.
   @override
   Future<Result<ServiceResponse, HttpError>> send(
-    ServiceRequest request,
-  ) async {
+    ServiceRequest request, {
+    bool Function()? abandoned,
+  }) async {
+    bool gone() => abandoned?.call() ?? false;
+    const dropped = Err<ServiceResponse, HttpError>(HttpError(Unreachable()));
     InstanceAccess used;
     switch (await _access()) {
       case Ok(:final value):
@@ -130,15 +144,23 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
         return Err(HttpError(error));
     }
     final handler = _signsIn(used) ? _handler : null;
+    // A request, and what it names, is for the server it was made for.
+    final first = used.instance;
+    bool moved(InstanceAccess access) =>
+        access.instance.url != first.url ||
+        access.instance.authKind != first.authKind;
     if (handler != null && used.credential?.sessionCookie == null) {
-      switch (await _renew(null)) {
+      if (gone()) return dropped;
+      switch (await _renew(null, abandoned)) {
         case Ok(:final value):
+          if (moved(value)) return dropped;
           used = value;
         case Err(:final error):
           return Err(HttpError(error));
       }
     }
 
+    if (gone()) return dropped;
     final result = await _sendAs(used, request);
     if (handler == null || !_isExpired(handler, result)) {
       // Only a success shows that the path is no longer refused.
@@ -150,19 +172,22 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
       return result;
     }
     if (_isWithin(refusedRetryInterval, _refused[request.path])) return result;
+    if (gone()) return dropped;
     final stale = used.credential?.sessionCookie;
     // Too soon to sign in again, but another may have done so meanwhile. A
     // sign-in under way is waited for.
     final tooSoon =
         _signingIn == null && _isWithin(reloginInterval, _renewedAt);
-    switch (tooSoon ? await _access() : await _renew(stale)) {
+    switch (tooSoon ? await _access() : await _renew(stale, abandoned)) {
       case Ok(:final value):
+        if (moved(value)) return dropped;
         used = value;
       case Err(:final error):
         return Err(HttpError(error));
     }
     final session = used.credential?.sessionCookie;
     if (session == null || session == stale) return result;
+    if (gone()) return dropped;
     final repeated = await _sendAs(used, request);
     if (!_isExpired(handler, repeated)) return _settle(used, repeated);
     // The sign-in was accepted, so this refuses the request, not the account.
@@ -208,8 +233,13 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   );
 
   /// Gets a session other than [stale] for a request that is yet to be sent.
-  Future<Result<InstanceAccess, ServiceFailure>> _renew(String? stale) async {
-    if (await _signIn(stale: stale) case Err(:final error)) {
+  Future<Result<InstanceAccess, ServiceFailure>> _renew(
+    String? stale,
+    bool Function()? abandoned,
+  ) async {
+    if (await _signIn(stale: stale, abandoned: abandoned) case Err(
+      :final error,
+    )) {
       // The request was not sent, whatever became of the login.
       return Err(error is OutcomeUnknown ? const Unreachable() : error);
     }
@@ -224,11 +254,50 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
 
   /// Signs in, or waits for the sign-in under way. Unless [replace], a stored
   /// session other than [stale] will do.
-  ServiceResult<void> _signIn({bool replace = false, String? stale}) =>
-      _signingIn ??= _attemptSignIn(
-        replace: replace,
-        stale: stale,
-      ).whenComplete(() => _signingIn = null);
+  ServiceResult<void> _signIn({
+    bool replace = false,
+    String? stale,
+    bool Function()? abandoned,
+  }) {
+    _waiting.add(abandoned ?? () => false);
+    return _signingIn ??=
+        _inTurn(() => _attemptSignIn(replace: replace, stale: stale))
+            .whenComplete(() {
+              _signingIn = null;
+              _waiting.clear();
+            });
+  }
+
+  /// Runs [signIn] when no other sign-in to the same place is under way, so that
+  /// it sees what that one stored. One to an address that has been left is not
+  /// waited for.
+  ServiceResult<void> _inTurn(ServiceResult<void> Function() signIn) async {
+    String place;
+    while (true) {
+      final Instance instance;
+      switch (await _access()) {
+        case Ok(:final value):
+          instance = value.instance;
+        case Err(:final error):
+          return Err(error);
+      }
+      final key = '$_instanceId ${instance.authKind.name} ${instance.url}';
+      final before = _signIns._underWay[key];
+      if (before == null) {
+        place = key;
+        break;
+      }
+      await before;
+    }
+    final ended = Completer<void>();
+    _signIns._underWay[place] = ended.future;
+    try {
+      return await signIn();
+    } finally {
+      unawaited(_signIns._underWay.remove(place));
+      ended.complete();
+    }
+  }
 
   ServiceResult<void> _attemptSignIn({
     required bool replace,
@@ -256,11 +325,14 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
     // The password must not be sent at the rate of polling. [login] has
     // forgotten the failure, so this never holds back the user.
     final settings = _settingsOf(used);
-    if (_failed case final failed?
+    if (_signIns._failed[_instanceId] case final failed?
         when failed.settings == settings &&
             _isWithin(reloginInterval, failed.at)) {
       return Err(failed.failure);
     }
+
+    // The password is not sent for reads that have all been given up.
+    if (_waiting.every((gone) => gone())) return const Err(Unreachable());
 
     // Counted whatever comes of it, as the password is sent.
     if (stale != null) _renewedAt = _now();
@@ -270,15 +342,17 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
       ConnectionSettings.saved(used.instance, credential),
     );
     final result = await _logIn(handler, used, credential, http);
-    _failed = switch (result) {
-      // A rejection latches instead.
-      Err(:final error) when http.mayHaveSent && error is! AuthFailed => (
+    // A rejection latches instead.
+    if (result case Err(:final error)
+        when http.mayHaveSent && error is! AuthFailed) {
+      _signIns._failed[_instanceId] = (
         settings: settings,
         failure: error,
         at: _now(),
-      ),
-      _ => null,
-    };
+      );
+    } else {
+      _signIns._failed.remove(_instanceId);
+    }
     return result;
   }
 
@@ -372,6 +446,23 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   // The type only: the text of an error may quote a secret.
   void _warn(String message, Object error) =>
       _log.log(LogLevel.warning, '$message (${error.runtimeType})');
+}
+
+/// What the sessions of one isolate know of each other's sign-ins, so that one
+/// that replaces another forgets none of it: they sign in to an instance one
+/// after the other while its address and authKind stay the same, and a failed
+/// sign-in holds back all of them. Holds secrets.
+final class SharedSignIns {
+  /// By instance id, authKind and address, the end of the sign-in under way.
+  final _underWay = <String, Future<void>>{};
+
+  /// By instance id, the last sign-in that sent something and failed without a
+  /// rejection.
+  final _failed =
+      <
+        String,
+        ({_SignInSettings settings, ServiceFailure failure, DateTime at})
+      >{};
 }
 
 /// Where and with what a sign-in is made, to compare. Holds secrets: never log
