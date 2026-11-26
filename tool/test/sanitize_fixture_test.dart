@@ -1,0 +1,404 @@
+// Every secret, host and person here is invented. Hosts use reserved names and addresses, and no
+// value has the format of a real provider's token.
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:test/test.dart';
+
+import '../sanitize_fixture.dart';
+
+const _secrets = [
+  // Keys, tokens, passwords, cookies
+  'fakefakefakefakefakefakefake0000',
+  'FAKE-token-not-real',
+  'hunter2-fake',
+  'correcthorsefake',
+  'SID=fake-session-value; path=/',
+  'Bearer fake-bearer-value',
+  'Basic ZmFrZS11c2VyOmZha2UtcGFzcw==',
+  // The same, encoded
+  'ZmFrZS1hcGkta2V5LW5vdC1yZWFs',
+  'fake%2Dapi%2Dkey',
+  '{"apiKey":"FAKE-nested-json-key"}',
+  // URLs with credentials or query secrets
+  'http://fakeuser:fakepass@nas.invalid:8989/sonarr',
+  'https://indexer.example/api?apikey=fake-query-key&t=search',
+  'magnet:?xt=urn:btih:fake&tr=udp://tracker.example/fakepasskey',
+  '//nas.invalid/share',
+  '/MediaCover/1/poster.jpg?apikey=fake-cover-key',
+  // Hosts and addresses
+  'nas.invalid',
+  'fakehostname',
+  'my-nas.local:7878',
+  '192.0.2.17',
+  '10.0.0.1',
+  '192.168.100.200',
+  '2001:db8::dead:beef',
+  'fe80::1%eth0',
+  '02:00:5e:10:00:01',
+  // Paths
+  '/home/fakeperson/media/Some Film (2001)/film.mkv',
+  r'C:\Users\FakePerson\Downloads\film.mkv',
+  r'\\FAKENAS\media\film.mkv',
+  '~/fakeperson/media',
+  // People
+  'fakeperson@mail.example',
+  'fakeperson',
+  'Fake Person',
+  'FakePerson',
+  'Connection to fakehostname refused for fakeperson',
+];
+
+String _sanitize(Object? json) =>
+    jsonEncode(FixtureSanitizer().sanitizeJson(json));
+
+/// The strings and keys of [json], at any depth.
+Iterable<String> _strings(Object? json) sync* {
+  if (json is String) yield json;
+  if (json is List<Object?>) {
+    for (final item in json) {
+      yield* _strings(item);
+    }
+  }
+  if (json is Map<String, Object?>) {
+    yield* json.keys;
+    for (final value in json.values) {
+      yield* _strings(value);
+    }
+  }
+}
+
+void _expectNoSecrets(Object? input) {
+  final output = FixtureSanitizer().sanitizeJson(input);
+  for (final out in _strings(output)) {
+    for (final secret in _secrets) {
+      expect(out, isNot(contains(secret)));
+    }
+    expect(out.toLowerCase(), isNot(contains('fake')));
+  }
+}
+
+void main() {
+  group('secrets do not survive', () {
+    // Field names the sanitizer treats specially, and some it has never heard of.
+    const fields = [
+      'apiKey', 'password', 'cookie', 'host', 'path', 'userName', 'email',
+      'status', 'state', 'type', 'source', 'name', 'title', 'message', 'value',
+      'protocol', 'eventType', 'commandName', 'mode', 'result', 'version',
+      'appVersion', 'imdbId', 'code2', 'hash', 'downloadId', 'guid', 'url',
+      'remoteUrl', 'posterPath', 'added', 'timeleft', 'zzz', 'x_y', 'Weird',
+      // A field name does not make its value safe.
+      'tmdbId', 'id', 'quality', 'year',
+    ];
+
+    for (final field in fields) {
+      test('in a field called $field', () {
+        for (final secret in _secrets) {
+          _expectNoSecrets({field: secret});
+          _expectNoSecrets({
+            field: [secret],
+          });
+          _expectNoSecrets({
+            'outer': [
+              {
+                field: {'deeper': secret},
+              },
+            ],
+          });
+        }
+      });
+    }
+
+    test('as a bare string or list', () {
+      _expectNoSecrets(_secrets);
+      for (final secret in _secrets) {
+        _expectNoSecrets(secret);
+      }
+    });
+
+    test('as object keys', () {
+      // Keys shaped like field names are the documented exception.
+      final shaped = RegExp(r'^[A-Za-z_]\w*$');
+      final keys = _secrets.where((s) => !shaped.hasMatch(s));
+      _expectNoSecrets({for (final key in keys) key: 1});
+      _expectNoSecrets({
+        'trackers': {for (final key in keys) key: true},
+      });
+    });
+
+    test('as keys that look like tokens or are very long', () {
+      final out = _sanitize({
+        'a1b2c3d4e5f6a7b8': 1,
+        'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq': 2,
+      });
+      expect(out, '{"redactedKey1":1,"redactedKey2":2}');
+    });
+
+    test('when text surrounds a harmless shape', () {
+      for (final value in [
+        '2020-01-01 fakeperson',
+        'fakeperson\n2020-01-01',
+        '2020-01-01\nfakeperson',
+        '00:10:00 nas.invalid',
+        '1.2.3-fakeperson',
+        '/MediaCover/1/poster.jpg\nfakeperson',
+      ]) {
+        for (final field in ['added', 'version', 'url']) {
+          _expectNoSecrets({field: value});
+        }
+      }
+    });
+
+    test('as an IPv4 address in a version field', () {
+      for (final ip in ['10.0.0.1', '192.168.1.20', 'v192.0.2.1']) {
+        expect(_sanitize({'version': ip}), isNot(contains(ip)));
+        expect(() => FixtureSanitizer().sanitize(ip), _refuses);
+      }
+    });
+
+    test('as enum words inside a private field', () {
+      expect(
+        _sanitize({
+          'password': {'type': 'warning', 'since': '2020-01-01'},
+        }),
+        '{"password":{"type":"redacted","since":"redacted"}}',
+      );
+    });
+  });
+
+  group('private numbers', () {
+    test('are zeroed by field name, however it is written', () {
+      for (final field in [
+        'password',
+        'api_key',
+        'ApiKey',
+        'X-Api-Key',
+        'port',
+        'sslPort',
+        'SSL_PORT',
+        'pin',
+        'plexId',
+        'telegramChatId',
+        'discordId',
+        'uid',
+        'jellyfinUserId',
+        'ipAddress',
+        'latitude',
+        'authToken',
+        'key',
+      ]) {
+        final out = FixtureSanitizer().sanitizeJson({field: 4242});
+        expect((out! as Map<String, Object?>).values.single, 0, reason: field);
+      }
+    });
+
+    test('are zeroed inside a private object', () {
+      expect(
+        _sanitize({
+          'credentials': [
+            {'id': 4242},
+          ],
+        }),
+        '{"credentials":[{"id":0}]}',
+      );
+    });
+
+    test('are zeroed in name and value settings', () {
+      expect(_sanitize({'Name': 'x', 'Value': 4242}), isNot(contains('4242')));
+      expect(
+        _sanitize({
+          'fields': [
+            {'name': 'seedLimit', 'value': 4242},
+            {
+              'name': 'x',
+              'value': [4242],
+            },
+          ],
+        }),
+        isNot(contains('4242')),
+      );
+    });
+  });
+
+  group('what contract tests need', () {
+    test('keeps structure, numbers, booleans and null', () {
+      const input = {
+        'id': 7,
+        'sizeleft': 1.5,
+        'monitored': true,
+        'importMode': 3,
+        'report': 4,
+        'overview': null,
+        'title': '',
+        'ratings': {'votes': 10, 'value': 7.5},
+        'seasons': {'1': 2},
+        'tags': <Object?>[],
+      };
+      expect(FixtureSanitizer().sanitizeJson(input), input);
+    });
+
+    test('keeps harmless strings in their fields', () {
+      const input = {
+        'added': '2024-03-01T10:11:12.345Z',
+        'airDate': '2024-03-01',
+        'timeleft': '1.02:03:04',
+        'version': '4.0.15.2941',
+        'appVersion': '5.3.1',
+        'imdbId': 'tt0000001',
+        'code2': 'en',
+        'protocol': 'torrent',
+        'state': 'stalledUP',
+        'trackedDownloadState': 'importPending',
+        'source': 'IndexerStatusCheck',
+        'type': 'warning',
+        'url': '/MediaCover/12/poster-500.jpg?lastWrite=638000000000000000',
+      };
+      expect(FixtureSanitizer().sanitizeJson(input), input);
+    });
+
+    test('keeps the general shape of what it replaces', () {
+      expect(
+        FixtureSanitizer().sanitizeJson([
+          'http://nas.invalid/a.JPG',
+          'https://nas.invalid/a?token=x',
+          'fakeperson@mail.example',
+          '/home/fakeperson/a.mkv',
+          r'C:\media\a.srt',
+          r'\\nas\share',
+          'Fake Person',
+          'secret.fakeperson',
+        ]),
+        [
+          'http://redacted.invalid/1.jpg',
+          'https://redacted.invalid/2',
+          'user3@redacted.invalid',
+          '/redacted/4.mkv',
+          r'C:\redacted\5.srt',
+          r'\\redacted.invalid\6',
+          'redacted-7',
+          'redacted-8',
+        ],
+      );
+    });
+
+    test('gives equal values equal placeholders, across documents', () {
+      final sanitizer = FixtureSanitizer();
+      expect(sanitizer.sanitizeJson(['a b', 'c d']), [
+        'redacted-1',
+        'redacted-2',
+      ]);
+      expect(sanitizer.sanitizeJson('c d'), 'redacted-2');
+    });
+
+    test('keeps download ids matching torrent hashes', () {
+      final hash = '1234567890' * 3 + 'aabbccddee';
+      final sanitizer = FixtureSanitizer();
+      final queue =
+          sanitizer.sanitizeJson({'downloadId': hash.toUpperCase()})!
+              as Map<String, Object?>;
+      final torrent =
+          sanitizer.sanitizeJson({'hash': hash, 'infohash_v1': hash})!
+              as Map<String, Object?>;
+      final fake = torrent['hash']! as String;
+      expect(fake, isNot(hash));
+      expect(fake, matches(r'^[0-9a-f]{40}$'));
+      expect(torrent['infohash_v1'], fake);
+      expect(queue['downloadId'], fake.toUpperCase());
+    });
+
+    test('is stable when run on its own output', () {
+      final once = FixtureSanitizer().sanitize(
+        jsonEncode({
+          'path': '/home/fakeperson/a.mkv',
+          'hash': 'f' * 40,
+          'a b': 'http://nas.invalid',
+          'apiKey': 'FAKE',
+        }),
+      );
+      expect(FixtureSanitizer().sanitize(once), once);
+    });
+
+    test('keeps the plain text bodies of qBittorrent', () {
+      for (final body in ['Ok.', 'Fails.', 'v5.1.0', '2.11.4']) {
+        expect(FixtureSanitizer().sanitize('$body\n'), '$body\n');
+      }
+    });
+  });
+
+  group('refuses what it cannot parse', () {
+    for (final body in [
+      '<html><body>fakeperson</body></html>',
+      'Set-Cookie: SID=fake',
+      '{"apiKey": "FAKE-truncated',
+      'fakeperson',
+      '',
+    ]) {
+      test(jsonEncode(body), () {
+        expect(() => FixtureSanitizer().sanitize(body), _refuses);
+      });
+    }
+
+    test('without quoting it', () {
+      expect(
+        () => FixtureSanitizer().sanitize('{"a": "FAKE-truncated'),
+        throwsA(
+          isA<UnsanitizableInput>().having(
+            (e) => '$e',
+            'message',
+            isNot(contains('FAKE')),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('command line', () {
+    late Directory directory;
+    late StringBuffer errors;
+
+    setUp(() {
+      directory = Directory.systemTemp.createTempSync('sanitize');
+      errors = StringBuffer();
+    });
+    tearDown(() => directory.deleteSync(recursive: true));
+
+    File file(String name, [String? content]) {
+      final file = File('${directory.path}/$name');
+      if (content != null) file.writeAsStringSync(content);
+      return file;
+    }
+
+    test('writes sanitized files', () async {
+      final raw = file('raw', '{"path": "/home/fakeperson"}');
+      final out = file('out');
+      expect(await run([raw.path, out.path], errors), 0);
+      expect(jsonDecode(out.readAsStringSync()), {'path': '/redacted/1'});
+    });
+
+    test('writes nothing if any input is refused', () async {
+      final good = file('good', '{}');
+      final bad = file('bad', '<html>FAKE</html>');
+      final out = file('out');
+      expect(
+        await run([good.path, out.path, bad.path, file('out2').path], errors),
+        65,
+      );
+      expect(out.existsSync(), isFalse);
+      expect('$errors', isNot(contains('FAKE')));
+    });
+
+    test('rejects binary and missing inputs', () async {
+      final binary = file('binary')..writeAsBytesSync([0xff, 0xfe, 0x00]);
+      expect(await run([binary.path, file('out').path], errors), 66);
+      expect(await run([file('none').path, file('out').path], errors), 66);
+      expect(file('out').existsSync(), isFalse);
+    });
+
+    test('explains its usage', () async {
+      expect(await run([], errors), 64);
+      expect(await run(['only-input'], errors), 64);
+    });
+  });
+}
+
+final Matcher _refuses = throwsA(isA<UnsanitizableInput>());
