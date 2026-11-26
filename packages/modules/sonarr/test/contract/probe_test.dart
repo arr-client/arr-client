@@ -242,6 +242,14 @@ void main() {
 
       expect(await _failure(answer), isA<ProxyInterception>());
     });
+
+    test('a page without a content type', () async {
+      final answer = Ok<ServiceResponse, HttpError>(
+        _response(200, '\n  <!doctype html><html><body>Sign in</body></html>'),
+      );
+
+      expect(await _failure(answer), isA<ProxyInterception>());
+    });
   });
 
   group('host rejected', () {
@@ -302,8 +310,9 @@ void main() {
       expect(found.newerThanTested, isFalse);
     });
 
-    // 5 is the v5 beta through the v3 API; 10 sorts before 4 as text.
-    for (final version in ['5.0.0.100', '10.0.0.1']) {
+    // The tested line is the dev stack's 4.0. 5 is the v5 beta through the v3
+    // API; 10 sorts before 4 as text.
+    for (final version in ['4.1.0.0', '5.0.0.100', '10.0.0.1']) {
       test('$version is accepted as newer than tested', () async {
         final found = await _found(_statusWith({'version': version}));
 
@@ -321,6 +330,8 @@ void main() {
       const CertificateChanged(CertificateInfo(sha256: '00')),
       const Redirected(host: 'login.example.test'),
       const PermissionDenied(),
+      const Forbidden(),
+      const ProxyInterception(),
     ]) {
       test('${failure.runtimeType} is passed on', () async {
         expect(await _failure(_err(failure)), same(failure));
@@ -341,10 +352,26 @@ void main() {
       expect(await _failure(answer), same(failure));
     });
 
+    test('a bad gateway page is a server error', () async {
+      const failure = ServerError(statusCode: 502);
+      final answer = _err(
+        failure,
+        _response(
+          502,
+          '<html><body>Bad Gateway</body></html>',
+          contentType: _html,
+        ),
+      );
+
+      expect(await _failure(answer), same(failure));
+    });
+
     for (final (name, body) in [
       ('cut off', '{"appName": "Sonarr", "vers'),
       ('without a version', '{"appName": "Sonarr"}'),
       ('with a number for a version', '{"appName": "Sonarr", "version": 4}'),
+      ('with an empty version', '{"appName": "Sonarr", "version": ""}'),
+      ('with a word for a version', '{"appName": "Sonarr", "version": "x"}'),
     ]) {
       test('a status $name is malformed', () async {
         expect(await _failure(_ok(body)), isA<MalformedResponse>());
