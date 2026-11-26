@@ -34,6 +34,22 @@ const searchLocation = '/search';
 /// The add flow, in which the instance is still to be chosen.
 const addLocation = '/add';
 
+/// The form that adds a service to the active profile.
+const addInstanceLocation = '/services/add';
+
+/// The path of the form that edits a saved service, enabled or not and of any
+/// profile, with the parameter `instanceId`. It is not under `/instances/`,
+/// whose routes only show an instance that can be used.
+const editInstancePath = '/services/:instanceId/edit';
+
+/// Where the form that edits [instanceId] is.
+String editInstanceLocation(String instanceId) =>
+    Uri(path: '/services/$instanceId/edit').toString();
+
+/// Where the form that adds a service of [serviceType] is, once chosen.
+String addServiceFormLocation(String serviceType) =>
+    '$addInstanceLocation/$serviceType';
+
 /// A shared flow about an item of one instance. No module's paths can collide
 /// with these, as theirs start with the module's id.
 enum InstanceFlow { releases, edit, delete, history }

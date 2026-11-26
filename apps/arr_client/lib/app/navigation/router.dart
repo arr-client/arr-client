@@ -2,6 +2,8 @@ import 'package:core/core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../features/onboarding/instance_form_screen.dart';
+import '../../features/onboarding/service_picker_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../screens/destination_screens.dart';
 import '../screens/message_page.dart';
@@ -71,6 +73,24 @@ GoRouter createRouter(ModuleRegistry modules) {
       ),
       page(searchLocation, (strings) => strings.search),
       page(addLocation, (strings) => strings.addItem),
+      GoRoute(
+        path: addInstanceLocation,
+        builder: (context, state) => const ServicePickerScreen(),
+        routes: [
+          GoRoute(
+            path: ':serviceType',
+            builder: (context, state) => InstanceFormScreen.add(
+              serviceType: state.pathParameters['serviceType'] ?? '',
+            ),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: editInstancePath,
+        builder: (context, state) => InstanceFormScreen.edit(
+          instanceId: state.pathParameters['instanceId'] ?? '',
+        ),
+      ),
       for (final module in modules.modules)
         for (final screen in module.routes())
           scoped(

@@ -36,6 +36,10 @@ class HomeScreen extends ConsumerWidget {
         AsyncData() => StateMessage(
           icon: Icons.dns_outlined,
           message: strings.noServicesYet,
+          action: FilledButton(
+            onPressed: () => context.push(addInstanceLocation),
+            child: Text(strings.addService),
+          ),
         ),
         AsyncError() => StateMessage(
           icon: Icons.error_outline,

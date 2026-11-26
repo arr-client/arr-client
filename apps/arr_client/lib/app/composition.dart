@@ -43,7 +43,7 @@ final class AppServices {
     required this.cache,
     required SecretStore secrets,
     required NetworkConnectivity connectivity,
-    required LocalNetworkPermission localNetwork,
+    required this.localNetwork,
     required Future<Directory> Function() cacheDirectory,
   }) {
     artwork = ArtworkCache(
@@ -119,6 +119,9 @@ final class AppServices {
 
   /// The registered modules.
   final ModuleRegistry modules;
+
+  /// The operating system's local network permission.
+  final LocalNetworkPermission localNetwork;
 
   /// The user's preferences.
   final PreferencesRepository preferences;
