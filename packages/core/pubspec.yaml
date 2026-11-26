@@ -7,9 +7,17 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The database of instances, preferences and the cache. MIT.
+  drift: ^2.35.4
   flutter:
     sdk: flutter
+  # SQLite bindings, whose build hook the workspace pubspec configures. MIT.
+  sqlite3: ^3.9.2
 
 dev_dependencies:
+  # Runs drift_dev. BSD-3-Clause.
+  build_runner: ^2.17.1
+  # Generates the database code and the schema test helpers. MIT.
+  drift_dev: ^2.35.3
   flutter_test:
     sdk: flutter

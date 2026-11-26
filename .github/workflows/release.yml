@@ -47,6 +47,9 @@ jobs:
           flutter build apk --release --split-per-abi
           cd build/app/outputs/flutter-apk
           sha256sum ./*-release.apk > SHA256SUMS
+      # Reads what the build hooks of the build above did.
+      - name: Check that SQLite was compiled from source, not downloaded
+        run: dart run tool/check_sqlite_source.dart --built=android
       - name: Check that every APK is signed
         run: |
           apksigner=$(printf '%s\n' "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n 1)
