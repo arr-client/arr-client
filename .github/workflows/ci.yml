@@ -7,7 +7,8 @@ permissions:
   contents: read
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push replaces a pull request's run. Runs on main finish, so that they save the caches.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   repo-checks:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
           persist-credentials: false
       - name: Check repository files
         run: python3 .github/scripts/check_repo.py
-  flutter:
+  analyze-test:
     runs-on: ubuntu-latest
     outputs:
       integration: ${{ steps.project.outputs.integration }}
@@ -28,15 +29,7 @@ jobs:
       - id: project
         run: |
           if [ -d apps/arr_client/integration_test ]; then echo "integration=true" >> "$GITHUB_OUTPUT"; fi
-      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
-        with:
-          distribution: temurin
-          java-version: "17"
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-          cache: true
+      - uses: ./.github/actions/setup-flutter
       - run: |
           flutter pub get
           bash .github/scripts/codegen.sh
@@ -51,24 +44,89 @@ jobs:
           dart test tool/test
           dart run tool/check_dependencies.dart
           dart run tool/check_licenses.dart
-      - run: cd apps/arr_client && flutter build apk --debug
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # On a pull request, the merge commit and its parents, to list what changed.
+          fetch-depth: 2
+          persist-credentials: false
+      # A pull request that touches only documents builds no APK. Pushes to main always build.
+      # The steps are skipped, not the job, so the required check still gets a result.
+      - id: changes
+        run: |
+          build=true
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            # The first parent of the merge commit is the base branch.
+            files=$(git diff --name-only --no-renames HEAD^1 HEAD)
+            if [ -n "$files" ] && ! grep -qvE '^(docs/|specs/|[^/]+\.md$)' <<< "$files"; then
+              build=false
+              echo "Only documents changed; not building the APK."
+            fi
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+      - id: setup
+        if: steps.changes.outputs.build == 'true'
+        uses: ./.github/actions/setup-flutter
+        with:
+          gradle: true
+      - if: steps.changes.outputs.build == 'true'
+        run: |
+          mkdir -p ~/.gradle
+          # Reuse task outputs between runs, and leave no daemon writing while the cache is saved.
+          printf 'org.gradle.caching=true\norg.gradle.daemon=false\n' >> ~/.gradle/gradle.properties
+          flutter pub get
+          bash .github/scripts/codegen.sh
+      - if: steps.changes.outputs.build == 'true'
+        run: cd apps/arr_client && flutter build apk --debug
+      # Caches are saved only by the steps below, and only from main.
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.flutter-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.setup.outputs.flutter-path }}
+          key: ${{ steps.setup.outputs.flutter-key }}
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.pub-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.setup.outputs.pub-path }}
+          key: ${{ steps.setup.outputs.pub-key }}
+      # The wrapper needs only the unpacked distribution, not the archive it came from.
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
+        run: find ~/.gradle/wrapper/dists -name '*.zip' -delete
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ steps.setup.outputs.gradle-key }}
+  # The required check. It must run even when a job it needs failed or was cancelled: GitHub counts
+  # a skipped required check as passed.
+  flutter:
+    needs: [analyze-test, apk]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - env:
+          ANALYZE_TEST: ${{ needs.analyze-test.result }}
+          APK: ${{ needs.apk.result }}
+        run: |
+          echo "analyze-test: $ANALYZE_TEST, apk: $APK"
+          test "$ANALYZE_TEST" = success
+          test "$APK" = success
   integration:
-    needs: flutter
-    if: needs.flutter.outputs.integration == 'true'
+    needs: analyze-test
+    if: needs.analyze-test.outputs.integration == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
+      - uses: ./.github/actions/setup-flutter
         with:
-          distribution: temurin
-          java-version: "17"
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-          cache: true
+          gradle: true
       - run: |
           flutter pub get
           bash .github/scripts/codegen.sh

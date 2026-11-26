@@ -1,0 +1,65 @@
+name: Set up Java and Flutter
+# Caches are only restored here. The one job that saves them does so on pushes to main, with the
+# paths and keys output below, so pull requests read main's caches and store none of their own.
+description: Install Java and the pinned Flutter SDK, restoring the caches saved from main
+inputs:
+  gradle:
+    description: Also restore the Gradle home
+    default: "false"
+outputs:
+  flutter-path:
+    value: ${{ steps.plan.outputs.CACHE-PATH }}
+  flutter-key:
+    value: ${{ steps.flutter-cache.outputs.cache-primary-key }}
+  flutter-hit:
+    value: ${{ steps.flutter-cache.outputs.cache-hit }}
+  pub-path:
+    value: ${{ steps.plan.outputs.PUB-CACHE-PATH }}
+  pub-key:
+    value: ${{ steps.pub-cache.outputs.cache-primary-key }}
+  pub-hit:
+    value: ${{ steps.pub-cache.outputs.cache-hit }}
+  gradle-key:
+    value: ${{ steps.gradle-cache.outputs.cache-primary-key }}
+  gradle-hit:
+    value: ${{ steps.gradle-cache.outputs.cache-hit }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
+      with:
+        distribution: temurin
+        java-version: "17"
+    # Installs nothing: it only works out the version, cache paths and cache keys.
+    - id: plan
+      uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+      with:
+        channel: stable
+        flutter-version-file: pubspec.yaml
+        dry-run: true
+    - id: flutter-cache
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.plan.outputs.CACHE-PATH }}
+        key: ${{ steps.plan.outputs.CACHE-KEY }}
+    - id: pub-cache
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.plan.outputs.PUB-CACHE-PATH }}
+        key: ${{ steps.plan.outputs.PUB-CACHE-KEY }}-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: ${{ steps.plan.outputs.PUB-CACHE-KEY }}-
+    - id: gradle-cache
+      if: inputs.gradle == 'true'
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        # The save step in ci.yml must list the same paths.
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'apps/*/android/**/*.gradle*', 'apps/*/android/**/gradle*.properties', 'packages/**/android/**/*.gradle*') }}
+        restore-keys: gradle-${{ runner.os }}-
+    # Uses the SDK restored above, or downloads it on a miss.
+    - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+      with:
+        channel: stable
+        flutter-version-file: pubspec.yaml

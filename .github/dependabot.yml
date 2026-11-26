@@ -1,7 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
+    # The workflows, and the composite actions of this repository.
+    directories: ["/", "/.github/actions/*"]
     schedule:
       interval: weekly
     labels: ["type: dependencies", "area: ci"]
