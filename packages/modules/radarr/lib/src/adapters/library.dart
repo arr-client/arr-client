@@ -6,6 +6,7 @@ import '../api/radarr_api.dart';
 import '../models/credit_record.dart';
 import '../models/media_file_record.dart';
 import '../models/movie_record.dart';
+import 'queued_movies.dart';
 
 /// The movies of one Radarr instance.
 ///
@@ -36,7 +37,7 @@ final class RadarrLibraryAdapter implements LibraryProvider {
         return Err(error);
     }
     final Set<int> queued;
-    switch (await _queuedMovies()) {
+    switch (await queuedMovies(_api)) {
       case Ok(:final value):
         queued = value;
       case Err(:final error):
@@ -70,7 +71,7 @@ final class RadarrLibraryAdapter implements LibraryProvider {
         return Err(error);
     }
     final Set<int> queued;
-    switch (await _queuedMovies()) {
+    switch (await queuedMovies(_api)) {
       case Ok(:final value):
         queued = value;
       case Err(:final error):
@@ -158,16 +159,6 @@ final class RadarrLibraryAdapter implements LibraryProvider {
 
   @override
   ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError();
-
-  /// The movies that have a download in the queue.
-  ServiceResult<Set<int>> _queuedMovies() async => switch (await _api.queue()) {
-    Ok(:final value) => Ok({
-      for (final download in value) ?download.itemRef?.remoteId,
-    }),
-    // NotFound would say that the movie asked for is gone.
-    Err(error: NotFound()) => const Err(ServerError(statusCode: 404)),
-    Err(:final error) => Err(error),
-  };
 
   /// A record from the server, and what the cache keeps of it.
   (Movie, CacheEntry) _fetched(

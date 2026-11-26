@@ -45,6 +45,24 @@ jobs:
           dart run tool/check_dependencies.dart
           dart run tool/check_licenses.dart
           dart run tool/check_sqlite_source.dart
+      # The runner is in UTC, where a local day and a UTC day are the same: a mix-up of the two in
+      # the calendar or in what was downloaded today only fails in a zone away from it.
+      - name: Test calendar days and imports east and west of UTC
+        run: |
+          ran=0
+          for dir in packages/servarr packages/modules/*; do
+            if [ ! -d "$dir/test" ]; then continue; fi
+            files=$(cd "$dir" && find test -name '*calendar*_test.dart' -o -name '*import*_test.dart' | sort)
+            if [ -z "$files" ]; then continue; fi
+            for zone in Pacific/Auckland America/New_York; do
+              echo "$dir in $zone"
+              # shellcheck disable=SC2086 # One argument for each file; none has a space.
+              (cd "$dir" && TZ="$zone" flutter test $files)
+            done
+            ran=1
+          done
+          # Renamed tests must not leave this step passing with nothing run.
+          test "$ran" = 1
   apk:
     runs-on: ubuntu-latest
     steps:

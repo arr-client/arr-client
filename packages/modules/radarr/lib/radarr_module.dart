@@ -5,9 +5,11 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:servarr/servarr.dart';
 
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
+import 'src/adapters/overview.dart';
 import 'src/api/radarr_api.dart';
 
 // The app adds its delegate to the others, for the names the module supplies.
@@ -64,6 +66,9 @@ final class RadarrModule implements ServiceModule {
     CapabilityKind.lookup,
     CapabilityKind.queue,
     CapabilityKind.history,
+    CapabilityKind.wanted,
+    CapabilityKind.calendar,
+    CapabilityKind.health,
   };
 
   @override
@@ -79,6 +84,16 @@ final class RadarrModule implements ServiceModule {
       ),
       const (QueueProvider) => RadarrQueueAdapter(RadarrApi(context)),
       const (HistoryProvider) => RadarrHistoryAdapter(RadarrApi(context)),
+      const (CalendarProvider) => RadarrCalendarAdapter(
+        RadarrApi(context),
+        context.instance.id,
+      ),
+      const (WantedProvider) => RadarrWantedAdapter(
+        RadarrApi(context),
+        context.instance.id,
+      ),
+      // Nothing here is Radarr's own: health and disk space are the family's.
+      const (HealthProvider) => ServarrHealth(RadarrApi(context).shared),
       _ => null,
     };
     return found as T?;
