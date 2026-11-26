@@ -152,14 +152,9 @@ void main() {
         refusal(500, 'Sequence contains no matching element'),
         ServerError,
       ),
-      'an answer that breaks off': (
-        const Reply(201, '{"id":'),
-        MalformedResponse,
-      ),
-      'an answer without a command': (
-        const Reply(201, '{}'),
-        MalformedResponse,
-      ),
+      // The server accepted these, so the command may well be running.
+      'an answer that breaks off': (const Reply(201, '{"id":'), OutcomeUnknown),
+      'an answer without a command': (const Reply(201, '{}'), OutcomeUnknown),
     };
 
     for (final MapEntry(key: cause, value: (answer, expected))

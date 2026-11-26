@@ -76,6 +76,8 @@ void main() {
           for (final MapEntry(:key, :value) in target.entries) key: ['$value'],
         });
         expect(request.body, isNull);
+        // The server asks its indexers while the request is open.
+        expect(request.timeout, const Duration(minutes: 2));
       });
 
       test('maps every release in the server\'s order', () async {
@@ -317,8 +319,18 @@ void main() {
   });
 
   group('a failed grab', () {
+    final failures = <String, (Answer, Type)>{
+      ...writeFailures,
+      // The server accepted these, so it may well be downloading.
+      'an answer that breaks off': (
+        const Reply(200, '{"guid":'),
+        OutcomeUnknown,
+      ),
+      'an answer without a release': (const Reply(200, '[]'), OutcomeUnknown),
+    };
+
     for (final MapEntry(key: cause, value: (answer, expected))
-        in writeFailures.entries) {
+        in failures.entries) {
       test('reports $cause and is sent once', () async {
         final server = FakeServer.always(answer);
 

@@ -7,7 +7,8 @@
 //   /// The releases the indexers have for [target], the query that names it,
 //   /// such as `{'movieId': 1}`, in the server's order. Without a target the
 //   /// server answers with its RSS feeds, so an empty one sends nothing and
-//   /// fails with `Validation`.
+//   /// fails with `Validation`. The request waits 2 minutes for its answer, as
+//   /// the server asks its indexers while it is open.
 //   ServiceResult<List<Release>> releases(Map<String, int> target);
 //
 //   /// Has the server download [release], rejected or not.
@@ -46,7 +47,8 @@
 //
 // As in activity_support.dart, a write is sent once, a failure of `http.send`
 // is returned unchanged, and what a successful write answers is not read, but
-// for `startCommand`.
+// for `grab` and `startCommand`: an answer of theirs that cannot be understood
+// is `OutcomeUnknown`, as the server accepted the request.
 //
 // Fixtures (`manage_*`): recorded from a further throwaway Radarr 7.0.3.10918
 // and Sonarr 4.0.20.3014, with a made-up Torznab and Newznab indexer serving

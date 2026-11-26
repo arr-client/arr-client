@@ -6,6 +6,7 @@ import 'activity/blocklist_record.dart';
 import 'activity/manual_import_records.dart';
 import 'activity/servarr_import_mapping.dart';
 import 'json_reading.dart';
+import 'manage/release_record.dart';
 import 'records/command_record.dart';
 import 'records/health_record.dart';
 import 'records/history_record.dart';
@@ -15,12 +16,13 @@ import 'servarr_refs.dart';
 import 'servarr_status.dart';
 
 part 'activity/servarr_activity.dart';
+part 'manage/servarr_manage.dart';
 
 /// The requests the services of the Servarr family have in common.
 ///
 /// A failure of the HTTP client is returned unchanged and nothing is retried
 /// here. An answer that cannot be understood is [MalformedResponse].
-final class ServarrClient with _ServarrActivity {
+final class ServarrClient with _ServarrActivity, _ServarrManage {
   /// A client of the API under [apiPath], such as `api/v3`.
   ///
   /// [includeUnknownParameter] is the service's queue flag for downloads it
@@ -176,12 +178,14 @@ final class ServarrClient with _ServarrActivity {
     T Function(Object? json) decode, {
     Map<String, List<String>> query = const {},
     RequestBody? body,
+    Duration? timeout,
   }) async {
     final request = ServiceRequest(
       method,
       '$_apiPath/$path',
       query: query,
       body: body,
+      timeout: timeout,
     );
     switch (await _http.send(request)) {
       case Err(:final error):
