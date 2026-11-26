@@ -20,6 +20,7 @@ import '../../features/home/unreachable_offer.dart';
 import '../../features/library/library_controller.dart';
 import '../../features/library/library_view_body.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/wanted/wanted_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../navigation/destinations.dart';
 import '../navigation/locations.dart';
@@ -202,6 +203,7 @@ class MorePage extends ConsumerWidget {
       return MessagePage(title: title, message: strings.notOffered);
     }
     if (entry == MoreEntry.calendar) return const CalendarScreen();
+    if (entry == MoreEntry.wanted) return const WantedScreen();
     if (entry == MoreEntry.blocklist) return const BlocklistScreen();
     if (entry == MoreEntry.settings) return const SettingsScreen();
     final owned = switch (entry) {
