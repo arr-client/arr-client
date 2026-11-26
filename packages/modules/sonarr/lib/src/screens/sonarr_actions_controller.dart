@@ -67,7 +67,8 @@ final sonarrActionsProvider = NotifierProvider.autoDispose
 /// Sends the user's changes, each once, and follows the tasks they start.
 ///
 /// After a change, what this screen shows is read again, and so is what the
-/// screens beneath it show of the same series.
+/// screens beneath it show of the same series: the series, its list of episodes
+/// and single episodes.
 class SonarrActionsController extends Notifier<SonarrActionsState> {
   /// Creates the controller of the target of [key].
   SonarrActionsController(this.key);
@@ -143,6 +144,18 @@ class SonarrActionsController extends Notifier<SonarrActionsState> {
         reads.add(ref.read(episodesProvider(of).notifier).reload());
       }
       ref.invalidate(historyProvider(of));
+      // A change to a series, a season or a shared file reaches other episodes.
+      for (final id in ref.read(openEpisodesProvider(_sources))) {
+        if (id == _target.item) continue;
+        final episode = (_sources, id);
+        // One that has not said its series yet may be of this one.
+        if (ref.read(episodeProvider(episode)) case ViewData(:final value)
+            when value.parent != series) {
+          continue;
+        }
+        reads.add(ref.read(episodeProvider(episode).notifier).reload());
+        ref.invalidate(historyProvider(episode));
+      }
     }
     await Future.wait(reads);
   }

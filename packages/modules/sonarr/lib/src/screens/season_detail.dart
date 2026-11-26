@@ -43,9 +43,21 @@ class SeasonScreen extends ConsumerWidget {
     final series = sources.series(seriesId);
     final key = (sources, series);
     final state = ref.watch(episodesProvider(key));
-    final (known, seriesStale) = switch (ref.watch(seriesProvider(key))) {
-      ViewData(:final value, :final staleness) => (value, staleness != null),
-      ViewLoading() || ViewError() => (null, false),
+    final seriesState = ref.watch(seriesProvider(key));
+    final known = switch (seriesState) {
+      ViewData(:final value) => value,
+      ViewLoading() || ViewError() => null,
+    };
+    // The season's switch comes from the series: where that is out of date,
+    // the screen says so, with why.
+    final shown = switch ((state, seriesState)) {
+      (
+        ViewData(:final value, staleness: final own),
+        ViewData(staleness: final ofSeries?),
+      )
+          when own == null || own.failure == null && ofSeries.failure != null =>
+        ViewData(value, staleness: ofSeries),
+      _ => state,
     };
     final target = MediaTarget(series, seasonNumber: number);
     Future<void> refresh() => Future.wait([
@@ -62,7 +74,7 @@ class SeasonScreen extends ConsumerWidget {
         title: seasonName(strings, number),
         onRefresh: refresh,
         body: StateScaffold<List<Episode>>(
-          state: state,
+          state: shown,
           itemId: series,
           onRetry: () => unawaited(refresh()),
           isEmpty: (episodes) => !episodes.any(ofSeason),
@@ -91,7 +103,7 @@ class SeasonScreen extends ConsumerWidget {
                       target: target,
                       // Not said while the series is not there.
                       monitored: season?.monitored,
-                      isStale: isStale || seriesStale,
+                      isStale: isStale,
                     ),
                   ],
                 ),

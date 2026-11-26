@@ -17,6 +17,9 @@ import 'support.dart';
 class _Server extends ManageServer {
   final held = <String, Completer<void>>{};
 
+  /// Whether reading the series fails.
+  bool seriesFails = false;
+
   /// What every write of a file gets, if set.
   Result<ServiceResponse, HttpError>? deleteAnswer;
 
@@ -24,8 +27,10 @@ class _Server extends ManageServer {
   Future<Result<ServiceResponse, HttpError>> send(
     ServiceRequest request,
   ) async {
+    final failed = seriesFails && _name(request) == 'get series/1';
     final answer = await super.send(request);
     await held[_name(request)]?.future;
+    if (failed) return FakeSonarr.body('', status: 500);
     return request.method == HttpMethod.delete
         ? deleteAnswer ?? answer
         : answer;
@@ -214,6 +219,26 @@ void main() {
       expect(server.count('get episode'), greaterThan(episodes));
     });
 
+    for (final (name, route) in [('series', _series), ('season', _season(1))]) {
+      testWidgets('an episode screen beneath is read again after a change of '
+          'the $name above it', (tester) async {
+        await open(tester, _episode);
+        await screens.open(tester, _series);
+        if (route != _series) await screens.open(tester, route);
+        final reads = server.count('get episode');
+        server.episode13['monitored'] = false;
+
+        await tester.tap(find.byType(SwitchListTile));
+        await tester.pumpAndSettle();
+        expect(server.count('get episode'), greaterThan(reads));
+        await screens.back(tester);
+        if (route != _series) await screens.back(tester);
+
+        expect(find.text('Season 1, episode 1'), findsNWidgets(2));
+        expect(toggle(tester).value, isFalse);
+      });
+    }
+
     testWidgets('returns when the server rejects it, and says why', (
       tester,
     ) async {
@@ -249,6 +274,32 @@ void main() {
         expect(toggle(tester).value, isTrue);
       },
     );
+  });
+
+  testWidgets('a season says why nothing can be changed when only its series '
+      'cannot be read', (tester) async {
+    await open(tester, _season(1));
+    await screens.back(tester);
+    // The episodes are answered after the series has failed.
+    final episodes = server.held['get episode'] = Completer<void>();
+    server.seriesFails = true;
+    await screens.open(tester, _season(1), settle: false);
+    await step(tester);
+    server.seriesFails = false;
+    episodes.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Saved data from'), findsOneWidget);
+    expect(find.textContaining('error 500'), findsOneWidget);
+    expect(toggle(tester).onChanged, isNull);
+    expect(button(tester, 'Search automatically').onPressed, isNull);
+    expect(button(tester, 'Interactive search').onPressed, isNull);
+
+    await tester.tap(find.text('Retry'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Saved data from'), findsNothing);
+    expect(toggle(tester).onChanged, isNotNull);
   });
 
   group('server tasks', () {
