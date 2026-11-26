@@ -1,0 +1,279 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "date",
+  "sortDirection": "descending",
+  "totalRecords": 2,
+  "records": [
+    {
+      "movieId": 3,
+      "sourceTitle": "redacted-5",
+      "languages": [
+        {
+          "id": 4,
+          "name": "German"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "date": "2026-11-26T15:10:20Z",
+      "protocol": "torrent",
+      "indexer": "redacted-4",
+      "message": "redacted-17",
+      "movie": {
+        "title": "redacted-37",
+        "originalTitle": "redacted-38",
+        "originalLanguage": {
+          "id": 4,
+          "name": "German"
+        },
+        "alternateTitles": [],
+        "secondaryYearSourceId": 0,
+        "sortTitle": "redacted-39",
+        "status": "released",
+        "overview": "redacted-40",
+        "inCinemas": "1922-02-16T00:00:00Z",
+        "physicalRelease": "1995-08-12T00:00:00Z",
+        "digitalRelease": "1962-09-24T00:00:00Z",
+        "releaseDate": "1922-02-16T00:00:00Z",
+        "images": [
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/41.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/42.jpg"
+          }
+        ],
+        "website": "",
+        "year": 1922,
+        "youTubeTrailerId": "redacted-43",
+        "studio": "redacted-44",
+        "path": "/redacted/45",
+        "qualityProfileId": 1,
+        "movieFileId": 0,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/redacted/45",
+        "runtime": 94,
+        "cleanTitle": "redacted-39",
+        "imdbId": "tt0013442",
+        "tmdbId": 653,
+        "titleSlug": "redacted-46",
+        "certification": "NR",
+        "genres": [
+          "redacted-47",
+          "redacted-48"
+        ],
+        "keywords": [
+          "redacted-49",
+          "redacted-50",
+          "redacted-51",
+          "redacted-52",
+          "redacted-53",
+          "redacted-54",
+          "redacted-55",
+          "redacted-56",
+          "redacted-57",
+          "redacted-58",
+          "redacted-59",
+          "redacted-60",
+          "redacted-61",
+          "redacted-62",
+          "redacted-63",
+          "redacted-64",
+          "redacted-65",
+          "redacted-66",
+          "redacted-67",
+          "redacted-68",
+          "redacted-69",
+          "redacted-70",
+          "redacted-39",
+          "redacted-71",
+          "redacted-72",
+          "redacted-73",
+          "redacted-74",
+          "redacted-75",
+          "redacted-76",
+          "redacted-77",
+          "redacted-78",
+          "redacted-79",
+          "redacted-80",
+          "redacted-81",
+          "redacted-82",
+          "redacted-83",
+          "redacted-84",
+          "redacted-85",
+          "redacted-86",
+          "redacted-87",
+          "redacted-88"
+        ],
+        "tags": [],
+        "added": "2026-11-26T15:08:49Z",
+        "ratings": {
+          "imdb": {
+            "votes": 125398,
+            "value": 7.8,
+            "type": "user"
+          },
+          "tmdb": {
+            "votes": 2594,
+            "value": 7.6,
+            "type": "user"
+          },
+          "rottenTomatoes": {
+            "votes": 0,
+            "value": 97,
+            "type": "user"
+          },
+          "trakt": {
+            "votes": 3173,
+            "value": 7.39269,
+            "type": "user"
+          }
+        },
+        "popularity": 6.7381,
+        "id": 3
+      },
+      "id": 2
+    },
+    {
+      "movieId": 4,
+      "sourceTitle": "redacted-1",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 7,
+          "name": "Bluray-1080p",
+          "source": "bluray",
+          "resolution": 1080,
+          "modifier": "none"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "date": "2026-11-26T15:10:07Z",
+      "protocol": "torrent",
+      "indexer": "redacted-4",
+      "message": "redacted-17",
+      "movie": {
+        "title": "redacted-89",
+        "originalTitle": "redacted-89",
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "alternateTitles": [],
+        "secondaryYear": 2026,
+        "secondaryYearSourceId": 0,
+        "sortTitle": "redacted-90",
+        "status": "released",
+        "overview": "redacted-91",
+        "inCinemas": "1926-12-25T00:00:00Z",
+        "physicalRelease": "1984-10-26T00:00:00Z",
+        "digitalRelease": "2005-05-20T00:00:00Z",
+        "releaseDate": "1926-12-25T00:00:00Z",
+        "images": [
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/92.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/93.jpg"
+          }
+        ],
+        "website": "",
+        "year": 1926,
+        "youTubeTrailerId": "redacted-94",
+        "studio": "redacted-95",
+        "path": "/redacted/96",
+        "qualityProfileId": 1,
+        "movieFileId": 0,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/redacted/96",
+        "runtime": 79,
+        "cleanTitle": "redacted-97",
+        "imdbId": "tt0017925",
+        "tmdbId": 961,
+        "titleSlug": "redacted-98",
+        "certification": "NR",
+        "genres": [
+          "redacted-99",
+          "redacted-100",
+          "redacted-101"
+        ],
+        "keywords": [
+          "redacted-102",
+          "redacted-103",
+          "redacted-104",
+          "redacted-105",
+          "redacted-106",
+          "redacted-51",
+          "redacted-107",
+          "redacted-108",
+          "redacted-109",
+          "redacted-110",
+          "redacted-90",
+          "redacted-81",
+          "redacted-111",
+          "redacted-112",
+          "redacted-113"
+        ],
+        "tags": [],
+        "added": "2026-11-26T15:08:49Z",
+        "ratings": {
+          "imdb": {
+            "votes": 106785,
+            "value": 8.1,
+            "type": "user"
+          },
+          "tmdb": {
+            "votes": 1498,
+            "value": 7.9,
+            "type": "user"
+          },
+          "rottenTomatoes": {
+            "votes": 0,
+            "value": 92,
+            "type": "user"
+          },
+          "trakt": {
+            "votes": 1708,
+            "value": 7.84133,
+            "type": "user"
+          }
+        },
+        "popularity": 5.1859,
+        "id": 4
+      },
+      "id": 1
+    }
+  ]
+}

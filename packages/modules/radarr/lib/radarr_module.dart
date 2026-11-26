@@ -7,6 +7,7 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:servarr/servarr.dart';
 
+import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
 import 'src/adapters/overview.dart';
