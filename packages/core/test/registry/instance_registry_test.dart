@@ -492,8 +492,10 @@ void main() {
 
       await save(id, draft('Client', corrected.url));
 
-      // The first sign-in is still unanswered.
-      expect(await world.active(id).context.http.send(get('b')), succeeds);
+      // The first sign-in is still unanswered, and would time out after ten
+      // seconds.
+      final read = world.active(id).context.http.send(get('b'));
+      expect(await read.timeout(const Duration(seconds: 5)), succeeds);
       expect(corrected.calls, ['POST /login', 'GET /b']);
       expect(await old, failsWith<Unreachable>());
     });
