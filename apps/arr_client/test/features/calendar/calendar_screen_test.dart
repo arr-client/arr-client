@@ -349,6 +349,62 @@ void main() {
     });
   }
 
+  // The indicator of a pull outlasts the read it started when the view moves
+  // on, or when the services change.
+  for (final (view, move) in [
+    (CalendarTab.downloaded, 'Previous day'),
+    (CalendarTab.month, 'Next month'),
+    (CalendarTab.agenda, null),
+  ]) {
+    testWidgets('a pull held up ends with ${move ?? 'a change of services'}, '
+        'and the next one reads', (tester) async {
+      final calendar = await CalendarHarness.start(tester, now: noon);
+      await calendar.pump(tester, tab: view);
+      final films = calendar.server('Films');
+      int reads() => films.days.length + films.ranges.length;
+      Future<void> pumpFor() async {
+        for (var i = 0; i < 20; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      Future<void> pull() async {
+        await tester.fling(
+          find.byType(ListView).first,
+          const Offset(0, 400),
+          1000,
+        );
+        await pumpFor();
+      }
+
+      final held = Completer<void>();
+      films.held = held;
+      await pull();
+      expect(find.byType(RefreshProgressIndicator), findsOneWidget);
+
+      films.held = null;
+      if (move != null) {
+        await tester.tap(find.byTooltip(move));
+      } else {
+        await calendar.app.services.profiles.deleteInstance(
+          calendar.ids['Shows']!,
+        );
+        await calendar.app.services.registry.refresh();
+      }
+      await pumpFor();
+      expect(find.byType(RefreshProgressIndicator), findsNothing);
+
+      final before = reads();
+      await pull();
+      expect(reads(), before + 1);
+      expect(find.byType(RefreshProgressIndicator), findsNothing);
+
+      held.complete();
+      await tester.pumpAndSettle();
+      await calendar.stop(tester);
+    });
+  }
+
   testWidgets('a wide window shows the day beside the month', (tester) async {
     final calendar = await CalendarHarness.start(
       tester,

@@ -115,7 +115,9 @@ abstract class CalendarReadNotifier<T> extends Notifier<ServiceAnswers<T>?> {
   ServiceResult<List<T>> read(CalendarProvider provider);
 
   var _answers = <ServiceAnswer<T>>[];
-  final _subscriptions = <StreamSubscription<void>>{};
+
+  /// The reads under way, each with what completes when it has ended.
+  final _underWay = <StreamSubscription<void>, Completer<void>>{};
 
   /// The latest read of each instance, so that an older one cannot overtake it.
   final _latest = <String, int>{};
@@ -130,10 +132,14 @@ abstract class CalendarReadNotifier<T> extends Notifier<ServiceAnswers<T>?> {
     ref.listen(calendarRefreshProvider, (_, _) => unawaited(reload()));
     ref.onDispose(() {
       lifecycle.dispose();
-      for (final subscription in _subscriptions) {
+      // A cancelled read never ends by itself, and whoever waits for it, such
+      // as the indicator of a pull to refresh, outlasts what is disposed here.
+      for (final MapEntry(key: subscription, value: done)
+          in _underWay.entries) {
         unawaited(subscription.cancel());
+        done.complete();
       }
-      _subscriptions.clear();
+      _underWay.clear();
       _latest.clear();
     });
 
@@ -152,7 +158,7 @@ abstract class CalendarReadNotifier<T> extends Notifier<ServiceAnswers<T>?> {
   }
 
   /// Reads again, from every service or only from [instanceId]. Completes when
-  /// they have answered.
+  /// they have answered, or when this read is no longer wanted.
   Future<void> reload({String? instanceId}) async {
     final scope = ref.read(scopeProvider);
     if (scope == null) return;
@@ -186,11 +192,11 @@ abstract class CalendarReadNotifier<T> extends Notifier<ServiceAnswers<T>?> {
         .listen(
           (aggregate) => _take(aggregate, number),
           onDone: () {
-            _subscriptions.remove(subscription);
+            _underWay.remove(subscription);
             done.complete();
           },
         );
-    _subscriptions.add(subscription);
+    _underWay[subscription] = done;
     return done.future;
   }
 
