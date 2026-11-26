@@ -96,21 +96,39 @@ void main() {
     final app = await TestApp.start(tester);
     await app.add(movies, 'Films');
     await app.pump(tester);
-    expect(find.text('Library'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(NavigationRail),
+        matching: find.text('Library'),
+      ),
+      findsOneWidget,
+    );
     // Behind the back of the database's change notifications, as another
     // isolate would write.
     await app.services.database.customStatement(
       'UPDATE instances SET enabled = 0',
     );
     await tester.pumpAndSettle();
-    expect(find.text('Library'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(NavigationRail),
+        matching: find.text('Library'),
+      ),
+      findsOneWidget,
+    );
 
     tester.binding
       ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
       ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
 
-    expect(find.text('Library'), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(NavigationRail),
+        matching: find.text('Library'),
+      ),
+      findsNothing,
+    );
     await app.stop(tester);
   });
 

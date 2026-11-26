@@ -23,23 +23,6 @@ final scopeProvider = NotifierProvider<ScopeNotifier, ProfileScope?>(
   ScopeNotifier.new,
 );
 
-/// The active profile and whether it has any instance, enabled or not.
-typedef ActiveProfile = ({Profile profile, bool hasInstances});
-
-/// Null without an active profile.
-final activeProfileProvider = StreamProvider.autoDispose<ActiveProfile?>((ref) {
-  final services = ref.watch(appServicesProvider);
-  return _onEveryChange(services.profiles, () async {
-    final id = (await services.preferences.read()).activeProfileId;
-    final profile = (await services.profiles.profiles())
-        .where((profile) => profile.id == id)
-        .firstOrNull;
-    if (profile == null) return null;
-    final instances = await services.profiles.instances(profile.id);
-    return (profile: profile, hasInstances: instances.isNotEmpty);
-  });
-});
-
 /// The active profile and all its instances, enabled or not, in their order.
 typedef ProfileInstances = ({Profile profile, List<Instance> instances});
 

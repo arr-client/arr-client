@@ -48,14 +48,6 @@ class AppShell extends ConsumerWidget {
     }
 
     final strings = AppLocalizations.of(context);
-    String label(AppDestination destination) => switch (destination) {
-      AppDestination.home => strings.navHome,
-      AppDestination.library => strings.navLibrary,
-      AppDestination.discover => strings.navDiscover,
-      AppDestination.activity => strings.navActivity,
-      AppDestination.more => strings.navMore,
-    };
-
     final wide = MediaQuery.sizeOf(context).width >= railBreakpoint;
     // The same tree for both, so that turning the device keeps the state of the
     // screens.
@@ -73,9 +65,9 @@ class AppShell extends ConsumerWidget {
                 destinations: [
                   for (final destination in shown)
                     NavigationRailDestination(
-                      icon: Icon(_icon(destination)),
+                      icon: Icon(destinationIcon(destination)),
                       selectedIcon: Icon(_selectedIcon(destination)),
-                      label: Text(label(destination)),
+                      label: Text(destinationLabel(strings, destination)),
                     ),
                 ],
               ),
@@ -105,22 +97,14 @@ class AppShell extends ConsumerWidget {
               destinations: [
                 for (final destination in shown)
                   NavigationDestination(
-                    icon: Icon(_icon(destination)),
+                    icon: Icon(destinationIcon(destination)),
                     selectedIcon: Icon(_selectedIcon(destination)),
-                    label: label(destination),
+                    label: destinationLabel(strings, destination),
                   ),
               ],
             ),
     );
   }
-
-  static IconData _icon(AppDestination destination) => switch (destination) {
-    AppDestination.home => Icons.home_outlined,
-    AppDestination.library => Icons.video_library_outlined,
-    AppDestination.discover => Icons.explore_outlined,
-    AppDestination.activity => Icons.downloading_outlined,
-    AppDestination.more => Icons.menu_outlined,
-  };
 
   static IconData _selectedIcon(AppDestination destination) =>
       switch (destination) {
@@ -131,3 +115,22 @@ class AppShell extends ConsumerWidget {
         AppDestination.more => Icons.menu,
       };
 }
+
+/// The name of a primary destination.
+String destinationLabel(AppLocalizations strings, AppDestination destination) =>
+    switch (destination) {
+      AppDestination.home => strings.navHome,
+      AppDestination.library => strings.navLibrary,
+      AppDestination.discover => strings.navDiscover,
+      AppDestination.activity => strings.navActivity,
+      AppDestination.more => strings.navMore,
+    };
+
+/// The icon of a primary destination that is not the current one.
+IconData destinationIcon(AppDestination destination) => switch (destination) {
+  AppDestination.home => Icons.home_outlined,
+  AppDestination.library => Icons.video_library_outlined,
+  AppDestination.discover => Icons.explore_outlined,
+  AppDestination.activity => Icons.downloading_outlined,
+  AppDestination.more => Icons.menu_outlined,
+};
