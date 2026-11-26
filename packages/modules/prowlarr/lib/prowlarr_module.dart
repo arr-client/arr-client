@@ -8,6 +8,13 @@ import 'package:flutter/widgets.dart';
 import 'package:servarr/servarr.dart';
 
 import 'src/adapters/indexer_search.dart';
+import 'src/screens/indexer_screen.dart';
+import 'src/screens/prowlarr_source.dart';
+import 'src/search_route.dart';
+
+// The app adds its delegate to the others, for the strings of the screens.
+export 'src/l10n/generated/prowlarr_localizations.dart'
+    show ProwlarrLocalizations;
 
 // Also Prowlarr's `appName` in `system/status`.
 const _product = 'Prowlarr';
@@ -22,6 +29,11 @@ final _versionPattern = RegExp(r'^\d{1,9}(\.\d{1,9})*$');
 
 /// The Prowlarr service.
 final class ProwlarrModule implements ServiceModule {
+  // One for each connection to an instance, which is its client: the app may
+  // build the context anew while a screen is open, as after a rename. The
+  // screens' state is kept under it.
+  final _sources = Expando<ProwlarrSource>();
+
   @override
   String get id => 'prowlarr';
 
@@ -75,9 +87,26 @@ final class ProwlarrModule implements ServiceModule {
     return found as T?;
   }
 
-  // The screens are not built yet.
   @override
-  List<ModuleScreen> routes() => const [];
+  List<ModuleScreen> routes() => [
+    ModuleScreen(path: searchPattern, builder: _search),
+  ];
+
+  Widget _search(
+    BuildContext context,
+    InstanceContext instance,
+    Map<String, String> parameters,
+  ) => IndexerScreen(
+    source: _sources[instance.http] ??= ProwlarrSource(
+      instanceId: instance.instance.id,
+      provider: ProwlarrIndexerSearchAdapter(
+        _client(instance),
+        instance.instance.id,
+      ),
+      logger: instance.logger,
+    ),
+    name: instance.instance.name,
+  );
 }
 
 // Prowlarr has no queue or history of media, so nothing reads the flag for

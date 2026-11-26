@@ -6,7 +6,6 @@ import 'package:ui/ui.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
 import 'history_event_tile.dart';
 import 'server_changes.dart';
-import 'server_text.dart';
 
 /// Asks whether the grab [event] of [instance] should be marked as failed and,
 /// once confirmed, says so to the server, once.

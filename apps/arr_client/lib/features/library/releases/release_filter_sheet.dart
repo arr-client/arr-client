@@ -122,7 +122,8 @@ class _FilterSheet extends StatelessWidget {
                 ...choices<String>(
                   title: strings.releasesFilterIndexer,
                   found: [
-                    for (final release in releases) ?indexerName(release),
+                    for (final release in releases)
+                      ?releaseIndexerName(release),
                   ],
                   chosen: view.indexers,
                   label: (name) => name,
@@ -131,7 +132,8 @@ class _FilterSheet extends StatelessWidget {
                 ...choices<String>(
                   title: strings.releasesFilterQuality,
                   found: [
-                    for (final release in releases) ?qualityName(release),
+                    for (final release in releases)
+                      ?releaseQualityName(release),
                   ],
                   chosen: view.qualities,
                   label: (name) => name,
@@ -140,7 +142,8 @@ class _FilterSheet extends StatelessWidget {
                 ...choices<String>(
                   title: strings.releasesFilterLanguage,
                   found: [
-                    for (final release in releases) ...languageNames(release),
+                    for (final release in releases)
+                      ...releaseLanguageNames(release),
                   ],
                   chosen: view.languages,
                   label: (name) => name,

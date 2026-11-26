@@ -4,6 +4,7 @@ library;
 
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ui/ui.dart';
 
 import '../../../app/providers.dart';
 
@@ -13,18 +14,6 @@ typedef GrabKey = ({String instanceId, int indexerId, String guid});
 /// The key of [release] on the instance [instanceId].
 GrabKey grabKey(String instanceId, Release release) =>
     (instanceId: instanceId, indexerId: release.indexerId, guid: release.guid);
-
-/// How the grab of a release stands.
-enum GrabMark {
-  /// Sent and not answered.
-  sending,
-
-  /// The server accepted it.
-  accepted,
-
-  /// It may or may not have reached the server.
-  unknown,
-}
 
 /// The marks of the releases that have one. It outlives the screens.
 final releaseGrabsProvider =

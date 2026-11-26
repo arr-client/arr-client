@@ -44,6 +44,8 @@ dependencies:
   path_provider: ^2.1.6
   platform_local_network:
     path: ../../packages/platform_local_network
+  prowlarr:
+    path: ../../packages/modules/prowlarr
   qbittorrent:
     path: ../../packages/modules/qbittorrent
   radarr:
