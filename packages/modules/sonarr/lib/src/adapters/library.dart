@@ -105,32 +105,48 @@ final class SonarrLibraryAdapter implements LibraryProvider {
       case Err(:final error):
         return Err(error);
     }
+    return _reading(() => _keepEpisodes(parent, series, records, queue));
+  }
+
+  /// Reads the episodes in [records] and caches them with their series.
+  ///
+  /// Not a closure inside [children]: written that way, the AOT compiler of
+  /// Dart 3.14.0 crashes (`linearscan.cc: unreachable code`) and no release
+  /// build can be made.
+  Future<List<LibraryItem>> _keepEpisodes(
+    ItemRef parent,
+    JsonObject series,
+    List<JsonObject> records,
+    List<QueueItem> queue,
+  ) async {
     final downloading = {for (final item in queue) ?item.itemRef?.remoteId};
-    return _reading(() async {
-      final now = DateTime.now().toUtc();
-      // Kept with its episodes, whose cached records do not name it.
-      final (read, seriesEntry) = _series(
-        series,
-        downloading: queue.any((item) => item.parent == parent),
+    final now = DateTime.now().toUtc();
+    // Kept with its episodes, whose cached records do not name it.
+    final (read, seriesEntry) = _series(
+      series,
+      downloading: queue.any((item) => item.parent == parent),
+      now: now,
+    );
+    final items = <LibraryItem>[];
+    final entries = <CacheEntry>[];
+    for (final record in records) {
+      final (episode, entry) = _episode(
+        record,
+        series: parent,
+        seriesTitle: read.title,
+        downloading: downloading.contains(record['id']),
         now: now,
       );
-      final items = <LibraryItem>[];
-      final entries = <CacheEntry>[];
-      for (final record in records) {
-        final (episode, entry) = _episode(
-          record,
-          series: parent,
-          seriesTitle: read.title,
-          downloading: downloading.contains(record['id']),
-          now: now,
-        );
-        items.add(episode);
-        entries.add(entry);
-      }
-      await _cache.put(seriesEntry);
-      await _cache.replace(MediaKind.episode, entries, parentRemoteId: id);
-      return items;
-    });
+      items.add(episode);
+      entries.add(entry);
+    }
+    await _cache.put(seriesEntry);
+    await _cache.replace(
+      MediaKind.episode,
+      entries,
+      parentRemoteId: parent.remoteId,
+    );
+    return items;
   }
 
   @override

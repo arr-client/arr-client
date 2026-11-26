@@ -22,7 +22,7 @@ class MovieBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final source = _image(movie, MediaImageType.fanart, artwork);
+    final source = _image(context, movie, MediaImageType.fanart, artwork);
     if (source == null) return const SizedBox.shrink();
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
@@ -99,8 +99,8 @@ class MovieHeader extends StatelessWidget {
       ),
     );
     final source =
-        _image(movie, MediaImageType.poster, artwork) ??
-        _image(movie, MediaImageType.cover, artwork);
+        _image(context, movie, MediaImageType.poster, artwork) ??
+        _image(context, movie, MediaImageType.cover, artwork);
     final poster = SizedBox(
       width: _posterWidth,
       height: _posterWidth * 3 / 2,
@@ -173,10 +173,11 @@ class _Picture extends StatelessWidget {
 }
 
 ImageProvider<Object>? _image(
+  BuildContext context,
   Movie movie,
   MediaImageType type,
   ArtworkLoader artwork,
 ) {
   final picture = movie.images.where((image) => image.type == type).firstOrNull;
-  return picture == null ? null : artwork.image(picture);
+  return picture == null ? null : artworkImageOf(context, artwork, picture);
 }

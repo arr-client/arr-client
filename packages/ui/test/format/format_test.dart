@@ -38,5 +38,7 @@ void main() {
     ]) {
       expect(formatDuration(context, duration), text);
     }
+    expect(formatSpeed(context, 0), '0 B/s');
+    expect(formatSpeed(context, 1536 * 1024), '1.5 MiB/s');
   });
 }

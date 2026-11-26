@@ -1,0 +1,27 @@
+[
+  {
+    "propertyName": "redacted-109",
+    "errorMessage": "redacted-110",
+    "attemptedValue": 0,
+    "severity": "error",
+    "errorCode": "GreaterThanValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "ComparisonValue": 0,
+      "ComparisonProperty": "",
+      "PropertyName": "redacted-111",
+      "PropertyValue": 0
+    }
+  },
+  {
+    "propertyName": "redacted-112",
+    "errorMessage": "redacted-113",
+    "severity": "error",
+    "errorCode": "NotEmptyValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "PropertyName": "redacted-112",
+      "PropertyValue": null
+    }
+  }
+]

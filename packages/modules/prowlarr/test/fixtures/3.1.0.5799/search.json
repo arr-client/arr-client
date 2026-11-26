@@ -1,0 +1,118 @@
+[
+  {
+    "guid": "http://redacted.invalid/84",
+    "age": 25,
+    "ageHours": 609.5681072708611,
+    "ageMinutes": 36574.08643626,
+    "size": 1500000000,
+    "files": 0,
+    "grabs": 0,
+    "indexerId": 1,
+    "indexer": "redacted-64",
+    "title": "redacted-85",
+    "sortTitle": "redacted-86",
+    "imdbId": 0,
+    "tmdbId": 0,
+    "tvdbId": 0,
+    "tvMazeId": 0,
+    "publishDate": "2026-11-01T12:00:00Z",
+    "commentUrl": "http://redacted.invalid/87",
+    "downloadUrl": "http://redacted.invalid/88",
+    "infoUrl": "http://redacted.invalid/87",
+    "indexerFlags": [
+      "freeleech"
+    ],
+    "categories": [
+      {
+        "id": 2040,
+        "name": "Movies/HD",
+        "subCategories": []
+      },
+      {
+        "id": 102040,
+        "subCategories": []
+      }
+    ],
+    "magnetUrl": "http://redacted.invalid/89",
+    "infoHash": "ABCDEF0000000000000000000000000000000001",
+    "seeders": 10,
+    "leechers": 3,
+    "protocol": "torrent",
+    "fileName": "redacted-90"
+  },
+  {
+    "guid": "http://redacted.invalid/91",
+    "age": 24,
+    "ageHours": 585.5681073338334,
+    "ageMinutes": 35134.086440031664,
+    "size": 700000000,
+    "files": 0,
+    "grabs": 0,
+    "indexerId": 1,
+    "indexer": "redacted-64",
+    "title": "redacted-92",
+    "sortTitle": "redacted-93",
+    "imdbId": 0,
+    "tmdbId": 0,
+    "tvdbId": 0,
+    "tvMazeId": 0,
+    "publishDate": "2026-11-02T12:00:00Z",
+    "commentUrl": "http://redacted.invalid/94",
+    "downloadUrl": "http://redacted.invalid/95",
+    "infoUrl": "http://redacted.invalid/94",
+    "indexerFlags": [
+      "freeleech"
+    ],
+    "categories": [
+      {
+        "id": 2040,
+        "name": "Movies/HD",
+        "subCategories": []
+      },
+      {
+        "id": 102040,
+        "subCategories": []
+      }
+    ],
+    "infoHash": "ABCDEF0000000000000000000000000000000002",
+    "seeders": 20,
+    "leechers": 3,
+    "protocol": "torrent",
+    "fileName": "redacted-96"
+  },
+  {
+    "guid": "http://redacted.invalid/97",
+    "age": 23,
+    "ageHours": 561.5681073386111,
+    "ageMinutes": 33694.08644031834,
+    "size": 2500000000,
+    "files": 0,
+    "grabs": 0,
+    "indexerId": 2,
+    "indexer": "redacted-23",
+    "title": "redacted-98",
+    "sortTitle": "redacted-99",
+    "imdbId": 0,
+    "tmdbId": 0,
+    "tvdbId": 0,
+    "tvMazeId": 0,
+    "publishDate": "2026-11-03T12:00:00Z",
+    "commentUrl": "http://redacted.invalid/100",
+    "downloadUrl": "http://redacted.invalid/101",
+    "infoUrl": "http://redacted.invalid/100",
+    "indexerFlags": [],
+    "categories": [
+      {
+        "id": 2040,
+        "name": "Movies/HD",
+        "subCategories": []
+      },
+      {
+        "id": 102040,
+        "subCategories": []
+      }
+    ],
+    "protocol": "usenet",
+    "fileName": "redacted-102"
+  }
+]

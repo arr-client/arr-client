@@ -52,6 +52,10 @@ dependencies:
     path: ../../packages/modules/sonarr
   ui:
     path: ../../packages/ui
+  # Opens a server's help page for a health problem in the browser. BSD-3-Clause;
+  # on Android it adds only AndroidX libraries, no permission and no exported
+  # component.
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +64,9 @@ dev_dependencies:
   # Flutter SDK (BSD-3-Clause); release builds leave its Android plugin out.
   integration_test:
     sdk: flutter
+  # To stand a fake in for url_launcher in tests. Both BSD-3-Clause.
+  plugin_platform_interface: ^2.1.8
+  url_launcher_platform_interface: ^2.3.2
 
 flutter:
   # `flutter pub get` runs gen-l10n with l10n.yaml.

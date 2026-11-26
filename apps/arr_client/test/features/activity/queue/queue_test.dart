@@ -3,6 +3,7 @@ library;
 
 import 'dart:async';
 
+import 'package:arr_client/app/app.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -114,21 +115,24 @@ void main() {
     await start(tester);
     films.items = [entry(1, 'A film')];
     await app.pump(tester);
+    // Home shows the queue too, and is not what this is about.
+    await go(tester, 'More');
+    final before = films.reads;
     await tester.pump(interval * 3);
-    expect(films.reads, 0, reason: 'Activity was never opened');
+    expect(films.reads, before, reason: 'neither Home nor Activity is shown');
 
     await go(tester, 'Activity');
-    expect(films.reads, 1);
+    expect(films.reads, before + 1);
     await tester.pump(interval);
     await tester.pump(interval);
-    expect(films.reads, 3);
+    expect(films.reads, before + 3);
 
     await go(tester, 'More');
     await tester.pump(interval * 3);
-    expect(films.reads, 3, reason: 'another destination');
+    expect(films.reads, before + 3, reason: 'another destination');
 
     await go(tester, 'Activity');
-    expect(films.reads, 4, reason: 'read at once on return');
+    expect(films.reads, before + 4, reason: 'read at once on return');
 
     await tester.tap(find.text('History'));
     await step(tester);
@@ -267,7 +271,10 @@ void main() {
     films.items = [entry(1, 'A film')];
     final shows = module.of('Shows')..readGate = Completer();
 
-    await open(tester);
+    // Home waits for the queue too, with a bar that never settles.
+    await tester.pumpWidget(ArrClientApp(services: app.services));
+    await step(tester);
+    await go(tester, 'Activity');
     await tester.pump(interval);
     await tester.pump(interval);
 

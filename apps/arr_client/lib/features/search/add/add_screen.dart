@@ -33,11 +33,6 @@ class AddScreen extends ConsumerWidget {
     final scope = ref.watch(scopeProvider);
     // Watched here, so that what the sheet learns lasts as long as the screen.
     final state = ref.watch(addProvider(request));
-    // The loader reads the preference when it makes the image: made again when
-    // it changes.
-    ref.watch(
-      preferencesProvider.select((value) => value.loadThirdPartyArtwork),
-    );
     final artwork = switch (request.artworkInstanceId) {
       final id? => scope?.instance(id)?.context.artwork,
       null => null,

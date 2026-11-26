@@ -1,0 +1,461 @@
+[
+  {
+    "indexerUrls": [
+      "http://redacted.invalid/13"
+    ],
+    "legacyUrls": [],
+    "definitionName": "redacted-14",
+    "description": "redacted-15",
+    "language": "en-US",
+    "encoding": "redacted-16",
+    "enable": true,
+    "redirect": true,
+    "supportsRss": true,
+    "supportsSearch": true,
+    "supportsRedirect": true,
+    "supportsPagination": true,
+    "appProfileId": 1,
+    "protocol": "usenet",
+    "privacy": "private",
+    "capabilities": {
+      "limitsMax": 100,
+      "limitsDefault": 100,
+      "categories": [
+        {
+          "id": 2000,
+          "name": "Movies",
+          "subCategories": [
+            {
+              "id": 2040,
+              "name": "Movies/HD",
+              "subCategories": []
+            }
+          ]
+        },
+        {
+          "id": 102040,
+          "name": "redacted-17",
+          "subCategories": []
+        },
+        {
+          "id": 102000,
+          "name": "Movies",
+          "subCategories": []
+        },
+        {
+          "id": 5000,
+          "name": "TV",
+          "subCategories": [
+            {
+              "id": 5040,
+              "name": "TV/HD",
+              "subCategories": []
+            }
+          ]
+        },
+        {
+          "id": 105040,
+          "name": "redacted-18",
+          "subCategories": []
+        },
+        {
+          "id": 105000,
+          "name": "TV",
+          "subCategories": []
+        }
+      ],
+      "supportsRawSearch": false,
+      "searchParams": [
+        "redacted-19"
+      ],
+      "tvSearchParams": [
+        "redacted-19",
+        "redacted-20",
+        "redacted-21"
+      ],
+      "movieSearchParams": [
+        "redacted-19"
+      ],
+      "musicSearchParams": [],
+      "bookSearchParams": []
+    },
+    "priority": 25,
+    "downloadClientId": 0,
+    "added": "2026-11-26T21:33:31Z",
+    "sortName": "redacted-22",
+    "name": "redacted-23",
+    "fields": [
+      {
+        "order": 0,
+        "name": "redacted-24",
+        "label": "redacted-25",
+        "value": "redacted",
+        "type": "redacted-26",
+        "advanced": false,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 1,
+        "name": "redacted-28",
+        "label": "redacted-29",
+        "helpText": "redacted-30",
+        "value": "redacted",
+        "type": "redacted-26",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 2,
+        "name": "redacted-31",
+        "label": "redacted-32",
+        "helpText": "redacted-33",
+        "value": "redacted",
+        "type": "redacted-26",
+        "advanced": false,
+        "privacy": "redacted-31",
+        "isFloat": false
+      },
+      {
+        "order": 3,
+        "name": "redacted-34",
+        "label": "redacted-35",
+        "helpText": "redacted-36",
+        "type": "redacted-26",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 4,
+        "name": "redacted-37",
+        "label": "redacted-38",
+        "helpText": "redacted-39",
+        "value": "",
+        "type": "redacted-26",
+        "advanced": false,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 5,
+        "name": "redacted-40",
+        "label": "redacted-41",
+        "helpText": "redacted-42",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 6,
+        "name": "redacted-44",
+        "label": "redacted-45",
+        "helpText": "redacted-46",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 7,
+        "name": "redacted-47",
+        "label": "redacted-48",
+        "helpText": "redacted-49",
+        "value": 0,
+        "type": "redacted-50",
+        "advanced": true,
+        "selectOptions": [
+          {
+            "value": 0,
+            "name": "redacted-51",
+            "order": 0,
+            "hint": "redacted-52"
+          },
+          {
+            "value": 0,
+            "name": "redacted-53",
+            "order": 1,
+            "hint": "redacted-54"
+          }
+        ],
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 8,
+        "name": "redacted-55",
+        "label": "redacted-56",
+        "unit": "redacted-57",
+        "helpText": "redacted-58",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      }
+    ],
+    "implementationName": "redacted-14",
+    "implementation": "redacted-14",
+    "configContract": "redacted-59",
+    "infoLink": "https://redacted.invalid/60",
+    "tags": [],
+    "id": 2
+  },
+  {
+    "indexerUrls": [
+      "http://redacted.invalid/13"
+    ],
+    "legacyUrls": [],
+    "definitionName": "redacted-61",
+    "description": "redacted-62",
+    "language": "en-US",
+    "encoding": "redacted-16",
+    "enable": true,
+    "redirect": false,
+    "supportsRss": true,
+    "supportsSearch": true,
+    "supportsRedirect": true,
+    "supportsPagination": true,
+    "appProfileId": 1,
+    "protocol": "torrent",
+    "privacy": "private",
+    "capabilities": {
+      "limitsMax": 100,
+      "limitsDefault": 100,
+      "categories": [
+        {
+          "id": 2000,
+          "name": "Movies",
+          "subCategories": [
+            {
+              "id": 2040,
+              "name": "Movies/HD",
+              "subCategories": []
+            }
+          ]
+        },
+        {
+          "id": 102040,
+          "name": "redacted-17",
+          "subCategories": []
+        },
+        {
+          "id": 102000,
+          "name": "Movies",
+          "subCategories": []
+        },
+        {
+          "id": 5000,
+          "name": "TV",
+          "subCategories": [
+            {
+              "id": 5040,
+              "name": "TV/HD",
+              "subCategories": []
+            }
+          ]
+        },
+        {
+          "id": 105040,
+          "name": "redacted-18",
+          "subCategories": []
+        },
+        {
+          "id": 105000,
+          "name": "TV",
+          "subCategories": []
+        }
+      ],
+      "supportsRawSearch": false,
+      "searchParams": [
+        "redacted-19"
+      ],
+      "tvSearchParams": [
+        "redacted-19",
+        "redacted-20",
+        "redacted-21"
+      ],
+      "movieSearchParams": [
+        "redacted-19"
+      ],
+      "musicSearchParams": [],
+      "bookSearchParams": []
+    },
+    "priority": 25,
+    "downloadClientId": 0,
+    "added": "2026-11-26T21:33:29Z",
+    "sortName": "redacted-63",
+    "name": "redacted-64",
+    "fields": [
+      {
+        "order": 0,
+        "name": "redacted-24",
+        "label": "redacted-25",
+        "value": "redacted",
+        "type": "redacted-26",
+        "advanced": false,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 1,
+        "name": "redacted-28",
+        "label": "redacted-29",
+        "helpText": "redacted-30",
+        "value": "redacted",
+        "type": "redacted-26",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 2,
+        "name": "redacted-31",
+        "label": "redacted-32",
+        "helpText": "redacted-33",
+        "value": "redacted",
+        "type": "redacted-26",
+        "advanced": false,
+        "privacy": "redacted-31",
+        "isFloat": false
+      },
+      {
+        "order": 3,
+        "name": "redacted-65",
+        "label": "redacted-66",
+        "helpText": "redacted-67",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 4,
+        "name": "redacted-68",
+        "label": "redacted-69",
+        "helpText": "redacted-70",
+        "type": "redacted-43",
+        "advanced": false,
+        "privacy": "redacted-27",
+        "isFloat": true
+      },
+      {
+        "order": 5,
+        "name": "redacted-71",
+        "label": "redacted-72",
+        "unit": "redacted-73",
+        "helpText": "redacted-74",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 6,
+        "name": "redacted-75",
+        "label": "redacted-76",
+        "unit": "redacted-73",
+        "helpText": "redacted-77",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 7,
+        "name": "redacted-78",
+        "label": "redacted-79",
+        "helpText": "redacted-80",
+        "value": false,
+        "type": "redacted-81",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 8,
+        "name": "redacted-34",
+        "label": "redacted-35",
+        "helpText": "redacted-36",
+        "type": "redacted-26",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 9,
+        "name": "redacted-37",
+        "label": "redacted-38",
+        "helpText": "redacted-39",
+        "value": "",
+        "type": "redacted-26",
+        "advanced": false,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 10,
+        "name": "redacted-40",
+        "label": "redacted-41",
+        "helpText": "redacted-42",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 11,
+        "name": "redacted-44",
+        "label": "redacted-45",
+        "helpText": "redacted-46",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 12,
+        "name": "redacted-47",
+        "label": "redacted-48",
+        "helpText": "redacted-49",
+        "value": 0,
+        "type": "redacted-50",
+        "advanced": true,
+        "selectOptions": [
+          {
+            "value": 0,
+            "name": "redacted-51",
+            "order": 0,
+            "hint": "redacted-52"
+          },
+          {
+            "value": 0,
+            "name": "redacted-53",
+            "order": 1,
+            "hint": "redacted-54"
+          }
+        ],
+        "privacy": "redacted-27",
+        "isFloat": false
+      },
+      {
+        "order": 13,
+        "name": "redacted-55",
+        "label": "redacted-56",
+        "unit": "redacted-57",
+        "helpText": "redacted-58",
+        "type": "redacted-43",
+        "advanced": true,
+        "privacy": "redacted-27",
+        "isFloat": false
+      }
+    ],
+    "implementationName": "redacted-61",
+    "implementation": "redacted-61",
+    "configContract": "redacted-82",
+    "infoLink": "https://redacted.invalid/83",
+    "tags": [],
+    "id": 1
+  }
+]

@@ -29,8 +29,13 @@ Future<TestApp> _settings(WidgetTester tester) async {
   return app;
 }
 
-/// Opens an entry of Settings, which large text can push out of sight.
+/// Opens an entry of Settings, which may be out of sight, and not yet built.
 Future<void> _entry(WidgetTester tester, String name) async {
+  await tester.scrollUntilVisible(
+    find.text(name),
+    100,
+    scrollable: find.byType(Scrollable).last,
+  );
   await tester.ensureVisible(find.text(name));
   await tester.pumpAndSettle();
   await _tap(tester, find.text(name));
@@ -62,6 +67,44 @@ void main() {
 
     await _tap(tester, find.text('Follow system'));
     expect(_themeMode(tester), ThemeMode.system);
+    await app.stop(tester);
+  });
+
+  testWidgets('third-party artwork is explained, switched and kept', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final app = await _settings(tester);
+    final tile = find.widgetWithText(
+      SwitchListTile,
+      'Artwork from public sites',
+    );
+    bool value() => tester.widget<SwitchListTile>(tile).value;
+    Future<bool> stored() async =>
+        (await app.services.preferences.read()).loadThirdPartyArtwork;
+
+    expect(value(), isTrue);
+    for (final host in ['image.tmdb.org', 'artworks.thetvdb.com']) {
+      expect(find.textContaining(host), findsOneWidget);
+    }
+    // One node: the name, what it means and its state.
+    final node = tester.getSemantics(tile);
+    expect(node.label, contains('Artwork from public sites'));
+    expect(node.label, contains('image.tmdb.org'));
+    expect(
+      node,
+      isSemantics(hasToggledState: true, isToggled: true, hasTapAction: true),
+    );
+
+    await _tap(tester, tile);
+    expect(value(), isFalse);
+    expect(await stored(), isFalse);
+    expect(app.services.currentPreferences.loadThirdPartyArtwork, isFalse);
+
+    await _tap(tester, tile);
+    expect(value(), isTrue);
+    expect(await stored(), isTrue);
+    semantics.dispose();
     await app.stop(tester);
   });
 

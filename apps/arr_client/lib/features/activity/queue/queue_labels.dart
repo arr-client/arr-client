@@ -40,6 +40,21 @@ String queueStateLabel(AppLocalizations strings, QueueItem item) =>
       },
     };
 
+/// The state of a download in the download client.
+String clientStateLabel(AppLocalizations strings, DownloadState state) =>
+    switch (state) {
+      DownloadState.queued => strings.clientStateQueued,
+      DownloadState.downloading => strings.clientStateDownloading,
+      DownloadState.paused => strings.clientStatePaused,
+      DownloadState.stalled => strings.clientStateStalled,
+      DownloadState.checking => strings.clientStateChecking,
+      DownloadState.processing => strings.clientStateProcessing,
+      DownloadState.seeding => strings.clientStateSeeding,
+      DownloadState.completed => strings.clientStateCompleted,
+      DownloadState.error => strings.clientStateError,
+      DownloadState.unknown => strings.clientStateUnknown,
+    };
+
 /// What to call the severity; null where there is nothing to say.
 String? queueSeverityLabel(AppLocalizations strings, QueueSeverity severity) =>
     switch (severity) {

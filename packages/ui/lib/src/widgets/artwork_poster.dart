@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'artwork_image_of.dart';
+
 /// The poster or cover of a title, or a placeholder where there is none to
 /// load. It fills the space it is given and is decoded at about that size.
 class ArtworkPoster extends StatelessWidget {
@@ -53,7 +55,10 @@ class ArtworkPoster extends StatelessWidget {
             .where((image) => image.type == MediaImageType.poster)
             .firstOrNull ??
         images.where((image) => image.type == MediaImageType.cover).firstOrNull;
-    final source = picture == null ? null : artwork?.image(picture);
+    final loader = artwork;
+    final source = picture == null || loader == null
+        ? null
+        : artworkImageOf(context, loader, picture);
     if (source == null) return placeholder;
     final pixels = width * MediaQuery.devicePixelRatioOf(context);
     final image = ResizeImage(

@@ -38,22 +38,41 @@ mixin _ServarrManage on _ServarrActivity {
     );
   }
 
-  /// Has the server download [release], rejected or not.
+  /// What the indexers have for a free-text search, which [query] names, at
+  /// `GET search` as Prowlarr has it, in the server's order. It is waited for
+  /// as long as [releases] are.
+  ///
+  /// The server answers a search without a term with its indexers' feeds, so
+  /// [query] is the caller's to check.
+  ServiceResult<List<Release>> textSearch(Map<String, List<String>> query) =>
+      _client._send(
+        HttpMethod.get,
+        'search',
+        (json) => [
+          for (final record in asObjects(json)) releaseRecord(record, const {}),
+        ],
+        query: query,
+        timeout: _searchTimeout,
+      );
+
+  /// Has the server download [release], rejected or not. [path] is where the
+  /// release was found: `release`, or `search` for a [textSearch].
   ///
   /// A release the server could not match ([Release.downloadAllowed]) is sent
   /// with its [Release.searchTarget], as the web UI does once the user has
   /// confirmed: the server then takes it to be what was searched for.
-  ServiceResult<void> grab(Release release) => _accepted(
-    'release',
-    asObject,
-    JsonBody({
-      'guid': release.guid,
-      'indexerId': release.indexerId,
-      if (!release.downloadAllowed)
-        for (final field in _grabTargetFields)
-          field: ?release.searchTarget[field],
-    }),
-  );
+  ServiceResult<void> grab(Release release, {String path = 'release'}) =>
+      _accepted(
+        path,
+        asObject,
+        JsonBody({
+          'guid': release.guid,
+          'indexerId': release.indexerId,
+          if (!release.downloadAllowed)
+            for (final field in _grabTargetFields)
+              field: ?release.searchTarget[field],
+        }),
+      );
 
   /// Starts the command [name] on [target], the fields that say what it acts
   /// on, and gives the command to follow with [ServarrClient.commandStatus].
