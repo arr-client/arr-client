@@ -48,6 +48,58 @@
   "@refresh": {
     "description": "Button that reads the screen from the server again."
   },
+  "automaticSearch": "Search automatically",
+  "@automaticSearch": {
+    "description": "Button: have the server search for the series, season or episode and pick releases itself."
+  },
+  "interactiveSearch": "Interactive search",
+  "@interactiveSearch": {
+    "description": "Button: list the releases of the season or episode, for the user to pick one."
+  },
+  "moreActions": "More actions",
+  "@moreActions": {
+    "description": "Tooltip of the menu of a series screen."
+  },
+  "editSeries": "Edit series",
+  "@editSeries": {
+    "description": "Menu entry that opens the series' settings."
+  },
+  "refreshMetadata": "Refresh metadata",
+  "@refreshMetadata": {
+    "description": "Menu entry: have the server fetch the series' details again."
+  },
+  "rescanFiles": "Rescan files",
+  "@rescanFiles": {
+    "description": "Menu entry: have the server look for the series' files on disk again."
+  },
+  "deleteSeries": "Delete series",
+  "@deleteSeries": {
+    "description": "Menu entry that leads to deleting the series."
+  },
+  "seriesMonitorOnAccepted": "The series is now monitored",
+  "@seriesMonitorOnAccepted": {
+    "description": "The server accepted turning monitoring on."
+  },
+  "seriesMonitorOffAccepted": "The series is no longer monitored",
+  "@seriesMonitorOffAccepted": {
+    "description": "The server accepted turning monitoring off."
+  },
+  "seasonMonitorOnAccepted": "The season is now monitored",
+  "@seasonMonitorOnAccepted": {
+    "description": "The server accepted turning monitoring on."
+  },
+  "seasonMonitorOffAccepted": "The season is no longer monitored",
+  "@seasonMonitorOffAccepted": {
+    "description": "The server accepted turning monitoring off."
+  },
+  "episodeMonitorOnAccepted": "The episode is now monitored",
+  "@episodeMonitorOnAccepted": {
+    "description": "The server accepted turning monitoring on."
+  },
+  "episodeMonitorOffAccepted": "The episode is no longer monitored",
+  "@episodeMonitorOffAccepted": {
+    "description": "The server accepted turning monitoring off."
+  },
   "details": "Details",
   "@details": {
     "description": "Heading of the facts about a series."
@@ -275,6 +327,43 @@
   "noFile": "No file",
   "@noFile": {
     "description": "Shown for an episode without a file."
+  },
+  "deleteFile": "Delete file",
+  "@deleteFile": {
+    "description": "Button that deletes an episode's file from the server, and the confirm button of its dialog."
+  },
+  "deleteFileTitle": "Delete file?",
+  "@deleteFileTitle": {
+    "description": "Title of the dialog that confirms deleting an episode file."
+  },
+  "deleteFileConsequence": "The server deletes this file of {episode}. The episode stays in the library, and if it is monitored the server may download it again. If the file holds other episodes too, they lose it as well.",
+  "@deleteFileConsequence": {
+    "description": "What deleting a file does; episode names the series and where the episode stands in it.",
+    "placeholders": {
+      "episode": {
+        "type": "String"
+      }
+    }
+  },
+  "fileDeleted": "The file was deleted",
+  "@fileDeleted": {
+    "description": "The server accepted the deletion of a file."
+  },
+  "fileChanged": "Nothing was deleted: the file could no longer be confirmed. Check it and try again.",
+  "@fileChanged": {
+    "description": "The confirmed file is no longer the one the server lists, or the list cannot be relied on."
+  },
+  "fileOfEpisode": "{series}, {code}",
+  "@fileOfEpisode": {
+    "description": "Names an episode in the dialog that confirms deleting its file; series is the series' title, code says where the episode stands.",
+    "placeholders": {
+      "series": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
   },
   "quality": "Quality",
   "@quality": {

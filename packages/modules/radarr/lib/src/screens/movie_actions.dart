@@ -42,16 +42,10 @@ class MovieActions extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(UiLocalizations.of(context).monitored),
-          subtitle: state.savingMonitored
-              ? LinearProgressIndicator(
-                  semanticsLabel: strings.movieMonitorSaving,
-                )
-              : null,
+        MonitorSwitch(
           value: state.monitored ?? movie.monitored,
-          onChanged: isStale || state.savingMonitored
+          saving: state.savingMonitored,
+          onChanged: isStale
               ? null
               : (value) => unawaited(_setMonitored(context, ref, value)),
         ),
@@ -94,7 +88,10 @@ class MovieActions extends ConsumerWidget {
         ),
         for (final action in CommandAction.values)
           if (state.commands[action] case final progress?)
-            _Progress(action: action, progress: progress),
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: CommandProgressView(action: action, progress: progress),
+            ),
       ],
     );
   }
@@ -125,16 +122,14 @@ Future<void> startMovieCommand(
   MovieDetailSource source,
   CommandAction action,
 ) {
-  final strings = RadarrLocalizations.of(context);
   final controller = ref.read(movieActionsProvider(source).notifier);
   return runAction<Command>(
     context,
     action: () => controller.start(action),
-    acceptedMessage: switch (action) {
-      CommandAction.search => strings.movieSearchStarted,
-      CommandAction.refresh => strings.movieRefreshStarted,
-      CommandAction.rescan => strings.movieRescanStarted,
-    },
+    acceptedMessage: commandAcceptedMessage(
+      UiLocalizations.of(context),
+      action,
+    ),
     onRefresh: () => unawaited(controller.reload()),
     onGone: () => unawaited(controller.reload()),
   );
@@ -192,58 +187,6 @@ Future<void> deleteMovieFile(
     // until it has.
     onRefresh: () {},
   );
-}
-
-/// How one task is doing.
-class _Progress extends StatelessWidget {
-  const _Progress({required this.action, required this.progress});
-
-  final CommandAction action;
-  final CommandProgress progress;
-
-  @override
-  Widget build(BuildContext context) {
-    final strings = RadarrLocalizations.of(context);
-    final task = switch (action) {
-      CommandAction.search => strings.movieTaskSearch,
-      CommandAction.refresh => strings.movieTaskRefresh,
-      CommandAction.rescan => strings.movieTaskRescan,
-    };
-    final command = progress.command;
-    final text = progress.lost
-        ? strings.movieTaskLost(task)
-        : switch (command?.outcome) {
-            null => strings.movieTaskSending(task),
-            CommandOutcome.pending
-                when command?.status == CommandStatus.queued =>
-              strings.movieTaskQueued(task),
-            CommandOutcome.pending => strings.movieTaskRunning(task),
-            CommandOutcome.succeeded => strings.movieTaskSucceeded(task),
-            CommandOutcome.failed => strings.movieTaskFailed(task),
-            CommandOutcome.unknown => strings.movieTaskUnknown(task),
-          };
-    return Padding(
-      padding: const EdgeInsets.only(top: 12),
-      child: Semantics(
-        container: true,
-        liveRegion: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(text),
-            if (progress.failure case final failure?)
-              Text(failureMessage(context, failure))
-            else if (command?.message case final message?)
-              Text(message),
-            if (progress.busy) ...[
-              const SizedBox(height: 4),
-              LinearProgressIndicator(semanticsLabel: text),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 /// What the menu of the movie screen offers.

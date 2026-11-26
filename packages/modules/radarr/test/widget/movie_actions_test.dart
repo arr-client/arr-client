@@ -385,6 +385,31 @@ void main() {
       expect(button(tester, 'Search automatically').onPressed, isNotNull);
     });
 
+    testWidgets('does not read a task while another page covers the screen', (
+      tester,
+    ) async {
+      server.routes['GET command/9'] = replyJson(_command('started'));
+      await open(tester);
+      await tester.tap(find.text('Search automatically'));
+      await step(tester);
+      final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+
+      unawaited(
+        navigator.push<void>(
+          MaterialPageRoute(builder: (context) => const Scaffold()),
+        ),
+      );
+      await step(tester);
+      await tester.pump(const Duration(minutes: 1));
+      expect(server.count('GET command/9'), 0);
+
+      navigator.pop();
+      await step(tester);
+      await step(tester, const Duration(seconds: 3));
+      expect(server.count('GET command/9'), 1);
+      await tester.pumpWidget(const SizedBox());
+    });
+
     testWidgets('does not read a task while the app is out of sight', (
       tester,
     ) async {

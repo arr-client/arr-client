@@ -27,6 +27,12 @@ final episodeProvider = NotifierProvider.autoDispose
       EpisodeController.new,
     );
 
+/// The episodes of one instance whose [episodeProvider] is alive: those of the
+/// screens open, also beneath others. A change to a series has them read again.
+final openEpisodesProvider = Provider.family<Set<ItemRef>, SonarrSources>(
+  (ref, sources) => {},
+);
+
 /// The server's quality profiles and tags, by whose ids a series names them:
 /// those saved first, then those the server gives. Empty where there are
 /// neither: the screen then leaves the names out.
@@ -147,6 +153,13 @@ final class EpisodeController extends CachedItemController<Episode> {
 
   /// The episode.
   final ItemKey key;
+
+  @override
+  ViewState<Episode> build() {
+    final open = ref.read(openEpisodesProvider(key.$1))..add(key.$2);
+    ref.onDispose(() => open.remove(key.$2));
+    return super.build();
+  }
 
   @override
   ServiceResult<Cached<Episode>?> readCached() => _cachedItem(key);

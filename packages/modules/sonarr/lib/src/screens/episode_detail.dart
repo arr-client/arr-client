@@ -10,6 +10,8 @@ import '../l10n/generated/sonarr_localizations.dart';
 import '../sonarr_routes.dart';
 import 'detail_parts.dart';
 import 'labels.dart';
+import 'sonarr_actions.dart';
+import 'sonarr_actions_controller.dart';
 import 'sonarr_controllers.dart';
 import 'sonarr_sources.dart';
 
@@ -40,28 +42,40 @@ class EpisodeScreen extends ConsumerWidget {
       return ref.read(episodeProvider(key).notifier).refresh();
     }
 
-    return DetailPage(
-      title: switch (state) {
-        ViewData(:final value) => episodeCode(strings, value),
-        ViewLoading() || ViewError() => '',
-      },
-      onRefresh: refresh,
-      body: StateScaffold<Episode>(
-        state: state,
-        itemId: item,
-        onRetry: () => unawaited(refresh()),
-        builder: (context, episode, {required isStale}) =>
-            _EpisodeBody(sources: sources, episode: episode),
+    return SonarrActionsScope(
+      sources: sources,
+      target: MediaTarget(item),
+      child: DetailPage(
+        title: switch (state) {
+          ViewData(:final value) => episodeCode(strings, value),
+          ViewLoading() || ViewError() => '',
+        },
+        onRefresh: refresh,
+        body: StateScaffold<Episode>(
+          state: state,
+          itemId: item,
+          onRetry: () => unawaited(refresh()),
+          builder: (context, episode, {required isStale}) => _EpisodeBody(
+            sources: sources,
+            episode: episode,
+            isStale: isStale,
+          ),
+        ),
       ),
     );
   }
 }
 
 class _EpisodeBody extends ConsumerWidget {
-  const _EpisodeBody({required this.sources, required this.episode});
+  const _EpisodeBody({
+    required this.sources,
+    required this.episode,
+    required this.isStale,
+  });
 
   final SonarrSources sources;
   final Episode episode;
+  final bool isStale;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,6 +86,13 @@ class _EpisodeBody extends ConsumerWidget {
     final series = episode.parent;
     final overview = episode.overview;
     final file = episode.file;
+    final target = MediaTarget(episode.ref);
+    final deleting = ref.watch(
+      sonarrActionsProvider((sources, target))
+          .select((state) => state.deletingFile),
+    );
+    // The screen's own context, which outlives the rows of the list.
+    final screen = context;
 
     return DetailScroll(
       slivers: [
@@ -106,8 +127,13 @@ class _EpisodeBody extends ConsumerWidget {
               ),
             const SizedBox(height: 8),
             ItemStateLine(episode.state),
-            const SizedBox(height: 4),
-            MonitoredLine(monitored: episode.monitored),
+            const SizedBox(height: 8),
+            SonarrActions(
+              sources: sources,
+              target: target,
+              monitored: episode.monitored,
+              isStale: isStale,
+            ),
             DetailSlot(
               DetailSlotName.downloadProgress,
               item: episode.ref,
@@ -140,8 +166,22 @@ class _EpisodeBody extends ConsumerWidget {
             SectionTitle(strings.file),
             if (file == null)
               Text(strings.noFile)
-            else
+            else ...[
               FactList(_fileFacts(context, strings, file)),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.error,
+                ),
+                icon: const Icon(Icons.delete_outline),
+                label: Text(strings.deleteFile),
+                // Only a file the instance has just listed can be deleted.
+                onPressed: isStale || deleting
+                    ? null
+                    : () => unawaited(
+                        deleteEpisodeFile(screen, ref, sources, episode, file),
+                      ),
+              ),
+            ],
             HistorySection(
               history: history.value,
               isLoading: history.isLoading,

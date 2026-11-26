@@ -10,6 +10,7 @@ final class SonarrSources {
     required this.instanceId,
     required this.library,
     required this.history,
+    required this.commands,
     required this.artwork,
     required this.navigator,
     this.removals = const Stream.empty(),
@@ -23,6 +24,9 @@ final class SonarrSources {
 
   /// Its history.
   final HistoryProvider history;
+
+  /// Starts and follows its tasks.
+  final CommandProvider commands;
 
   /// Loads its artwork.
   final ArtworkLoader artwork;

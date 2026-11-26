@@ -17,6 +17,7 @@ class DetailPage extends StatelessWidget {
     required this.title,
     required this.onRefresh,
     required this.body,
+    this.menu,
     super.key,
   });
 
@@ -25,6 +26,9 @@ class DetailPage extends StatelessWidget {
 
   /// Reads from the server again.
   final Future<void> Function() onRefresh;
+
+  /// The last action of the app bar, where the screen has more than a refresh.
+  final Widget? menu;
 
   /// A `StateScaffold`.
   final Widget body;
@@ -40,6 +44,7 @@ class DetailPage extends StatelessWidget {
           tooltip: SonarrLocalizations.of(context).refresh,
           onPressed: () => unawaited(onRefresh()),
         ),
+        ?menu,
       ],
     ),
     body: RefreshIndicator(onRefresh: onRefresh, child: body),

@@ -12,6 +12,7 @@ import '../sonarr_routes.dart';
 import 'detail_parts.dart';
 import 'labels.dart';
 import 'season_progress.dart';
+import 'sonarr_actions.dart';
 import 'sonarr_controllers.dart';
 import 'sonarr_sources.dart';
 
@@ -38,7 +39,6 @@ class SeriesDetailScreen extends ConsumerWidget {
     // Read from here, so that the seasons open at once and their episodes are
     // saved for offline use.
     ref.listen(episodesProvider(key), (_, _) {});
-
     Future<void> refresh() async {
       ref
         ..invalidate(historyProvider(key))
@@ -49,28 +49,47 @@ class SeriesDetailScreen extends ConsumerWidget {
       ]);
     }
 
-    return DetailPage(
-      title: switch (state) {
-        ViewData(:final value) => value.title,
-        ViewLoading() || ViewError() => '',
-      },
-      onRefresh: refresh,
-      body: StateScaffold<Series>(
-        state: state,
-        itemId: item,
-        onRetry: () => unawaited(refresh()),
-        builder: (context, series, {required isStale}) =>
-            _SeriesBody(sources: sources, series: series),
+    return SonarrActionsScope(
+      sources: sources,
+      target: MediaTarget(item),
+      child: DetailPage(
+        title: switch (state) {
+          ViewData(:final value) => value.title,
+          ViewLoading() || ViewError() => '',
+        },
+        onRefresh: refresh,
+        // Not for a series that is not there.
+        menu: switch (state) {
+          ViewData(:final staleness) when staleness?.failure is! NotFound =>
+            SeriesMenu(
+              sources: sources,
+              series: item,
+              isStale: staleness != null,
+            ),
+          _ => null,
+        },
+        body: StateScaffold<Series>(
+          state: state,
+          itemId: item,
+          onRetry: () => unawaited(refresh()),
+          builder: (context, series, {required isStale}) =>
+              _SeriesBody(sources: sources, series: series, isStale: isStale),
+        ),
       ),
     );
   }
 }
 
 class _SeriesBody extends ConsumerWidget {
-  const _SeriesBody({required this.sources, required this.series});
+  const _SeriesBody({
+    required this.sources,
+    required this.series,
+    required this.isStale,
+  });
 
   final SonarrSources sources;
   final Series series;
+  final bool isStale;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,6 +114,13 @@ class _SeriesBody extends ConsumerWidget {
         SliverList.list(
           children: [
             _Header(sources: sources, series: series),
+            const SizedBox(height: 16),
+            SonarrActions(
+              sources: sources,
+              target: MediaTarget(series.ref),
+              monitored: series.monitored,
+              isStale: isStale,
+            ),
             DetailSlot(DetailSlotName.downloadProgress, item: series.ref),
             if (overview != null && overview.isNotEmpty) ...[
               const SizedBox(height: 16),
@@ -180,7 +206,8 @@ class _SeriesBody extends ConsumerWidget {
   }
 }
 
-/// The artwork, title and where the series stands.
+/// The artwork, title and where the series stands. Monitoring is shown by its
+/// switch.
 class _Header extends StatelessWidget {
   const _Header({required this.sources, required this.series});
 
@@ -205,8 +232,6 @@ class _Header extends StatelessWidget {
         if (facts.isNotEmpty) Text(facts.join(strings.separator)),
         const SizedBox(height: 8),
         ItemStateLine(series.state),
-        const SizedBox(height: 4),
-        MonitoredLine(monitored: series.monitored),
         if (series.sizeOnDisk > 0) ...[
           const SizedBox(height: 4),
           Text(strings.sizeOnDisk(formatBytes(context, series.sizeOnDisk))),

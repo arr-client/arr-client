@@ -108,6 +108,7 @@ final class SonarrModule implements ServiceModule {
       instanceId: context.instance.id,
       library: SonarrLibraryAdapter(SonarrApi(context), context.cache),
       history: SonarrHistoryAdapter(SonarrApi(context)),
+      commands: SonarrCommandAdapter(SonarrApi(context)),
       artwork: context.artwork,
       navigator: context.navigator,
       removals: context.cache.removals,
