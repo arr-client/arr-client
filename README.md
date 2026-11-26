@@ -3,8 +3,9 @@
 A free, open-source mobile client for the *arr apps you host yourself. Android first, built with
 Flutter, GPL-3.0.
 
-> **Status: specification stage.** There is no app to install yet. The spec is written and
-> implementation has not started, so this is a good time to join.
+> **Status: early development.** There is no usable app yet and nothing to install. The spec is
+> written and the project skeleton builds, but the app only shows an empty screen. This is a good
+> time to join.
 
 arr-client is for **using** your services, not configuring them. Add each service with its address
 and token, test it, and go.
@@ -22,6 +23,20 @@ Browse and search, add titles, handle the queue, pick releases, calendar, notifi
 any third-party server, and switchable profiles. HTTP and HTTPS both work.
 
 No analytics, no ads, no project-run servers.
+
+## Build from source
+
+With the [development environment](CONTRIBUTING.md#development-environment) set up:
+
+```sh
+flutter pub get
+cd apps/arr_client
+flutter build apk --debug    # build/app/outputs/flutter-apk/app-debug.apk
+flutter run                  # with an Android device or emulator connected
+```
+
+Release builds are unsigned for now. See [Build, run and check](CONTRIBUTING.md#build-run-and-check)
+for the checks, release builds and setting up an emulator.
 
 ## Documents
 
