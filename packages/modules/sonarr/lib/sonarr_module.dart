@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
+import 'src/adapters/library.dart';
+import 'src/api/sonarr_api.dart';
+
 const _product = 'Sonarr';
 
 const _descriptor = ModuleDescriptor(
@@ -47,14 +50,30 @@ final class SonarrModule implements ServiceModule {
     };
   }
 
+  // An API key may use everything, in every supported version.
   @override
   Set<CapabilityKind> capabilitiesFor(
     ProbeResult probe,
     SessionInfo? session,
-  ) => const {};
+  ) => const {
+    CapabilityKind.library,
+    CapabilityKind.queue,
+    CapabilityKind.history,
+  };
 
   @override
-  T? capability<T extends Capability>(InstanceContext context) => null;
+  T? capability<T extends Capability>(InstanceContext context) {
+    final Capability? found = switch (T) {
+      const (LibraryProvider) => SonarrLibraryAdapter(
+        SonarrApi(context),
+        context.cache,
+      ),
+      const (QueueProvider) => SonarrQueueAdapter(SonarrApi(context)),
+      const (HistoryProvider) => SonarrHistoryAdapter(SonarrApi(context)),
+      _ => null,
+    };
+    return found as T?;
+  }
 
   @override
   List<ModuleScreen> routes() => const [];
