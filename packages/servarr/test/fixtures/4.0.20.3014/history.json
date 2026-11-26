@@ -1,0 +1,123 @@
+{
+  "page": 1,
+  "pageSize": 20,
+  "sortKey": "date",
+  "sortDirection": "descending",
+  "totalRecords": 3,
+  "records": [
+    {
+      "episodeId": 301,
+      "seriesId": 21,
+      "sourceTitle": "Example.Show.S01E01.1080p.WEB-DL-GRP",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-20T10:15:00Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000001",
+      "eventType": "downloadFolderImported",
+      "data": {
+        "fileId": "31",
+        "downloadClient": "QBittorrent",
+        "downloadClientName": "qBittorrent",
+        "releaseGroup": "GRP",
+        "size": "2000000000",
+        "importedPath": "/data/tv/Example Show/Season 01/Example Show - S01E01.mkv"
+      },
+      "id": 503
+    },
+    {
+      "episodeId": 301,
+      "seriesId": 21,
+      "sourceTitle": "Example.Show.S01E01.1080p.WEB-DL-GRP",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-20T09:00:00Z",
+      "downloadId": "ABCDEF0000000000000000000000000000000001",
+      "eventType": "grabbed",
+      "data": {
+        "indexer": "Example Indexer",
+        "releaseGroup": "GRP",
+        "downloadClient": "QBittorrent",
+        "downloadClientName": "qBittorrent",
+        "size": "2000000000",
+        "protocol": "2",
+        "nzbInfoUrl": null
+      },
+      "id": 502
+    },
+    {
+      "episodeId": 301,
+      "seriesId": 21,
+      "sourceTitle": "Example.Show.S01E01.1080p.WEB-DL-GRP",
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "qualityCutoffNotMet": false,
+      "date": "2026-11-18T07:30:00Z",
+      "eventType": "episodeFileDeleted",
+      "data": {
+        "reason": "Upgrade",
+        "releaseGroup": "OLD",
+        "size": "1000000000"
+      },
+      "id": 501
+    }
+  ]
+}

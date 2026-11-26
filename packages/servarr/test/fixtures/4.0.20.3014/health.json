@@ -1,0 +1,23 @@
+[
+  {
+    "source": "IndexerRssCheck",
+    "type": "error",
+    "message": "No indexers available with RSS sync enabled",
+    "wikiUrl": "https://wiki.servarr.com/sonarr/system#no-indexers-available-with-rss-sync-enabled",
+    "id": 1
+  },
+  {
+    "source": "DownloadClientCheck",
+    "type": "warning",
+    "message": "No download client is available",
+    "wikiUrl": "https://wiki.servarr.com/sonarr/system#no-download-client-is-available",
+    "id": 2
+  },
+  {
+    "source": "PackageGlobalMessageCheck",
+    "type": "notice",
+    "message": "Example notice from the package",
+    "wikiUrl": "https://wiki.servarr.com/sonarr/system#example-notice-from-the-package",
+    "id": 3
+  }
+]
