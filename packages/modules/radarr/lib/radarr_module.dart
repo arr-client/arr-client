@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:servarr/servarr.dart';
+import 'package:ui/ui.dart';
 
 import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
@@ -13,6 +14,9 @@ import 'src/adapters/lookup.dart';
 import 'src/adapters/manage.dart';
 import 'src/adapters/overview.dart';
 import 'src/api/radarr_api.dart';
+import 'src/movie_route.dart';
+import 'src/screens/movie_detail.dart';
+import 'src/screens/movie_detail_controller.dart';
 
 // The app adds its delegate to the others, for the names the module supplies.
 export 'src/l10n/generated/radarr_localizations.dart' show RadarrLocalizations;
@@ -112,7 +116,28 @@ final class RadarrModule implements ServiceModule {
   }
 
   @override
-  List<ModuleScreen> routes() => const [];
+  List<ModuleScreen> routes() => const [
+    ModuleScreen(path: movieDetailPattern, builder: _movieDetail),
+  ];
+}
+
+Widget _movieDetail(
+  BuildContext context,
+  InstanceContext instance,
+  Map<String, String> parameters,
+) {
+  final id = int.tryParse(parameters[movieIdParameter] ?? '');
+  // No movie has such an id.
+  if (id == null) return ItemGoneView();
+  final api = RadarrApi(instance);
+  return MovieDetailScreen(
+    source: MovieDetailSource(
+      instance: instance,
+      movieId: id,
+      library: RadarrLibraryAdapter(api, instance),
+      history: RadarrHistoryAdapter(api),
+    ),
+  );
 }
 
 ServiceFailure _classify(HttpError error) {

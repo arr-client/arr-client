@@ -6,6 +6,7 @@ import '../api/radarr_api.dart';
 import '../models/credit_record.dart';
 import '../models/media_file_record.dart';
 import '../models/movie_record.dart';
+import '../movie_route.dart';
 import 'manage.dart';
 import 'queued_movies.dart';
 
@@ -141,7 +142,10 @@ final class RadarrLibraryAdapter
       };
 
   @override
-  ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError();
+  ModuleRoute detailRoute(ItemRef ref) => ModuleRoute(
+    instanceId: ref.instanceId,
+    path: movieDetailPath(ref.remoteId),
+  );
 
   /// A record from the server, and what the cache keeps of it.
   (Movie, CacheEntry) _fetched(

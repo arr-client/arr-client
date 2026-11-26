@@ -11,5 +11,290 @@
   "monitorNone": "None",
   "@monitorNone": {
     "description": "Monitoring option when adding a movie: monitor nothing."
+  },
+  "movieDetailTitle": "Movie",
+  "@movieDetailTitle": {
+    "description": "Title bar of the screen about one movie."
+  },
+  "movieOnInstance": "On {instance}",
+  "@movieOnInstance": {
+    "description": "Which server holds the movie; instance is the name the user gave it.",
+    "placeholders": {
+      "instance": {
+        "type": "String"
+      }
+    }
+  },
+  "movieStateDownloading": "Downloading",
+  "@movieStateDownloading": {
+    "description": "State of a movie."
+  },
+  "movieStateDownloaded": "Downloaded",
+  "@movieStateDownloaded": {
+    "description": "State of a movie."
+  },
+  "movieStatePartial": "Partly downloaded",
+  "@movieStatePartial": {
+    "description": "State of a movie."
+  },
+  "movieStateUnmonitored": "Not monitored",
+  "@movieStateUnmonitored": {
+    "description": "State of a movie the server does not monitor."
+  },
+  "movieStateUnreleased": "Unreleased",
+  "@movieStateUnreleased": {
+    "description": "State of a movie."
+  },
+  "movieStateMissing": "Missing",
+  "@movieStateMissing": {
+    "description": "State of a movie."
+  },
+  "movieMonitored": "Monitored",
+  "@movieMonitored": {
+    "description": "The server monitors the movie."
+  },
+  "movieRuntime": "{hours} h {minutes} min",
+  "@movieRuntime": {
+    "description": "Running time.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieRuntimeHours": "{hours} h",
+  "@movieRuntimeHours": {
+    "description": "Running time of whole hours.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieRuntimeMinutes": "{minutes} min",
+  "@movieRuntimeMinutes": {
+    "description": "Running time under an hour.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieGenres": "Genres",
+  "@movieGenres": {
+    "description": "Label."
+  },
+  "movieStudio": "Studio",
+  "@movieStudio": {
+    "description": "Label."
+  },
+  "movieRatings": "Ratings",
+  "@movieRatings": {
+    "description": "Label."
+  },
+  "movieRating": "{source} {score}",
+  "@movieRating": {
+    "description": "A score without a number of votes.",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "movieRatingWithVotes": "{votes, plural, one{{source} {score}, {votes} vote} other{{source} {score}, {votes} votes}}",
+  "@movieRatingWithVotes": {
+    "description": "A score with the number of votes.",
+    "placeholders": {
+      "votes": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "source": {
+        "type": "String"
+      },
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "movieScoreOutOfTen": "{score}/10",
+  "@movieScoreOutOfTen": {
+    "description": "A score out of ten.",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "movieScoreOutOfHundred": "{score}/100",
+  "@movieScoreOutOfHundred": {
+    "description": "A score out of a hundred.",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "movieScorePercent": "{score}%",
+  "@movieScorePercent": {
+    "description": "A score in percent.",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "movieInCinemas": "In cinemas",
+  "@movieInCinemas": {
+    "description": "Label of a release date."
+  },
+  "movieDigitalRelease": "Digital release",
+  "@movieDigitalRelease": {
+    "description": "Label of a release date."
+  },
+  "moviePhysicalRelease": "Physical release",
+  "@moviePhysicalRelease": {
+    "description": "Label of a release date."
+  },
+  "movieQualityProfile": "Quality profile",
+  "@movieQualityProfile": {
+    "description": "Label."
+  },
+  "moviePath": "Path",
+  "@moviePath": {
+    "description": "Label of where the server stores the movie or file."
+  },
+  "movieFileHeading": "File",
+  "@movieFileHeading": {
+    "description": "Heading of the part about the movie file."
+  },
+  "movieNoFile": "No file on the server",
+  "@movieNoFile": {
+    "description": "The movie has no file."
+  },
+  "movieFileQuality": "Quality",
+  "@movieFileQuality": {
+    "description": "Label."
+  },
+  "movieFileSize": "Size",
+  "@movieFileSize": {
+    "description": "Label."
+  },
+  "movieFileLanguages": "Languages",
+  "@movieFileLanguages": {
+    "description": "Label of the audio languages."
+  },
+  "movieFileVideo": "Video",
+  "@movieFileVideo": {
+    "description": "Label of the video codec and format."
+  },
+  "movieFileAudio": "Audio",
+  "@movieFileAudio": {
+    "description": "Label of the audio codec and format."
+  },
+  "movieCast": "Cast",
+  "@movieCast": {
+    "description": "Heading."
+  },
+  "movieCrew": "Crew",
+  "@movieCrew": {
+    "description": "Heading."
+  },
+  "movieAsCharacter": "as {character}",
+  "@movieAsCharacter": {
+    "description": "The part a person played.",
+    "placeholders": {
+      "character": {
+        "type": "String"
+      }
+    }
+  },
+  "movieShowAllCast": "Show all cast ({count})",
+  "@movieShowAllCast": {
+    "description": "Button that shows the rest of the cast.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieShowAllCrew": "Show all crew ({count})",
+  "@movieShowAllCrew": {
+    "description": "Button that shows the rest of the crew.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieHistory": "History",
+  "@movieHistory": {
+    "description": "Heading."
+  },
+  "movieNoHistory": "No history",
+  "@movieNoHistory": {
+    "description": "The server has no history of the movie."
+  },
+  "movieShowAllHistory": "Show all history ({count})",
+  "@movieShowAllHistory": {
+    "description": "Button that shows older events.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "movieDateAndTime": "{date}, {time}",
+  "@movieDateAndTime": {
+    "description": "When an event happened; both parts are already formatted.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "movieEventGrabbed": "Grabbed",
+  "@movieEventGrabbed": {
+    "description": "History event: a release was sent to a download client."
+  },
+  "movieEventImported": "Imported",
+  "@movieEventImported": {
+    "description": "History event: files were imported."
+  },
+  "movieEventFailed": "Download failed",
+  "@movieEventFailed": {
+    "description": "History event."
+  },
+  "movieEventRenamed": "Renamed",
+  "@movieEventRenamed": {
+    "description": "History event: files were renamed."
+  },
+  "movieEventDeleted": "File deleted",
+  "@movieEventDeleted": {
+    "description": "History event."
+  },
+  "movieEventOther": "Other event",
+  "@movieEventOther": {
+    "description": "History event of a kind the app does not know."
+  },
+  "movieNotSaved": "Not saved for offline viewing",
+  "@movieNotSaved": {
+    "description": "A part of the screen that is only shown while the server answers."
   }
 }
