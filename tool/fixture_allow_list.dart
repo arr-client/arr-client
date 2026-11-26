@@ -5,6 +5,9 @@
 // Add a value when a contract test needs it: something the app branches on, parses, formats or
 // sends back. Text that is only shown (titles, messages, genres) is better left replaced.
 
+/// Real field names that have too many digits to pass for one: Seerr passes them on from TMDB.
+const knownFieldNames = {'iso_3166_1', 'iso_639_1'};
+
 /// Whether [value], found in [field], may be kept.
 bool isAllowedString(String value, String field) {
   if (_timestamp.hasMatch(value) || _duration.hasMatch(value)) return true;
@@ -102,6 +105,9 @@ final _fieldShapes = <String, RegExp>{
   'audiolanguages': _languageList,
   'code2': _languageCode,
   'code3': _languageCode,
+  // Country and language codes; the keys are iso_3166_1 and iso_639_1.
+  'iso31661': RegExp(r'^[A-Z]{2}$'),
+  'iso6391': RegExp(r'^[a-z]{2}$'),
   'language': _languageTag,
   'originallanguage': _languageCode,
   'subtitles': _languageList,

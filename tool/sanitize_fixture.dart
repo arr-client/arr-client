@@ -144,6 +144,7 @@ String _placeholder(String value, int n) {
 }
 
 bool _isFieldName(String key) =>
+    knownFieldNames.contains(key) ||
     _seasonNumber.hasMatch(key) ||
     (_identifier.hasMatch(key) && _digit.allMatches(key).length <= 3);
 

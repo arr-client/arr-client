@@ -96,6 +96,7 @@ void main() {
       'videoCodec', 'resolution', 'audioLanguages', 'subtitles', 'matches',
       'timestamp', 'parsed_timestamp', 'score', 'episode_number', 'sortKey',
       'size', 'age', 'isbn13', 'privacy', 'secondaryTypes', 'severity',
+      'iso_3166_1', 'iso_639_1',
     ];
 
     for (final field in fields) {
@@ -587,6 +588,52 @@ void main() {
         'isbn13': '9780000000002',
       });
       unchanged({'status': 'Returning Series'});
+    });
+
+    test('Seerr details, with the TMDB keys that hold digits', () {
+      unchanged({
+        'productionCountries': [
+          {'iso_3166_1': 'US'},
+        ],
+        'spokenLanguages': [
+          {'iso_639_1': 'en'},
+          {'iso_639_1': ''},
+        ],
+        'releases': {
+          'results': [
+            {
+              'iso_3166_1': 'GB',
+              'release_dates': [
+                {'iso_639_1': '', 'certification': 'PG', 'type': 3},
+              ],
+            },
+          ],
+        },
+        'contentRatings': {
+          'results': [
+            {'iso_3166_1': 'US', 'rating': 18},
+          ],
+        },
+      });
+    });
+
+    test('no other key with that many digits, and no other value there', () {
+      expect(
+        FixtureSanitizer().sanitizeJson({
+          'iso_3166_2': 1,
+          'iso_3166_1_fakeperson': 2,
+          'ISO_3166_1': 3,
+          'iso_3166_1': 'fakehostname',
+          'iso_639_1': 'EN',
+        }),
+        {
+          'redactedKey1': 1,
+          'redactedKey2': 2,
+          'redactedKey3': 3,
+          'iso_3166_1': 'redacted-1',
+          'iso_639_1': 'redacted-2',
+        },
+      );
     });
 
     test('Bazarr wanted and history', () {
