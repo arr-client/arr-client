@@ -8,7 +8,8 @@ Facts about upstream projects were checked against their GitHub repositories on 
 - Readarr: repository archived 2025-06-27. `pennydreadful/bookshelf` is a fork with the v1 API.
 - Bazarr 1.x; API under `/api`, header `X-API-KEY`.
 - Seerr 3.5 (merger of Overseerr and Jellyseerr; Overseerr archived 2026-02); API `/api/v1`.
-- qBittorrent 5.3.1. WebAPI API keys (`Authorization: Bearer`) exist from 5.2.0.
+- qBittorrent 5.3.1. WebAPI API keys (`Authorization: Bearer`) exist from 5.2.0, which also changed
+  the login responses (contracts/upstream-apis.md).
 
 ## R2 State and navigation
 **Decision**: Riverpod and go_router. **Why**: per-instance provider families, testable without
@@ -102,11 +103,15 @@ send it back. Bulk changes use the services' editor endpoints.
 ## R15 Testing against services
 **Decision**: a `docker compose` stack in `tool/devstack/` for manual verification and fixture
 capture; fixtures pass through `tool/sanitize_fixture.dart` before commit.
+**Limits**: the stack cannot exercise download scenarios and runs only current versions
+(quickstart.md, Limits of the dev stack).
 
 ## R16 Items to confirm during implementation
 These are not settled by this research and each has a task:
-- qBittorrent login response differences by version, and API key use (5.2+).
 - Seerr media-server sign-in request bodies and permission bit values.
+
+Settled since: qBittorrent login responses by version and API key use (5.2+), checked against its
+source (4.4.0 to 5.3.1) and a 5.3.1 server; see contracts/upstream-apis.md.
 
 ## R17 SQLite from source
 **Decision**: configure the `sqlite3` package build hook to compile a vendored SQLite

@@ -7,6 +7,10 @@ A row counts as supported only once a passing fixture set or a recorded manual c
 (constitution principle V, [constitution](../.specify/memory/constitution.md)). Until then it is
 **unverified**, whether it is a minimum or best effort.
 
+The dev stack (`tool/devstack/`) runs only current versions and cannot exercise download scenarios, so
+a check against it does not cover an older version or anything that needs a download
+([quickstart](../specs/001-arr-companion-app/quickstart.md), Limits of the dev stack).
+
 | Service | Version | Level | Status | Evidence |
 |---|---|---|---|---|
 | Sonarr | 4.0 | Minimum | Unverified | None |

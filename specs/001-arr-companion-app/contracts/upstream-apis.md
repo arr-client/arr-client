@@ -27,9 +27,23 @@ Common to Sonarr, Radarr, Lidarr, Readarr:
 - **W** `POST command` (search, refresh, rescan, manual import execution)
 - **W** `POST manualimport` (reprocess a corrected candidate)
 
-Queue reads, including background checks, set the service's include-unknown flag to `true`
+`GET queue` reads, including background checks, set the service's include-unknown flag to `true`
 (`includeUnknownSeriesItems`, `includeUnknownMovieItems`, `includeUnknownArtistItems`,
-`includeUnknownAuthorItems`); the default hides downloads the server cannot match.
+`includeUnknownAuthorItems`); the default hides downloads the server cannot match. `GET queue/details`
+has no such parameter: without an item filter it returns the whole queue, unmatched downloads included.
+
+Cover artwork: the `url` of a resource's image is the web UI's path, under the server's URL base:
+`/MediaCover/<id>/<file>`, or `/MediaCover/Albums/<id>/<file>` (Lidarr) and
+`/MediaCover/Books/<id>/<file>` (Readarr), with `?h=` (Radarr) or `?lastWrite=` (Sonarr, Lidarr,
+Readarr). That path is behind the web UI's authentication. The listed `mediacover/...` read, which
+takes the API key, is `mediacover/<id>/<file>` on Sonarr and Radarr, `mediacover/artist/<id>/<file>`
+and `mediacover/album/<id>/<file>` on Lidarr, and `mediacover/author/<id>/<file>` and
+`mediacover/book/<id>/<file>` on Readarr.
+
+Delete with an import exclusion: the query parameter is `addImportExclusion` on Radarr and
+`addImportListExclusion` on Sonarr, Lidarr and Readarr.
+
+Bookshelf reports `appName` `Readarr` in `system/status`, so the name does not tell the two apart.
 
 Manual import language correction exists only for Sonarr and Radarr.
 
@@ -93,6 +107,19 @@ possible cause and never retried automatically.
 - **A** `POST auth/login`, `auth/logout`
 - **R** `app/version`, `app/webapiVersion`, `torrents/info`
 
+Login responses differ by version:
+
+| `POST auth/login` | 4.4 to 5.1 | 5.2 and later |
+|---|---|---|
+| Accepted | 200, body `Ok.` | 204, empty body |
+| Wrong user name or password | 200, body `Fails.` | 401 |
+| Address banned | 403 | 403 |
+| Session cookie (default name) | `SID` | `QBT_SID_<qBittorrent's own port>` |
+
+API keys exist from 5.2.0. The user creates one in qBittorrent's web UI; it is `qbt_` followed by 28
+characters. (The web UI uses `POST app/rotateAPIKey`, which replaces any existing key; the app never
+calls it.) A wrong or replaced key gets 403, not 401.
+
 There are no **W** operations. Fields used: `hash`, `infohash_v1`, `progress`, `dlspeed`, `eta`,
 `state`. Matching is by hash on the device (data-model DownloadProgress).
 
@@ -100,5 +127,5 @@ There are no **W** operations. Fields used: `hash`, `infohash_v1`, `progress`, `
 
 qBittorrent (host header validation, including a port mismatch) can refuse a correct credential with
 a bare 401. Name this as a possible cause of any qBittorrent 401; classify `hostRejected` only where
-it can be told apart (4.x password login, where a bad password is a 200 "Fails."). Where the response identifies this, map
+it can be told apart (password login before 5.2, where a bad password is a 200 "Fails."). Where the response identifies this, map
 it to `hostRejected`.
