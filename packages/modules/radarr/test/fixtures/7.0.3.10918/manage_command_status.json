@@ -1,0 +1,32 @@
+{
+  "name": "MoviesSearch",
+  "commandName": "Movies Search",
+  "message": "redacted-66",
+  "body": {
+    "movieIds": [
+      2,
+      3
+    ],
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "MoviesSearch",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "completed",
+  "result": "successful",
+  "queued": "2026-11-26T15:39:17Z",
+  "started": "2026-11-26T15:39:17Z",
+  "ended": "2026-11-26T15:39:19Z",
+  "duration": "00:00:02.0948241",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T15:39:17Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 9
+}

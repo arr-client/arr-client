@@ -1,0 +1,26 @@
+{
+  "name": "RescanMovie",
+  "commandName": "Rescan Movie",
+  "body": {
+    "movieId": 1,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "RescanMovie",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "started",
+  "result": "unknown",
+  "queued": "2026-11-26T15:39:15Z",
+  "started": "2026-11-26T15:39:15Z",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T15:39:15Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 5
+}

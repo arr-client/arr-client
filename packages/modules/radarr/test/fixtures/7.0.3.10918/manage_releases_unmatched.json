@@ -1,0 +1,61 @@
+[
+  {
+    "guid": "http://redacted.invalid/1",
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityWeight": 1801,
+    "age": 1,
+    "ageHours": 24.01046347163889,
+    "ageMinutes": 1440.62780864,
+    "size": 4294967296,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "releaseGroup": "redacted-3",
+    "releaseHash": "",
+    "title": "redacted-4",
+    "sceneSource": false,
+    "movieTitles": [
+      "redacted-5"
+    ],
+    "languages": [
+      {
+        "id": 0,
+        "name": "Unknown"
+      }
+    ],
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "tmdbId": 0,
+    "imdbId": 0,
+    "rejections": [
+      "redacted-6"
+    ],
+    "publishDate": "2026-11-25T15:45:49Z",
+    "downloadUrl": "http://redacted.invalid/7",
+    "movieRequested": false,
+    "downloadAllowed": false,
+    "releaseWeight": 0,
+    "edition": "",
+    "magnetUrl": "",
+    "infoHash": "",
+    "seeders": 5,
+    "leechers": 1,
+    "protocol": "torrent",
+    "indexerFlags": []
+  }
+]
