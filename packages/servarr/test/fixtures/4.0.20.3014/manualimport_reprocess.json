@@ -1,6 +1,6 @@
 [
   {
-    "path": "/redacted/40.mkv",
+    "path": "/redacted/47.mkv",
     "seriesId": 1,
     "seasonNumber": 1,
     "episodes": [
@@ -10,11 +10,11 @@
         "episodeFileId": 0,
         "seasonNumber": 1,
         "episodeNumber": 8,
-        "title": "redacted-75",
+        "title": "redacted-66",
         "airDate": "1962-11-14",
         "airDateUtc": "1962-11-15T00:30:00Z",
         "runtime": 25,
-        "overview": "redacted-76",
+        "overview": "redacted-67",
         "hasFile": false,
         "monitored": true,
         "absoluteEpisodeNumber": 8,
@@ -24,10 +24,10 @@
     ],
     "quality": {
       "quality": {
-        "id": 3,
-        "name": "WEBDL-1080p",
-        "source": "unknown",
-        "resolution": 0
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080
       },
       "revision": {
         "version": 1,
@@ -41,26 +41,22 @@
         "name": "German"
       }
     ],
-    "releaseGroup": "redacted-29",
-    "downloadId": "ABCDEF0000000000000000000000000000000006",
+    "releaseGroup": "redacted-42",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
     "customFormats": [],
     "customFormatScore": 0,
     "indexerFlags": 0,
     "releaseType": "singleEpisode",
     "rejections": [
       {
-        "reason": "redacted-77",
-        "type": "permanent"
-      },
-      {
-        "reason": "redacted-12",
+        "reason": "redacted-43",
         "type": "permanent"
       }
     ],
-    "id": 587513337
+    "id": 764849802
   },
   {
-    "path": "/redacted/71.mkv",
+    "path": "/redacted/64.mkv",
     "seriesId": 1,
     "seasonNumber": 1,
     "episodes": [
@@ -70,11 +66,11 @@
         "episodeFileId": 0,
         "seasonNumber": 1,
         "episodeNumber": 7,
-        "title": "redacted-69",
+        "title": "redacted-62",
         "airDate": "1962-11-07",
         "airDateUtc": "1962-11-08T00:30:00Z",
         "runtime": 25,
-        "overview": "redacted-70",
+        "overview": "redacted-63",
         "hasFile": false,
         "monitored": true,
         "absoluteEpisodeNumber": 7,
@@ -101,18 +97,18 @@
         "name": "English"
       }
     ],
-    "releaseGroup": "redacted-29",
-    "downloadId": "ABCDEF0000000000000000000000000000000006",
+    "releaseGroup": "redacted-42",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
     "customFormats": [],
     "customFormatScore": 0,
     "indexerFlags": 0,
     "releaseType": "singleEpisode",
     "rejections": [
       {
-        "reason": "redacted-12",
+        "reason": "redacted-43",
         "type": "permanent"
       }
     ],
-    "id": 2004210694
+    "id": 1674799021
   }
 ]

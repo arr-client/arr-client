@@ -136,6 +136,13 @@ mixin _ServarrActivity {
     required ServarrImportMapping mapping,
   }) async {
     if (candidates.isEmpty) return const Ok([]);
+    final List<JsonObject> entries;
+    switch (await _entries(candidates, mapping)) {
+      case Err(:final error):
+        return Err(error);
+      case Ok(:final value):
+        entries = value;
+    }
     final sent = {
       for (final candidate in candidates) candidate.path: candidate,
     };
@@ -152,8 +159,8 @@ mixin _ServarrActivity {
           ),
       ],
       body: JsonBody([
-        for (final candidate in candidates)
-          {'id': ?candidate.rawJson['id'], ...importEntry(candidate, mapping)},
+        for (final (index, candidate) in candidates.indexed)
+          {'id': ?candidate.rawJson['id'], ...entries[index]},
       ]),
     );
   }
@@ -161,12 +168,22 @@ mixin _ServarrActivity {
   /// Imports every one of [candidates], whether marked as selected or not, and
   /// gives the command to follow with [ServarrClient.commandStatus].
   ///
-  /// With no candidates nothing is sent and the result is [Validation].
+  /// With no candidates nothing is sent and the result is [Validation]. Where
+  /// a quality was corrected, here or in [reprocess], its definition is read
+  /// first: if that fails, or the server does not have the quality
+  /// ([NotFound]), nothing is written.
   ServiceResult<Command> importFiles(
     List<ManualImportCandidate> candidates, {
     required ServarrImportMapping mapping,
   }) async {
     if (candidates.isEmpty) return const Err(Validation([]));
+    final List<JsonObject> entries;
+    switch (await _entries(candidates, mapping)) {
+      case Err(:final error):
+        return Err(error);
+      case Ok(:final value):
+        entries = value;
+    }
     return _client._send(
       HttpMethod.post,
       'command',
@@ -175,14 +192,40 @@ mixin _ServarrActivity {
         'name': 'ManualImport',
         'importMode': 'auto',
         'files': [
-          for (final candidate in candidates)
-            {
-              ...importEntry(candidate, mapping),
-              'folderName': ?candidate.rawJson['folderName'],
-            },
+          for (final (index, candidate) in candidates.indexed)
+            {...entries[index], 'folderName': ?candidate.rawJson['folderName']},
         ],
       }),
     );
+  }
+
+  /// The [importEntry] of each of [candidates].
+  ServiceResult<List<JsonObject>> _entries(
+    List<ManualImportCandidate> candidates,
+    ServarrImportMapping mapping,
+  ) async {
+    final corrected = {
+      for (final candidate in candidates) ?correctedQualityId(candidate),
+    };
+    var qualities = const <int, JsonObject>{};
+    if (corrected.isNotEmpty) {
+      switch (await _client.read(
+        'qualitydefinition',
+        (json) => Map.fromEntries(asObjects(json).map(qualityById)),
+      )) {
+        case Err(:final error):
+          return Err(error);
+        case Ok(:final value):
+          qualities = value;
+      }
+      if (!corrected.every(qualities.containsKey)) {
+        return const Err(NotFound());
+      }
+    }
+    return Ok([
+      for (final candidate in candidates)
+        importEntry(candidate, mapping, qualities),
+    ]);
   }
 
   /// A write whose answer is not read.

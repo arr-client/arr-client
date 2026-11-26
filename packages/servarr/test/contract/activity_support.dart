@@ -44,8 +44,10 @@
 // Fixtures of these tests: recorded in a later run than the others (see
 // support.dart), from the same versions, with qBittorrent as download client,
 // releases pushed to the server and a web seed for their data, and passed
-// through tool/sanitize_fixture.dart. The bodies that answer a write hold
-// nothing, so the tests give them as they were seen.
+// through tool/sanitize_fixture.dart. manualimport and manualimport_reprocess
+// are of a further run, its downloads added to qBittorrent with their data in
+// place; the corrected quality was sent as its whole definition. The bodies
+// that answer a write hold nothing, so the tests give them as they were seen.
 
 import 'package:core/core.dart';
 import 'package:servarr/servarr.dart';

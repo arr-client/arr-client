@@ -1,30 +1,30 @@
 [
   {
-    "path": "/redacted/40.mkv",
-    "relativePath": "redacted-16",
-    "folderName": "redacted-14",
-    "name": "redacted-68",
+    "path": "/redacted/47.mkv",
+    "relativePath": "redacted-48",
+    "folderName": "redacted-49",
+    "name": "redacted-50",
     "size": 2097152,
     "series": {
-      "title": "redacted-56",
-      "sortTitle": "redacted-57",
+      "title": "redacted-51",
+      "sortTitle": "redacted-52",
       "status": "ended",
       "ended": true,
-      "overview": "redacted-58",
-      "network": "redacted-59",
+      "overview": "redacted-53",
+      "network": "redacted-54",
       "airTime": "19:30",
       "images": [
         {
           "coverType": "banner",
-          "remoteUrl": "https://redacted.invalid/60.jpg"
+          "remoteUrl": "https://redacted.invalid/55.jpg"
         },
         {
           "coverType": "poster",
-          "remoteUrl": "https://redacted.invalid/61.jpg"
+          "remoteUrl": "https://redacted.invalid/56.jpg"
         },
         {
           "coverType": "fanart",
-          "remoteUrl": "https://redacted.invalid/62.jpg"
+          "remoteUrl": "https://redacted.invalid/57.jpg"
         }
       ],
       "originalLanguage": {
@@ -74,7 +74,7 @@
         }
       ],
       "year": 1962,
-      "path": "/redacted/63",
+      "path": "/redacted/58",
       "qualityProfileId": 1,
       "seasonFolder": true,
       "monitored": true,
@@ -88,16 +88,16 @@
       "firstAired": "1962-09-26T00:00:00Z",
       "lastAired": "1971-03-23T00:00:00Z",
       "seriesType": "standard",
-      "cleanTitle": "redacted-64",
+      "cleanTitle": "redacted-59",
       "imdbId": "tt0055662",
-      "titleSlug": "redacted-65",
+      "titleSlug": "redacted-60",
       "certification": "TV-G",
       "genres": [
-        "redacted-66",
-        "redacted-67"
+        "redacted-21",
+        "redacted-61"
       ],
       "tags": [],
-      "added": "2026-11-26T13:55:50Z",
+      "added": "2026-11-26T14:42:03Z",
       "ratings": {
         "votes": 12680,
         "value": 7.3
@@ -113,11 +113,11 @@
         "episodeFileId": 0,
         "seasonNumber": 1,
         "episodeNumber": 7,
-        "title": "redacted-69",
+        "title": "redacted-62",
         "airDate": "1962-11-07",
         "airDateUtc": "1962-11-08T00:30:00Z",
         "runtime": 25,
-        "overview": "redacted-70",
+        "overview": "redacted-63",
         "hasFile": false,
         "monitored": true,
         "absoluteEpisodeNumber": 7,
@@ -125,7 +125,7 @@
         "id": 19
       }
     ],
-    "releaseGroup": "redacted-29",
+    "releaseGroup": "redacted-42",
     "quality": {
       "quality": {
         "id": 3,
@@ -146,45 +146,45 @@
       }
     ],
     "qualityWeight": 13,
-    "downloadId": "ABCDEF0000000000000000000000000000000006",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
     "customFormats": [],
     "customFormatScore": 0,
     "indexerFlags": 0,
     "releaseType": "singleEpisode",
     "rejections": [
       {
-        "reason": "redacted-12",
+        "reason": "redacted-43",
         "type": "permanent"
       }
     ],
-    "id": 587513337
+    "id": 764849802
   },
   {
-    "path": "/redacted/71.mkv",
-    "relativePath": "redacted-17",
-    "folderName": "redacted-14",
-    "name": "redacted-72",
+    "path": "/redacted/64.mkv",
+    "relativePath": "redacted-65",
+    "folderName": "redacted-49",
+    "name": "redacted-49",
     "size": 2097152,
     "series": {
-      "title": "redacted-56",
-      "sortTitle": "redacted-57",
+      "title": "redacted-51",
+      "sortTitle": "redacted-52",
       "status": "ended",
       "ended": true,
-      "overview": "redacted-58",
-      "network": "redacted-59",
+      "overview": "redacted-53",
+      "network": "redacted-54",
       "airTime": "19:30",
       "images": [
         {
           "coverType": "banner",
-          "remoteUrl": "https://redacted.invalid/60.jpg"
+          "remoteUrl": "https://redacted.invalid/55.jpg"
         },
         {
           "coverType": "poster",
-          "remoteUrl": "https://redacted.invalid/61.jpg"
+          "remoteUrl": "https://redacted.invalid/56.jpg"
         },
         {
           "coverType": "fanart",
-          "remoteUrl": "https://redacted.invalid/62.jpg"
+          "remoteUrl": "https://redacted.invalid/57.jpg"
         }
       ],
       "originalLanguage": {
@@ -234,7 +234,7 @@
         }
       ],
       "year": 1962,
-      "path": "/redacted/63",
+      "path": "/redacted/58",
       "qualityProfileId": 1,
       "seasonFolder": true,
       "monitored": true,
@@ -248,16 +248,16 @@
       "firstAired": "1962-09-26T00:00:00Z",
       "lastAired": "1971-03-23T00:00:00Z",
       "seriesType": "standard",
-      "cleanTitle": "redacted-64",
+      "cleanTitle": "redacted-59",
       "imdbId": "tt0055662",
-      "titleSlug": "redacted-65",
+      "titleSlug": "redacted-60",
       "certification": "TV-G",
       "genres": [
-        "redacted-66",
-        "redacted-67"
+        "redacted-21",
+        "redacted-61"
       ],
       "tags": [],
-      "added": "2026-11-26T13:55:50Z",
+      "added": "2026-11-26T14:42:03Z",
       "ratings": {
         "votes": 12680,
         "value": 7.3
@@ -273,11 +273,11 @@
         "episodeFileId": 0,
         "seasonNumber": 1,
         "episodeNumber": 7,
-        "title": "redacted-69",
+        "title": "redacted-62",
         "airDate": "1962-11-07",
         "airDateUtc": "1962-11-08T00:30:00Z",
         "runtime": 25,
-        "overview": "redacted-70",
+        "overview": "redacted-63",
         "hasFile": false,
         "monitored": true,
         "absoluteEpisodeNumber": 7,
@@ -285,7 +285,7 @@
         "id": 19
       }
     ],
-    "releaseGroup": "redacted-29",
+    "releaseGroup": "redacted-42",
     "quality": {
       "quality": {
         "id": 3,
@@ -306,17 +306,17 @@
       }
     ],
     "qualityWeight": 13,
-    "downloadId": "ABCDEF0000000000000000000000000000000006",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
     "customFormats": [],
     "customFormatScore": 0,
     "indexerFlags": 0,
     "releaseType": "singleEpisode",
     "rejections": [
       {
-        "reason": "redacted-12",
+        "reason": "redacted-43",
         "type": "permanent"
       }
     ],
-    "id": 2004210694
+    "id": 1674799021
   }
 ]

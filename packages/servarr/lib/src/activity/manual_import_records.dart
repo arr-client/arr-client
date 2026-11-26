@@ -59,17 +59,33 @@ Quality definedQuality(JsonObject record) =>
 Language readLanguage(JsonObject record) =>
     Language(id: requireInt(record, 'id'), name: requireString(record, 'name'));
 
+/// A record of `GET qualitydefinition` as the id of its quality and the whole
+/// `quality` object, which a write has to send.
+MapEntry<int, JsonObject> qualityById(JsonObject record) =>
+    MapEntry(definedQuality(record).id, asObject(record['quality']));
+
+/// The id of the quality chosen for [candidate], if it is not the record's.
+int? correctedQualityId(ManualImportCandidate candidate) {
+  final chosen = candidate.quality?.id;
+  return chosen == recordQuality(candidate.rawJson['quality'])?.id
+      ? null
+      : chosen;
+}
+
 /// What both `POST manualimport` and the import command say of [candidate]:
 /// its corrections, and of the server's record only what the import needs.
+///
+/// [qualities] must have the [correctedQualityId] of the candidate.
 JsonObject importEntry(
   ManualImportCandidate candidate,
   ServarrImportMapping mapping,
+  Map<int, JsonObject> qualities,
 ) {
   final raw = candidate.rawJson;
   return {
     'path': candidate.path,
     'downloadId': ?candidate.downloadId,
-    'quality': ?_sentQuality(candidate),
+    'quality': ?_sentQuality(candidate, qualities),
     'languages': [
       for (final language in candidate.languages)
         {'id': language.id, 'name': language.name},
@@ -80,16 +96,18 @@ JsonObject importEntry(
   };
 }
 
-/// The record's quality as it is, unless the user chose another; that one has
-/// the record's revision.
-Object? _sentQuality(ManualImportCandidate candidate) {
+/// The record's quality as it is, unless the user chose another: then that one
+/// as the server defines it, with the record's revision. The server takes the
+/// source and resolution from what is sent, not from the id.
+Object? _sentQuality(
+  ManualImportCandidate candidate,
+  Map<int, JsonObject> qualities,
+) {
   final recorded = candidate.rawJson['quality'];
-  final chosen = candidate.quality;
-  if (chosen == null || chosen.id == recordQuality(recorded)?.id) {
-    return recorded;
-  }
+  final corrected = correctedQualityId(candidate);
+  if (corrected == null) return recorded;
   return {
-    'quality': {'id': chosen.id, 'name': chosen.name},
+    'quality': qualities[corrected],
     if (recorded case {'revision': final Object revision}) 'revision': revision,
   };
 }

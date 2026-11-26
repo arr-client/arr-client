@@ -19,8 +19,9 @@
 //
 // What is sent for a candidate, here "its entry":
 //   path, downloadId        from the candidate
-//   quality                 the record's `quality` as it is, or when the
-//                           candidate's differs, its id and name with the
+//   quality                 the record's `quality` as it is, or when the id of
+//                           the candidate's differs, the whole `quality`
+//                           object of that id in `qualitydefinition` with the
 //                           record's `revision`
 //   languages               id and name of each of the candidate's
 //   releaseGroup, indexerFlags, releaseType
@@ -34,6 +35,12 @@
 // answered with the command, which `commandStatus` follows. Every candidate
 // passed is imported; choosing is the caller's.
 //
+// The server takes source, resolution and modifier from what is sent, not from
+// the id, so a corrected quality is never sent as its id and name only. Where a
+// candidate's quality differs, `qualitydefinition` is read before the write; if
+// that fails, its failure is returned, and an id it does not have is NotFound.
+// Either way nothing is written. Without a correction it is not read.
+//
 // The answer of `POST manualimport` has no size and no folder name, and names
 // the match as `mapping.match` reads it. Each of its records becomes the
 // candidate of the same path: path, size, downloadId and selected as they were;
@@ -42,6 +49,7 @@
 
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:servarr/servarr.dart';
 
 import 'activity_support.dart';
 import 'support.dart';
@@ -85,8 +93,7 @@ Quality _otherQuality(Service service) => service == radarr
     ? const Quality(id: 3, name: 'WEBDL-1080p')
     : const Quality(id: 7, name: 'Bluray-1080p');
 
-/// The corrections the recorded reprocessing was made with, but for Sonarr's
-/// quality: that request kept the file's own.
+/// The corrections the recorded reprocessing was made with.
 List<ManualImportCandidate> _corrections(
   Service service,
   List<ManualImportCandidate> candidates,
@@ -123,6 +130,45 @@ Map<String, Object?> _entry(Service service, JsonObject record) => {
   },
 };
 
+/// The whole quality object the server defines for [id].
+Object? _defined(Service service, int id) => service
+    .list('qualitydefinition')
+    .map((definition) => definition['quality']! as JsonObject)
+    .singleWhere((quality) => quality['id'] == id);
+
+/// Answers [path] with [reply] and `qualitydefinition` with [definitions], by
+/// default as recorded.
+FakeServer _writeServer(
+  Service service,
+  String path,
+  Reply reply, {
+  Reply? definitions,
+}) => FakeServer(
+  (request) => switch (request.path) {
+    'api/v3/qualitydefinition' =>
+      definitions ?? Reply.json(service.fixture('qualitydefinition')),
+    final asked when asked == 'api/v3/$path' => reply,
+    _ => const Reply(404, ''),
+  },
+);
+
+/// The write of [server], before which only the definitions were read.
+ServiceRequest _write(FakeServer server, String path) {
+  expect(
+    server.requests.map(
+      (request) =>
+          '${request.method.name} '
+          '${request.path}',
+    ),
+    [
+      '${HttpMethod.get.name} api/v3/qualitydefinition',
+      '${HttpMethod.post.name} api/v3/$path',
+    ],
+  );
+  expect(server.requests.first.query, isEmpty);
+  return server.requests.last;
+}
+
 /// The entries of [_corrections].
 List<Map<String, Object?>> _correctedEntries(Service service) {
   final records = service.list('manualimport');
@@ -131,10 +177,7 @@ List<Map<String, Object?>> _correctedEntries(Service service) {
     {
       ..._entry(service, records.first),
       'quality': {
-        'quality': {
-          'id': _otherQuality(service).id,
-          'name': _otherQuality(service).name,
-        },
+        'quality': _defined(service, _otherQuality(service).id),
         'revision': revision,
       },
       'languages': [
@@ -151,7 +194,7 @@ Object? _sent(ServiceRequest request) => (request.body! as JsonBody).value;
 void main() {
   for (final service in services) {
     final item = service == radarr
-        ? itemRef(MediaKind.movie, 7)
+        ? itemRef(MediaKind.movie, 1)
         : itemRef(MediaKind.series, 1);
 
     group('${service.name} import candidates', () {
@@ -338,7 +381,8 @@ void main() {
     });
 
     group('${service.name} reprocess', () {
-      FakeServer server([Object? answer]) => only(
+      FakeServer server([Object? answer]) => _writeServer(
+        service,
         'manualimport',
         Reply.json(answer ?? service.list('manualimport_reprocess')),
       );
@@ -351,9 +395,7 @@ void main() {
           service.client(fake).reprocess(candidates, mapping: mapping(service)),
         );
 
-        final request = fake.requests.single;
-        expect(request.method, HttpMethod.post);
-        expect(request.path, 'api/v3/manualimport');
+        final request = _write(fake, 'manualimport');
         expect(request.query, isEmpty);
         final entries = _correctedEntries(service);
         final records = service.list('manualimport');
@@ -379,14 +421,19 @@ void main() {
         expect(first.selected, isTrue);
         expect(first.matchedRef, item);
         expect(first.episodeIds, service == radarr ? isEmpty : [20]);
-        expect(first.quality?.id, 3);
-        expect(first.quality?.name, 'WEBDL-1080p');
+        expect(first.quality?.id, _otherQuality(service).id);
+        expect(first.quality?.name, _otherQuality(service).name);
+        // Sent whole, the quality keeps its source and resolution.
+        expect(
+          (first.rawJson['quality']! as JsonObject)['quality'],
+          _defined(service, _otherQuality(service).id),
+        );
         expect(first.languages.single.id, 4);
         expect(first.rejections, [
           for (final rejection in answer.first['rejections']! as List<Object?>)
             (rejection! as JsonObject)['reason'],
         ]);
-        expect(first.rejections, hasLength(service == radarr ? 1 : 2));
+        expect(first.rejections, hasLength(1));
         // What the import needs and the answer leaves out is still there.
         expect(first.rawJson['folderName'], before.first.rawJson['folderName']);
         expect(first.rawJson['quality'], answer.first['quality']);
@@ -442,8 +489,98 @@ void main() {
       });
     });
 
+    group('${service.name} corrected quality', () {
+      final writes =
+          <
+            String,
+            (
+              String,
+              Reply,
+              ServiceResult<Object?> Function(
+                ServarrClient,
+                List<ManualImportCandidate>,
+              ),
+            )
+          >{
+            'reprocess': (
+              'manualimport',
+              Reply.json(service.list('manualimport_reprocess')),
+              (client, candidates) =>
+                  client.reprocess(candidates, mapping: mapping(service)),
+            ),
+            'importFiles': (
+              'command',
+              Reply.json(service.object('command_manualimport'), status: 201),
+              (client, candidates) =>
+                  client.importFiles(candidates, mapping: mapping(service)),
+            ),
+          };
+      final unusable = <String, (Reply, Matcher)>{
+        'the definitions cannot be read': (
+          Reply.json({'message': 'Example'}, status: 500),
+          isA<ServerError>(),
+        ),
+        'the definitions cannot be understood': (
+          Reply.json([
+            {'id': 1},
+          ]),
+          isA<MalformedResponse>(),
+        ),
+        'the quality is not defined': (
+          Reply.json(<Object?>[]),
+          isA<NotFound>(),
+        ),
+      };
+
+      for (final MapEntry(key: name, value: (path, answer, write))
+          in writes.entries) {
+        for (final MapEntry(key: cause, value: (definitions, expected))
+            in unusable.entries) {
+          test('$name writes nothing when $cause', () async {
+            final candidates = _corrections(service, await _recorded(service));
+            final fake = _writeServer(
+              service,
+              path,
+              answer,
+              definitions: definitions,
+            );
+
+            expect(
+              await failure(write(service.client(fake), candidates)),
+              expected,
+            );
+
+            expect(fake.requests.single.method, HttpMethod.get);
+            expect(fake.requests.single.path, 'api/v3/qualitydefinition');
+          });
+        }
+
+        test('$name keeps the record quality of the same id', () async {
+          final recorded = await _recorded(service);
+          final first = recorded.first;
+          final renamed = _corrected(
+            first,
+            quality: Quality(id: first.quality!.id, name: 'Renamed'),
+          );
+          final fake = _writeServer(service, path, answer);
+
+          await value(write(service.client(fake), [renamed, recorded.last]));
+
+          final sent = _sent(fake.requests.single);
+          final entries = sent is List<Object?>
+              ? sent
+              : (sent! as JsonObject)['files']! as List<Object?>;
+          expect(
+            (entries.first! as JsonObject)['quality'],
+            first.rawJson['quality'],
+          );
+        });
+      }
+    });
+
     group('${service.name} import', () {
-      FakeServer server() => only(
+      FakeServer server() => _writeServer(
+        service,
         'command',
         Reply.json(service.object('command_manualimport'), status: 201),
       );
@@ -459,9 +596,7 @@ void main() {
               .importFiles(candidates, mapping: mapping(service)),
         );
 
-        final request = fake.requests.single;
-        expect(request.method, HttpMethod.post);
-        expect(request.path, 'api/v3/command');
+        final request = _write(fake, 'command');
         expect(request.query, isEmpty);
         // The second candidate is not marked selected and is imported too.
         expect(candidates.last.selected, isFalse);
