@@ -28,6 +28,60 @@ emulator.
 
 Without Nix, install Flutter 3.50.1, JDK 17 and the Android SDK.
 
+## Build, run and check
+
+These were tested in the Nix shell on x86_64 Linux. Start at the repository root:
+
+```sh
+flutter pub get                    # the whole workspace
+bash .github/scripts/codegen.sh    # generated files; nothing to generate yet
+```
+
+Run the checks before opening a pull request:
+
+```sh
+dart format --output=none --set-exit-if-changed .
+flutter analyze
+dart run tool/check_dependencies.dart
+python3 .github/scripts/check_repo.py
+flutter test tool/test
+(cd apps/arr_client && flutter test)
+```
+
+Package tests run per package, from its directory; so far only the app has any. Run the tool tests
+with `flutter test`: in the Nix shell, `dart test` cannot find the Flutter SDK.
+
+Build and run from the app directory:
+
+```sh
+cd apps/arr_client
+flutter build apk --debug      # build/app/outputs/flutter-apk/app-debug.apk
+flutter build apk --release    # build/app/outputs/flutter-apk/app-release.apk
+flutter run                    # needs a device or emulator; check with `flutter devices`
+```
+
+Release builds are **unsigned** for now, so Android will not install them. Use a debug build. The
+app needs Android 8.0 (API 26) or later, and so far shows only an empty screen.
+
+### Emulator
+
+In a shell started with `--arg withEmulator true`, create a virtual device once (answer `no` to the
+custom hardware profile). `flutter emulators --create` does not find the system images in the Nix
+shell, so use `avdmanager`:
+
+```sh
+avdmanager create avd --name arr --package "system-images;android-36;google_apis;x86_64"
+```
+
+Then start it, and run `flutter run` from a second shell:
+
+```sh
+emulator -avd arr -no-window -gpu swiftshader_indirect -feature -Vulkan
+```
+
+This headless form is the one that has been tested. `-no-window` hides the screen; leave it out to
+see it. The two graphics options avoid an emulator crash seen with software rendering.
+
 ## Optional tools
 
 None of these is required.
