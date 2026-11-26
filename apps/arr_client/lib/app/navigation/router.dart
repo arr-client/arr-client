@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../features/activity/history/item_history.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
+import '../../features/library/releases/releases_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
 import '../../features/search/add_request.dart';
@@ -132,10 +133,24 @@ GoRouter createRouter(ModuleRegistry modules) {
         scoped('/${flow.name}', (context, active, state) {
           final strings = AppLocalizations.of(context);
           return switch (flow) {
-            InstanceFlow.releases => PlaceholderPage(title: strings.releases),
+            InstanceFlow.releases => switch (releaseTarget(
+              active.instance.id,
+              state.uri.queryParameters,
+            )) {
+              final target? => ReleasesScreen(
+                // Another target at the same path starts over.
+                key: ValueKey(target),
+                instance: active,
+                target: target,
+              ),
+              null => MessagePage(
+                title: strings.releases,
+                message: strings.pageUnknown,
+              ),
+            },
             InstanceFlow.edit => PlaceholderPage(title: strings.editItem),
             InstanceFlow.delete => PlaceholderPage(title: strings.deleteItem),
-            InstanceFlow.history => switch (itemHistoryRef(
+            InstanceFlow.history => switch (itemQueryRef(
               active.instance.id,
               state.uri.queryParameters,
             )) {

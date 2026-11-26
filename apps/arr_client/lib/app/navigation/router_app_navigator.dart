@@ -12,7 +12,7 @@ final class RouterAppNavigator implements AppNavigator {
 
   @override
   Future<void> openReleases(MediaTarget target) =>
-      _flow(target.item, InstanceFlow.releases);
+      _push(releasesLocation(target));
 
   @override
   Future<void> openEdit(ItemRef ref) => _flow(ref, InstanceFlow.edit);
