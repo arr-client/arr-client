@@ -31,40 +31,51 @@ class MovieDetailScreen extends ConsumerWidget {
     final controller = ref.read(provider.notifier);
     Future<void> refresh() => ref.read(provider.notifier).refresh();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(switch (state.movie) {
-          ViewData(staleness: Staleness(failure: NotFound())) => '',
-          ViewData(:final value) => value.title,
-          ViewLoading() || ViewError() => '',
-        }),
-        actions: [
-          // Pulling down does this too, which a screen reader cannot.
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: strings.movieRefresh,
-            onPressed: () => unawaited(refresh()),
-          ),
-          // Not for a movie that is not there.
-          if (state.movie case ViewData(:final value, :final staleness)
-              when staleness?.failure is! NotFound)
-            MovieMenu(source: source, movie: value, isStale: staleness != null),
-        ],
-      ),
-      body: SafeArea(
-        top: false,
-        child: RefreshIndicator(
-          onRefresh: refresh,
-          child: StateScaffold<Movie>(
-            state: state.movie,
-            itemId: source.item,
-            onRetry: () => unawaited(refresh()),
-            builder: (context, movie, {required isStale}) => _Content(
-              movie,
-              state,
-              source: source,
-              controller: controller,
-              isStale: isStale,
+    // Kept while the screen is, so that the tasks and what covers them are.
+    ref.listen(movieActionsProvider(source), (_, _) {});
+
+    return RouteCurrentListener(
+      onChanged: (current) =>
+          ref.read(movieActionsProvider(source).notifier).shown = current,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(switch (state.movie) {
+            ViewData(staleness: Staleness(failure: NotFound())) => '',
+            ViewData(:final value) => value.title,
+            ViewLoading() || ViewError() => '',
+          }),
+          actions: [
+            // Pulling down does this too, which a screen reader cannot.
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: strings.movieRefresh,
+              onPressed: () => unawaited(refresh()),
+            ),
+            // Not for a movie that is not there.
+            if (state.movie case ViewData(:final value, :final staleness)
+                when staleness?.failure is! NotFound)
+              MovieMenu(
+                source: source,
+                movie: value,
+                isStale: staleness != null,
+              ),
+          ],
+        ),
+        body: SafeArea(
+          top: false,
+          child: RefreshIndicator(
+            onRefresh: refresh,
+            child: StateScaffold<Movie>(
+              state: state.movie,
+              itemId: source.item,
+              onRetry: () => unawaited(refresh()),
+              builder: (context, movie, {required isStale}) => _Content(
+                movie,
+                state,
+                source: source,
+                controller: controller,
+                isStale: isStale,
+              ),
             ),
           ),
         ),

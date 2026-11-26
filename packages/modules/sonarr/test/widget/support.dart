@@ -1,5 +1,7 @@
 // The module's screens over the recorded server, routed as the app routes them.
 
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,8 +21,28 @@ class _NoArtwork implements ArtworkLoader {
 class RecordingNavigator extends Fake implements AppNavigator {
   final histories = <ItemRef>[];
 
+  /// The other flows asked for; each stays open until [closed] completes.
+  final opened = <(String, Object)>[];
+
+  // Made when first used, so that it completes in the test's own zone.
+  late final closed = Completer<void>();
+
   @override
   Future<void> openHistory(ItemRef ref) async => histories.add(ref);
+
+  Future<void> _open(String flow, Object of) {
+    opened.add((flow, of));
+    return closed.future;
+  }
+
+  @override
+  Future<void> openReleases(MediaTarget target) => _open('releases', target);
+
+  @override
+  Future<void> openEdit(ItemRef ref) => _open('edit', ref);
+
+  @override
+  Future<void> openDelete(ItemRef ref) => _open('delete', ref);
 }
 
 /// The app around the module's screens.
@@ -41,6 +63,9 @@ class Screens {
 
   final _module = SonarrModule();
   GoRouter? _router;
+
+  /// The theme of the app, set before the first screen is shown.
+  ThemeData theme = ArrTheme.light();
 
   FakeSonarr get server => harness.server;
 
@@ -81,7 +106,7 @@ class Screens {
         ProviderScope(
           retry: (_, _) => null,
           child: MaterialApp.router(
-            theme: ArrTheme.light(),
+            theme: theme,
             localizationsDelegates: const [
               SonarrLocalizations.delegate,
               ...uiLocalizationsDelegates,

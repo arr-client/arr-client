@@ -11,6 +11,7 @@ import '../sonarr_routes.dart';
 import 'detail_parts.dart';
 import 'labels.dart';
 import 'season_progress.dart';
+import 'sonarr_actions.dart';
 import 'sonarr_controllers.dart';
 import 'sonarr_sources.dart';
 
@@ -42,11 +43,11 @@ class SeasonScreen extends ConsumerWidget {
     final series = sources.series(seriesId);
     final key = (sources, series);
     final state = ref.watch(episodesProvider(key));
-    final known = switch (ref.watch(seriesProvider(key))) {
-      ViewData(:final value) => value,
-      ViewLoading() || ViewError() => null,
+    final (known, seriesStale) = switch (ref.watch(seriesProvider(key))) {
+      ViewData(:final value, :final staleness) => (value, staleness != null),
+      ViewLoading() || ViewError() => (null, false),
     };
-
+    final target = MediaTarget(series, seasonNumber: number);
     Future<void> refresh() => Future.wait([
       ref.read(seriesProvider(key).notifier).refresh(),
       ref.read(episodesProvider(key).notifier).refresh(),
@@ -54,41 +55,56 @@ class SeasonScreen extends ConsumerWidget {
 
     bool ofSeason(Episode episode) => episode.seasonNumber == number;
 
-    return DetailPage(
-      title: seasonName(strings, number),
-      onRefresh: refresh,
-      body: StateScaffold<List<Episode>>(
-        state: state,
-        itemId: series,
-        onRetry: () => unawaited(refresh()),
-        isEmpty: (episodes) => !episodes.any(ofSeason),
-        emptyMessage: strings.noEpisodes,
-        builder: (context, all, {required isStale}) {
-          final episodes = all.where(ofSeason).toList()
-            ..sort((a, b) => a.episodeNumber.compareTo(b.episodeNumber));
-          final season = known?.seasons
-              .where((season) => season.number == number)
-              .firstOrNull;
-          final title = known?.title ?? episodes.firstOrNull?.parentTitle;
-          return DetailScroll(
-            slivers: [
-              SliverList.list(
-                children: [
-                  const SizedBox(height: 16),
-                  if (title != null)
-                    Text(title, style: Theme.of(context).textTheme.titleLarge),
-                  if (season != null) SeasonProgress(season: season),
-                ],
-              ),
-              // Built as it scrolls into view: a season may hold hundreds.
-              SliverList.builder(
-                itemCount: episodes.length,
-                itemBuilder: (context, index) =>
-                    _EpisodeRow(episode: episodes[index]),
-              ),
-            ],
-          );
-        },
+    return SonarrActionsScope(
+      sources: sources,
+      target: target,
+      child: DetailPage(
+        title: seasonName(strings, number),
+        onRefresh: refresh,
+        body: StateScaffold<List<Episode>>(
+          state: state,
+          itemId: series,
+          onRetry: () => unawaited(refresh()),
+          isEmpty: (episodes) => !episodes.any(ofSeason),
+          emptyMessage: strings.noEpisodes,
+          builder: (context, all, {required isStale}) {
+            final episodes = all.where(ofSeason).toList()
+              ..sort((a, b) => a.episodeNumber.compareTo(b.episodeNumber));
+            final season = known?.seasons
+                .where((season) => season.number == number)
+                .firstOrNull;
+            final title = known?.title ?? episodes.firstOrNull?.parentTitle;
+            return DetailScroll(
+              slivers: [
+                SliverList.list(
+                  children: [
+                    const SizedBox(height: 16),
+                    if (title != null)
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    if (season != null) SeasonProgress(season: season),
+                    const SizedBox(height: 8),
+                    SonarrActions(
+                      sources: sources,
+                      target: target,
+                      // Not said while the series is not there.
+                      monitored: season?.monitored,
+                      isStale: isStale || seriesStale,
+                    ),
+                  ],
+                ),
+                // Built as it scrolls into view: a season may hold hundreds.
+                SliverList.builder(
+                  itemCount: episodes.length,
+                  itemBuilder: (context, index) =>
+                      _EpisodeRow(episode: episodes[index]),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
