@@ -1,0 +1,26 @@
+{
+  "name": "RefreshAlbum",
+  "commandName": "Refresh Album",
+  "body": {
+    "albumId": 3,
+    "isNewAlbum": false,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": false,
+    "completionMessage": "redacted-255",
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "RefreshAlbum",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T21:37:25Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": false,
+  "id": 29
+}

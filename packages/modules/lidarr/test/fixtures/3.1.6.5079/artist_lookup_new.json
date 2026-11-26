@@ -1,0 +1,64 @@
+[
+  {
+    "status": "continuing",
+    "ended": false,
+    "artistName": "redacted-275",
+    "foreignArtistId": "redacted-276",
+    "tadbId": 0,
+    "discogsId": 0,
+    "overview": "redacted-277",
+    "artistType": "Group",
+    "disambiguation": "",
+    "links": [
+      {
+        "url": "https://redacted.invalid/278",
+        "name": "redacted-54"
+      }
+    ],
+    "nextAlbum": null,
+    "lastAlbum": null,
+    "images": [
+      {
+        "coverType": "clearlogo",
+        "url": "/redacted/279.png",
+        "remoteUrl": "https://redacted.invalid/280.png",
+        "extension": "redacted-58"
+      },
+      {
+        "coverType": "fanart",
+        "url": "/redacted/281.jpg",
+        "remoteUrl": "https://redacted.invalid/282.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "banner",
+        "url": "/redacted/283.jpg",
+        "remoteUrl": "https://redacted.invalid/284.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "poster",
+        "url": "/redacted/285.jpg",
+        "remoteUrl": "https://redacted.invalid/286.jpg",
+        "extension": "redacted-51"
+      }
+    ],
+    "remotePoster": "https://redacted.invalid/286.jpg",
+    "qualityProfileId": 0,
+    "metadataProfileId": 0,
+    "monitored": false,
+    "monitorNewItems": "all",
+    "folder": "redacted-275",
+    "genres": [
+      "redacted-287"
+    ],
+    "cleanName": "redacted-288",
+    "sortName": "redacted-289",
+    "tags": [],
+    "added": "0001-01-01T00:00:00Z",
+    "ratings": {
+      "votes": 45,
+      "value": 8.2
+    }
+  }
+]

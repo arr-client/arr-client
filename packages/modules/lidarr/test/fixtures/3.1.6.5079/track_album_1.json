@@ -1,0 +1,97 @@
+[
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-135",
+    "foreignRecordingId": "redacted-136",
+    "trackFileId": 13,
+    "albumId": 1,
+    "explicit": false,
+    "absoluteTrackNumber": 1,
+    "trackNumber": "redacted-137",
+    "title": "redacted-138",
+    "duration": 282000,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 1
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-139",
+    "foreignRecordingId": "redacted-140",
+    "trackFileId": 14,
+    "albumId": 1,
+    "explicit": false,
+    "absoluteTrackNumber": 2,
+    "trackNumber": "redacted-141",
+    "title": "redacted-142",
+    "duration": 242360,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 2
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-143",
+    "foreignRecordingId": "redacted-144",
+    "trackFileId": 15,
+    "albumId": 1,
+    "explicit": false,
+    "absoluteTrackNumber": 3,
+    "trackNumber": "redacted-145",
+    "title": "redacted-146",
+    "duration": 264666,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 3
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-147",
+    "foreignRecordingId": "redacted-148",
+    "trackFileId": 0,
+    "albumId": 1,
+    "explicit": false,
+    "absoluteTrackNumber": 4,
+    "trackNumber": "redacted-149",
+    "title": "redacted-150",
+    "duration": 228306,
+    "mediumNumber": 1,
+    "hasFile": false,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 4
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-151",
+    "foreignRecordingId": "redacted-152",
+    "trackFileId": 0,
+    "albumId": 1,
+    "explicit": false,
+    "absoluteTrackNumber": 5,
+    "trackNumber": "redacted-153",
+    "title": "redacted-154",
+    "duration": 240760,
+    "mediumNumber": 1,
+    "hasFile": false,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 5
+  }
+]

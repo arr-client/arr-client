@@ -1,0 +1,108 @@
+{
+  "title": "redacted-88",
+  "disambiguation": "",
+  "overview": "",
+  "artistId": 2,
+  "foreignAlbumId": "redacted-89",
+  "monitored": true,
+  "anyReleaseOk": true,
+  "profileId": 0,
+  "duration": 0,
+  "albumType": "Album",
+  "secondaryTypes": [],
+  "ratings": {
+    "votes": 32,
+    "value": 8.7
+  },
+  "releaseDate": "1998-04-17T00:00:00Z",
+  "releases": [],
+  "genres": [
+    "redacted-48"
+  ],
+  "mediumCount": 0,
+  "media": [],
+  "artist": {
+    "status": "continuing",
+    "ended": false,
+    "artistName": "redacted-60",
+    "foreignArtistId": "redacted-61",
+    "tadbId": 0,
+    "discogsId": 0,
+    "artistType": "Group",
+    "disambiguation": "",
+    "links": [
+      {
+        "url": "http://redacted.invalid/62",
+        "name": "redacted-63"
+      }
+    ],
+    "nextAlbum": null,
+    "lastAlbum": null,
+    "images": [
+      {
+        "coverType": "banner",
+        "remoteUrl": "https://redacted.invalid/321.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "fanart",
+        "remoteUrl": "https://redacted.invalid/322.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "clearlogo",
+        "remoteUrl": "https://redacted.invalid/323.png",
+        "extension": "redacted-58"
+      },
+      {
+        "coverType": "poster",
+        "remoteUrl": "https://redacted.invalid/324.jpg",
+        "extension": "redacted-51"
+      }
+    ],
+    "path": "/redacted/68",
+    "qualityProfileId": 1,
+    "metadataProfileId": 1,
+    "monitored": false,
+    "monitorNewItems": "none",
+    "genres": [
+      "redacted-48"
+    ],
+    "cleanName": "redacted-69",
+    "sortName": "redacted-70",
+    "tags": [],
+    "added": "2026-11-26T21:34:07Z",
+    "addOptions": {
+      "searchForMissingAlbums": false,
+      "monitor": "redacted-325",
+      "albumsToMonitor": [],
+      "monitored": false
+    },
+    "ratings": {
+      "votes": 27,
+      "value": 9.1
+    },
+    "id": 2
+  },
+  "images": [
+    {
+      "coverType": "cover",
+      "url": "/MediaCover/Albums/4/cover.jpg",
+      "remoteUrl": "https://redacted.invalid/98.jpg",
+      "extension": "redacted-51"
+    },
+    {
+      "coverType": "disc",
+      "url": "/MediaCover/Albums/4/disc.jpg",
+      "remoteUrl": "https://redacted.invalid/99.jpg",
+      "extension": "redacted-51"
+    }
+  ],
+  "links": [
+    {
+      "url": "http://redacted.invalid/100",
+      "name": "redacted-63"
+    }
+  ],
+  "id": 4
+}

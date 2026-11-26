@@ -7,5 +7,15 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The module contract; its tests also use core/testing/allow_list.dart.
+  core:
+    path: ../../core
   flutter:
+    sdk: flutter
+  # The client of the API the Servarr family shares.
+  servarr:
+    path: ../../servarr
+
+dev_dependencies:
+  flutter_test:
     sdk: flutter

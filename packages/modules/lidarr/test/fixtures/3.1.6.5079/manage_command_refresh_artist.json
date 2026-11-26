@@ -1,0 +1,28 @@
+{
+  "name": "RefreshArtist",
+  "commandName": "Refresh Artist",
+  "body": {
+    "artistIds": [
+      1
+    ],
+    "isNewArtist": false,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": false,
+    "isLongRunning": true,
+    "completionMessage": "redacted-255",
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "name": "RefreshArtist",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T21:37:17Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": false,
+  "id": 27
+}

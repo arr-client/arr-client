@@ -427,6 +427,9 @@ const _enumValues = {
   'releaseGrabbed', 'indexerQuery', 'indexerRss', 'indexerAuth', 'usenet',
   'torrent', 'artistFolderImported', 'trackFileRetagged', 'bookFileRetagged',
   'indexerInfo',
+  // Lidarr and Readarr name a protocol by its class, and have their own
+  // tracked download states.
+  'TorrentDownloadProtocol', 'UsenetDownloadProtocol', 'importFailed',
   // Servarr releases, credits and episodes
   'permanent', 'temporary', 'cast', 'crew', 'series', 'season', 'midseason',
   'singleEpisode', 'multiEpisode', 'seasonPack', 'multiSeasonPack',

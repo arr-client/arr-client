@@ -1,0 +1,14 @@
+[
+  {
+    "propertyName": "ForeignAlbumId",
+    "errorMessage": "redacted-326",
+    "attemptedValue": "redacted-89",
+    "severity": "error",
+    "errorCode": "AlbumExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-327",
+      "propertyValue": "redacted-89"
+    }
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "source": "IndexerRssCheck",
+    "type": "error",
+    "message": "redacted-230",
+    "wikiUrl": "https://redacted.invalid/231"
+  },
+  {
+    "source": "IndexerSearchCheck",
+    "type": "warning",
+    "message": "redacted-232",
+    "wikiUrl": "https://redacted.invalid/233"
+  }
+]
