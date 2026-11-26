@@ -5,7 +5,7 @@
 # The Android build fails when this list and the classpath differ. Before changing a line, check
 # the library's license (it must be GPL-3.0 compatible, and not a proprietary SDK), look in its
 # artifact for bundled third-party code and NOTICE files, and update /NOTICES.
-androidx.activity:activity:1.8.1 AndroidX
+androidx.activity:activity:1.9.0 AndroidX
 androidx.annotation:annotation:1.10.0 AndroidX
 androidx.annotation:annotation-experimental:1.4.1 AndroidX
 androidx.annotation:annotation-jvm:1.10.0 AndroidX
@@ -13,6 +13,7 @@ androidx.appcompat:appcompat:1.5.0 AndroidX
 androidx.appcompat:appcompat-resources:1.5.0 AndroidX
 androidx.arch.core:core-common:2.2.0 AndroidX
 androidx.arch.core:core-runtime:2.2.0 AndroidX
+androidx.browser:browser:1.9.0 AndroidX
 androidx.cardview:cardview:1.0.0 AndroidX
 androidx.collection:collection:1.4.2 AndroidX
 androidx.collection:collection-jvm:1.4.2 AndroidX

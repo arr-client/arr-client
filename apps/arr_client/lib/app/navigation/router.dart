@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../features/activity/history/item_history.dart';
 import '../../features/activity/manual_import/manual_import_screen.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/library/manage/manage_pages.dart';
 import '../../features/library/releases/releases_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
@@ -91,6 +92,16 @@ GoRouter createRouter(ModuleRegistry modules) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: calendarPath,
+        builder: (context, state) => MorePage(
+          entry: MoreEntry.calendar,
+          calendarTab:
+              CalendarTab.values
+                  .asNameMap()[state.uri.queryParameters['tab']] ??
+              CalendarTab.agenda,
+        ),
       ),
       GoRoute(
         path: searchLocation,

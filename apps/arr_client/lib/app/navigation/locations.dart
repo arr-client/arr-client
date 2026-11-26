@@ -41,6 +41,14 @@ final diagnosticLogLocation =
 /// Where the licenses are.
 final licensesLocation = '${moreLocation(MoreEntry.settings)}/$licensesPath';
 
+/// The path of the calendar opened above another screen, with the optional
+/// query `tab`, so that back returns to that screen.
+const calendarPath = '/calendar';
+
+/// Where that calendar is, opened on the view called [tab].
+String calendarLocation(String tab) =>
+    Uri(path: calendarPath, queryParameters: {'tab': tab}).toString();
+
 /// The app-wide search.
 const searchLocation = '/search';
 
