@@ -286,10 +286,11 @@ final class SecretRedactor {
     caseSensitive: false,
   );
 
-  // A word in lower case, as in "Basic authentication", is not a token.
+  // A word in lower case, as in "Basic authentication", is not a token, and nor
+  // is a name before a colon, as in "Basic Password: ...".
   static final _scheme = RegExp(
     r'\b((?:[Bb]earer|BEARER|[Bb]asic|BASIC)[ \t]+)(?![a-z]+(?![\w.~+/=-]))'
-    r'[\w.~+/=-]{6,}',
+    r'''[\w.~+/=-]{6,}(?![\w.~+/=-]|["']?[ \t]*:)''',
   );
 
   static final _hexKey = RegExp(
