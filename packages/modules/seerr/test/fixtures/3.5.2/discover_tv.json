@@ -1,0 +1,73 @@
+{
+  "page": 1,
+  "totalPages": 1001,
+  "totalResults": 20001,
+  "keywords": [],
+  "results": [
+    {
+      "id": 42009,
+      "firstAirDate": "2011-12-04",
+      "genreIds": [
+        10765,
+        18,
+        9648
+      ],
+      "mediaType": "tv",
+      "name": "redacted-55",
+      "originCountry": [
+        "redacted-56"
+      ],
+      "originalLanguage": "en",
+      "originalName": "redacted-55",
+      "overview": "redacted-57",
+      "popularity": 2747.207,
+      "voteAverage": 8.3,
+      "voteCount": 6739,
+      "backdropPath": "/redacted/58.jpg",
+      "posterPath": "/redacted/59.jpg"
+    },
+    {
+      "id": 32573,
+      "firstAirDate": "2010-05-05",
+      "genreIds": [
+        18,
+        10759
+      ],
+      "mediaType": "tv",
+      "name": "redacted-60",
+      "originCountry": [
+        "redacted-56"
+      ],
+      "originalLanguage": "en",
+      "originalName": "redacted-60",
+      "overview": "redacted-61",
+      "popularity": 2035.007,
+      "voteAverage": 7.415,
+      "voteCount": 422,
+      "backdropPath": "/redacted/62.jpg",
+      "posterPath": "/redacted/63.jpg"
+    },
+    {
+      "id": 4620,
+      "firstAirDate": "2006-07-18",
+      "genreIds": [
+        10765,
+        35,
+        18
+      ],
+      "mediaType": "tv",
+      "name": "redacted-64",
+      "originCountry": [
+        "redacted-34"
+      ],
+      "originalLanguage": "en",
+      "originalName": "redacted-64",
+      "overview": "redacted-65",
+      "popularity": 2000.6194,
+      "voteAverage": 7.727,
+      "voteCount": 761,
+      "backdropPath": "/redacted/66.jpg",
+      "posterPath": "/redacted/67.jpg"
+    }
+  ]
+}

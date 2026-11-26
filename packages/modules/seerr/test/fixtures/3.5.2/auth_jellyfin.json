@@ -1,0 +1,22 @@
+{
+  "permissions": 32,
+  "warnings": [],
+  "id": 3,
+  "plexUsername": null,
+  "jellyfinUsername": "redacted",
+  "username": null,
+  "recoveryLinkExpirationDate": null,
+  "userType": 3,
+  "jellyfinUserId": "redacted",
+  "avatar": "/redacted/6",
+  "avatarETag": null,
+  "avatarVersion": null,
+  "movieQuotaLimit": null,
+  "movieQuotaDays": null,
+  "tvQuotaLimit": null,
+  "tvQuotaDays": null,
+  "createdAt": "2026-11-26T22:06:54.000Z",
+  "updatedAt": "2026-11-26T22:08:37.000Z",
+  "requestCount": 0,
+  "displayName": "redacted-7"
+}

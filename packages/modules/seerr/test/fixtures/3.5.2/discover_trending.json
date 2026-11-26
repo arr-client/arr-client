@@ -1,0 +1,109 @@
+{
+  "page": 1,
+  "totalPages": 500,
+  "totalResults": 10000,
+  "results": [
+    {
+      "id": 1458300,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        10752,
+        18
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-21",
+      "overview": "redacted-22",
+      "popularity": 62.9767,
+      "releaseDate": "2026-10-29",
+      "title": "redacted-21",
+      "video": false,
+      "voteAverage": 7.2,
+      "voteCount": 30,
+      "backdropPath": "/redacted/23.jpg",
+      "posterPath": "/redacted/24.jpg"
+    },
+    {
+      "id": 1003596,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        878,
+        28,
+        12
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-25",
+      "overview": "redacted-26",
+      "popularity": 261.3654,
+      "releaseDate": "2026-12-16",
+      "title": "redacted-25",
+      "video": false,
+      "voteAverage": 0,
+      "voteCount": 0,
+      "backdropPath": "/redacted/27.jpg",
+      "posterPath": "/redacted/28.jpg"
+    },
+    {
+      "id": 1280115,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        18
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-29",
+      "overview": "redacted-30",
+      "popularity": 50.9766,
+      "releaseDate": "2026-11-24",
+      "title": "redacted-29",
+      "video": false,
+      "voteAverage": 7.591,
+      "voteCount": 33,
+      "backdropPath": "/redacted/31.jpg",
+      "posterPath": "/redacted/32.jpg"
+    },
+    {
+      "id": 171802,
+      "firstAirDate": "2026-11-24",
+      "genreIds": [
+        10765,
+        18
+      ],
+      "mediaType": "tv",
+      "name": "redacted-33",
+      "originCountry": [
+        "redacted-34"
+      ],
+      "originalLanguage": "en",
+      "originalName": "redacted-33",
+      "overview": "redacted-35",
+      "popularity": 186.0669,
+      "voteAverage": 5.2,
+      "voteCount": 47,
+      "backdropPath": "/redacted/36.jpg",
+      "posterPath": "/redacted/37.jpg"
+    },
+    {
+      "id": 84773,
+      "firstAirDate": "2022-09-01",
+      "genreIds": [
+        10759,
+        10765
+      ],
+      "mediaType": "tv",
+      "name": "redacted-38",
+      "originCountry": [
+        "redacted-34"
+      ],
+      "originalLanguage": "en",
+      "originalName": "redacted-38",
+      "overview": "redacted-39",
+      "popularity": 1425.4718,
+      "voteAverage": 7.2,
+      "voteCount": 4152,
+      "backdropPath": "/redacted/40.jpg",
+      "posterPath": "/redacted/41.jpg"
+    }
+  ]
+}

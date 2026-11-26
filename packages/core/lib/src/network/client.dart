@@ -172,7 +172,7 @@ final class InstanceHttpClient implements ServiceHttpClient {
         'the certificate authority cannot be read',
       );
     }
-    return _exchange(
+    final result = await _exchange(
       client,
       request,
       settings,
@@ -180,6 +180,50 @@ final class InstanceHttpClient implements ServiceHttpClient {
       headers,
       _encodeBody(request.body),
     );
+    final check = _apiKeyHeader?.check;
+    return check != null &&
+            settings.authKind == AuthKind.apiKey &&
+            settings.credential.apiKey != null
+        ? _checkKey(check, settings, request, result)
+        : result;
+  }
+
+  /// [result] with the verdict of [check] on the key, where it is in doubt.
+  Future<Result<ServiceResponse, HttpError>> _checkKey(
+    ApiKeyCheck check,
+    ConnectionSettings settings,
+    ServiceRequest request,
+    Result<ServiceResponse, HttpError> result,
+  ) async {
+    if (result
+        case Err(
+          error: HttpError(
+            :final response?,
+            failure: final failure && (AuthFailed() || Forbidden()),
+          ),
+        )
+        when response.statusCode == 401 || check.refuses(response)) {
+      var rejected = true;
+      // The answer to the check itself needs no second one.
+      if (request.method != HttpMethod.get || request.path != check.path) {
+        final answer = await sendWith(
+          settings,
+          ServiceRequest(HttpMethod.get, check.path),
+        );
+        rejected = switch (answer) {
+          Err(error: HttpError(failure: AuthFailed())) => true,
+          _ => false,
+        };
+      }
+      if (rejected == failure is AuthFailed) return result;
+      return Err(
+        HttpError(
+          rejected ? const AuthFailed() : const Forbidden(),
+          response: response,
+        ),
+      );
+    }
+    return result;
   }
 
   /// The client of the trust that [settings] ask for.
