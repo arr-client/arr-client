@@ -96,6 +96,7 @@ QueueItem entry(
   String? downloadId = 'own',
   Duration? eta = const Duration(minutes: 5),
   bool needsManualImport = false,
+  ItemRef? parent,
 }) {
   final delayed = status == QueueStatus.delayed;
   return QueueItem(
@@ -117,6 +118,7 @@ QueueItem entry(
     quality: const Quality(id: 3, name: 'WEBDL-1080p'),
     downloadClient: delayed ? null : 'Torrents',
     needsManualImport: needsManualImport,
+    parent: parent,
   );
 }
 

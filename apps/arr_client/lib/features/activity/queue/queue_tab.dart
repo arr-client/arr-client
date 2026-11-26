@@ -103,7 +103,7 @@ class _QueueListState extends ConsumerState<_QueueList> {
           key: ValueKey(queue.instance.instance.id),
           queue: queue,
           onRetry: () =>
-              unawaited(controller.refresh(queue.instance.instance.id)),
+              unawaited(controller.retry(queue.instance.instance.id)),
         ),
     ];
 

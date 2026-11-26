@@ -7,16 +7,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../../src/l10n/generated/app_localizations.dart';
+import 'waiting_release.dart';
 
-/// Whether the server is holding the release back and has downloaded nothing.
-bool isWaitingRelease(QueueItem item) =>
-    (item.downloadId?.isEmpty ?? true) &&
-    switch (item.status) {
-      QueueStatus.delayed ||
-      QueueStatus.downloadClientUnavailable ||
-      QueueStatus.fallback => true,
-      _ => false,
-    };
+export 'waiting_release.dart' show isWaitingRelease;
 
 /// The entry's title, or a stand-in where the server gives none.
 String queueTitle(AppLocalizations strings, QueueItem item) =>

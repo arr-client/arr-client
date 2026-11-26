@@ -73,9 +73,8 @@ class _DetailsState extends ConsumerState<_Details> {
     }
     return StateScaffold<List<QueueItem>>(
       state: view,
-      onRetry: () => unawaited(
-        ref.read(queueProvider.notifier).refresh(widget.instanceId),
-      ),
+      onRetry: () =>
+          unawaited(ref.read(queueProvider.notifier).retry(widget.instanceId)),
       builder: (_, _, {required isStale}) {
         final id = widget.queueId;
         final item = id == null ? null : queue.item(id);
@@ -128,7 +127,7 @@ class _Entry extends StatelessWidget {
     final severity = queueSeverityLabel(strings, item.severity);
     final waiting = isWaitingRelease(item);
     final percent = queuePercent(context, item.progress);
-    final shared = queue.sharingDownload(item).length - 1;
+    final shared = queue.goingWith(item).length - 1;
 
     Widget fact(String label, String value) => Padding(
       padding: const EdgeInsets.only(top: 12),
@@ -207,7 +206,11 @@ class _Entry extends StatelessWidget {
             fact(strings.queueProtocol, protocol),
           if (shared > 0) ...[
             const SizedBox(height: 16),
-            Text(strings.queueSharedDownload(shared)),
+            Text(
+              waiting
+                  ? strings.queueSharedRelease(shared)
+                  : strings.queueSharedDownload(shared),
+            ),
           ],
           const SizedBox(height: 24),
           Wrap(

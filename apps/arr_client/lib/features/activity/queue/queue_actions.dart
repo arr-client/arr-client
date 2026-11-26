@@ -11,6 +11,7 @@ import '../../../src/l10n/generated/app_localizations.dart';
 import 'queue_controller.dart';
 import 'queue_labels.dart';
 import 'remove_choices.dart';
+import 'waiting_release.dart';
 
 /// An entry of an instance's queue.
 typedef QueueKey = ({String instanceId, int id});
@@ -47,13 +48,20 @@ Future<void> removeQueueEntries(
   if (batches.isEmpty) return;
 
   final entries = [for (final batch in batches) ...batch.items];
-  var others = 0;
+  // The entries that go too, though not selected.
+  var sharingDownload = 0;
+  var sharingRelease = 0;
   for (final batch in batches) {
-    final affected = {
-      for (final item in batch.items)
-        for (final shared in batch.queue.sharingDownload(item)) shared.id,
-    };
-    others += affected.length - batch.items.length;
+    final selectedIds = {for (final item in batch.items) item.id};
+    final downloads = <int>{};
+    final releases = <int>{};
+    for (final item in batch.items) {
+      (isWaitingRelease(item) ? releases : downloads).addAll([
+        for (final other in batch.queue.goingWith(item)) other.id,
+      ]);
+    }
+    sharingDownload += downloads.difference(selectedIds).length;
+    sharingRelease += releases.difference(selectedIds).length;
   }
   final named = state.queues.length > 1;
   final titles = [
@@ -81,7 +89,8 @@ Future<void> removeQueueEntries(
       hasDownload
           ? strings.queueRemoveConsequence(entries.length)
           : strings.queueRemoveWaitingConsequence(entries.length),
-      if (others > 0) strings.queueRemoveShared(others),
+      if (sharingDownload > 0) strings.queueRemoveShared(sharingDownload),
+      if (sharingRelease > 0) strings.queueRemoveSharedRelease(sharingRelease),
     ].join('\n\n'),
     confirmLabel: strings.queueRemoveConfirm(entries.length),
     options: RemoveChoices(
@@ -125,18 +134,24 @@ Future<void> removeQueueEntries(
       );
       continue;
     }
+    // One entry names a waiting release: the server drops all of its entries
+    // with it, and fails on the next one it is then asked for.
+    final namedReleases = <Object>{};
+    final ids = [
+      for (final item in present)
+        if (!isWaitingRelease(item) || namedReleases.add(queueGroup(item)))
+          item.id,
+    ];
+    final affected = {
+      for (final item in present)
+        for (final queue in [batch.queue, ?now])
+          for (final other in queue.goingWith(item)) other.id,
+    };
     actions.add(
       runAction<void>(
         context,
-        action: () => controller.remove(
-          instance,
-          [for (final item in present) item.id],
-          sent,
-          affected: {
-            for (final item in present)
-              for (final shared in batch.queue.sharingDownload(item)) shared.id,
-          },
-        ),
+        action: () =>
+            controller.remove(instance, ids, sent, affected: affected),
         acceptedMessage: strings.queueRemoveAccepted(name),
         describeFailure: (message) => strings.queueFailureOn(name, message),
         onRefresh: () => controller.refresh(id),
@@ -160,7 +175,11 @@ Future<void> grabQueueEntry(
   final name = queue.instance.instance.name;
   await runAction<void>(
     context,
-    action: () => controller.grabNow(queue.instance, item.id),
+    action: () => controller.grabNow(
+      queue.instance,
+      item.id,
+      affected: {for (final other in queue.goingWith(item)) other.id},
+    ),
     acceptedMessage: strings.queueGrabAccepted(name),
     describeFailure: (message) => strings.queueFailureOn(name, message),
     onRefresh: () => controller.refresh(id),

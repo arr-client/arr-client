@@ -384,7 +384,7 @@
   "@queueWaitingHaveNoDownload": {"description": "Note when a selection mixes downloads and delayed releases."},
   "queueBlocklist": "Block this release",
   "@queueBlocklist": {"description": "Choice of a removal: put the release on the blocklist."},
-  "queueBlocklistOn": "The release is added to the blocklist, so the server does not grab it again.",
+  "queueBlocklistOn": "The release is added to the blocklist, so the server does not grab it again. For a download, this happens only if the server grabbed it.",
   "@queueBlocklistOn": {"description": "What the choice does when ticked."},
   "queueBlocklistOff": "The release is not blocked and may be grabbed again.",
   "@queueBlocklistOff": {"description": "What happens when the choice is not ticked."},
@@ -403,5 +403,13 @@
   "queueAlreadyGone": "{name}: nothing was sent, as the entries have already left the queue.",
   "@queueAlreadyGone": {"description": "Entries vanished while the confirmation was open.", "placeholders": {"name": {"type": "String"}}},
   "queueServiceChanged": "{name}: nothing was sent, as the service was changed meanwhile.",
-  "@queueServiceChanged": {"description": "The service was edited or switched away from while the confirmation was open.", "placeholders": {"name": {"type": "String"}}}
+  "@queueServiceChanged": {"description": "The service was edited or switched away from while the confirmation was open.", "placeholders": {"name": {"type": "String"}}},
+  "queueBlocklistWaitingOn": "The release is added to the blocklist, so the server does not grab it again.",
+  "@queueBlocklistWaitingOn": {"description": "What blocking does for releases still waiting."},
+  "queueWaitingNoSearch": "Waiting releases get no replacement search.",
+  "@queueWaitingNoSearch": {"description": "Note when a selection mixes downloads and delayed releases."},
+  "queueSharedRelease": "{count, plural, one{{count} other queue entry waits for the same release.} other{{count} other queue entries wait for the same release.}}",
+  "@queueSharedRelease": {"description": "For example a delayed season pack.", "placeholders": {"count": {"type": "int", "format": "decimalPattern"}}},
+  "queueRemoveSharedRelease": "{count, plural, one{{count} other queue entry waits for the same release as this selection and is removed with it.} other{{count} other queue entries wait for the same release as this selection and are removed with it.}}",
+  "@queueRemoveSharedRelease": {"description": "Removing one entry of a waiting release removes all of them.", "placeholders": {"count": {"type": "int", "format": "decimalPattern"}}}
 }

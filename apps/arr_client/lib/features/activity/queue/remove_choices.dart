@@ -78,13 +78,15 @@ class _RemoveChoicesState extends State<RemoveChoices> {
         choice(
           value: _blocklist,
           title: strings.queueBlocklist,
-          effect: _blocklist
+          effect: !_blocklist
+              ? strings.queueBlocklistOff
+              : widget.hasDownload
               ? strings.queueBlocklistOn
-              : strings.queueBlocklistOff,
+              : strings.queueBlocklistWaitingOn,
           set: (value) => _blocklist = value,
         ),
         // The server makes no choice about this for a release it never grabbed.
-        if (_blocklist && widget.hasDownload)
+        if (_blocklist && widget.hasDownload) ...[
           choice(
             value: _search,
             title: strings.queueSearchReplacement,
@@ -93,6 +95,8 @@ class _RemoveChoicesState extends State<RemoveChoices> {
                 : strings.queueSearchReplacementOff,
             set: (value) => _search = value,
           ),
+          if (widget.hasWaiting) Text(strings.queueWaitingNoSearch),
+        ],
       ],
     );
   }

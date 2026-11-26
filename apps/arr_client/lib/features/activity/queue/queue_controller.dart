@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import 'waiting_release.dart';
 
 /// How long after an answer a queue is asked for again (research R11).
 const queuePollInterval = Duration(seconds: 4);
@@ -62,14 +63,13 @@ final class InstanceQueue {
   /// Whether a change may be offered for [id].
   bool canChange(int id) => !isStale && !busy.contains(id);
 
-  /// [item] and every other entry of the same download: what the server does to
-  /// one of them it does to all, as with a season pack.
-  List<QueueItem> sharingDownload(QueueItem item) {
-    final download = item.downloadId;
-    if (download == null || download.isEmpty) return [item];
+  /// The entries of [items] that what is done to [item] is done to as well,
+  /// itself included (see [queueGroup]).
+  List<QueueItem> goingWith(QueueItem item) {
+    final group = queueGroup(item);
     return [
       for (final other in items ?? const <QueueItem>[])
-        if (other.downloadId == download) other,
+        if (queueGroup(other) == group) other,
     ];
   }
 }
@@ -94,6 +94,7 @@ final class QueueState {
 final class QueueController extends Notifier<QueueState> {
   final _feeds = <String, _Feed>{};
   var _order = <String>[];
+  final _retrying = <String>{};
   var _watchers = 0;
   var _foreground = true;
   var _polling = false;
@@ -152,6 +153,40 @@ final class QueueController extends Notifier<QueueState> {
     ]);
   }
 
+  /// Reads [instanceId]'s queue at the user's request. After a rejected sign-in
+  /// this also has it try again, which nothing else here does.
+  Future<void> retry(String instanceId) async {
+    final feed = _feeds[instanceId];
+    if (feed == null ||
+        !(feed.instance.instance.authFailed || feed.failure is AuthFailed)) {
+      return refresh(instanceId);
+    }
+    if (!_retrying.add(instanceId)) return;
+    final services = ref.read(appServicesProvider);
+    final readsBefore = feed.reads;
+    try {
+      await services.profiles.retryAuth(instanceId);
+      await services.registry.refresh();
+      if (_disposed) return;
+      // This starts the read where the instance is now another or was latched.
+      _reconcile(services.registry.scope);
+      _publish();
+      final now = _feeds[instanceId];
+      if (now != null &&
+          now.reading == null &&
+          now.reads == (identical(now, feed) ? readsBefore : 0)) {
+        await _read(now..failures = 0);
+      }
+    } catch (error) {
+      services.log.log(
+        LogLevel.warning,
+        'A sign-in could not be retried (${error.runtimeType})',
+      );
+    } finally {
+      _retrying.remove(instanceId);
+    }
+  }
+
   /// Removes [ids] from the queue of [instance]. [affected] is every entry that
   /// goes with them. Sent once.
   ServiceResult<void> remove(
@@ -168,9 +203,13 @@ final class QueueController extends Notifier<QueueState> {
     },
   );
 
-  /// Grabs the delayed entry [id] of [instance] at once. Sent once.
-  ServiceResult<void> grabNow(ActiveInstance instance, int id) =>
-      _write(instance, {id}, (provider) => provider.grabNow(id));
+  /// Grabs the delayed entry [id] of [instance] at once. [affected] is every
+  /// entry that is grabbed with it. Sent once.
+  ServiceResult<void> grabNow(
+    ActiveInstance instance,
+    int id, {
+    required Set<int> affected,
+  }) => _write(instance, affected, (provider) => provider.grabNow(id));
 
   ServiceResult<void> _write(
     ActiveInstance instance,
@@ -287,6 +326,7 @@ final class QueueController extends Notifier<QueueState> {
       final scope = ref.read(appServicesProvider).registry.scope;
       if (scope == null) return;
       final generation = feed.generation;
+      feed.reads += 1;
       Result<List<QueueItem>, ServiceFailure>? result;
       await for (final answer in scope.aggregate(
         CapabilityKind.queue,
@@ -348,6 +388,9 @@ final class _Feed {
 
   /// Failed reads in a row.
   var failures = 0;
+
+  /// Counts the reads sent.
+  var reads = 0;
 
   /// Counts the changes sent.
   var generation = 0;

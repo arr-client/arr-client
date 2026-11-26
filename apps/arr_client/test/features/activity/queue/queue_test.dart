@@ -578,6 +578,160 @@ void main() {
     await app.stop(tester);
   });
 
+  QueueItem waiting(int id, {String title = 'Delayed pack', int series = 1}) =>
+      entry(
+        id,
+        title,
+        status: QueueStatus.delayed,
+        parent: ItemRef(
+          instanceId: 'films',
+          kind: MediaKind.series,
+          remoteId: series,
+        ),
+      );
+
+  testWidgets('removing one episode of a waiting pack says all go', (
+    tester,
+  ) async {
+    await start(tester);
+    films
+      ..items = [waiting(1), waiting(2)]
+      ..writeGate = Completer();
+    await open(tester);
+
+    await tester.tap(find.text('Delayed pack').first);
+    await step(tester);
+    expect(
+      find.text('1 other queue entry waits for the same release.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('shares'), findsNothing);
+    await tester.ensureVisible(button('Remove from queue'));
+    await step(tester);
+    await tester.tap(button('Remove from queue'));
+    await step(tester);
+    expect(
+      find.textContaining(
+        '1 other queue entry waits for the same release as this selection',
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('shares a download'), findsNothing);
+    await confirm(tester, 'Remove from queue');
+    expect(films.writes, [
+      'remove 1 client=false blocklist=false search=false',
+    ]);
+
+    // The other episode's entry is busy too.
+    app.services.navigator.router!.pop();
+    await step(tester);
+    for (final grab in tester.widgetList<TextButton>(button('Grab now'))) {
+      expect(grab.enabled, isFalse);
+    }
+    films.writeGate!.complete();
+    await step(tester);
+    await app.stop(tester);
+  });
+
+  testWidgets('a waiting pack is named once among several removals', (
+    tester,
+  ) async {
+    await start(tester);
+    films.items = [
+      waiting(1),
+      waiting(2),
+      // The same title for another series is another release.
+      waiting(3, series: 2),
+      entry(4, 'A film'),
+    ];
+    await open(tester);
+
+    await tester.tap(find.text('Select'));
+    await step(tester);
+    for (var i = 0; i < 3; i++) {
+      final row = find.text('Delayed pack').at(i);
+      await tester.ensureVisible(row);
+      await step(tester);
+      await tester.tap(row);
+    }
+    await tester.ensureVisible(find.text('A film'));
+    await step(tester);
+    await tester.tap(find.text('A film'));
+    await step(tester);
+    await tester.ensureVisible(button('Remove selected'));
+    await step(tester);
+    await tester.tap(button('Remove selected'));
+    await step(tester);
+
+    expect(find.textContaining('removed with it'), findsNothing);
+    expect(
+      find.text('Waiting releases get no replacement search.'),
+      findsNothing,
+    );
+    await tick(tester, 'Block this release');
+    expect(
+      find.text('Waiting releases get no replacement search.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('only if the server grabbed it'), findsOne);
+    await confirm(tester, 'Remove 4 entries');
+
+    expect(films.writes, [
+      'removeMany [1, 3, 4] client=true blocklist=true search=true',
+    ]);
+    await app.stop(tester);
+  });
+
+  testWidgets('a waiting pack cannot be grabbed twice', (tester) async {
+    await start(tester);
+    films
+      ..items = [waiting(1), waiting(2)]
+      ..writeGate = Completer();
+    await open(tester);
+
+    await tester.tap(button('Grab now').first);
+    await step(tester);
+
+    for (final grab in tester.widgetList<TextButton>(button('Grab now'))) {
+      expect(grab.enabled, isFalse);
+    }
+    films.writeGate!.complete();
+    await step(tester);
+    expect(films.writes, ['grab 1']);
+    await app.stop(tester);
+  });
+
+  for (final latched in [true, false]) {
+    testWidgets('Retry after a rejected sign-in tries once ($latched)', (
+      tester,
+    ) async {
+      await start(tester);
+      films.failure = const AuthFailed();
+      final id = app.services.registry.scope!.instances.single.instance.id;
+      if (latched) {
+        await app.services.profiles.markAuthFailed(id);
+        await app.services.registry.refresh();
+      }
+      await open(tester);
+      final reads = films.reads;
+      expect(reads, latched ? 0 : 1);
+
+      films
+        ..failure = null
+        ..items = [entry(1, 'A film')];
+      await tester.tap(button('Retry'));
+      await step(tester);
+
+      expect(films.reads, reads + 1);
+      expect(find.text('A film'), findsOneWidget);
+      final saved = await tester.runAsync(
+        () => app.services.profiles.instance(id),
+      );
+      expect(saved!.authFailed, isFalse);
+      await app.stop(tester);
+    });
+  }
+
   testWidgets('grabs a delayed entry once', (tester) async {
     await start(tester);
     films
