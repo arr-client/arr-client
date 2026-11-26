@@ -199,6 +199,10 @@ SubtitleCandidate candidateRecord(JsonObject record) => SubtitleCandidate(
   },
   matches: _texts(record['matches']),
   dontMatches: _texts(record['dont_matches']),
-  originalFormat: _requireString(record, 'original_format'),
+  // Bazarr 1.5 has none for a languages profile that never set it.
+  originalFormat: switch (record['original_format']) {
+    null => 'False',
+    _ => _requireString(record, 'original_format'),
+  },
   token: _requireString(record, 'subtitle'),
 );

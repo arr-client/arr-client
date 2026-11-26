@@ -152,6 +152,26 @@ void main() {
       expect(found.first.score, 87);
     });
 
+    // Bazarr 1.5 has none for a languages profile that never set it.
+    for (final (name, change)
+        in <(String, void Function(Map<String, Object?>))>[
+          ('null', (record) => record['original_format'] = null),
+          ('missing', (record) => record.remove('original_format')),
+        ]) {
+      test('reads a $name original format as False', () async {
+        final record = records('providers_movies', '1.5.0').first;
+        change(record);
+        final harness = Harness('1.5.0');
+        harness.server.routes['GET providers/movies'] = jsonAnswer({
+          'data': [record],
+        });
+
+        final found = await succeed(harness.subtitles.manualSearch(_movie));
+
+        expect(found.single.originalFormat, 'False');
+      });
+    }
+
     test('shows that nothing was found', () async {
       final harness = Harness();
       harness.server.routes['GET providers/movies'] = jsonAnswer({

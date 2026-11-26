@@ -39,6 +39,10 @@ const _unsupported = Validation([]);
 /// Bazarr 1.6 accepts a search, a download or a synchronization before doing
 /// it: success then means it was queued, and only the server's log tells
 /// whether it worked.
+///
+/// Bazarr 1.5 does the work before answering, and a write waits no longer than
+/// the client's limit. [OutcomeUnknown] from a search, a download or a
+/// synchronization may then mean that the server is still at it.
 final class BazarrSubtitleProvider implements SubtitleProvider {
   /// The subtitles of the instance [instanceId], through [_api].
   BazarrSubtitleProvider(this._api, this.instanceId);
