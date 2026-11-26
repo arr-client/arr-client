@@ -361,7 +361,9 @@ void main() {
     final newest = [for (var i = 8; i >= 4; i--) 'Import $i', 'An early film'];
     expect(rowsOf(tester, 'Downloaded today'), newest);
     expect(rowsOf(tester, 'Recently added'), newest);
-    expect(find.text('3 more not shown'), findsNWidgets(3));
+    // Of what is coming up and of today; how much there is of what was added
+    // lately is not known.
+    expect(find.text('3 more not shown'), findsNWidgets(2));
     expect(find.text('See all 9 downloads from today'), findsOneWidget);
     await home.stop(tester);
   });

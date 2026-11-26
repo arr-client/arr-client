@@ -23,7 +23,9 @@ class RecentlyAddedSection extends ConsumerWidget {
     final today = ref.watch(todayProvider);
     final answers = ref.watch(recentlyAddedProvider);
     if (answers == null || answers.isEmpty) return const SliverToBoxAdapter();
-    final (capped, left) = capEachService<ImportedItem>(
+    // How many are left out is not said: only one page of the history is read,
+    // so the number would not be how many there are.
+    final (capped, _) = capEachService<ImportedItem>(
       answers,
       (answer) => [
         for (final entry in importsNewestFirst([answer])) entry.item,
@@ -55,7 +57,6 @@ class RecentlyAddedSection extends ConsumerWidget {
             HomeSubheading(heading(days[index])),
           ImportTile(entry: entry, showService: answers.length > 1),
         ],
-        if (left > 0) HomeNote(strings.homeMoreNotShown(left)),
         if (imports.isEmpty && answers.anyRead)
           HomeNote(
             answers.allRead
