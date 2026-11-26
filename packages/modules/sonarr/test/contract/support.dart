@@ -541,6 +541,12 @@ class Harness {
 
   QueueProvider get queue => _capability<QueueProvider>();
 
+  CalendarProvider get calendar => _capability<CalendarProvider>();
+
+  WantedProvider get wanted => _capability<WantedProvider>();
+
+  HealthProvider get health => _capability<HealthProvider>();
+
   T _capability<T extends Capability>() {
     final found = SonarrModule().capability<T>(_context);
     expect(found, isNotNull, reason: 'Sonarr provides $T');

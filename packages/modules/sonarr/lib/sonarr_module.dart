@@ -5,9 +5,11 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:servarr/servarr.dart';
 
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
+import 'src/adapters/overview.dart';
 import 'src/api/sonarr_api.dart';
 
 // The app adds the delegate to its own, for the names the module supplies.
@@ -64,6 +66,9 @@ final class SonarrModule implements ServiceModule {
     CapabilityKind.lookup,
     CapabilityKind.queue,
     CapabilityKind.history,
+    CapabilityKind.calendar,
+    CapabilityKind.wanted,
+    CapabilityKind.health,
   };
 
   @override
@@ -76,6 +81,9 @@ final class SonarrModule implements ServiceModule {
       const (LookupProvider) => SonarrLookupAdapter(SonarrApi(context)),
       const (QueueProvider) => SonarrQueueAdapter(SonarrApi(context)),
       const (HistoryProvider) => SonarrHistoryAdapter(SonarrApi(context)),
+      const (CalendarProvider) => SonarrCalendarAdapter(SonarrApi(context)),
+      const (WantedProvider) => SonarrWantedAdapter(SonarrApi(context)),
+      const (HealthProvider) => ServarrHealth(SonarrApi(context).shared),
       _ => null,
     };
     return found as T?;
