@@ -3,6 +3,7 @@ library;
 
 export 'src/artwork/artwork_loader.dart';
 export 'src/cache/cache_entry.dart';
+export 'src/cache/cache_repository.dart';
 export 'src/cache/cache_scope.dart';
 export 'src/cache/cache_snapshot.dart';
 export 'src/cache/cached.dart';
