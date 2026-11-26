@@ -86,7 +86,8 @@ final class QueueState {
 }
 
 /// Reads the queues while a screen that shows them is visible and the app is in
-/// the foreground, and at no other time.
+/// the foreground, and at no other time. A screen that shows one instance's has
+/// only that one read.
 ///
 /// Each instance is read on its own, so that one that fails or is slow does not
 /// hold up the others, and has at most one read under way. An instance whose
@@ -95,9 +96,13 @@ final class QueueController extends Notifier<QueueState> {
   final _feeds = <String, _Feed>{};
   var _order = <String>[];
   final _retrying = <String>{};
+
+  /// The screens that show every queue.
   var _watchers = 0;
+
+  /// The screens that show one instance's, by the instance's id.
+  final _watchersOf = <String, int>{};
   var _foreground = true;
-  var _polling = false;
   var _disposed = false;
 
   @override
@@ -116,7 +121,6 @@ final class QueueController extends Notifier<QueueState> {
     });
     ref.onDispose(() {
       _disposed = true;
-      _polling = false;
       lifecycle.dispose();
       for (final feed in _feeds.values) {
         feed.timer?.cancel();
@@ -128,17 +132,29 @@ final class QueueController extends Notifier<QueueState> {
     return _snapshot();
   }
 
-  /// Says that a screen showing the queue has become visible. Call the returned
-  /// function once it no longer is.
-  void Function() watch() {
-    _watchers++;
+  /// Says that a screen showing the queue has become visible: every queue, or
+  /// [instanceId]'s only. Call the returned function once it no longer is.
+  void Function() watch([String? instanceId]) {
+    void count(int change) {
+      if (instanceId == null) {
+        _watchers += change;
+      } else {
+        _watchersOf.update(
+          instanceId,
+          (watchers) => watchers + change,
+          ifAbsent: () => change,
+        );
+      }
+    }
+
+    count(1);
     // Not at once: this is called while widgets are being built.
     scheduleMicrotask(_apply);
     var released = false;
     return () {
       if (released) return;
       released = true;
-      _watchers--;
+      count(-1);
       scheduleMicrotask(_apply);
     };
   }
@@ -240,7 +256,7 @@ final class QueueController extends Notifier<QueueState> {
           ..generation += 1
           ..failures = 0;
         _publish();
-        if (_polling) unawaited(_read(feed));
+        if (feed.polled) unawaited(_read(feed));
       }
     }
   }
@@ -253,22 +269,33 @@ final class QueueController extends Notifier<QueueState> {
     AppLifecycleState.detached => false,
   };
 
+  /// Whether the screens and the app now call for reading [instanceId]'s queue.
+  bool _wanted(String instanceId) =>
+      _foreground && (_watchers > 0 || (_watchersOf[instanceId] ?? 0) > 0);
+
   /// Starts or stops reading, as the screens and the app now call for.
   void _apply() {
     if (_disposed) return;
-    final polling = _watchers > 0 && _foreground;
-    if (polling == _polling) return;
-    _polling = polling;
-    if (polling) {
-      _reconcile(ref.read(appServicesProvider).registry.scope);
-      for (final feed in _feeds.values) {
-        feed.failures = 0;
-        unawaited(_read(feed));
-      }
-    } else {
-      for (final feed in _feeds.values) {
+    final changed = [
+      for (final feed in _feeds.values)
+        if (_wanted(feed.id) != feed.polled) feed,
+    ];
+    if (changed.isEmpty) return;
+    for (final feed in changed) {
+      feed.polled = !feed.polled;
+      if (!feed.polled) {
         feed.timer?.cancel();
         if (feed.items != null) feed.outdated = true;
+      }
+    }
+    final started = changed.where((feed) => feed.polled).toList();
+    if (started.isNotEmpty) {
+      _reconcile(ref.read(appServicesProvider).registry.scope);
+      for (final feed in started) {
+        // Not one that the reconciling has replaced and read.
+        if (identical(_feeds[feed.id], feed)) {
+          unawaited(_read(feed..failures = 0));
+        }
       }
     }
     _publish();
@@ -294,8 +321,8 @@ final class QueueController extends Notifier<QueueState> {
         feed = null;
       }
       if (feed == null) {
-        feed = _feeds[id] = _Feed(active);
-        if (_polling) unawaited(_read(feed));
+        feed = _feeds[id] = _Feed(active)..polled = _wanted(id);
+        if (feed.polled) unawaited(_read(feed));
         continue;
       }
       final wasLatched = feed.instance.instance.authFailed;
@@ -304,7 +331,7 @@ final class QueueController extends Notifier<QueueState> {
         feed
           ..failure = null
           ..failures = 0;
-        if (_polling) unawaited(_read(feed));
+        if (feed.polled) unawaited(_read(feed));
       }
     }
   }
@@ -348,7 +375,7 @@ final class QueueController extends Notifier<QueueState> {
             ..failure = null
             ..failures = 0
             // Reading may have stopped while this was under way.
-            ..outdated = !_polling && feed.outdated;
+            ..outdated = !feed.polled && feed.outdated;
         case Err(:final error):
           feed
             ..failure = error
@@ -356,7 +383,7 @@ final class QueueController extends Notifier<QueueState> {
       }
       feed.settling.clear();
       _publish();
-      if (_polling) {
+      if (feed.polled) {
         final pause = queuePollInterval * pow(2, min(feed.failures, 3)).toInt();
         feed.timer = Timer(
           pause > queueMaxPollInterval ? queueMaxPollInterval : pause,
@@ -385,6 +412,9 @@ final class _Feed {
   DateTime? fetchedAt;
   ServiceFailure? failure;
   var outdated = false;
+
+  /// Whether it is being read again and again.
+  var polled = false;
 
   /// Failed reads in a row.
   var failures = 0;
