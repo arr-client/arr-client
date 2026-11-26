@@ -12,6 +12,8 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'fake_library.dart';
+
 class MemorySecrets implements SecretStore {
   final values = <String, String>{};
 
@@ -44,16 +46,6 @@ class FakePermission implements LocalNetworkPermission {
       LocalNetworkPermissionState.notRequired;
 }
 
-class _Library implements LibraryProvider {
-  _Library(this.itemKind);
-
-  @override
-  final MediaKind itemKind;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}
-
 class _Request implements RequestProvider {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -79,6 +71,7 @@ class FakeModule implements ServiceModule {
     required this.offers,
     this.itemKind = MediaKind.movie,
     this.permissions = const {},
+    this.library,
   });
 
   @override
@@ -87,6 +80,9 @@ class FakeModule implements ServiceModule {
   final Set<CapabilityKind> offers;
   final MediaKind itemKind;
   final Set<ServicePermission> permissions;
+
+  /// The library of an instance; without it an empty one.
+  final LibraryProvider Function(InstanceContext context)? library;
 
   /// What a saved instance of this service was last found to offer.
   ProbeSnapshot get snapshot => ProbeSnapshot(
@@ -129,7 +125,8 @@ class FakeModule implements ServiceModule {
   @override
   T? capability<T extends Capability>(InstanceContext context) {
     final Capability? found = switch (T) {
-      const (LibraryProvider) => _Library(itemKind),
+      const (LibraryProvider) =>
+        library?.call(context) ?? FakeLibrary(itemKind: itemKind),
       const (RequestProvider) => _Request(),
       const (SubtitleProvider) => _Subtitles(context.instance.id),
       _ => null,

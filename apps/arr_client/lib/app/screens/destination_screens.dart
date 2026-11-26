@@ -1,6 +1,8 @@
 /// The primary destinations. What is offered of each follows the profile's
-/// capabilities; the content is not built yet.
+/// capabilities; apart from the library the content is not built yet.
 library;
+
+import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
 import '../../features/activity/queue/queue_tab.dart';
+import '../../features/library/library_controller.dart';
+import '../../features/library/library_view_body.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../navigation/destinations.dart';
 import '../navigation/locations.dart';
@@ -59,11 +63,35 @@ class LibraryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
+    final tabs = Navigation.of(ref.watch(scopeProvider)).libraryTabs;
+    final kinds = [
+      for (final tab in tabs)
+        switch (tab) {
+          LibraryTab.movies => MediaKind.movie,
+          LibraryTab.series => MediaKind.series,
+          LibraryTab.music => MediaKind.artist,
+          LibraryTab.books => MediaKind.author,
+        },
+    ];
     return _Tabbed(
       title: strings.navLibrary,
-      actions: _searchActions(context, ref),
+      actions: [
+        if (kinds.isNotEmpty)
+          // Pulling down does this too, which a screen reader cannot.
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: strings.libraryRefresh,
+              onPressed: () {
+                final kind = kinds[DefaultTabController.of(context).index];
+                unawaited(ref.read(libraryProvider(kind).notifier).refresh());
+              },
+            ),
+          ),
+        ..._searchActions(context, ref),
+      ],
       tabs: [
-        for (final tab in Navigation.of(ref.watch(scopeProvider)).libraryTabs)
+        for (final tab in tabs)
           switch (tab) {
             LibraryTab.movies => strings.tabMovies,
             LibraryTab.series => strings.tabSeries,
@@ -71,6 +99,7 @@ class LibraryScreen extends ConsumerWidget {
             LibraryTab.books => strings.tabBooks,
           },
       ],
+      views: [for (final kind in kinds) LibraryViewBody(kind: kind)],
     );
   }
 }
