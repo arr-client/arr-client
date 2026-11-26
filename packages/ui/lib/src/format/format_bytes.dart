@@ -3,6 +3,12 @@ import 'package:intl/intl.dart';
 
 import '../l10n/generated/ui_localizations.dart';
 
+/// A transfer speed in bytes per second, with the size as [formatBytes] writes
+/// it. [context] must be below the app's localizations.
+String formatSpeed(BuildContext context, int bytesPerSecond) =>
+    UiLocalizations.of(context)
+        .speedPerSecond(formatBytes(context, bytesPerSecond));
+
 /// A size in bytes, in the largest binary unit it has one of, with the viewer's
 /// number format. [context] must be below the app's localizations.
 String formatBytes(BuildContext context, int bytes) {
