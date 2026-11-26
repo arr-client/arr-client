@@ -56,16 +56,23 @@ final class RemoteClient {
 
   /// The answer to a `GET` of [url], whatever its status.
   ///
-  /// Throws if there is none, [url] is not [isRemoteAddress], or a redirect is
-  /// not followed. The text of what is thrown may quote an address: never
-  /// log or show it.
-  Future<ServiceResponse> get(Uri url) async {
+  /// [allowed] is asked before every request, that of each redirect included, as
+  /// the user may switch public hosts off while one is under way.
+  ///
+  /// Throws if there is none, [url] is not [isRemoteAddress], a redirect is not
+  /// followed, or [allowed] says no. The text of what is thrown may quote an
+  /// address: never log or show it.
+  Future<ServiceResponse> get(
+    Uri url, {
+    required bool Function() allowed,
+  }) async {
     final elapsed = Stopwatch()..start();
     var address = url;
     for (var redirects = 0; ; redirects++) {
       if (!isRemoteAddress(address)) {
         throw const HttpException('Not a public address');
       }
+      if (!allowed()) throw const HttpException('Switched off');
       final request = await _client.getUrl(address.removeFragment());
       // Followed here, so that every target is checked.
       request.followRedirects = false;

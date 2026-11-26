@@ -1,6 +1,8 @@
 /// Artwork of public hosts carries nothing of any instance (constitution III).
 library;
 
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:core/src/network/remote_client.dart';
 import 'package:flutter/painting.dart';
@@ -199,6 +201,35 @@ void main() {
     await pause();
     expect(server.connections, 0);
   });
+
+  test(
+    'a redirect answered after it was switched off is not followed',
+    () async {
+      final asked = Completer<void>();
+      final answer = Completer<void>();
+      final server = await TestServer.start((received, response) async {
+        if (received.target != '/poster') return picture(response, threePixels);
+        asked.complete();
+        await answer.future;
+        await reply(response, status: 302, headers: {'location': '/moved'});
+      });
+      var allowed = true;
+      final loaded = expectLater(
+        widthOf(
+          loader(loadRemote: () => allowed)
+              .image(remoteImage(server.url('/poster'))),
+        ),
+        throwsArtworkException,
+      );
+      await asked.future;
+      allowed = false;
+      answer.complete();
+
+      await loaded;
+      await pause();
+      expect(server.requests.map((r) => r.target), ['/poster']);
+    },
+  );
 
   test('what was saved of it is not shown while switched off', () async {
     final server = await pictureServer(twoPixels);

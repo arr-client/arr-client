@@ -193,7 +193,10 @@ final class _Loader implements ArtworkLoader {
     final int status;
     final Uint8List bytes;
     try {
-      final response = await _cache._remote.get(url);
+      final response = await _cache._remote.get(
+        url,
+        allowed: _cache._loadRemote,
+      );
       status = response.statusCode;
       bytes = response.bytes;
     } catch (error) {
