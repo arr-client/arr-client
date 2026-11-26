@@ -312,6 +312,30 @@ void main() {
       expect(_posted(harness)['tags'], isEmpty);
     });
 
+    // The search's own record says false.
+    test('without a choice of season folders, uses them', () async {
+      final harness = Harness();
+      final candidate = await _found(harness);
+      expect(candidate.sourceByInstance[instanceId]!['seasonFolder'], isFalse);
+
+      await ok(
+        harness.lookup.add(candidate, _choices(harness, seasonFolder: null)),
+      );
+
+      expect(_posted(harness)['seasonFolder'], isTrue);
+    });
+
+    test('sends nothing for a result the search showed as held', () async {
+      final harness = Harness();
+      final candidate = await _found(harness, 318408);
+
+      expect(
+        await failureOf(harness.lookup.add(candidate, _choices(harness))),
+        isA<Conflict>(),
+      );
+      expect(harness.server.writes, isEmpty);
+    });
+
     test('leaves the candidate as it was', () async {
       final harness = Harness();
       final candidate = await _found(harness);
@@ -348,7 +372,7 @@ void main() {
         await failureOf(
           harness.lookup.add(candidate, _choices(harness, rootFolderId: 99)),
         ),
-        anyOf(isA<NotFound>(), isA<Validation>()),
+        isA<Validation>(),
       );
       expect(harness.server.writes, isEmpty);
     });
@@ -490,6 +514,37 @@ void main() {
       expect(harness.server.writes, hasLength(1));
     });
 
+    for (final (name, codes, failure) in [
+      (
+        'because its folder is taken',
+        ['SeriesPathValidator'],
+        isA<Validation>(),
+      ),
+      (
+        'for several reasons, one that it exists',
+        ['QualityProfileExistsValidator', 'SeriesExistsValidator'],
+        isA<Conflict>(),
+      ),
+    ]) {
+      test(name, () async {
+        final harness = Harness();
+        final candidate = await _found(harness);
+        harness.server.addAnswer = FakeSonarr.body(
+          jsonEncode([
+            for (final code in codes) {'errorMessage': 'No', 'errorCode': code},
+          ]),
+          status: 400,
+          write: true,
+        );
+
+        expect(
+          await failureOf(harness.lookup.add(candidate, _choices(harness))),
+          failure,
+        );
+        expect(harness.server.writes, hasLength(1));
+      });
+    }
+
     test('for the quality profile is a validation failure', () async {
       final harness = Harness();
 
@@ -590,7 +645,7 @@ void main() {
 
         expect(
           await failureOf(harness.lookup.add(candidate, _choices(harness))),
-          anyOf(isA<OutcomeUnknown>(), isA<MalformedResponse>()),
+          isA<OutcomeUnknown>(),
         );
         expect(harness.server.writes, hasLength(1));
       });

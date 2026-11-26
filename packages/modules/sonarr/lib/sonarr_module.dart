@@ -7,7 +7,11 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
 import 'src/adapters/library.dart';
+import 'src/adapters/lookup.dart';
 import 'src/api/sonarr_api.dart';
+
+// The app adds the delegate to its own, for the names the module supplies.
+export 'src/l10n/generated/sonarr_localizations.dart' show SonarrLocalizations;
 
 const _product = 'Sonarr';
 
@@ -57,6 +61,7 @@ final class SonarrModule implements ServiceModule {
     SessionInfo? session,
   ) => const {
     CapabilityKind.library,
+    CapabilityKind.lookup,
     CapabilityKind.queue,
     CapabilityKind.history,
   };
@@ -68,6 +73,7 @@ final class SonarrModule implements ServiceModule {
         SonarrApi(context),
         context.cache,
       ),
+      const (LookupProvider) => SonarrLookupAdapter(SonarrApi(context)),
       const (QueueProvider) => SonarrQueueAdapter(SonarrApi(context)),
       const (HistoryProvider) => SonarrHistoryAdapter(SonarrApi(context)),
       _ => null,
