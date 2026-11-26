@@ -11,6 +11,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart' show IconData;
 import 'package:flutter_test/flutter_test.dart';
 
+import '../network/certificates.dart';
 import '../network/support.dart';
 
 const _user = 'zq-user-111';
@@ -46,6 +47,8 @@ class _Handler implements SessionHandler {
     return switch (result) {
       Err(:final error) => Err(error.failure),
       Ok(:final value) when value.text == 'Fails.' => const Err(AuthFailed()),
+      // An acceptance without a session.
+      Ok(:final value) when value.text == 'Ok.' => const Ok(''),
       Ok(:final value) => Ok(
         value.headers['set-cookie']!.single.split(';').first,
       ),
@@ -69,6 +72,9 @@ class _Service {
 
   /// Paths answered with this status whatever the session.
   final fixed = <String, int>{};
+
+  /// Answers logins in place of the account.
+  Future<void> Function(HttpResponse response)? answerLogin;
 
   /// Runs before a request is answered.
   Future<void> Function(Received received)? before;
@@ -98,6 +104,7 @@ class _Service {
       return reply(response, status: status);
     }
     if (path.endsWith('auth/login')) {
+      if (answerLogin case final answer?) return answer(response);
       if (Uri.splitQueryString(received.body)['password'] != password) {
         return reply(response, body: 'Fails.', contentType: 'text/plain');
       }
@@ -439,6 +446,257 @@ void main() {
       service.fixed['auth/login'] = 502;
 
       _refusal<OutcomeUnknown>(await session().login());
+    });
+  });
+
+  group('a login that failed after it was sent', () {
+    const interval = InstanceSession.reloginInterval;
+    const second = Duration(seconds: 1);
+
+    // What a request reports, and what a login asked for does.
+    for (final (name, answer, reported, asked)
+        in <(String, Future<void> Function(HttpResponse), Matcher, Matcher)>[
+          (
+            'with a server error',
+            (response) => reply(response, status: 500),
+            isA<ServerError>(),
+            isA<ServerError>(),
+          ),
+          (
+            'with an unknown outcome',
+            (response) => reply(response, status: 502),
+            isA<Unreachable>(),
+            isA<OutcomeUnknown>(),
+          ),
+          (
+            'as the host name is refused',
+            (response) => reply(response, status: 421),
+            isA<HostRejected>(),
+            isA<HostRejected>(),
+          ),
+          (
+            'at a proxy page',
+            (response) => reply(response, contentType: 'text/html'),
+            isA<ProxyInterception>(),
+            isA<ProxyInterception>(),
+          ),
+          (
+            'with a redirect',
+            (response) => reply(
+              response,
+              status: 302,
+              headers: {'location': '/elsewhere'},
+            ),
+            isA<Redirected>(),
+            isA<Redirected>(),
+          ),
+          (
+            'with an answer that is not understood',
+            reply,
+            isA<MalformedResponse>(),
+            isA<MalformedResponse>(),
+          ),
+          (
+            'as no session came with the acceptance',
+            (response) =>
+                reply(response, body: 'Ok.', contentType: 'text/plain'),
+            isA<MalformedResponse>(),
+            isA<MalformedResponse>(),
+          ),
+        ]) {
+      test('$name is not sent again for an interval', () async {
+        service.answerLogin = answer;
+        final client = session();
+        Future<void> fails(ServiceRequest request) async =>
+            expect(expectError(await client.send(request)).failure, reported);
+
+        for (final request in [_read(), _write(), _read('other'), _write()]) {
+          await fails(request);
+        }
+        wait(interval - second);
+        await fails(_read());
+
+        expect(service.logins, hasLength(1));
+        expect(service.calls, isEmpty);
+        expect(await latched(), isFalse);
+
+        wait(second);
+        await fails(_read());
+        await fails(_read());
+        expect(service.logins, hasLength(2));
+
+        final result = await client.login();
+        expect(result, isA<Err<void, ServiceFailure>>());
+        expect((result as Err<void, ServiceFailure>).error, asked);
+        expect(service.logins, hasLength(3));
+      });
+    }
+
+    late InstanceSession client;
+
+    /// One request has failed to sign in, and the server has recovered.
+    Future<void> failOnce() async {
+      service.fixed['auth/login'] = 500;
+      client = session();
+      expectFailure<ServerError>(await client.send(_read()));
+      service.fixed.clear();
+    }
+
+    test('is sent again when the interval has passed', () async {
+      await failOnce();
+      expectFailure<ServerError>(await client.send(_read()));
+
+      wait(interval);
+      expectOk(await client.send(_read()));
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('is sent at once when the user asks', () async {
+      await failOnce();
+
+      _expectSignedIn(await client.login());
+      expectOk(await client.send(_read()));
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('is held back again when what the user asked for fails', () async {
+      await failOnce();
+      service.fixed['auth/login'] = 503;
+
+      _refusal<ServerError>(await client.login());
+      expectFailure<ServerError>(await client.send(_read()));
+
+      expect(service.logins, hasLength(2));
+    });
+
+    for (final (name, change) in <(String, Future<void> Function())>[
+      (
+        'password',
+        () => edit(
+          credential: const Credential(username: _user, password: 'edited'),
+        ),
+      ),
+      (
+        'custom headers',
+        () => edit(
+          credential: const Credential(
+            username: _user,
+            password: _password,
+            customHeaders: {'X-Proxy-Id': 'zq-proxy'},
+          ),
+        ),
+      ),
+      ('address', () => edit(url: service.server.url('/sub'))),
+    ]) {
+      test('is sent at once after an edit of the $name', () async {
+        await failOnce();
+        service.answerLogin = (response) => reply(response, status: 500);
+
+        await change();
+        expectFailure<ServerError>(await client.send(_read()));
+        expectFailure<ServerError>(await client.send(_read()));
+
+        expect(service.logins, hasLength(2));
+      });
+    }
+
+    test('is still held back after an edit of nothing it uses', () async {
+      await failOnce();
+
+      await edit(credential: _entered);
+      expectFailure<ServerError>(await client.send(_read()));
+
+      expect(service.logins, hasLength(1));
+    });
+
+    test('does not keep a session another has got from use', () async {
+      await failOnce();
+
+      _expectSignedIn(await session().login());
+      expectOk(await client.send(_read()));
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('is not held longer by a clock set back', () async {
+      await failOnce();
+
+      wait(-interval);
+      expectOk(await client.send(_read()));
+    });
+
+    test('is shared by requests made at the same time', () async {
+      service.fixed['auth/login'] = 500;
+      final client = session();
+
+      final results = await Future.wait([
+        for (var i = 0; i < 5; i++) client.send(_read()),
+      ]);
+
+      results.forEach(expectFailure<ServerError>);
+      expect(service.logins, hasLength(1));
+    });
+
+    test('holds back writes after an expired session too', () async {
+      final client = session();
+      expectOk(await client.send(_read()));
+      service.sessions.clear();
+      service.fixed['auth/login'] = 502;
+      // The read cannot renew, the write discards the session.
+      expectFailure<Unreachable>(await client.send(_read()));
+      expectFailure<Forbidden>(await client.send(_write()));
+
+      expectFailure<Unreachable>(await client.send(_write()));
+      expectFailure<Unreachable>(await client.send(_read()));
+
+      expect(service.logins, hasLength(2));
+    });
+
+    test('as the session cannot be stored is held back too', () async {
+      secrets.beforeWrite = () => throw const FileSystemException('locked');
+      final client = session();
+
+      expectFailure<Unreachable>(await client.send(_read()));
+      expectFailure<Unreachable>(await client.send(_read()));
+
+      expect(service.logins, hasLength(1));
+    });
+  });
+
+  group('a login that was not sent is tried again at once', () {
+    Future<void> triedTwice<F extends ServiceFailure>(Uri url) async {
+      await edit(url: url);
+      final client = session();
+
+      expectFailure<F>(await client.send(_read()));
+      expectFailure<F>(await client.send(_read()));
+
+      expect(handler.given, hasLength(2));
+    }
+
+    test('with nothing listening', () async {
+      final socket = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final port = socket.port;
+      await socket.close();
+
+      await triedTwice<Unreachable>(Uri.parse('http://127.0.0.1:$port'));
+    });
+
+    test('with an unknown host', () async {
+      // Too long a label to be asked of any name server.
+      await triedTwice<DnsFailure>(Uri.parse('http://${'a' * 64}.invalid'));
+    });
+
+    test('with an untrusted certificate', () async {
+      final server = await TlsServer.start(
+        TestCertificate.selfSigned.serverContext(),
+      );
+
+      await triedTwice<CertificateUntrusted>(server.url());
+
+      expect(server.bytes, isEmpty);
     });
   });
 

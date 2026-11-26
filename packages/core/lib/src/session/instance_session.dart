@@ -1,5 +1,6 @@
 import '../instances/auth_kind.dart';
 import '../instances/credential.dart';
+import '../instances/credential_json.dart';
 import '../instances/instance_rules.dart';
 import '../instances/profile_repository.dart';
 import '../logging/diagnostic_log.dart';
@@ -41,6 +42,13 @@ import '../platform/local_network_permission.dart';
 /// sign-in until it has succeeded or [refusedRetryInterval] has passed. Until
 /// then such a read fails with the server's answer.
 ///
+/// A sign-in can also fail without being rejected, for example with a server
+/// error, an answer that is not understood or a session that cannot be stored.
+/// If something may have been sent, none is made for [reloginInterval]: what
+/// needs one fails with the same failure and nothing is sent. [login] and an
+/// edit of the address, trust or credential do not wait. This is not stored, so
+/// another object, as after a restart, may try at once.
+///
 /// Make one for each instance and isolate. The latch and the session are read
 /// from storage for every request, so another isolate, with its own database
 /// connection, honours and uses what this one stored. Only requests of one
@@ -71,8 +79,9 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
          timeout: timeout,
        );
 
-  /// The least time between two sign-ins made because a session expired. Short,
-  /// as a session that has really expired waits for it too.
+  /// The least time between two sign-ins made because a session expired, and
+  /// how long after a failed sign-in none is made. Short, as a session that has
+  /// really expired waits for it too.
   static const reloginInterval = Duration(minutes: 1);
 
   /// How long a path that refused a new session causes no sign-in.
@@ -90,6 +99,9 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   /// A rejection that could not be stored. Nothing is sent until it is.
   InstanceAccess? _unrecorded;
 
+  /// The last sign-in that sent something and failed without a rejection.
+  ({_SignInSettings settings, ServiceFailure failure, DateTime at})? _failed;
+
   /// When an expired session was last signed in again.
   DateTime? _renewedAt;
 
@@ -100,7 +112,11 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
   void close() => _client.close();
 
   @override
-  ServiceResult<void> login() => _signIn(replace: true);
+  ServiceResult<void> login() {
+    // The user asks, so a sign-in joined here must not be held back either.
+    _failed = null;
+    return _signIn(replace: true);
+  }
 
   @override
   Future<Result<ServiceResponse, HttpError>> send(
@@ -237,19 +253,48 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
     if (credential.username == null && credential.password == null) {
       return const Err(AuthFailed());
     }
+    // The password must not be sent at the rate of polling. [login] has
+    // forgotten the failure, so this never holds back the user.
+    final settings = _settingsOf(used);
+    if (_failed case final failed?
+        when failed.settings == settings &&
+            _isWithin(reloginInterval, failed.at)) {
+      return Err(failed.failure);
+    }
 
     // Counted whatever comes of it, as the password is sent.
     if (stale != null) _renewedAt = _now();
 
+    final http = _LoginClient(
+      _client,
+      ConnectionSettings.saved(used.instance, credential),
+    );
+    final result = await _logIn(handler, used, credential, http);
+    _failed = switch (result) {
+      // A rejection latches instead.
+      Err(:final error) when http.mayHaveSent && error is! AuthFailed => (
+        settings: settings,
+        failure: error,
+        at: _now(),
+      ),
+      _ => null,
+    };
+    return result;
+  }
+
+  /// Sends the login over [http] and stores the session it gives.
+  ServiceResult<void> _logIn(
+    SessionHandler handler,
+    InstanceAccess used,
+    Credential credential,
+    ServiceHttpClient http,
+  ) async {
     final Result<String, ServiceFailure> answer;
     try {
       answer = await handler.login(
         authKind: used.instance.authKind,
         credential: credential,
-        http: _LoginClient(
-          _client,
-          ConnectionSettings.saved(used.instance, credential),
-        ),
+        http: http,
       );
     } catch (error) {
       _warn('Signing in failed', error);
@@ -273,6 +318,16 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
         }
     }
   }
+
+  static _SignInSettings _settingsOf(InstanceAccess access) => (
+    url: access.instance.url,
+    authKind: access.instance.authKind,
+    certPin: access.instance.certPin,
+    customCa: access.instance.customCa,
+    entered: encodeCredential(
+      withSession(access.credential ?? const Credential(), null),
+    ),
+  );
 
   bool _isExpired(
     SessionHandler handler,
@@ -319,6 +374,16 @@ final class InstanceSession implements ServiceHttpClient, SessionAuthenticator {
       _log.log(LogLevel.warning, '$message (${error.runtimeType})');
 }
 
+/// Where and with what a sign-in is made, to compare. Holds secrets: never log
+/// it.
+typedef _SignInSettings = ({
+  Uri url,
+  AuthKind authKind,
+  String? certPin,
+  String? customCa,
+  String entered,
+});
+
 /// What a [SessionHandler] signs in over: one address and credential, however
 /// the instance is edited meanwhile, and no session.
 final class _LoginClient implements ServiceHttpClient {
@@ -327,7 +392,33 @@ final class _LoginClient implements ServiceHttpClient {
   final InstanceHttpClient _client;
   final ConnectionSettings _settings;
 
+  /// Whether any request of this sign-in may have reached the server.
+  bool mayHaveSent = false;
+
   @override
-  Future<Result<ServiceResponse, HttpError>> send(ServiceRequest request) =>
-      _client.sendWith(_settings, request);
+  Future<Result<ServiceResponse, HttpError>> send(
+    ServiceRequest request,
+  ) async {
+    final result = await _client.sendWith(_settings, request);
+    mayHaveSent = mayHaveSent || !_isUnsent(result);
+    return result;
+  }
+
+  /// Whether [result] shows that nothing was sent. For the POST of a login
+  /// these failures mean that: once connected it fails with [OutcomeUnknown].
+  static bool _isUnsent(Result<ServiceResponse, HttpError> result) =>
+      switch (result) {
+        Err(error: HttpError(response: null, :final failure)) =>
+          switch (failure) {
+            Unreachable() ||
+            DnsFailure() ||
+            CertificateUntrusted() ||
+            CertificateChanged() ||
+            PermissionDenied() ||
+            // A header that cannot be sent.
+            Validation() => true,
+            _ => false,
+          },
+        _ => false,
+      };
 }
