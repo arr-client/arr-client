@@ -49,6 +49,7 @@ final class SearchState {
   /// Creates a [SearchState].
   const SearchState({
     this.query,
+    this.listing,
     this.results,
     this.fetchedAt,
     this.failure,
@@ -57,6 +58,11 @@ final class SearchState {
 
   /// What was asked for; null before the first search.
   final SearchQuery? query;
+
+  /// Stands for the list of results of [query]: the same while that query is
+  /// searched again, another for another query. The list's place is kept
+  /// under it.
+  final Object? listing;
 
   /// As last found for [query], in the server's order; null if it has not
   /// succeeded.
@@ -101,11 +107,13 @@ final class SearchController extends Notifier<SearchState> {
     // What was found for another query goes; what was found for this one stays
     // until the server answers.
     final same = state.query == query;
+    final listing = same ? state.listing : Object();
     final results = same ? state.results : null;
     final fetchedAt = same ? state.fetchedAt : null;
     ref.read(grabsProvider.notifier).forgetAccepted(source.instanceId);
     state = SearchState(
       query: query,
+      listing: listing,
       results: results,
       fetchedAt: fetchedAt,
       searching: true,
@@ -121,11 +129,13 @@ final class SearchController extends Notifier<SearchState> {
     state = switch (answer) {
       Ok(:final value) => SearchState(
         query: query,
+        listing: listing,
         results: List.unmodifiable(value),
         fetchedAt: DateTime.now(),
       ),
       Err(:final error) => SearchState(
         query: query,
+        listing: listing,
         results: results,
         fetchedAt: fetchedAt,
         // The server's own words can quote an indexer's address.

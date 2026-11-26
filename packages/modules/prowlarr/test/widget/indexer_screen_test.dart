@@ -293,6 +293,36 @@ void main() {
     expect(harness.server.sent, isNot(contains('GET search')));
   });
 
+  testWidgets('keeps the place in the results, for that query only', (
+    tester,
+  ) async {
+    await _open(tester, size: const Size(400, 600));
+    await _search(tester);
+    double place() => tester
+        .state<ScrollableState>(
+          find.descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          ),
+        )
+        .position
+        .pixels;
+
+    await tester.drag(find.byType(ListView), const Offset(0, -300));
+    await tester.pumpAndSettle();
+    final left = place();
+    expect(left, greaterThan(0));
+
+    await tester.tap(find.widgetWithText(Tab, 'Indexers'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(Tab, 'Search'));
+    await tester.pumpAndSettle();
+    expect(place(), left);
+
+    await _search(tester, 'b');
+    expect(place(), 0);
+  });
+
   testWidgets('nothing is grabbed from results being searched again', (
     tester,
   ) async {

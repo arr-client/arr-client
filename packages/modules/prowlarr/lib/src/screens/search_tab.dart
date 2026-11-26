@@ -181,8 +181,9 @@ class SearchTab extends ConsumerWidget {
       isEmpty: (results) => results.isEmpty,
       emptyMessage: strings.searchNone,
       builder: (context, results, {required isStale}) => _Results(
-        // Another query's results start at the top.
-        key: ObjectKey(search.query),
+        // Kept over a change of tab. Another query's results have another
+        // key, so they start at the top.
+        key: PageStorageKey(search.listing),
         source: source,
         results: results,
         order: order,
