@@ -14,6 +14,13 @@ abstract interface class LookupProvider implements Capability {
   /// Items matching [term], of every kind in [itemKinds].
   ServiceResult<List<AddCandidate>> lookup(String term);
 
+  /// What this instance answers now for [candidate], found by a shared
+  /// identifier, whichever instance or search it came from. Its `existingRefs`
+  /// says whether this instance has the item, and its `sourceByInstance` holds
+  /// the record that [add] posts. `NotFound` if this instance's search does not
+  /// give it, or [candidate] has no identifier it can be looked up by.
+  ServiceResult<AddCandidate> find(AddCandidate candidate);
+
   /// The choices for adding an item of one of [itemKinds].
   ServiceResult<AddOptions> addOptions(MediaKind kind);
 

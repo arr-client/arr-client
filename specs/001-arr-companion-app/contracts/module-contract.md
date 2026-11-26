@@ -76,7 +76,7 @@ their own HTTP clients or read secure storage directly. Session-based services r
 | Capability | Operations | Providers |
 |---|---|---|
 | LibraryProvider | list, get, children, cachedList, cachedItem, cachedChildren, files, options, credits, setMonitored, applyMonitorOption, edit, bulkEdit, delete, deleteFile | sonarr radarr lidarr readarr |
-| LookupProvider | lookup, addOptions(kind), add | sonarr radarr lidarr readarr |
+| LookupProvider | lookup, find(candidate), addOptions(kind), add | sonarr radarr lidarr readarr |
 | CommandProvider | search, refresh, rescan, commandStatus | sonarr radarr lidarr readarr |
 | ReleaseProvider | releases(target), grab | sonarr radarr lidarr readarr |
 | QueueProvider | queue, remove, removeMany, grabNow, importCandidates, importChoices, reprocess, import | sonarr radarr lidarr readarr |
