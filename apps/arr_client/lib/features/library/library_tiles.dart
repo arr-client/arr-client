@@ -11,7 +11,6 @@ import 'package:ui/ui.dart';
 
 import '../../src/l10n/generated/app_localizations.dart';
 import 'library_entry.dart';
-import 'library_poster.dart';
 import 'library_query.dart';
 import 'state_appearance.dart';
 
@@ -142,7 +141,12 @@ class LibraryGridTile extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: LibraryPoster(item: item, artwork: artwork, width: width),
+              child: ArtworkPoster(
+                kind: item.ref.kind,
+                images: item.images,
+                artwork: artwork,
+                width: width,
+              ),
             ),
           ),
           const SizedBox(height: 4),
@@ -246,8 +250,9 @@ class LibraryListTile extends StatelessWidget {
                 child: SizedBox(
                   width: _posterWidth,
                   height: _posterWidth * 1.5,
-                  child: LibraryPoster(
-                    item: item,
+                  child: ArtworkPoster(
+                    kind: item.ref.kind,
+                    images: item.images,
                     artwork: artwork,
                     width: _posterWidth,
                   ),

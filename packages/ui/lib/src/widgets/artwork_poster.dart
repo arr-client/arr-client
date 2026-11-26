@@ -3,18 +3,27 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// The poster or cover of an item, or a placeholder where there is none to
+/// The poster or cover of a title, or a placeholder where there is none to
 /// load. It fills the space it is given and is decoded at about that size.
-class LibraryPoster extends StatelessWidget {
-  const LibraryPoster({
-    required this.item,
+class ArtworkPoster extends StatelessWidget {
+  /// Creates an [ArtworkPoster].
+  const ArtworkPoster({
+    required this.kind,
+    required this.images,
     required this.artwork,
     required this.width,
     super.key,
   });
 
-  final LibraryItem item;
-  final ArtworkLoader artwork;
+  /// What the title is, which chooses the placeholder's icon.
+  final MediaKind kind;
+
+  /// The title's artwork, of which the poster or else the cover is shown.
+  final List<MediaImage> images;
+
+  /// Loads [images]: that of the instance they are from. Without it the
+  /// placeholder is shown.
+  final ArtworkLoader? artwork;
 
   /// About how wide it is shown, in logical pixels.
   final double width;
@@ -29,7 +38,7 @@ class LibraryPoster extends StatelessWidget {
     final placeholder = ColoredBox(
       color: colors.surfaceContainerHighest,
       child: Center(
-        child: Icon(switch (item.ref.kind) {
+        child: Icon(switch (kind) {
           MediaKind.series || MediaKind.episode => Icons.tv_outlined,
           MediaKind.artist ||
           MediaKind.album ||
@@ -40,13 +49,11 @@ class LibraryPoster extends StatelessWidget {
       ),
     );
     final picture =
-        item.images
+        images
             .where((image) => image.type == MediaImageType.poster)
             .firstOrNull ??
-        item.images
-            .where((image) => image.type == MediaImageType.cover)
-            .firstOrNull;
-    final source = picture == null ? null : artwork.image(picture);
+        images.where((image) => image.type == MediaImageType.cover).firstOrNull;
+    final source = picture == null ? null : artwork?.image(picture);
     if (source == null) return placeholder;
     final pixels = width * MediaQuery.devicePixelRatioOf(context);
     final image = ResizeImage(
