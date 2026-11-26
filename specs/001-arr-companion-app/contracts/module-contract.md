@@ -49,6 +49,13 @@ through module ids or hard-coded route strings. Each returns a `ModuleRoute`:
 in secure storage, re-authenticates once for reads when the module's `isSessionExpired(response)`
 says so (401/403 for most), and asks the user when it cannot. A rejected login sets
 `Instance.authFailed`; no further automatic login or authenticated request is made while it is set.
+A login that fails in any other way does not set it. If something may have been sent (for example a
+server error, a rejected host name, a proxy page, a redirect, an unknown outcome, an unrecognised
+answer, or a session that cannot be stored), no automatic login is made for one minute: requests that
+need one get the same failure and nothing is sent (a request that was not sent never reports
+`outcomeUnknown`, but `unreachable`). A login the user asks for, or an edit of the address,
+certificate trust or credential, does not wait. A failure where nothing was sent (no connection, DNS,
+certificate, local network permission) holds nothing back. This is kept in memory only.
 
 `capabilitiesFor` results are persisted (data-model Instance.lastProbe) so navigation and cached
 screens work at an offline launch.
