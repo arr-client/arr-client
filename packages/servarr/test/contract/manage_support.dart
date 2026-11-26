@@ -7,11 +7,15 @@
 //   /// The releases the indexers have for [target], the query that names it,
 //   /// such as `{'movieId': 1}`, in the server's order. Without a target the
 //   /// server answers with its RSS feeds, so an empty one sends nothing and
-//   /// fails with `Validation`. The request waits 2 minutes for its answer, as
+//   /// fails with `Validation`. Each release keeps the target as its
+//   /// `searchTarget`. The request waits 2 minutes for its answer, as
 //   /// the server asks its indexers while it is open.
 //   ServiceResult<List<Release>> releases(Map<String, int> target);
 //
-//   /// Has the server download [release], rejected or not.
+//   /// Has the server download [release], rejected or not. If its
+//   /// `downloadAllowed` is false the server could not match it, and its
+//   /// `searchTarget` is sent too: `movieId`, `episodeId`, or `seriesId` and
+//   /// `seasonNumber`, and no other field.
 //   ServiceResult<void> grab(Release release);
 //
 //   /// Starts the command [name] on [target], the fields that say what it

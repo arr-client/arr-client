@@ -15,6 +15,7 @@ final class Release {
     required this.size,
     required this.ageHours,
     required this.rawJson,
+    this.searchTarget = const {},
     this.quality,
     this.seeders,
     this.leechers,
@@ -64,4 +65,10 @@ final class Release {
 
   /// Grab sends back what the service requires.
   final JsonObject rawJson;
+
+  /// What the search that found the release asked for, as the service names
+  /// it, such as `{'movieId': 1}`. Set by the search, and for grab alone: a
+  /// service that could not match the release needs it to know what the
+  /// release is for. It is not what the release was found to be.
+  final Map<String, int> searchTarget;
 }

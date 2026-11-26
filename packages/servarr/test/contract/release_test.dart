@@ -19,6 +19,19 @@ final _searches = [
   ),
 ];
 
+/// A release the server could not match, found by searching for [target].
+Release _unmatched(Map<String, int> target) => Release(
+  guid: _picked.guid,
+  indexerId: _picked.indexerId,
+  indexer: _picked.indexer,
+  title: _picked.title,
+  protocol: _picked.protocol,
+  size: _picked.size,
+  ageHours: _picked.ageHours,
+  rawJson: const {'downloadAllowed': false},
+  searchTarget: target,
+);
+
 Map<String, int> _target(Service service) =>
     service == radarr ? const {'movieId': 1} : const {'episodeId': 1};
 
@@ -112,6 +125,39 @@ void main() {
               {'id': language.id, 'name': language.name},
           ], record['languages']);
           expect(release.rawJson, record);
+          expect(release.searchTarget, target);
+        }
+      });
+
+      // As the server's controller decides: a release it could not match is
+      // refused unless the grab says what it is for.
+      test('grabs every release found, matched or not', () async {
+        final found = await _releases(
+          service,
+          service.fixture(fixture),
+          target,
+        );
+        expect(found.map((r) => r.rawJson['downloadAllowed']).toSet(), {
+          true,
+          false,
+        });
+
+        for (final release in found) {
+          final allowed = release.rawJson['downloadAllowed']! as bool;
+          final server = FakeServer((request) {
+            final sent = sentBody(request)! as JsonObject;
+            return allowed || target.keys.every(sent.containsKey)
+                ? Reply.json(sent)
+                : refusal(404, 'Will need to be manually provided');
+          });
+
+          await value(service.client(server).grab(release));
+
+          expect(sentBody(server.requests.single), {
+            'guid': release.guid,
+            'indexerId': release.indexerId,
+            if (!allowed) ...target,
+          });
         }
       });
     });
@@ -234,8 +280,11 @@ void main() {
           service,
           service.fixture('manage_releases'),
         );
+        // Rejected, but matched: `downloadAllowed` is about the match alone.
         final rejected = releases.firstWhere(
-          (release) => release.rejections.isNotEmpty,
+          (release) =>
+              release.rejections.isNotEmpty &&
+              release.rawJson['downloadAllowed'] == true,
         );
         final server = routes({'POST release': Reply.json(rejected.rawJson)});
 
@@ -246,6 +295,66 @@ void main() {
           'indexerId': rejected.indexerId,
         });
       });
+
+      test('keeps the target as it was searched', () async {
+        final target = Map.of(_target(service));
+        final found = await _releases(
+          service,
+          service.fixture('manage_releases'),
+          target,
+        );
+
+        target.clear();
+
+        expect(found.first.searchTarget, _target(service));
+      });
+
+      for (final (name, found, sent) in [
+        (
+          'season 0 for a release of the specials',
+          _unmatched(const {'seriesId': 2, 'seasonNumber': 0}),
+          {'seriesId': 2, 'seasonNumber': 0},
+        ),
+        (
+          'no field of the target that would change the grab',
+          _unmatched(const {
+            'movieId': 1,
+            'downloadClientId': 3,
+            'shouldOverride': 1,
+            'indexerId': 9,
+          }),
+          {'movieId': 1},
+        ),
+        ('two fields without a target', _unmatched(const {}), <String, int>{}),
+        (
+          'two fields when the server does not say it could not match',
+          const Release(
+            guid: 'http://redacted.invalid/9',
+            indexerId: 2,
+            indexer: 'Example',
+            title: 'Some.Release-GRP',
+            protocol: DownloadProtocol.torrent,
+            size: 1,
+            ageHours: 1,
+            rawJson: {},
+            searchTarget: {'movieId': 1},
+          ),
+          <String, int>{},
+        ),
+      ]) {
+        test('sends $name', () async {
+          // The union of the services' lists permits each of these targets.
+          final server = routes({'POST release': Reply.json(found.rawJson)});
+
+          await value(service.client(server).grab(found));
+
+          expect(sentBody(server.requests.single), {
+            'guid': found.guid,
+            'indexerId': 2,
+            ...sent,
+          });
+        });
+      }
 
       for (final (name, reply, expected) in [
         (

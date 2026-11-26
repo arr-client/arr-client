@@ -3,9 +3,9 @@ import 'package:core/core.dart';
 import '../json_reading.dart';
 import '../records/quality_record.dart';
 
-/// A record of `GET release`. Without its guid and indexer it cannot be
-/// grabbed, so it is not understood.
-Release releaseRecord(JsonObject record) => Release(
+/// A record of `GET release`, found by searching for [target]. Without its guid
+/// and indexer it cannot be grabbed, so it is not understood.
+Release releaseRecord(JsonObject record, Map<String, int> target) => Release(
   guid: requireString(record, 'guid'),
   indexerId: requireInt(record, 'indexerId'),
   indexer: optionalString(record, 'indexer') ?? '',
@@ -30,4 +30,5 @@ Release releaseRecord(JsonObject record) => Release(
       ...rejections.whereType<String>(),
   ],
   rawJson: record,
+  searchTarget: target,
 );

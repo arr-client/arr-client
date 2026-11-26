@@ -15,9 +15,13 @@ sealed class BodyRule {
 
   /// A JSON object whose fields named in [fields] satisfy their rules. Other
   /// fields are free, since an edit sends back the whole resource, but none may
-  /// differ from a named one only in case: servers may ignore case.
-  const factory BodyRule.jsonObject(Map<String, ParamRule> fields) =
-      _JsonObject;
+  /// differ from a named one only in case: servers may ignore case. With
+  /// [closed] there may be no other field, for a request in which a further one
+  /// would ask for something else.
+  const factory BodyRule.jsonObject(
+    Map<String, ParamRule> fields, {
+    bool closed,
+  }) = _JsonObject;
 
   /// A form with no field outside [fields].
   const factory BodyRule.form(Map<String, ParamRule> fields) = _Form;
@@ -41,15 +45,17 @@ final class _AnyJson extends BodyRule {
 }
 
 final class _JsonObject extends BodyRule {
-  const _JsonObject(this.fields);
+  const _JsonObject(this.fields, {this.closed = false});
 
   final Map<String, ParamRule> fields;
+  final bool closed;
 
   @override
   bool permits(RequestBody? body) {
     if (body is! JsonBody) return false;
     final sent = _asSent(body.value);
     if (sent is! Map<String, Object?>) return false;
+    if (closed && !sent.keys.every(fields.containsKey)) return false;
 
     final lowerCased = {for (final name in fields.keys) name.toLowerCase()};
     final disguised = sent.keys.any(

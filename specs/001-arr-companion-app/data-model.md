@@ -129,7 +129,8 @@ candidate first looks it up on that instance by external id; that rawJson is pos
 
 ### Release
 guid, indexerId, indexer, title, protocol (torrent, usenet), size, ageHours, quality, languages[],
-score, seeders?, leechers?, rejections[], rawJson. Grab sends back what the service requires.
+score, seeders?, leechers?, rejections[], rawJson, searchTarget (what the search asked for, set by
+the search). Grab sends back what the service requires.
 
 ### QueueItem
 id, downloadId?, itemRef?, parent? (series, artist or author of itemRef), title, status, trackedState,

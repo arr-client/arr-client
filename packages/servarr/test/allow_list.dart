@@ -89,14 +89,24 @@ final _manage = [
     'api/v3/release',
     query: {'seriesId': _nonEmpty, 'seasonNumber': _nonEmpty},
   ),
-  AllowedRequest.write(
-    HttpMethod.post,
-    'api/v3/release',
-    body: const BodyRule.jsonObject({
-      'guid': _nonEmpty,
-      'indexerId': _nonEmpty,
-    }),
-  ),
+  // A grab names the release; for one the server could not match, also what
+  // was searched for. Any further field could make it download as something
+  // else.
+  for (final target in const <List<String>>[
+    [],
+    ['movieId'],
+    ['episodeId'],
+    ['seriesId', 'seasonNumber'],
+  ])
+    AllowedRequest.write(
+      HttpMethod.post,
+      'api/v3/release',
+      body: BodyRule.jsonObject({
+        'guid': _nonEmpty,
+        'indexerId': _nonEmpty,
+        for (final field in target) field: _nonEmpty,
+      }, closed: true),
+    ),
   _command('MoviesSearch', ['movieIds']),
   _command('RefreshMovie', ['movieIds']),
   _command('RescanMovie', ['movieId']),

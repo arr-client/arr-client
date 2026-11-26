@@ -5,6 +5,10 @@ part of '../servarr_client.dart';
 /// seconds.
 const _searchTimeout = Duration(minutes: 2);
 
+/// The fields of a search target that a grab may send. The server takes further
+/// ones that change what it does with a release.
+const _grabTargetFields = ['movieId', 'episodeId', 'seriesId', 'seasonNumber'];
+
 /// Interactive search and grab, commands, and edits.
 ///
 /// A write is sent once. What a successful one answers is not read, but for
@@ -12,28 +16,43 @@ const _searchTimeout = Duration(minutes: 2);
 /// cannot be understood is [OutcomeUnknown].
 mixin _ServarrManage on _ServarrActivity {
   /// The releases the indexers have for [target], the query that names it,
-  /// such as `{'movieId': 1}`, in the server's order.
+  /// such as `{'movieId': 1}`, in the server's order. Each keeps [target] as
+  /// its [Release.searchTarget].
   ///
   /// Without a target the server answers with its RSS feeds, so an empty one
   /// sends nothing and fails with [Validation].
   ServiceResult<List<Release>> releases(Map<String, int> target) async {
     if (target.isEmpty) return const Err(Validation([]));
+    // A copy, as the caller may change its own.
+    final searched = Map<String, int>.unmodifiable(target);
     return _client._send(
       HttpMethod.get,
       'release',
-      (json) => asObjects(json).map(releaseRecord).toList(),
+      (json) => [
+        for (final record in asObjects(json)) releaseRecord(record, searched),
+      ],
       query: {
-        for (final MapEntry(:key, :value) in target.entries) key: ['$value'],
+        for (final MapEntry(:key, :value) in searched.entries) key: ['$value'],
       },
       timeout: _searchTimeout,
     );
   }
 
   /// Has the server download [release], rejected or not.
+  ///
+  /// A release the server could not match (`downloadAllowed` is false) is sent
+  /// with its [Release.searchTarget], as the web UI does once the user has
+  /// confirmed: the server then takes it to be what was searched for.
   ServiceResult<void> grab(Release release) => _accepted(
     'release',
     asObject,
-    JsonBody({'guid': release.guid, 'indexerId': release.indexerId}),
+    JsonBody({
+      'guid': release.guid,
+      'indexerId': release.indexerId,
+      if (release.rawJson['downloadAllowed'] == false)
+        for (final field in _grabTargetFields)
+          field: ?release.searchTarget[field],
+    }),
   );
 
   /// Starts the command [name] on [target], the fields that say what it acts
