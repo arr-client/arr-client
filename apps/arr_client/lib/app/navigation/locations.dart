@@ -76,12 +76,37 @@ String instanceFlowLocation(String instanceId, InstanceFlow flow) =>
 /// Where the history of [ref] is.
 String itemHistoryLocation(ItemRef ref) => Uri(
   path: instanceFlowLocation(ref.instanceId, InstanceFlow.history),
-  queryParameters: {'kind': ref.kind.name, 'item': '${ref.remoteId}'},
+  queryParameters: _itemQuery(ref),
 ).toString();
 
-/// The item that the query of an [itemHistoryLocation] names, or null if it
-/// names none.
-ItemRef? itemHistoryRef(String instanceId, Map<String, String> query) {
+/// Where the release search for [target] is.
+String releasesLocation(MediaTarget target) => Uri(
+  path: instanceFlowLocation(target.item.instanceId, InstanceFlow.releases),
+  queryParameters: {
+    ..._itemQuery(target.item),
+    if (target.seasonNumber case final number?) 'season': '$number',
+  },
+).toString();
+
+/// What the query of a [releasesLocation] names, or null if it names nothing.
+/// A season that cannot be read is not left out, which would widen the search.
+MediaTarget? releaseTarget(String instanceId, Map<String, String> query) {
+  final item = itemQueryRef(instanceId, query);
+  if (item == null) return null;
+  final season = query['season'];
+  if (season == null) return MediaTarget(item);
+  final number = int.tryParse(season);
+  return number == null ? null : MediaTarget(item, seasonNumber: number);
+}
+
+Map<String, String> _itemQuery(ItemRef ref) => {
+  'kind': ref.kind.name,
+  'item': '${ref.remoteId}',
+};
+
+/// The item that the query of an [itemHistoryLocation] or a [releasesLocation]
+/// names, or null if it names none.
+ItemRef? itemQueryRef(String instanceId, Map<String, String> query) {
   final kind = MediaKind.values.asNameMap()[query['kind']];
   final id = int.tryParse(query['item'] ?? '');
   return kind == null || id == null

@@ -31,4 +31,5 @@ Release releaseRecord(JsonObject record, Map<String, int> target) => Release(
   ],
   rawJson: record,
   searchTarget: target,
+  downloadAllowed: record['downloadAllowed'] != false,
 );

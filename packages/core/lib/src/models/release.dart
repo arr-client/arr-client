@@ -16,6 +16,7 @@ final class Release {
     required this.ageHours,
     required this.rawJson,
     this.searchTarget = const {},
+    this.downloadAllowed = true,
     this.quality,
     this.seeders,
     this.leechers,
@@ -71,4 +72,9 @@ final class Release {
   /// service that could not match the release needs it to know what the
   /// release is for. It is not what the release was found to be.
   final Map<String, int> searchTarget;
+
+  /// False when the service could not match the release to what it holds. A
+  /// grab then tells it to take the release as [searchTarget], so the user is
+  /// asked to confirm it first.
+  final bool downloadAllowed;
 }

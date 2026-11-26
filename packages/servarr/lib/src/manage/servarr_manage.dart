@@ -40,7 +40,7 @@ mixin _ServarrManage on _ServarrActivity {
 
   /// Has the server download [release], rejected or not.
   ///
-  /// A release the server could not match (`downloadAllowed` is false) is sent
+  /// A release the server could not match ([Release.downloadAllowed]) is sent
   /// with its [Release.searchTarget], as the web UI does once the user has
   /// confirmed: the server then takes it to be what was searched for.
   ServiceResult<void> grab(Release release) => _accepted(
@@ -49,7 +49,7 @@ mixin _ServarrManage on _ServarrActivity {
     JsonBody({
       'guid': release.guid,
       'indexerId': release.indexerId,
-      if (release.rawJson['downloadAllowed'] == false)
+      if (!release.downloadAllowed)
         for (final field in _grabTargetFields)
           field: ?release.searchTarget[field],
     }),

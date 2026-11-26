@@ -30,6 +30,7 @@ Release _unmatched(Map<String, int> target) => Release(
   ageHours: _picked.ageHours,
   rawJson: const {'downloadAllowed': false},
   searchTarget: target,
+  downloadAllowed: false,
 );
 
 Map<String, int> _target(Service service) =>
@@ -126,6 +127,7 @@ void main() {
           ], record['languages']);
           expect(release.rawJson, record);
           expect(release.searchTarget, target);
+          expect(release.downloadAllowed, record['downloadAllowed']);
         }
       });
 
