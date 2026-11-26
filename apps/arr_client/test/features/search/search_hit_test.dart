@@ -87,6 +87,28 @@ void main() {
     expect(hit.artworkInstanceId, 'b');
   });
 
+  test('artwork an instance serves wins, whichever answers first', () {
+    // Shown only while artwork of other hosts is allowed.
+    final remote = MediaImage(
+      type: MediaImageType.poster,
+      remoteUrl: Uri.parse('https://images.invalid/alien.jpg'),
+    );
+    const served = MediaImage(
+      type: MediaImageType.poster,
+      instancePath: 'api/v3/mediacover/3/poster.jpg',
+    );
+    final without = found('a', tmdb: 1, images: [remote]);
+    final holding = found('b', tmdb: 1, heldAs: 3, images: [served]);
+
+    for (final hits in [
+      mergeHits([without], [holding]),
+      mergeHits([holding], [without]),
+    ]) {
+      expect(hits.single.images, [served]);
+      expect(hits.single.artworkInstanceId, 'b');
+    }
+  });
+
   test('without a shared identifier results stay apart', () {
     expect(mergeHits([], [found('a'), found('b')]), hasLength(2));
     expect(

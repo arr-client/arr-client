@@ -117,11 +117,15 @@ final class SearchHit {
   }
 
   /// This title with what [other] knows of it. What is already shown stays;
-  /// [other] only fills gaps.
+  /// [other] only fills gaps. Artwork an instance serves itself also replaces
+  /// artwork of other hosts only, which the user may have switched off.
   SearchHit mergedWith(SearchHit other) {
     final mine = externalIds;
     final theirs = other.externalIds;
-    final keepImages = images.isNotEmpty;
+    bool served(List<MediaImage> images) =>
+        images.any((image) => image.instancePath != null);
+    final keepImages =
+        images.isNotEmpty && (served(images) || !served(other.images));
     return SearchHit._(
       kind: kind,
       title: title,
