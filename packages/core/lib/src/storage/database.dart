@@ -227,6 +227,16 @@ class CacheFetches extends Table {
   Set<Column<Object>> get primaryKey => {instanceId, kind, parentRemoteId};
 }
 
+/// data-model.md PendingSecretDeletion. Keys only, never a secret.
+@DataClassName('PendingSecretDeletionRow')
+class PendingSecretDeletions extends Table {
+  /// A key of secure storage. Not a foreign key: what it belonged to is gone.
+  TextColumn get secretKey => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {secretKey};
+}
+
 /// The app's database, for the repositories in core.
 ///
 /// Times are stored as ISO 8601 text; write them in UTC. Deleting a profile or
@@ -243,6 +253,7 @@ class CacheFetches extends Table {
     EventMarkers,
     CacheEntries,
     CacheFetches,
+    PendingSecretDeletions,
   ],
 )
 class AppDatabase extends _$AppDatabase {

@@ -47,6 +47,9 @@
 ///
 ///   Future<List<Instance>> instances(String profileId); // by sortOrder
 ///   Future<Instance?> instance(String id);
+///   // Both from one transaction, for sending requests.
+///   Future<({Instance instance, Credential? credential})?>
+///     instanceWithCredential(String id);
 ///   Future<Result<Instance, RuleViolation>> addInstance(
 ///     String profileId, InstanceDraft draft,
 ///     {Credential credential = const Credential()});
@@ -83,9 +86,13 @@
 ///   before the secret store or the caller gets them, also if refused.
 /// - A secret read or write that fails throws and changes nothing, but new
 ///   credentials can be saved over ones that cannot be read. A failed secret
-///   delete is logged and does not stop the deletion of records.
+///   delete is logged, does not stop the deletion of records, and is retried by
+///   `ensureDefaultProfile`.
+/// - Secrets are erased only after the deletion of their records is saved, and
+///   after a failed change they are put back before any other change runs.
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:core/core.dart';
@@ -135,19 +142,19 @@ class _SecretStore implements SecretStore {
   final values = <String, String>{};
 
   /// Each runs before its operation; may throw to make it fail.
-  void Function(String key)? beforeRead;
-  void Function(String key)? beforeWrite;
+  FutureOr<void> Function(String key)? beforeRead;
+  FutureOr<void> Function(String key)? beforeWrite;
   void Function(String key)? beforeDelete;
 
   @override
   Future<String?> read(String key) async {
-    beforeRead?.call(key);
+    await beforeRead?.call(key);
     return values[key];
   }
 
   @override
   Future<void> write(String key, String value) async {
-    beforeWrite?.call(key);
+    await beforeWrite?.call(key);
     values[key] = value;
   }
 
@@ -1303,6 +1310,194 @@ void main() {
       secrets.values['cred/${instance.id}'] = '{"apiKey": "zq-alpha-1';
 
       expect(await repository.credential(instance.id), isNull);
+    });
+  });
+
+  group('erasing secrets', () {
+    late Instance movies;
+    late Instance other;
+
+    setUp(() async {
+      movies = await add(_draft(), credential: _credential);
+      other = await add(_draft(name: 'Other'), credential: _credential);
+    });
+
+    Future<List<String>> pending() async => [
+      for (final row
+          in await database.select(database.pendingSecretDeletions).get())
+        row.secretKey,
+    ];
+
+    /// Makes the database refuse to delete from [table].
+    Future<void> refuseDelete(String table) => database.customStatement(
+      'CREATE TRIGGER refuse BEFORE DELETE ON $table '
+      "BEGIN SELECT RAISE(ABORT, 'refused'); END",
+    );
+
+    void locked(String key) => throw const FileSystemException('locked');
+
+    test('waits until an instance is really deleted', () async {
+      await refuseDelete('instances');
+
+      await expectLater(
+        repository.deleteInstance(movies.id),
+        throwsA(anything),
+      );
+
+      expect(await repository.instance(movies.id), isNotNull);
+      expect(
+        _fields(await repository.credential(movies.id)),
+        _fields(_credential),
+      );
+      expect(await pending(), isEmpty);
+    });
+
+    test('waits until a profile is really deleted', () async {
+      _value(await repository.createProfile('Away'));
+      await refuseDelete('profiles');
+
+      await expectLater(repository.deleteProfile(home.id), throwsA(anything));
+
+      expect(secrets.values, hasLength(2));
+      expect(await pending(), isEmpty);
+    });
+
+    test('that fails is done at a later launch', () async {
+      secrets.beforeDelete = locked;
+      await repository.deleteInstance(movies.id);
+      expect(await pending(), ['cred/${movies.id}']);
+
+      // A launch at which the store still fails.
+      await open(database).ensureDefaultProfile();
+      expect(secrets.values, hasLength(2));
+      expect(await pending(), ['cred/${movies.id}']);
+
+      secrets.beforeDelete = null;
+      await open(database).ensureDefaultProfile();
+
+      expect(secrets.values.keys, ['cred/${other.id}']);
+      expect(await pending(), isEmpty);
+    });
+
+    test('of a deleted profile is retried too', () async {
+      _value(await repository.createProfile('Away'));
+      secrets.beforeDelete = locked;
+      _done(await repository.deleteProfile(home.id));
+      expect(
+        await pending(),
+        unorderedEquals(['cred/${movies.id}', 'cred/${other.id}']),
+      );
+
+      secrets.beforeDelete = null;
+      await repository.ensureDefaultProfile();
+
+      expect(secrets.values, isEmpty);
+      expect(await pending(), isEmpty);
+    });
+
+    test('never takes the secret of an instance that exists', () async {
+      // As if an instance had been restored with the id of a deleted one.
+      await database
+          .into(database.pendingSecretDeletions)
+          .insert(
+            PendingSecretDeletionsCompanion.insert(
+              secretKey: 'cred/${movies.id}',
+            ),
+          );
+
+      await repository.ensureDefaultProfile();
+
+      expect(
+        _fields(await repository.credential(movies.id)),
+        _fields(_credential),
+      );
+      expect(await pending(), isEmpty);
+    });
+
+    test('left by a failed copy is done at a later launch', () async {
+      var writes = 0;
+      secrets.beforeWrite = (key) {
+        if (++writes == 2) locked(key);
+      };
+      secrets.beforeDelete = locked;
+      await expectLater(
+        repository.copyProfile(home.id, name: 'Away'),
+        throwsA(isA<FileSystemException>()),
+      );
+      expect(secrets.values, hasLength(3));
+
+      secrets.beforeDelete = null;
+      await repository.ensureDefaultProfile();
+
+      expect(
+        secrets.values.keys,
+        unorderedEquals(['cred/${movies.id}', 'cred/${other.id}']),
+      );
+      expect(await pending(), isEmpty);
+    });
+  });
+
+  group('changes made at the same time', () {
+    late Instance instance;
+
+    setUp(() async {
+      instance = await add(_draft(), credential: _credential);
+    });
+
+    Future<void> pause() =>
+        Future<void>.delayed(const Duration(milliseconds: 50));
+
+    test('do not run while a failed one is being undone', () async {
+      await database.customStatement(
+        'CREATE TRIGGER refuse BEFORE UPDATE ON instances '
+        "WHEN new.name = 'Refused' "
+        "BEGIN SELECT RAISE(ABORT, 'refused'); END",
+      );
+      var writes = 0;
+      // The second write puts the old session back; make that slow.
+      secrets.beforeWrite = (_) => ++writes == 2 ? pause() : null;
+
+      final failing = expectLater(
+        repository.updateInstance(
+          instance.id,
+          _draft(name: 'Refused', url: 'https://first.test'),
+        ),
+        throwsA(anything),
+      );
+      final queued = update(instance, _draft(url: 'https://second.test'));
+      await Future.wait([failing, queued]);
+
+      expect((await stored(instance)).url, Uri.parse('https://second.test'));
+      expect((await repository.credential(instance.id))!.sessionCookie, isNull);
+    });
+
+    test('do not come between an instance and its credential', () async {
+      secrets.beforeRead = (_) {
+        secrets.beforeRead = null;
+        return pause();
+      };
+
+      final read = repository.instanceWithCredential(instance.id);
+      final edit = update(
+        instance,
+        _draft(url: 'https://other.test'),
+        credential: const Credential(apiKey: 'zq-hotel-888'),
+      );
+
+      final before = (await read)!;
+      expect(before.instance.url, instance.url);
+      expect(_fields(before.credential), _fields(_credential));
+
+      await edit;
+      final after = (await repository.instanceWithCredential(instance.id))!;
+      expect(after.instance.url, Uri.parse('https://other.test'));
+      expect(after.credential!.apiKey, 'zq-hotel-888');
+    });
+
+    test('leave nothing to read of a deleted instance', () async {
+      await repository.deleteInstance(instance.id);
+
+      expect(await repository.instanceWithCredential(instance.id), isNull);
     });
   });
 

@@ -36,8 +36,8 @@ import 'uuid.dart';
 /// - A failed read or write throws what the store threw, and the change is not
 ///   made. Saving new credentials works even if the old ones cannot be read.
 /// - A failed delete does not keep an instance or profile from being deleted.
-///   It is logged, and the secret, which nothing reads any more, stays in the
-///   store.
+///   It is logged, and [ensureDefaultProfile] tries again at later launches
+///   until the secret is erased.
 class ProfileRepository {
   /// Creates a [ProfileRepository]. [preferences] must use the same [database].
   /// [modules] are the registered ones. [now] dates the instances.
@@ -59,17 +59,24 @@ class ProfileRepository {
   final Map<String, ModuleDescriptor> _modules;
   final DateTime Function() _now;
 
-  /// Creates the first profile if there is none, and makes a profile active if
-  /// none is. Call at every launch.
-  Future<void> ensureDefaultProfile() => _database.transaction(() async {
-    final existing = await profiles();
-    final first = existing.isEmpty
-        ? await _insertProfile(_defaultName, existing)
-        : existing.first;
-    if ((await _preferences.read()).activeProfileId == null) {
-      await _preferences.setActiveProfile(first.id);
-    }
-  });
+  /// Creates the first profile if there is none, makes a profile active if none
+  /// is, and erases the secrets of deleted instances that are still stored.
+  /// Call at every launch.
+  Future<void> ensureDefaultProfile() async {
+    await _database.transaction(() async {
+      final existing = await profiles();
+      final first = existing.isEmpty
+          ? await _insertProfile(_defaultName, existing)
+          : existing.first;
+      if ((await _preferences.read()).activeProfileId == null) {
+        await _preferences.setActiveProfile(first.id);
+      }
+    });
+    final pending = await _database
+        .select(_database.pendingSecretDeletions)
+        .get();
+    await _erase([for (final row in pending) row.secretKey]);
+  }
 
   /// All profiles, in their order.
   Future<List<Profile>> profiles() async {
@@ -172,16 +179,17 @@ class ProfileRepository {
 
   /// Deletes a profile with its instances and everything of theirs. If it was
   /// active, the first remaining one becomes active.
-  Future<Result<void, RuleViolation>> deleteProfile(String id) =>
-      _database.transaction(() async {
+  Future<Result<void, RuleViolation>> deleteProfile(String id) async {
+    final keys = <String>[];
+    final result = await _database.transaction<Result<void, RuleViolation>>(
+      () async {
         final existing = await profiles();
         if (!existing.any((profile) => profile.id == id)) return const Ok(null);
         if (existing.length == 1) return const Err(RuleViolation.lastProfile);
 
         final active = (await _preferences.read()).activeProfileId;
-        for (final row in await _instanceRows(id)) {
-          await _deleteSecret(row.id);
-        }
+        keys.addAll([for (final row in await _instanceRows(id)) _key(row.id)]);
+        await _addPending(keys);
         // The database cascades to the instances and everything of theirs.
         await (_database.delete(
           _database.profiles,
@@ -192,7 +200,12 @@ class ProfileRepository {
           );
         }
         return const Ok(null);
-      });
+      },
+    );
+    // Only now that the records are gone for good.
+    await _erase(keys);
+    return result;
+  }
 
   /// The instances of a profile, in their order.
   Future<List<Instance>> instances(String profileId) =>
@@ -206,6 +219,22 @@ class ProfileRepository {
   Future<Instance?> instance(String id) => _database.transaction(() async {
     final row = await _instanceRow(id);
     return row == null ? null : _instance(row, await _linkRows([id]));
+  });
+
+  /// One instance with its credential, or null if there is no such instance.
+  /// The credential is null if none is stored. Throws what the secret store
+  /// throws.
+  ///
+  /// Use this to send a request: both are read in one transaction, so no change
+  /// made through the same database comes between them, and a credential is not
+  /// paired with an address it was not saved for. Reading [instance] and then
+  /// [credential] does not promise that.
+  Future<({Instance instance, Credential? credential})?> instanceWithCredential(
+    String id,
+  ) => _database.transaction(() async {
+    final found = await instance(id);
+    if (found == null) return null;
+    return (instance: found, credential: await credential(id));
   });
 
   /// Adds an instance after the others of a profile.
@@ -338,15 +367,20 @@ class ProfileRepository {
 
   /// Deletes an instance with its credential, subscriptions, markers, cache and
   /// the saved choices and views that name it.
-  Future<void> deleteInstance(String id) => _database.transaction(() async {
-    if (await _instanceRow(id) == null) return;
-    await _deleteSecret(id);
-    await _preferences.removeInstanceFromViews(id);
-    // The database cascades to the other rows of the instance.
-    await (_database.delete(
-      _database.instances,
-    )..where((row) => row.id.equals(id))).go();
-  });
+  Future<void> deleteInstance(String id) async {
+    final deleted = await _database.transaction(() async {
+      if (await _instanceRow(id) == null) return false;
+      await _addPending([_key(id)]);
+      await _preferences.removeInstanceFromViews(id);
+      // The database cascades to the other rows of the instance.
+      await (_database.delete(
+        _database.instances,
+      )..where((row) => row.id.equals(id))).go();
+      return true;
+    });
+    // Only now that the records are gone for good.
+    if (deleted) await _erase([_key(id)]);
+  }
 
   /// The credential of an instance, or null if none is stored. Throws what the
   /// secret store throws.
@@ -454,18 +488,56 @@ class ProfileRepository {
   ) async {
     final secrets = _SecretChanges(_secrets, _warn);
     try {
-      return await _database.transaction(() => change(secrets));
+      return await _database.transaction(() async {
+        try {
+          return await change(secrets);
+        } catch (_) {
+          // Before the transaction ends, so that no other change reads or
+          // overwrites what is being put back.
+          await secrets.undo();
+          rethrow;
+        }
+      });
     } catch (_) {
+      // For a failed commit; after the above there is nothing left to undo.
       await secrets.undo();
+      try {
+        await _addPending(secrets.notErased);
+      } catch (error) {
+        // The failure of the change is what the caller must see.
+        _warn('A credential left behind could not be noted', error);
+      }
       rethrow;
     }
   }
 
-  Future<void> _deleteSecret(String instanceId) async {
-    try {
-      await _secrets.delete(_key(instanceId));
-    } catch (error) {
-      _warn('A deleted credential could not be erased', error);
+  Future<void> _addPending(Iterable<String> keys) async {
+    for (final key in keys) {
+      await _database
+          .into(_database.pendingSecretDeletions)
+          .insert(
+            PendingSecretDeletionsCompanion.insert(secretKey: key),
+            mode: InsertMode.insertOrIgnore,
+          );
+    }
+  }
+
+  /// Erases the secrets of pending deletions. One that fails stays pending and
+  /// does not stop the others.
+  Future<void> _erase(List<String> keys) async {
+    for (final key in keys) {
+      try {
+        // In a transaction, so that no instance gets the key meanwhile.
+        await _database.transaction(() async {
+          final id = key.substring(_keyPrefix.length);
+          if (await _instanceRow(id) == null) await _secrets.delete(key);
+          await (_database.delete(
+            _database.pendingSecretDeletions,
+          )..where((row) => row.secretKey.equals(key))).go();
+        });
+      } catch (error) {
+        _warn('A deleted credential could not be erased', error);
+      }
     }
   }
 
@@ -610,7 +682,9 @@ class ProfileRepository {
     );
   }
 
-  static String _key(String instanceId) => 'cred/$instanceId';
+  static const _keyPrefix = 'cred/';
+
+  static String _key(String instanceId) => '$_keyPrefix$instanceId';
 
   static Credential _withoutSession(Credential credential) => Credential(
     apiKey: credential.apiKey,
@@ -637,6 +711,9 @@ final class _SecretChanges {
   final void Function(String message, Object error) _warn;
   final _previous = <String, String?>{};
 
+  /// Keys that [undo] should have erased and could not.
+  final notErased = <String>[];
+
   /// Writes [value]. [previous] is what [key] holds now, null for nothing; if
   /// that is unknown, pass `restorable: false`.
   Future<void> write(
@@ -650,8 +727,11 @@ final class _SecretChanges {
     return _secrets.write(key, value);
   }
 
+  /// Puts back what was written. Does so once: another call does nothing.
   Future<void> undo() async {
-    for (final MapEntry(:key, value: previous) in _previous.entries) {
+    final writes = Map.of(_previous);
+    _previous.clear();
+    for (final MapEntry(:key, value: previous) in writes.entries) {
       try {
         if (previous == null) {
           await _secrets.delete(key);
@@ -659,6 +739,7 @@ final class _SecretChanges {
           await _secrets.write(key, previous);
         }
       } catch (error) {
+        if (previous == null) notErased.add(key);
         _warn('A credential could not be put back', error);
       }
     }

@@ -16,6 +16,7 @@ At least one profile always exists; the first is created on first launch, named 
 profile creates new ids for the profile and each instance and copies their records, credentials,
 links (remapped to the copies), saved views and notification subscriptions; caches and markers are not
 copied. Deleting an instance or profile also deletes its subscriptions, markers, caches and secrets.
+A secret is erased only after the deletion of its records is saved; see PendingSecretDeletion.
 
 ### Instance
 | Field | Type | Rules |
@@ -46,6 +47,12 @@ the form is the user's decision to use them there. A session cookie is discarded
 origin changes. For imports see contracts/backup-format.md. `customHeaders` and basic auth count as
 secrets. A qBittorrent API key uses `Authorization`, so basicUser cannot be combined with it; for
 password login on qBittorrent 5.2+ see spec Edge Cases.
+
+### PendingSecretDeletion
+secretKey: a secure storage key still to be erased, never a secret. Added in the same transaction that
+deletes an instance's records (and for a secret that could not be taken back after a failed change),
+removed once the secret is erased, and retried at each launch. A key that an instance has again is
+removed from the list and its secret kept. Not exported.
 
 ### Preferences
 activeProfileId, themeMode, trueBlack, dynamicColor, loadThirdPartyArtwork (default true), appLock {enabled,
