@@ -34,22 +34,22 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T019 Implement models, validators and the profile repository in `packages/core/lib/src/instances/` for data-model.md Profile.id, Profile.name, Profile.sortOrder, Instance.id, Instance.profileId, Instance.name, Instance.serviceType, Instance.url, Instance.authKind, Instance.authFailed, Instance.certPin, Instance.customCa, Instance.enabled, Instance.sortOrder, Instance.detectedVersion, Instance.lastProbe, Instance.links, Instance.createdAt, Instance.updatedAt, Credential.apiKey, Credential.username, Credential.password, Credential.basicUser, Credential.basicPassword, Credential.customHeaders, Credential.sessionCookie
 - [x] T020 Exclude secrets and database from backup and device transfer in `apps/arr_client/android/app/src/main/res/xml/` and manifest
 - [x] T021 Implement redacting diagnostic log in `packages/core/lib/src/logging/` with tests that seeded secrets never appear
-- [ ] T022 Write network tests in `packages/core/test/network/`: no bytes before pin match, custom CA, cross-origin redirect, plain HTTP, no write retry, redaction, every `ServiceFailure` classification
-- [ ] T023 Implement per-instance HTTP client with auth, custom headers, redirect policy and failure mapping in `packages/core/lib/src/network/client.dart`
-- [ ] T024 Implement leaf pinning and per-instance custom CA per research R4 in `packages/core/lib/src/network/trust.dart`
+- [x] T022 Write network tests in `packages/core/test/network/`: no bytes before pin match, custom CA, cross-origin redirect, plain HTTP, no write retry, redaction, every `ServiceFailure` classification
+- [x] T023 Implement per-instance HTTP client with auth, custom headers, redirect policy and failure mapping in `packages/core/lib/src/network/client.dart`
+- [x] T024 Implement leaf pinning and per-instance custom CA per research R4 in `packages/core/lib/src/network/trust.dart`
 - [x] T025 Implement connectivity and transport-type adapter in `apps/arr_client/lib/app/platform/connectivity.dart`
 - [x] T026 Create local plugin `packages/platform_local_network/` (registered, so usable from background isolates) and implement the research R6 flow in `apps/arr_client/lib/app/platform/local_network.dart`, with address classification tests in `apps/arr_client/test/platform/`
 - [x] T027 Add cleartext network security config in `apps/arr_client/android/app/src/main/res/xml/network_security_config.xml` and set `flutter_deeplinking_enabled=false` in the manifest
-- [ ] T028 Implement `SessionAuthenticator` with secure session storage re-login and the data-model.md Instance.authFailed latch (including from the background isolate) in `packages/core/lib/src/session/` with tests
+- [x] T028 Implement `SessionAuthenticator` with secure session storage re-login and the data-model.md Instance.authFailed latch (including from the background isolate) in `packages/core/lib/src/session/` with tests
 - [x] T029 Implement shared records in `packages/core/lib/src/models/` for data-model.md LibraryItem.state (with precedence), Release.protocol, QueueItem.progress, HistoryEvent.eventType, Command.status, Command.result, DownloadProgress.progress, DownloadProgress.state, ServerOption.kind, DiscoveryTitle.availability, DiscoveryTitle.availability4k, Request.status, SubtitleFile.mediaType
-- [ ] T030 Implement module registry, active-profile scoping and profile switching (research R5), persisted probe capabilities (data-model.md Instance.lastProbe) and aggregation with per-instance failure isolation in `packages/core/lib/src/registry/`
-- [ ] T031 Implement artwork loader per research R10 (custom FileService on the instance client, credential-free remote client) in `packages/core/lib/src/artwork/`, with redirect, pin and no-credential tests
+- [x] T030 Implement module registry, active-profile scoping and profile switching (research R5), persisted probe capabilities (data-model.md Instance.lastProbe) and aggregation with per-instance failure isolation in `packages/core/lib/src/registry/`
+- [x] T031 Implement artwork loader per research R10 (custom FileService on the instance client, credential-free remote client) in `packages/core/lib/src/artwork/`, with redirect, pin and no-credential tests
 - [x] T032 Write the allow-list test harness in `packages/core/lib/testing/allow_list.dart`: it holds only checking logic and fails any request not in the list each module supplies from `test/allow_list.dart` (contracts/upstream-apis.md)
 - [x] T033 [P] Implement theme (light, dark, black, dynamic) and localization setup (generated into `lib/src/l10n/generated`) in `packages/ui/lib/src/theme/` and `packages/ui/lib/src/l10n/`
 - [x] T034 Implement shared loading/empty/error/stale scaffold, confirm dialog, item-gone and action-outcome handling in `packages/ui/lib/src/widgets/`
 - [ ] T035 Implement composition root, module list, `AppNavigator` and capability-driven navigation per contracts/navigation.md in `apps/arr_client/lib/app/`
-- [ ] T036 Write shared Servarr tests (paging, status, options, unmatched queue items, queue read, history read, command status and result including completed-but-unsuccessful, aborted and orphaned, health) in `packages/servarr/test/contract/`
-- [ ] T037 Implement shared Servarr client and those reads in `packages/servarr/lib/src/`
+- [x] T036 Write shared Servarr tests (paging, status, options, unmatched queue items, queue read, history read, command status and result including completed-but-unsuccessful, aborted and orphaned, health) in `packages/servarr/test/contract/`
+- [x] T037 Implement shared Servarr client and those reads in `packages/servarr/lib/src/`
 
 ## Phase 3: US1 Connect my services (P1)
 
@@ -63,16 +63,16 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [ ] T045 [US1] Implement auth-kind-driven add/test form (one HTTP or HTTPS address, API key or account sign-in, optional basic auth and custom headers, the module's `authNotes`, save anyway after a failed test) in `apps/arr_client/lib/features/onboarding/`
 - [ ] T046 [US1] Implement fingerprint review, changed-certificate and CA import screens in `apps/arr_client/lib/features/onboarding/certificate/`
 - [ ] T047 [US1] Show version notice, authentication-failed retry, not-yet-checked and connection state in `apps/arr_client/lib/features/settings/instances/status.dart`
-- [ ] T048 [US1] Implement automatic probing per research R5 (import, re-enable, change, profile activation, first contact per launch) with tests in `packages/core/lib/src/registry/`
+- [x] T048 [US1] Implement automatic probing per research R5 (import, re-enable, change, profile activation, first contact per launch) with tests in `packages/core/lib/src/registry/`
 - [ ] T049 [US1] Implement the initial Home screen listing instance status and links to configured areas in `apps/arr_client/lib/features/home/`
 - [ ] T050 [US1] Add US1 integration tests, including a distinct message per FR-007 class, HTTP and HTTPS, profile copy, switch and delete, and module visibility, in `apps/arr_client/integration_test/connect_test.dart`
 
 ## Phase 4: US2 Browse movies and series (P1)
 
-- [ ] T051 [P] [US2] Write library, options, credits, item history and queue-state contract tests in `packages/modules/radarr/test/contract/`
-- [ ] T052 [P] [US2] Write library, options, episode, item history and queue-state contract tests in `packages/modules/sonarr/test/contract/`
-- [ ] T053 [US2] Implement Radarr LibraryProvider reads, item history and queue binding in `packages/modules/radarr/lib/src/adapters/library.dart`
-- [ ] T054 [US2] Implement Sonarr LibraryProvider reads, item history and queue binding in `packages/modules/sonarr/lib/src/adapters/library.dart`
+- [x] T051 [P] [US2] Write library, options, credits, item history and queue-state contract tests in `packages/modules/radarr/test/contract/`
+- [x] T052 [P] [US2] Write library, options, episode, item history and queue-state contract tests in `packages/modules/sonarr/test/contract/`
+- [x] T053 [US2] Implement Radarr LibraryProvider reads, item history and queue binding in `packages/modules/radarr/lib/src/adapters/library.dart`
+- [x] T054 [US2] Implement Sonarr LibraryProvider reads, item history and queue binding in `packages/modules/sonarr/lib/src/adapters/library.dart`
 - [ ] T055 [US2] Implement poster grid/list with state badges, instance labels, filters, sort and saved view per profile (data-model.md Preferences.view) in `apps/arr_client/lib/features/library/`
 - [ ] T056 [US2] Implement movie detail screen with `subtitles` and `downloadProgress` slots and `detailRoute` in `packages/modules/radarr/lib/src/screens/movie_detail.dart`
 - [ ] T057 [US2] Implement series, season and episode screens with `subtitles` and `downloadProgress` slots and `detailRoute` in `packages/modules/sonarr/lib/src/screens/`
@@ -83,22 +83,22 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 
 ## Phase 5: US3 Search and add (P1)
 
-- [ ] T062 [P] [US3] Write lookup and add contract tests in `packages/modules/radarr/test/contract/`
-- [ ] T063 [P] [US3] Write lookup and add contract tests in `packages/modules/sonarr/test/contract/`
-- [ ] T064 [US3] Implement Radarr LookupProvider in `packages/modules/radarr/lib/src/adapters/lookup.dart`
-- [ ] T065 [US3] Implement Sonarr LookupProvider in `packages/modules/sonarr/lib/src/adapters/lookup.dart`
+- [x] T062 [P] [US3] Write lookup and add contract tests in `packages/modules/radarr/test/contract/`
+- [x] T063 [P] [US3] Write lookup and add contract tests in `packages/modules/sonarr/test/contract/`
+- [x] T064 [US3] Implement Radarr LookupProvider in `packages/modules/radarr/lib/src/adapters/lookup.dart`
+- [x] T065 [US3] Implement Sonarr LookupProvider in `packages/modules/sonarr/lib/src/adapters/lookup.dart`
 - [ ] T066 [US3] Implement aggregated search over every search provider, grouping, identifier-based merging, per-instance in-library marks and partial failure in `apps/arr_client/lib/features/search/`
 - [ ] T067 [US3] Implement pre-add detail and add sheet (per-target lookup, remembered choices, already exists) in `apps/arr_client/lib/features/search/add/`
 - [ ] T068 [US3] Add US3 integration test in `apps/arr_client/integration_test/search_add_test.dart`
 
 ## Phase 6: US4 Activity and first pre-release (P1)
 
-- [ ] T069 [P] [US4] Write queue actions, history, events-since, mark-failed, blocklist and manual import tests in `packages/servarr/test/contract/`
-- [ ] T070 [P] [US4] Write activity and import mapping contract tests in `packages/modules/radarr/test/contract/`
-- [ ] T071 [P] [US4] Write activity and import mapping contract tests in `packages/modules/sonarr/test/contract/`
-- [ ] T072 [US4] Implement shared QueueProvider actions, HistoryProvider (including eventsSince), blocklist and import choices/reprocess in `packages/servarr/lib/src/activity/`
-- [ ] T073 [US4] Bind activity and import mapping in `packages/modules/radarr/lib/src/adapters/activity.dart`
-- [ ] T074 [US4] Bind activity and import mapping in `packages/modules/sonarr/lib/src/adapters/activity.dart`
+- [x] T069 [P] [US4] Write queue actions, history, events-since, mark-failed, blocklist and manual import tests in `packages/servarr/test/contract/`
+- [x] T070 [P] [US4] Write activity and import mapping contract tests in `packages/modules/radarr/test/contract/`
+- [x] T071 [P] [US4] Write activity and import mapping contract tests in `packages/modules/sonarr/test/contract/`
+- [x] T072 [US4] Implement shared QueueProvider actions, HistoryProvider (including eventsSince), blocklist and import choices/reprocess in `packages/servarr/lib/src/activity/`
+- [x] T073 [US4] Bind activity and import mapping in `packages/modules/radarr/lib/src/adapters/activity.dart`
+- [x] T074 [US4] Bind activity and import mapping in `packages/modules/sonarr/lib/src/adapters/activity.dart`
 - [ ] T075 [US4] Implement combined queue with visible-only polling, details, remove options, bulk remove and grab now in `apps/arr_client/lib/features/activity/queue/`
 - [ ] T076 [US4] Implement manual import screen with item, quality and language correction in `apps/arr_client/lib/features/activity/manual_import/`
 - [ ] T077 [US4] Implement history, mark-failed and blocklist screens in `apps/arr_client/lib/features/activity/history/`
@@ -126,12 +126,12 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 
 ## Phase 8: US6 Home, calendar, wanted (P2)
 
-- [ ] T096 [P] [US6] Write calendar, wanted, recently added, imported-on-day (local midnight boundaries), health and disk tests in `packages/servarr/test/contract/`
-- [ ] T097 [P] [US6] Write overview binding contract tests in `packages/modules/radarr/test/contract/`
-- [ ] T098 [P] [US6] Write overview binding contract tests in `packages/modules/sonarr/test/contract/`
-- [ ] T099 [US6] Implement CalendarProvider (including recently added and imported-on-day from import history), WantedProvider and HealthProvider in `packages/servarr/lib/src/overview/`
-- [ ] T100 [US6] Bind overview providers in `packages/modules/radarr/lib/src/adapters/overview.dart`
-- [ ] T101 [US6] Bind overview providers in `packages/modules/sonarr/lib/src/adapters/overview.dart`
+- [x] T096 [P] [US6] Write calendar, wanted, recently added, imported-on-day (local midnight boundaries), health and disk tests in `packages/servarr/test/contract/`
+- [x] T097 [P] [US6] Write overview binding contract tests in `packages/modules/radarr/test/contract/`
+- [x] T098 [P] [US6] Write overview binding contract tests in `packages/modules/sonarr/test/contract/`
+- [x] T099 [US6] Implement CalendarProvider (including recently added and imported-on-day from import history), WantedProvider and HealthProvider in `packages/servarr/lib/src/overview/`
+- [x] T100 [US6] Bind overview providers in `packages/modules/radarr/lib/src/adapters/overview.dart`
+- [x] T101 [US6] Bind overview providers in `packages/modules/sonarr/lib/src/adapters/overview.dart`
 - [ ] T102 [US6] Extend Home with independent per-instance upcoming, downloaded today, recently added, active downloads (library queue), health and disk sections in `apps/arr_client/lib/features/home/`
 - [ ] T103 [US6] Implement agenda and month calendar with filters, device time zone and the downloaded-today view with earlier days in `apps/arr_client/lib/features/calendar/`
 - [ ] T104 [US6] Implement wanted lists with single, selected and all search in `apps/arr_client/lib/features/wanted/`
@@ -139,10 +139,10 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 
 ## Phase 9: US7 Real download progress (P2)
 
-- [ ] T106 [P] [US7] Write qBittorrent probe (success, wrong service, auth, version, host rejected) and read-only contract tests (API key and password login, no Origin or Referer sent, rejected login latches with no retry, 401 causes, hash and infohash_v1, states, basic auth collision) in `packages/modules/qbittorrent/test/contract/`
-- [ ] T107 [P] [US7] Write matching tests (case, v1 hash, season pack, no match, several clients) for data-model.md DownloadProgress.progress and DownloadProgress.state in `packages/core/test/progress/`
-- [ ] T108 [US7] Implement qBittorrent probe, authentication, `authNotes` for the basic-auth cases in spec Edge Cases, and DownloadProgressProvider in `packages/modules/qbittorrent/lib/`
-- [ ] T109 [US7] Implement progress matching in `packages/core/lib/src/progress/`
+- [x] T106 [P] [US7] Write qBittorrent probe (success, wrong service, auth, version, host rejected) and read-only contract tests (API key and password login, no Origin or Referer sent, rejected login latches with no retry, 401 causes, hash and infohash_v1, states, basic auth collision) in `packages/modules/qbittorrent/test/contract/`
+- [x] T107 [P] [US7] Write matching tests (case, v1 hash, season pack, no match, several clients) for data-model.md DownloadProgress.progress and DownloadProgress.state in `packages/core/test/progress/`
+- [x] T108 [US7] Implement qBittorrent probe, authentication, `authNotes` for the basic-auth cases in spec Edge Cases, and DownloadProgressProvider in `packages/modules/qbittorrent/lib/`
+- [x] T109 [US7] Implement progress matching in `packages/core/lib/src/progress/`
 - [ ] T110 [US7] Show client progress, speed, time remaining, state, whole-download note and unavailable notice in `apps/arr_client/lib/features/activity/queue/`
 - [ ] T111 [US7] Fill the `downloadProgress` detail slot from matched progress in `apps/arr_client/lib/app/slots/`
 - [ ] T112 [US7] Add US7 integration test, including that no write request is made, in `apps/arr_client/integration_test/progress_test.dart`
