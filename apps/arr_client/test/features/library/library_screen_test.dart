@@ -139,6 +139,49 @@ Future<void> chooseSort(WidgetTester tester, String label) async {
 }
 
 void main() {
+  testWidgets('switching third-party artwork off hides it behind Settings', (
+    tester,
+  ) async {
+    final app = await start(tester);
+    final library = FakeLibrary();
+    final id = await addServer(app, 'Films', library);
+    library.items = [
+      Movie(
+        ref: ItemRef(instanceId: id, kind: MediaKind.movie, remoteId: 1),
+        title: 'Alpha',
+        sortTitle: 'alpha',
+        monitored: true,
+        state: ItemState.downloaded,
+        images: [
+          MediaImage(
+            type: MediaImageType.poster,
+            remoteUrl: Uri.parse('https://images.invalid/alpha.jpg'),
+          ),
+        ],
+      ),
+    ];
+    await openLibrary(tester, app);
+    await pumpSome(tester);
+    expect(find.byType(Image), findsOneWidget);
+
+    await open(tester, 'More');
+    await tester.tap(find.text('Settings'));
+    await pumpSome(tester);
+    await tester.tap(find.text('Artwork from public sites'));
+    await pumpSome(tester);
+    await open(tester, 'Library');
+
+    expect(find.text('Alpha'), findsOneWidget);
+    expect(find.byType(Image), findsNothing);
+
+    await app.services.preferences.setLoadThirdPartyArtwork(true);
+    await pumpSome(tester);
+    expect(find.byType(Image), findsOneWidget);
+    // The cache of the first picture has a timer.
+    await tester.pump(const Duration(seconds: 11));
+    await app.stop(tester);
+  });
+
   testWidgets('shows posters with their title and state', (tester) async {
     final app = await start(tester);
     await addServer(

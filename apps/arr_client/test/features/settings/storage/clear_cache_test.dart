@@ -44,6 +44,14 @@ Future<TestApp> _start(
 }
 
 Future<void> _tap(WidgetTester tester, Finder finder) async {
+  // An entry far down Settings is not built until scrolled to.
+  if (finder.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      100,
+      scrollable: find.byType(Scrollable).last,
+    );
+  }
   await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
   await tester.tap(finder);

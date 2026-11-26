@@ -64,12 +64,25 @@ FakeRadarr _server([FakeRadarr? server]) => (server ?? FakeRadarr())
   ..answers['api/v3/movie/1'] = jsonAnswer(_movie())
   ..answers['api/v3/credit'] = jsonAnswer(_credits);
 
-InstanceContext _instance(Harness harness, [AppNavigator? navigator]) {
+/// Has every picture, while allowed.
+class _Pictures implements ArtworkLoader {
+  var allowed = true;
+
+  @override
+  ImageProvider<Object>? image(MediaImage image) =>
+      allowed ? const AssetImage('picture') : null;
+}
+
+InstanceContext _instance(
+  Harness harness, [
+  AppNavigator? navigator,
+  ArtworkLoader? artwork,
+]) {
   final context = harness.context;
   return InstanceContext(
     instance: context.instance,
     http: context.http,
-    artwork: _NoArtwork(),
+    artwork: artwork ?? _NoArtwork(),
     navigator: navigator ?? context.navigator,
     cache: context.cache,
     logger: context.logger,
@@ -87,11 +100,12 @@ void main() {
     Widget Function(Widget child)? wrap,
     bool settle = true,
     AppNavigator? navigator,
+    ArtworkLoader? artwork,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final instance = _instance(harness, navigator);
+    final instance = _instance(harness, navigator, artwork);
     final screen = RadarrModule().routes().single;
     await tester.pumpWidget(
       ProviderScope(
@@ -186,6 +200,33 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('drops backdrop and poster once they may not be shown', (
+    tester,
+  ) async {
+    final pictures = _Pictures();
+    final allowed = ValueNotifier(true);
+    addTearDown(allowed.dispose);
+    await pump(
+      tester,
+      Harness(_server()),
+      artwork: pictures,
+      wrap: (child) => ValueListenableBuilder(
+        valueListenable: allowed,
+        child: child,
+        builder: (context, value, child) =>
+            ThirdPartyArtworkScope(allowed: value, child: child!),
+      ),
+    );
+    expect(find.byType(Image), findsNWidgets(2));
+
+    pictures.allowed = false;
+    allowed.value = false;
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Image), findsNothing);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('the refresh button asks the server again', (tester) async {

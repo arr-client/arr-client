@@ -3,6 +3,7 @@ library;
 
 import 'package:core/core.dart';
 import 'package:core/src/network/remote_client.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../network/certificates.dart';
@@ -197,6 +198,48 @@ void main() {
     await expectLater(widthOf(provider), throwsArtworkException);
     await pause();
     expect(server.connections, 0);
+  });
+
+  test('what was saved of it is not shown while switched off', () async {
+    final server = await pictureServer(twoPixels);
+    var allowed = true;
+    final artwork = loader(loadRemote: () => allowed);
+    final poster = remoteImage(server.url('/poster'));
+    final made = artwork.image(poster)!;
+    expect(await widthOf(made), 2);
+    PaintingBinding.instance.imageCache
+      ..clear()
+      ..clearLiveImages();
+    allowed = false;
+
+    expect(artwork.image(poster), isNull);
+    // Nor by an image made while it was on.
+    await expectLater(widthOf(made), throwsArtworkException);
+
+    // It is kept: switched on again, nothing is asked for.
+    await pause();
+    allowed = true;
+    expect(await widthOf(artwork.image(poster)), 2);
+    expect(server.requests, hasLength(1));
+  });
+
+  test("switched off leaves the instance's own artwork alone", () async {
+    final server = await pictureServer(onePixel);
+    final artwork = cacheIn(
+      temporaryDirectory(),
+      loadRemote: () => false,
+    ).loaderFor('radarr-1', clientFor(settingsFor(server.url('/'))));
+
+    final width = await widthOf(
+      artwork.image(
+        instanceImage(
+          'poster.png',
+          remoteUrl: Uri.parse('https://images.invalid/poster.png'),
+        ),
+      ),
+    );
+
+    expect(width, 1);
   });
 
   test('an error does not quote the address', () async {

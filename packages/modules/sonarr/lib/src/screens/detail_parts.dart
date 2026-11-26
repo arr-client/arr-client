@@ -142,7 +142,9 @@ class Artwork extends StatelessWidget {
     final picture = [
       for (final type in types) ...images.where((image) => image.type == type),
     ].firstOrNull;
-    final source = picture == null ? null : loader.image(picture);
+    final source = picture == null
+        ? null
+        : artworkImageOf(context, loader, picture);
     final icon = placeholder;
     if (source == null && icon == null) return const SizedBox.shrink();
     final colors = Theme.of(context).colorScheme;

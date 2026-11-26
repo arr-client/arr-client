@@ -29,7 +29,37 @@ void _smallPhone(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
+/// Has every picture, while allowed.
+class _Pictures implements ArtworkLoader {
+  var allowed = true;
+
+  @override
+  ImageProvider<Object>? image(MediaImage image) =>
+      allowed ? const AssetImage('picture') : null;
+}
+
 void main() {
+  for (final (name, ref, pictures) in [
+    ('series', seriesRef(1), 2),
+    ('episode', episodeRef(13), 1),
+  ]) {
+    testWidgets('the $name screen drops pictures no longer allowed', (
+      tester,
+    ) async {
+      final loader = _Pictures();
+      final screens = Screens(artwork: loader);
+      await screens.open(tester, _route(screens, ref));
+      expect(find.byType(Image), findsNWidgets(pictures));
+
+      loader.allowed = false;
+      screens.artworkAllowed.value = false;
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Image), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   test('series and episodes have detail routes of their own', () {
     final library = Screens().harness.library;
 
