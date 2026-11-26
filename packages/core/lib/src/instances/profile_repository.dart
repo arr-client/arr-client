@@ -227,12 +227,44 @@ class ProfileRepository {
   }
 
   /// The instances of a profile, in their order.
+  ///
+  /// One whose stored values cannot be read, as in a damaged database, is left
+  /// out and logged, so that the others can still be used. It stays stored.
   Future<List<Instance>> instances(String profileId) =>
       _database.transaction(() async {
-        final rows = await _instanceRows(profileId);
-        final links = await _linkRows([for (final row in rows) row.id]);
-        return [for (final row in rows) _instance(row, links)];
+        final table = _database.instances;
+        // The ids alone, as one bad value fails a whole read of rows.
+        final query = _database.selectOnly(table)
+          ..addColumns([table.id])
+          ..where(table.profileId.equals(profileId))
+          ..orderBy([
+            OrderingTerm(expression: table.sortOrder),
+            OrderingTerm(expression: table.id),
+          ]);
+        final found = <Instance>[];
+        for (final result in await query.get()) {
+          final id = result.read(table.id);
+          if (id == null) continue;
+          // Only what a bad value throws: a failure of the database itself
+          // must not make instances seem to be gone.
+          try {
+            if (await instance(id) case final read?) found.add(read);
+          } on FormatException catch (error) {
+            _leftOut(id, error);
+          } on ArgumentError catch (error) {
+            // An unknown name of an enum.
+            _leftOut(id, error);
+          }
+        }
+        return found;
       });
+
+  /// The ids already logged, as the instances are read after every change.
+  final _unreadable = <String>{};
+
+  void _leftOut(String id, Object error) {
+    if (_unreadable.add(id)) _warn('The instance $id could not be read', error);
+  }
 
   /// One instance, or null.
   Future<Instance?> instance(String id) => _database.transaction(() async {

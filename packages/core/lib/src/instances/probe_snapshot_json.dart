@@ -17,7 +17,14 @@ String encodeProbeSnapshot(ProbeSnapshot probe) => jsonEncode({
 
 /// Reads the column. Null if it is not a probe.
 ProbeSnapshot? decodeProbeSnapshot(String text) {
-  if (jsonDecode(text) case {
+  final Object? stored;
+  try {
+    stored = jsonDecode(text);
+  } on FormatException {
+    // Not a probe either; the next one replaces it.
+    return null;
+  }
+  if (stored case {
     'product': final String product,
     'version': final String version,
     'capabilities': final List<Object?> capabilities,
