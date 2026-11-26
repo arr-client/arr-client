@@ -1,0 +1,487 @@
+[
+  {
+    "movieId": 1,
+    "sourceTitle": "redacted-10",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:09:04Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-4",
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-18",
+      "age": "25",
+      "ageHours": "615.1512277290833",
+      "ageMinutes": "36909.073664335",
+      "publishedDate": "2026-11-01T00:00:00Z",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "size": "0",
+      "downloadUrl": "http://redacted.invalid/35.torrent",
+      "guid": "redacted-36",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0",
+      "torrentInfoHash": "ABCDEF0000000000000000000000000000000004"
+    },
+    "id": 1
+  },
+  {
+    "movieId": 2,
+    "sourceTitle": "redacted-28",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:09:06Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000007",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-4",
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-18",
+      "age": "25",
+      "ageHours": "615.1517758612778",
+      "ageMinutes": "36909.106551805",
+      "publishedDate": "2026-11-01T00:00:00Z",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "size": "0",
+      "downloadUrl": "http://redacted.invalid/33.torrent",
+      "guid": "redacted-34",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0",
+      "torrentInfoHash": "ABCDEF0000000000000000000000000000000007"
+    },
+    "id": 2
+  },
+  {
+    "movieId": 3,
+    "sourceTitle": "redacted-5",
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:09:08Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-4",
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-18",
+      "age": "25",
+      "ageHours": "615.1523321417778",
+      "ageMinutes": "36909.139928635",
+      "publishedDate": "2026-11-01T00:00:00Z",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "size": "0",
+      "downloadUrl": "http://redacted.invalid/31.torrent",
+      "guid": "redacted-32",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0",
+      "torrentInfoHash": "ABCDEF0000000000000000000000000000000002"
+    },
+    "id": 3
+  },
+  {
+    "movieId": 2,
+    "sourceTitle": "redacted-28",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:09:09Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000007",
+    "eventType": "downloadFolderImported",
+    "data": {
+      "fileId": "1",
+      "droppedPath": "/redacted/29.mkv",
+      "importedPath": "/redacted/30.mkv",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "releaseGroup": "redacted-18",
+      "customFormatScore": "0",
+      "size": "2097152",
+      "indexerFlags": "0"
+    },
+    "id": 4
+  },
+  {
+    "movieId": 4,
+    "sourceTitle": "redacted-1",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:09:10Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-4",
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-18",
+      "age": "25",
+      "ageHours": "615.1528866421111",
+      "ageMinutes": "36909.173198661665",
+      "publishedDate": "2026-11-01T00:00:00Z",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "size": "0",
+      "downloadUrl": "http://redacted.invalid/26.torrent",
+      "guid": "redacted-27",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0",
+      "torrentInfoHash": "ABCDEF0000000000000000000000000000000001"
+    },
+    "id": 5
+  },
+  {
+    "movieId": 5,
+    "sourceTitle": "redacted-23",
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:09:12Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000006",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-4",
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-18",
+      "age": "25",
+      "ageHours": "615.1534418097223",
+      "ageMinutes": "36909.20650868833",
+      "publishedDate": "2026-11-01T00:00:00Z",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "size": "0",
+      "downloadUrl": "http://redacted.invalid/24.torrent",
+      "guid": "redacted-25",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0",
+      "torrentInfoHash": "ABCDEF0000000000000000000000000000000006"
+    },
+    "id": 6
+  },
+  {
+    "movieId": 1,
+    "sourceTitle": "redacted-10",
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "WEBDL-1080p",
+        "source": "webdl",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:10:05Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "eventType": "downloadFolderImported",
+    "data": {
+      "fileId": "2",
+      "droppedPath": "/redacted/21.mkv",
+      "importedPath": "/redacted/22.mkv",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "releaseGroup": "redacted-18",
+      "customFormatScore": "0",
+      "size": "2097152",
+      "indexerFlags": "0"
+    },
+    "id": 7
+  },
+  {
+    "movieId": 4,
+    "sourceTitle": "redacted-1",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:10:07Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "eventType": "downloadFailed",
+    "data": {
+      "downloadClient": "redacted-3",
+      "downloadClientName": null,
+      "message": "redacted-17",
+      "releaseGroup": "redacted-18",
+      "size": "0",
+      "indexer": "redacted-4"
+    },
+    "id": 8
+  },
+  {
+    "movieId": 6,
+    "sourceTitle": "redacted-6",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:10:15Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000005",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": "redacted-4",
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-18",
+      "age": "0",
+      "ageHours": "0.009804747222222222",
+      "ageMinutes": "0.58828496",
+      "publishedDate": "2026-11-26T15:09:40Z",
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "size": "0",
+      "downloadUrl": "http://redacted.invalid/19.torrent",
+      "guid": "redacted-20",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0"
+    },
+    "id": 9
+  },
+  {
+    "movieId": 3,
+    "sourceTitle": "redacted-5",
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T15:10:20Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000002",
+    "eventType": "downloadFailed",
+    "data": {
+      "downloadClient": "redacted-3",
+      "downloadClientName": "redacted-3",
+      "message": "redacted-17",
+      "releaseGroup": "redacted-18",
+      "size": "2097152",
+      "indexer": "redacted-4"
+    },
+    "id": 10
+  }
+]
