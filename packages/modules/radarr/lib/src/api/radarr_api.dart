@@ -5,10 +5,11 @@ import 'package:servarr/servarr.dart';
 
 const _apiPath = 'api/v3';
 
-/// Radarr's reads for one instance.
+/// Radarr's reads, and its add, for one instance.
 ///
 /// As in [ServarrClient], a failure of the HTTP client is returned unchanged,
-/// nothing is retried, and an answer of another shape is [MalformedResponse].
+/// nothing is retried, and an answer to a read of another shape is
+/// [MalformedResponse].
 final class RadarrApi {
   /// The API of the instance of [context].
   RadarrApi(InstanceContext context)
@@ -46,6 +47,28 @@ final class RadarrApi {
   /// The cast and crew of one movie, as received.
   ServiceResult<List<JsonObject>> credits(int movieId) =>
       _get('credit', _objects, query: _ofMovie(movieId));
+
+  /// The movies the server finds for [term], as received.
+  ServiceResult<List<JsonObject>> lookup(String term) => _get(
+    'movie/lookup',
+    _objects,
+    query: {
+      'term': [term],
+    },
+  );
+
+  /// The root folders, as received.
+  ServiceResult<List<JsonObject>> rootFolders() => _get('rootfolder', _objects);
+
+  /// Adds [movie], once. What the answer means is for the caller to say.
+  Future<Result<ServiceResponse, HttpError>> addMovie(JsonObject movie) =>
+      _http.send(
+        ServiceRequest(
+          HttpMethod.post,
+          '$_apiPath/movie',
+          body: JsonBody(movie),
+        ),
+      );
 
   /// The whole download queue.
   ServiceResult<List<QueueItem>> queue() => _shared.queue();

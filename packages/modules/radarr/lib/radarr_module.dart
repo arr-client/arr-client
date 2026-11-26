@@ -7,7 +7,11 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
 import 'src/adapters/library.dart';
+import 'src/adapters/lookup.dart';
 import 'src/api/radarr_api.dart';
+
+// The app adds its delegate to the others, for the names the module supplies.
+export 'src/l10n/generated/radarr_localizations.dart' show RadarrLocalizations;
 
 // Also Radarr's `appName` in `system/status`.
 const _product = 'Radarr';
@@ -57,6 +61,7 @@ final class RadarrModule implements ServiceModule {
     SessionInfo? session,
   ) => const {
     CapabilityKind.library,
+    CapabilityKind.lookup,
     CapabilityKind.queue,
     CapabilityKind.history,
   };
@@ -67,6 +72,10 @@ final class RadarrModule implements ServiceModule {
       const (LibraryProvider) => RadarrLibraryAdapter(
         RadarrApi(context),
         context,
+      ),
+      const (LookupProvider) => RadarrLookupAdapter(
+        RadarrApi(context),
+        context.instance.id,
       ),
       const (QueueProvider) => RadarrQueueAdapter(RadarrApi(context)),
       const (HistoryProvider) => RadarrHistoryAdapter(RadarrApi(context)),

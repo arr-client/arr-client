@@ -44,9 +44,9 @@ API key, is `mediacover/<id>/<file>` on Sonarr and Radarr, `mediacover/artist/<i
 `mediacover/album/<id>/<file>` on Lidarr, and `mediacover/author/<id>/<file>` and
 `mediacover/book/<id>/<file>` on Readarr.
 
-A lookup result that is not in the library (id 0) instead carries
-`/MediaCoverProxy/<hash>/<file>` in `url`. No listed read serves that path, so its `remoteUrl` is
-used.
+A lookup result that is not in the library instead carries `/MediaCoverProxy/<hash>/<file>` in
+`url`. No listed read serves that path, so its `remoteUrl` is used. Such a result has no `id`:
+Radarr 7.0.3 and Sonarr 4.0.20 leave the field out rather than sending 0, and both mean the same.
 
 Delete with an import exclusion: the query parameter is `addImportExclusion` on Radarr and
 `addImportListExclusion` on Sonarr, Lidarr and Readarr.

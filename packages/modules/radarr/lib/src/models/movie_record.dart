@@ -70,6 +70,29 @@ Movie readMovie(
   );
 }
 
+/// A result of `GET movie/lookup`. The record is kept as received, to be
+/// posted back to the instance that gave it.
+AddCandidate readCandidate(JsonObject record, {required String instanceId}) =>
+    AddCandidate(
+      kind: MediaKind.movie,
+      title: requireText(record, 'title'),
+      externalIds: ExternalIds(
+        tmdbId: _positive(record['tmdbId']),
+        imdbId: optionalText(record, 'imdbId'),
+      ),
+      year: _positive(record['year']),
+      overview: optionalText(record, 'overview'),
+      images: readImages(record),
+      existingRefs: [
+        if (libraryId(record) case final id?)
+          ItemRef(instanceId: instanceId, kind: MediaKind.movie, remoteId: id),
+      ],
+      sourceByInstance: {instanceId: record},
+    );
+
+/// The id of the movie in the library. A lookup result outside it has none.
+int? libraryId(JsonObject record) => _positive(record['id']);
+
 /// Radarr writes zero for a number it does not know.
 int? _positive(Object? value) => value is int && value > 0 ? value : null;
 

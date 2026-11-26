@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+  "monitorMovieOnly": "Movie only",
+  "@monitorMovieOnly": {
+    "description": "Monitoring option when adding a movie: monitor the movie alone."
+  },
+  "monitorMovieAndCollection": "Movie and collection",
+  "@monitorMovieAndCollection": {
+    "description": "Monitoring option when adding a movie: monitor it and the collection it belongs to."
+  },
+  "monitorNone": "None",
+  "@monitorNone": {
+    "description": "Monitoring option when adding a movie: monitor nothing."
+  }
+}
