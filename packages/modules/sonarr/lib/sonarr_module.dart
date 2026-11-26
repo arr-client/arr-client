@@ -10,8 +10,8 @@ const _product = 'Sonarr';
 
 const _descriptor = ModuleDescriptor(
   displayName: _product,
-  // `Icons.tv` of the Material icon font, which widgets.dart does not name.
-  icon: IconData(0xe687, fontFamily: 'MaterialIcons'),
+  // Material's `tv_outlined`; widgets.dart has no named icons.
+  icon: IconData(0xf46b, fontFamily: 'MaterialIcons'),
   category: ModuleCategory.series,
   authKinds: [AuthKind.apiKey],
   apiKeyHeader: ApiKeyHeader('X-Api-Key'),
@@ -23,8 +23,6 @@ const _descriptor = ModuleDescriptor(
 
 // Few enough digits per part for `int.parse`.
 final _versionPattern = RegExp(r'^\d{1,9}(\.\d{1,9})*$');
-
-final _htmlStart = RegExp(r'^\s*<(!doctype html|html)', caseSensitive: false);
 
 /// The Sonarr service.
 final class SonarrModule implements ServiceModule {
@@ -78,11 +76,13 @@ ServiceFailure _classify(HttpError error) {
 }
 
 Result<ProbeResult, ServiceFailure> _readStatus(ServiceResponse response) {
-  if (_isWebPage(response)) return const Err(ProxyInterception());
+  final text = response.text.trimLeft();
+  // A web page where data was expected, whatever its content type says.
+  if (text.startsWith('<')) return const Err(ProxyInterception());
 
   final Object? status;
   try {
-    status = jsonDecode(response.text);
+    status = jsonDecode(text);
   } on FormatException {
     return const Err(MalformedResponse());
   }
@@ -105,14 +105,6 @@ Result<ProbeResult, ServiceFailure> _readStatus(ServiceResponse response) {
       newerThanTested: _compareVersions(version, _descriptor.testedVersion) > 0,
     ),
   );
-}
-
-bool _isWebPage(ServiceResponse response) {
-  final contentTypes = response.headers['content-type'] ?? const [];
-  return contentTypes.any(
-        (type) => type.toLowerCase().startsWith('text/html'),
-      ) ||
-      _htmlStart.hasMatch(response.text);
 }
 
 /// Compares dotted versions part by part as numbers; a missing part is zero.

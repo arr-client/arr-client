@@ -250,6 +250,18 @@ void main() {
 
       expect(await _failure(answer), isA<ProxyInterception>());
     });
+
+    for (final (name, body) in [
+      ('starting with a comment', '<!-- gateway --><html></html>'),
+      ('starting at its head', '<head><title>Sign in</title></head>'),
+      ('in XHTML', '<?xml version="1.0"?><html></html>'),
+    ]) {
+      test('a page $name', () async {
+        final answer = _ok(body, contentType: 'application/xhtml+xml');
+
+        expect(await _failure(answer), isA<ProxyInterception>());
+      });
+    }
   });
 
   group('host rejected', () {
