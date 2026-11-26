@@ -1,0 +1,138 @@
+{
+  "title": "redacted-5",
+  "originalTitle": "redacted-5",
+  "originalLanguage": {
+    "id": 1,
+    "name": "English"
+  },
+  "alternateTitles": [
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-47",
+      "id": 1
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-48",
+      "id": 2
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-49",
+      "id": 3
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-50",
+      "id": 4
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-51",
+      "id": 5
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-52",
+      "id": 6
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-53",
+      "id": 7
+    }
+  ],
+  "secondaryYearSourceId": 0,
+  "sortTitle": "redacted-54",
+  "sizeOnDisk": 0,
+  "status": "released",
+  "overview": "redacted-55",
+  "inCinemas": "2008-04-10T00:00:00Z",
+  "digitalRelease": "2008-04-10T00:00:00Z",
+  "releaseDate": "2008-04-10T00:00:00Z",
+  "images": [
+    {
+      "coverType": "poster",
+      "url": "/MediaCover/1/poster.jpg?h=575804ada86e356966a7",
+      "remoteUrl": "https://redacted.invalid/56.jpg"
+    },
+    {
+      "coverType": "fanart",
+      "url": "/MediaCover/1/fanart.jpg?h=a54364feca427354955c",
+      "remoteUrl": "https://redacted.invalid/57.jpg"
+    }
+  ],
+  "website": "https://redacted.invalid/58",
+  "year": 2008,
+  "youTubeTrailerId": "redacted-59",
+  "studio": "redacted-60",
+  "path": "/redacted/61",
+  "qualityProfileId": 4,
+  "hasFile": false,
+  "movieFileId": 0,
+  "monitored": true,
+  "minimumAvailability": "released",
+  "isAvailable": true,
+  "folderName": "/redacted/61",
+  "runtime": 8,
+  "cleanTitle": "redacted-62",
+  "imdbId": "tt1254207",
+  "tmdbId": 10378,
+  "titleSlug": "redacted-63",
+  "rootFolderPath": "/redacted/64",
+  "certification": "G",
+  "genres": [
+    "redacted-65",
+    "redacted-66",
+    "redacted-67"
+  ],
+  "keywords": [
+    "redacted-68",
+    "redacted-69",
+    "redacted-70",
+    "redacted-71",
+    "redacted-72",
+    "redacted-73",
+    "redacted-74",
+    "redacted-75",
+    "redacted-76",
+    "redacted-77"
+  ],
+  "tags": [
+    1
+  ],
+  "added": "2026-11-26T15:09:52Z",
+  "ratings": {
+    "imdb": {
+      "votes": 2269,
+      "value": 6.4,
+      "type": "user"
+    },
+    "tmdb": {
+      "votes": 203,
+      "value": 6.473,
+      "type": "user"
+    },
+    "trakt": {
+      "votes": 329,
+      "value": 7.04863,
+      "type": "user"
+    }
+  },
+  "popularity": 2.2048,
+  "lastSearchTime": "2026-11-26T15:10:44Z",
+  "statistics": {
+    "movieFileCount": 0,
+    "sizeOnDisk": 0,
+    "releaseGroups": [],
+    "movieFileQualities": []
+  },
+  "id": 1
+}

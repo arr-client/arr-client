@@ -1,0 +1,26 @@
+{
+  "name": "SeasonSearch",
+  "commandName": "Season Search",
+  "body": {
+    "seriesId": 2,
+    "seasonNumber": 1,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "isLongRunning": false,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "name": "SeasonSearch",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "started",
+  "result": "unknown",
+  "queued": "2026-11-26T15:10:53Z",
+  "started": "2026-11-26T15:10:53Z",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T15:10:53Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 8
+}

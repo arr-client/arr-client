@@ -57,7 +57,9 @@ final class InstanceHttpClient implements ServiceHttpClient {
   ///
   /// [timeout] limits each step of one attempt: connecting, sending, waiting
   /// for the answer and each pause while receiving it. A whole attempt is
-  /// limited to ten times that.
+  /// limited to ten times that. A read with a [ServiceRequest.timeout] waits
+  /// that long for the answer and at each pause instead, and its attempt is
+  /// limited to that if it is longer than the whole limit.
   InstanceHttpClient({
     required this._settings,
     required this._apiKeyHeader,
@@ -210,7 +212,14 @@ final class InstanceHttpClient implements ServiceHttpClient {
     while (true) {
       final ServiceResponse response;
       try {
-        response = await _attempt(client, request.method, uri, headers, body);
+        response = await _attempt(
+          client,
+          request.method,
+          uri,
+          headers,
+          body,
+          wait: isRead ? request.timeout : null,
+        );
       } on DioException catch (error) {
         // Nothing was sent, so this holds for a write too.
         if (error.error case CertificateRefusal(:final failure)) {
@@ -258,10 +267,15 @@ final class InstanceHttpClient implements ServiceHttpClient {
     HttpMethod method,
     Uri uri,
     Map<String, String> headers,
-    Uint8List? body,
-  ) async {
+    Uint8List? body, {
+    Duration? wait,
+  }) async {
     final cancel = CancelToken();
-    final deadline = Timer(_timeout * _attemptSteps, cancel.cancel);
+    final whole = _timeout * _attemptSteps;
+    final deadline = Timer(
+      wait != null && wait > whole ? wait : whole,
+      cancel.cancel,
+    );
     try {
       final response = await client.requestUri<Uint8List>(
         uri,
@@ -271,6 +285,8 @@ final class InstanceHttpClient implements ServiceHttpClient {
         options: Options(
           method: method.name.toUpperCase(),
           headers: {...headers},
+          // Null leaves the client's own.
+          receiveTimeout: wait,
         ),
       );
       return ServiceResponse(

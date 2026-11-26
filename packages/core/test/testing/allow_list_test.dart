@@ -323,6 +323,25 @@ void main() {
     });
   });
 
+  test('a closed JSON object has no field beside the listed ones', () {
+    final list = AllowList([
+      AllowedRequest.write(
+        HttpMethod.post,
+        'api/v3/release',
+        body: const BodyRule.jsonObject({
+          'guid': ParamRule.nonEmpty(),
+        }, closed: true),
+      ),
+    ]);
+    ServiceRequest grab(Object? body) =>
+        ServiceRequest(HttpMethod.post, 'api/v3/release', body: JsonBody(body));
+
+    expect(list.permits(grab({'guid': 'a'})), isTrue);
+    expect(list.permits(grab({'guid': 'a', 'shouldOverride': true})), isFalse);
+    expect(list.permits(grab({'guid': 'a', 'Guid': 'b'})), isFalse);
+    expect(list.permits(grab(<String, Object?>{})), isFalse);
+  });
+
   group('a value that must not be empty', () {
     final list = AllowList([
       AllowedRequest.read(

@@ -70,6 +70,71 @@ final _activity = [
   ),
 ];
 
+/// `POST command` with one command name and its targets.
+AllowedRequest _command(String name, List<String> targets) =>
+    AllowedRequest.write(
+      HttpMethod.post,
+      'api/v3/command',
+      body: BodyRule.jsonObject({
+        'name': ParamRule.only({name}),
+        for (final target in targets) target: _nonEmpty,
+      }),
+    );
+
+/// What releases, commands and edits add (T085).
+final _manage = [
+  AllowedRequest.read('api/v3/release', query: {'movieId': _nonEmpty}),
+  AllowedRequest.read('api/v3/release', query: {'episodeId': _nonEmpty}),
+  AllowedRequest.read(
+    'api/v3/release',
+    query: {'seriesId': _nonEmpty, 'seasonNumber': _nonEmpty},
+  ),
+  // A grab names the release; for one the server could not match, also what
+  // was searched for. Any further field could make it download as something
+  // else.
+  for (final target in const <List<String>>[
+    [],
+    ['movieId'],
+    ['episodeId'],
+    ['seriesId', 'seasonNumber'],
+  ])
+    AllowedRequest.write(
+      HttpMethod.post,
+      'api/v3/release',
+      body: BodyRule.jsonObject({
+        'guid': _nonEmpty,
+        'indexerId': _nonEmpty,
+        for (final field in target) field: _nonEmpty,
+      }, closed: true),
+    ),
+  _command('MoviesSearch', ['movieIds']),
+  _command('RefreshMovie', ['movieIds']),
+  _command('RescanMovie', ['movieId']),
+  _command('EpisodeSearch', ['episodeIds']),
+  _command('SeasonSearch', ['seriesId', 'seasonNumber']),
+  _command('SeriesSearch', ['seriesId']),
+  _command('RefreshSeries', ['seriesIds']),
+  _command('RescanSeries', ['seriesId']),
+  for (final kind in ['movie', 'series']) ...[
+    AllowedRequest.read('api/v3/$kind/{id}'),
+    AllowedRequest.write(
+      HttpMethod.put,
+      'api/v3/$kind/{id}',
+      body: const BodyRule.jsonObject({}),
+    ),
+  ],
+  AllowedRequest.write(
+    HttpMethod.put,
+    'api/v3/movie/editor',
+    body: const BodyRule.jsonObject({'movieIds': _nonEmpty}),
+  ),
+  AllowedRequest.write(
+    HttpMethod.put,
+    'api/v3/series/editor',
+    body: const BodyRule.jsonObject({'seriesIds': _nonEmpty}),
+  ),
+];
+
 /// The list for a service whose include-unknown flag is [includeUnknown].
 AllowList allowList(String includeUnknown) => AllowList([
   for (final path in [
@@ -81,6 +146,7 @@ AllowList allowList(String includeUnknown) => AllowList([
   ])
     AllowedRequest.read('api/v3/$path'),
   ..._activity,
+  ..._manage,
   AllowedRequest.read(
     'api/v3/queue',
     query: {

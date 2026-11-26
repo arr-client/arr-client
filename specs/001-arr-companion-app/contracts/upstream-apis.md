@@ -22,7 +22,10 @@ Common to Sonarr, Radarr, Lidarr, Readarr:
   `queue/details`, `blocklist`, `release`, `command/{id}`, `manualimport`, `mediacover/...`
 - **W** `DELETE queue/{id}`, `queue/bulk` (removeFromClient, blocklist, skipRedownload;
   `skipRedownload` only matters when `blocklist=true`)
-- **W** `POST queue/grab/{id}`, `history/failed/{id}`, `release`
+- **W** `POST queue/grab/{id}`, `history/failed/{id}`, `release`. A grab sends `guid` and
+  `indexerId`. For a release the server could not match (`downloadAllowed` is false) it also sends
+  what was searched for, as the web UI does after a confirmation: `movieId` (Radarr), or `episodeId`,
+  or `seriesId` and `seasonNumber` (Sonarr). No other field is sent.
 - **W** `DELETE blocklist/{id}`, `blocklist/bulk`
 - **W** `POST command` (search, refresh, rescan, manual import execution)
 - **W** `POST manualimport` (reprocess a corrected candidate)

@@ -150,14 +150,22 @@ final allowList = AllowList([
   ),
   AllowedRequest.write(HttpMethod.post, 'api/v3/queue/grab/{id}'),
   AllowedRequest.write(HttpMethod.post, 'api/v3/history/failed/{id}'),
-  AllowedRequest.write(
-    HttpMethod.post,
-    'api/v3/release',
-    body: const BodyRule.jsonObject({
-      'guid': _nonEmpty,
-      'indexerId': _nonEmpty,
-    }),
-  ),
+  // A grab names the release; for one the server could not match, also what
+  // was searched for. Any further field could make it download as something
+  // else.
+  for (final target in const <List<String>>[
+    [],
+    ['movieId'],
+  ])
+    AllowedRequest.write(
+      HttpMethod.post,
+      'api/v3/release',
+      body: BodyRule.jsonObject({
+        'guid': _nonEmpty,
+        'indexerId': _nonEmpty,
+        for (final field in target) field: _nonEmpty,
+      }, closed: true),
+    ),
   AllowedRequest.write(HttpMethod.delete, 'api/v3/blocklist/{id}'),
   AllowedRequest.write(HttpMethod.delete, 'api/v3/blocklist/bulk', body: _ids),
 
