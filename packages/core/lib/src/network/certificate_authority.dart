@@ -33,6 +33,10 @@ enum CertificateAuthorityProblem {
   /// No certificate, or one that cannot be read.
   notACertificate,
 
+  /// A certificate that another signed and that is not marked as an authority,
+  /// such as a server's.
+  notAnAuthority,
+
   /// It holds a private key, which must not be stored or exported.
   privateKey,
 
@@ -47,7 +51,8 @@ const _begin = '-----BEGIN CERTIFICATE-----';
 
 final _block = RegExp('$_begin([A-Za-z0-9+/=\\s]*)-----END CERTIFICATE-----');
 
-/// Reads [bytes] as one or more PEM certificates, or as one in DER form.
+/// Reads [bytes] as one or more PEM certificates, or as one in DER form. Each
+/// must be marked as an authority in its basic constraints, or be self-issued.
 Result<CertificateAuthority, CertificateAuthorityProblem>
 readCertificateAuthority(List<int> bytes) {
   if (bytes.length > _maximumInputBytes) {
@@ -82,10 +87,14 @@ readCertificateAuthority(List<int> bytes) {
   final pem = StringBuffer();
   for (final der in found) {
     final CertificateInfo info;
+    final bool mayBeAuthority;
     try {
-      info = _describe(der);
+      (info, mayBeAuthority) = _describe(der);
     } on FormatException {
       return refused;
+    }
+    if (!mayBeAuthority) {
+      return const Err(CertificateAuthorityProblem.notAnAuthority);
     }
     if (certificates.containsKey(info.sha256)) continue;
     certificates[info.sha256] = info;
@@ -152,8 +161,9 @@ List<_Element> _inside(_Element element, [int tag = _sequence]) {
   return _elements(element.body);
 }
 
-/// The fields of the certificate [der] (RFC 5280, section 4.1).
-CertificateInfo _describe(List<int> der) {
+/// The fields of the certificate [der] (RFC 5280, section 4.1), and whether it
+/// may be an authority.
+(CertificateInfo, bool) _describe(List<int> der) {
   final outer = _elements(der);
   if (outer.length != 1) throw const FormatException('Not one certificate');
   final certificate = _inside(outer.single);
@@ -167,13 +177,40 @@ CertificateInfo _describe(List<int> der) {
   // Serial number, signature algorithm, issuer, validity, subject, key.
   final validity = _inside(signed[first + 3]);
   if (validity.length != 2) throw const FormatException('Validity');
-  return CertificateInfo(
+  final info = CertificateInfo(
     sha256: sha256.convert(der).toString(),
     issuer: _name(signed[first + 2]),
     notBefore: _time(validity[0]),
     notAfter: _time(validity[1]),
     subject: _name(signed[first + 4]),
   );
+  // The names as encoded: the described ones leave attributes out.
+  final selfIssued =
+      signed[first + 2].body.join(',') == signed[first + 4].body.join(',');
+  return (info, selfIssued || _isMarkedAuthority(signed.skip(first + 6)));
+}
+
+_Element _only(List<_Element> elements) => elements.length == 1
+    ? elements.first
+    : throw const FormatException('Not one element');
+
+/// Whether the extensions, tagged [3] among [rest], have basic constraints
+/// that say "CA".
+bool _isMarkedAuthority(Iterable<_Element> rest) {
+  for (final tagged in rest.where((element) => element.tag == 0xa3)) {
+    for (final extension in _inside(_only(_inside(tagged, 0xa3)))) {
+      final parts = _inside(extension);
+      if (parts.length < 2) throw const FormatException('Extension');
+      if (parts.first.body.join('.') != '85.29.19') continue;
+      // An octet string that holds a sequence, which leaves a false out.
+      if (parts.last.tag != 0x04) throw const FormatException('Extension');
+      final constraints = _inside(_only(_elements(parts.last.body)));
+      return constraints.isNotEmpty &&
+          constraints.first.tag == 0x01 &&
+          constraints.first.body.any((byte) => byte != 0);
+    }
+  }
+  return false;
 }
 
 const _attributes = {

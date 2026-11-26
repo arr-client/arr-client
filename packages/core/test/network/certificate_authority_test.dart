@@ -31,6 +31,22 @@ void _refused(String text, CertificateAuthorityProblem problem) {
   }, problem);
 }
 
+/// An authority signed by another, which no file of certs/ is. Its keys and
+/// its root's were thrown away.
+const _intermediate = '''
+-----BEGIN CERTIFICATE-----
+MIIBijCCATCgAwIBAgIBBzAKBggqhkjOPQQDAjAfMR0wGwYDVQQDDBRhcnItY2xp
+ZW50IHRlc3Qgcm9vdDAgFw0yNjExMjYxNzI5MjZaGA8yMTI2MTEwMjE3MjkyNlow
+JzElMCMGA1UEAwwcYXJyLWNsaWVudCB0ZXN0IGludGVybWVkaWF0ZTBZMBMGByqG
+SM49AgEGCCqGSM49AwEHA0IABPwi0zDx5YEwar7elFPToQRdT2+8h2MnO+syn1AX
+kXQGsMvzzGilB4EyguCkVEIOhpg3wTBubPGbmhsVJh6hA3mjUzBRMA8GA1UdEwEB
+/wQFMAMBAf8wHQYDVR0OBBYEFKGNdvzi1jMcB/d+d/XLTjPiKfK/MB8GA1UdIwQY
+MBaAFHpBVeVUeamCaDrw9E8U9iTsh8aYMAoGCCqGSM49BAMCA0gAMEUCIQCb/wSB
+2OnqEJBDV1Izdvu35s72H985UIc7YfYt/PvIKAIgGyhFuuzRchTw9wvJPg3golGL
+JYIG/jI0Dxn951WiNE4=
+-----END CERTIFICATE-----
+''';
+
 void main() {
   test('says whose the certificate is, how long and its fingerprint', () {
     final authority = _accepted(utf8.encode(TestCertificate.ca.pem));
@@ -45,12 +61,14 @@ void main() {
 
   // What a server presents is described by dart:io: both must agree.
   test('describes a certificate as a connection does', () async {
-    final server = await TlsServer.start(TestCertificate.leaf.serverContext());
+    final server = await TlsServer.start(
+      TestCertificate.selfSigned.serverContext(),
+    );
     final client = clientFor(settingsFor(server.url()));
     final seen = expectFailure<CertificateUntrusted>(await client.send(get()))
         .certificate;
 
-    final read = _accepted(utf8.encode(TestCertificate.leaf.pem))
+    final read = _accepted(utf8.encode(TestCertificate.selfSigned.pem))
         .certificates
         .single;
 
@@ -102,6 +120,37 @@ void main() {
     );
 
     expectOk(await client.send(get()));
+  });
+
+  test('refuses a certificate that another signed for a server', () {
+    final leaf = TestCertificate.leaf;
+
+    _refused(leaf.pem, CertificateAuthorityProblem.notAnAuthority);
+    // As in a server's full chain.
+    _refused(
+      '${leaf.pem}${TestCertificate.ca.pem}',
+      CertificateAuthorityProblem.notAnAuthority,
+    );
+    expect(switch (readCertificateAuthority(_der(leaf))) {
+      Ok() => null,
+      Err(:final error) => error,
+    }, CertificateAuthorityProblem.notAnAuthority);
+  });
+
+  test('takes an authority that another signed', () {
+    final certificate = _accepted(utf8.encode(_intermediate)).certificates;
+
+    expect(certificate.single.subject, contains('test intermediate'));
+    expect(certificate.single.issuer, contains('test root'));
+  });
+
+  // Trusting one lets exactly its server in, by name and dates.
+  test('takes a self-signed certificate', () {
+    final certificate = TestCertificate.selfSigned;
+
+    final authority = _accepted(utf8.encode(certificate.pem));
+
+    expect(authority.certificates.single.sha256, certificate.sha256);
   });
 
   test('refuses a private key, also beside a certificate', () {
