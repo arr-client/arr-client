@@ -17,6 +17,7 @@
 /// data. Statuses 502 and 504 to a write are in retry_test.dart.
 library;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -181,6 +182,38 @@ void main() {
     });
   }
 
+  // No TLS connection, so nothing was sent, whatever the method.
+  for (final method in [HttpMethod.get, HttpMethod.post]) {
+    test('${method.name} to a server that speaks no TLS', () async {
+      final server = await TestServer.start();
+      final client = clientFor(
+        settingsFor(server.url().replace(scheme: 'https')),
+      );
+
+      expectFailure<Unreachable>(await client.send(request(method)));
+
+      expect(server.requests, isEmpty);
+    });
+
+    test('${method.name} whose TLS handshake stalls', () async {
+      final server = await RawServer.start();
+      final client = clientFor(
+        settingsFor(server.url().replace(scheme: 'https')),
+        timeout: _timeout,
+      );
+
+      expectFailure<Unreachable>(await client.send(request(method)));
+    });
+
+    test('${method.name} over https to an unknown host', () async {
+      final client = clientFor(
+        settingsFor(_unknownHost.replace(scheme: 'https')),
+      );
+
+      expectFailure<DnsFailure>(await client.send(request(method)));
+    });
+  }
+
   for (final (name, lose) in <(String, void Function(Socket))>[
     ('closed without an answer', (socket) => socket.destroy()),
     ('left without an answer', (_) {}),
@@ -242,6 +275,40 @@ void main() {
 
     expectFailure<Unreachable>(await client.send(get()));
   });
+
+  // Each piece arrives within the limit of a step, but the answer never ends.
+  for (final (method, matcher) in [
+    (HttpMethod.get, isA<Unreachable>()),
+    (HttpMethod.post, isA<OutcomeUnknown>()),
+  ]) {
+    test('${method.name} answered too slowly is given up', () async {
+      final closed = Completer<void>();
+      final server = await RawServer.start((socket, _) {
+        socket.write('HTTP/1.1 200 OK\r\ncontent-length: 1000\r\n\r\n');
+        final trickle = Timer.periodic(
+          const Duration(milliseconds: 50),
+          (_) => socket.write('x'),
+        );
+        socket.done.whenComplete(() {
+          trickle.cancel();
+          closed.complete();
+        }).ignore();
+        addTearDown(trickle.cancel);
+      });
+      final client = clientFor(
+        settingsFor(server.url()),
+        // Not asked: an answer is arriving.
+        permission: FakePermission(LocalNetworkPermissionState.denied),
+        timeout: const Duration(milliseconds: 200),
+      );
+
+      final error = expectError(await client.send(request(method)));
+
+      expect(error.failure, matcher);
+      await closed.future.timeout(const Duration(seconds: 5));
+      expect(server.requests, hasLength(1));
+    });
+  }
 
   group('nothing is sent', () {
     test('without settings', () async {

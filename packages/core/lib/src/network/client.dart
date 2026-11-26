@@ -1,6 +1,7 @@
 /// The HTTP client of one instance (research R4).
 library;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -27,11 +28,17 @@ import 'request_body.dart';
 import 'service_http_client.dart';
 import 'service_request.dart';
 import 'service_response.dart';
+import 'trust.dart';
 
 /// How many redirects of a read are followed.
 const _maximumRedirects = 5;
 
 const _redirectStatuses = {301, 302, 303, 307, 308};
+
+/// How many times the limit of one step a whole attempt may take. Only an answer
+/// that keeps arriving in small pieces gets this far, and a large library over a
+/// slow link is not to be cut off.
+const _attemptSteps = 10;
 
 /// Sends the requests of one instance to its address, with its credential.
 ///
@@ -40,20 +47,23 @@ const _redirectStatuses = {301, 302, 303, 307, 308};
 /// No proxy is used, so that a credential cannot reach one that the environment
 /// names.
 ///
-/// Certificate pins and custom authorities are not supported yet: a send whose
-/// settings have either fails and sends nothing.
+/// Nothing is written to an https connection before its certificate has been
+/// accepted: against `certPin` alone if the settings have one, and else against
+/// the system's roots and `customCa`. A pin or authority asks for a certificate,
+/// so a send with either to an http address fails and sends nothing.
 final class InstanceHttpClient implements ServiceHttpClient {
   /// A client of settings of the caller's choosing, loaded for every send.
   ///
   /// [timeout] limits each step of one attempt: connecting, sending, waiting
-  /// for the answer and each pause while receiving it.
+  /// for the answer and each pause while receiving it. A whole attempt is
+  /// limited to ten times that.
   InstanceHttpClient({
     required this._settings,
     required this._apiKeyHeader,
     required this._log,
     required this._localNetwork,
-    Duration timeout = const Duration(seconds: 30),
-  }) : _dio = _newDio(timeout);
+    this._timeout = const Duration(seconds: 30),
+  });
 
   /// A client of a saved instance. Its address and credential are read together
   /// for every send.
@@ -88,16 +98,20 @@ final class InstanceHttpClient implements ServiceHttpClient {
   final DiagnosticLog _log;
   final LocalNetworkPermission _localNetwork;
 
-  // One for all sends, as the only trust there is so far is the system's. A
-  // connection must never be reused under other trust than it was made with.
-  final Dio _dio;
+  final Duration _timeout;
+
+  // One for each pin and authority, as each pools its connections, and one made
+  // under some trust must never be used under another.
+  final _clients = <(String?, String?), Dio>{};
 
   var _closed = false;
 
   /// Drops every connection. Later sends fail.
   void close() {
     _closed = true;
-    _dio.close(force: true);
+    for (final client in _clients.values) {
+      client.close(force: true);
+    }
   }
 
   @override
@@ -130,19 +144,31 @@ final class InstanceHttpClient implements ServiceHttpClient {
         url.userInfo.isNotEmpty) {
       return _unsent(request, const Unreachable(), 'the address is not usable');
     }
-    // Fails closed: without the check these ask for, nothing may be sent.
-    if (settings.certPin != null || settings.customCa != null) {
+    // Fails closed: there is no certificate to check.
+    if (!url.isScheme('https') &&
+        (settings.certPin != null || settings.customCa != null)) {
       return _unsent(
         request,
         const Unreachable(),
-        'certificate pins and authorities are not supported yet',
+        'a certificate pin or authority needs https',
       );
     }
     final headers = _headers(request, settings);
     if (headers == null) {
       return _unsent(request, const Validation([]), 'a header cannot be sent');
     }
+    final Dio client;
+    try {
+      client = _clientFor(settings);
+    } on TlsException {
+      return _unsent(
+        request,
+        const Unreachable(),
+        'the certificate authority cannot be read',
+      );
+    }
     return _exchange(
+      client,
       request,
       settings,
       _address(url, request),
@@ -151,8 +177,20 @@ final class InstanceHttpClient implements ServiceHttpClient {
     );
   }
 
+  /// The client of the trust that [settings] ask for.
+  Dio _clientFor(ConnectionSettings settings) {
+    final certPin = settings.certPin;
+    // A pin alone decides, so an authority beside it is not even read.
+    final customCa = certPin == null ? settings.customCa : null;
+    return _clients[(certPin, customCa)] ??= _newDio(
+      _timeout,
+      newHttpClient(certPin: certPin, customCa: customCa),
+    );
+  }
+
   /// Sends, following redirects and retrying as the rules allow.
   Future<Result<ServiceResponse, HttpError>> _exchange(
+    Dio client,
     ServiceRequest request,
     ConnectionSettings settings,
     Uri address,
@@ -166,8 +204,12 @@ final class InstanceHttpClient implements ServiceHttpClient {
     while (true) {
       final ServiceResponse response;
       try {
-        response = await _attempt(request.method, uri, headers, body);
+        response = await _attempt(client, request.method, uri, headers, body);
       } on DioException catch (error) {
+        // Nothing was sent, so this holds for a write too.
+        if (error.error case CertificateRefusal(:final failure)) {
+          return _failed(request, failure, cause: 'nothing sent');
+        }
         final fault = _faultOf(error);
         if (fault == _Fault.lost && isRead && !retried) {
           retried = true;
@@ -210,25 +252,33 @@ final class InstanceHttpClient implements ServiceHttpClient {
   }
 
   Future<ServiceResponse> _attempt(
+    Dio client,
     HttpMethod method,
     Uri uri,
     Map<String, String> headers,
     Uint8List? body,
   ) async {
-    final response = await _dio.requestUri<Uint8List>(
-      uri,
-      data: body,
-      // A copy, as dio adds to it.
-      options: Options(
-        method: method.name.toUpperCase(),
-        headers: {...headers},
-      ),
-    );
-    return ServiceResponse(
-      statusCode: response.statusCode!,
-      headers: response.headers.map,
-      bytes: response.data ?? Uint8List(0),
-    );
+    final cancel = CancelToken();
+    final deadline = Timer(_timeout * _attemptSteps, cancel.cancel);
+    try {
+      final response = await client.requestUri<Uint8List>(
+        uri,
+        data: body,
+        cancelToken: cancel,
+        // A copy, as dio adds to it.
+        options: Options(
+          method: method.name.toUpperCase(),
+          headers: {...headers},
+        ),
+      );
+      return ServiceResponse(
+        statusCode: response.statusCode!,
+        headers: response.headers.map,
+        bytes: response.data ?? Uint8List(0),
+      );
+    } finally {
+      deadline.cancel();
+    }
   }
 
   /// The headers of [request], or null if one of them cannot be sent.
@@ -311,7 +361,7 @@ final class InstanceHttpClient implements ServiceHttpClient {
       _Fault.notConnected || _Fault.connectTimeout => const Unreachable(),
       // From here on the request may have arrived.
       _ when !isRead => const OutcomeUnknown(),
-      _Fault.timeout || _Fault.lost => const Unreachable(),
+      _Fault.timeout || _Fault.overdue || _Fault.lost => const Unreachable(),
       _Fault.malformed => const MalformedResponse(),
     };
   }
@@ -368,6 +418,10 @@ enum _Fault {
   /// Connected, then no answer in time.
   timeout,
 
+  /// The whole attempt took too long. Not a [timeout], as an answer that keeps
+  /// arriving is no sign of a missing permission, and the read is not repeated.
+  overdue,
+
   /// Connected, then the connection ended.
   lost,
 
@@ -384,6 +438,8 @@ _Fault _faultOf(DioException exception) => switch (exception) {
     type: DioExceptionType.sendTimeout || DioExceptionType.receiveTimeout,
   ) =>
     _Fault.timeout,
+  // Only the deadline of an attempt cancels.
+  DioException(type: DioExceptionType.cancel) => _Fault.overdue,
   DioException(
     type: DioExceptionType.connectionError,
     error: SocketException(:final message),
@@ -399,7 +455,7 @@ _Fault _faultOf(DioException exception) => switch (exception) {
   _ => _Fault.lost,
 };
 
-Dio _newDio(Duration timeout) =>
+Dio _newDio(Duration timeout, HttpClient httpClient) =>
     Dio(
         BaseOptions(
           connectTimeout: timeout,
@@ -412,10 +468,7 @@ Dio _newDio(Duration timeout) =>
         ),
       )
       ..httpClientAdapter = IOHttpClientAdapter(
-        createHttpClient: () => HttpClient()
-          ..idleTimeout = const Duration(seconds: 3)
-          // The default takes a proxy from the environment.
-          ..findProxy = (_) => 'DIRECT',
+        createHttpClient: () => httpClient,
       )
       // Content types are set with the other headers.
       ..interceptors.removeImplyContentTypeInterceptor();

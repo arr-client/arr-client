@@ -18,6 +18,8 @@
 /// the socket. The certificates are described in certificates.dart.
 library;
 
+import 'dart:io';
+
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -145,6 +147,21 @@ void main() {
       );
     });
 
+    // A resumed TLS session would not be checked again.
+    test('refuses again on the next send', () async {
+      final server = await _serving(TestCertificate.selfSigned);
+      for (final certPin in [TestCertificate.selfSignedOther.sha256, null]) {
+        final client = clientFor(settingsFor(server.url(), certPin: certPin));
+
+        expectError(await client.send(get()));
+        expectError(await client.send(get()));
+      }
+
+      await server.closedByClient();
+      expect(server.connections, 4);
+      expect(server.bytes, isEmpty);
+    });
+
     test('applies to its own instance only', () async {
       final server = await _serving(TestCertificate.selfSigned);
       final pinned = clientFor(
@@ -249,6 +266,25 @@ void main() {
       expect(server.bytes, hasLength(sent));
     });
 
+    // Not even to a server that the system's roots might accept.
+    for (final (name, authority) in [
+      ('empty', ''),
+      ('not a certificate', 'not a certificate'),
+      ('cut off', '-----BEGIN CERTIFICATE-----\nMIIB'),
+    ]) {
+      test('that is $name opens no connection', () async {
+        final server = await _serving(TestCertificate.leaf);
+        final client = clientFor(
+          settingsFor(server.url(), customCa: authority),
+        );
+
+        expectError(await client.send(get()));
+
+        await pause();
+        expect(server.connections, 0);
+      });
+    }
+
     test('that is not a certificate sends nothing', () async {
       final server = await _serving(TestCertificate.leaf);
       final client = clientFor(
@@ -260,5 +296,17 @@ void main() {
       await pause();
       expect(server.bytes, isEmpty);
     });
+  });
+
+  test('a proxy of the environment gets nothing over https', () async {
+    final proxy = await RawServer.start();
+    final server = await _serving(TestCertificate.selfSigned);
+
+    await HttpOverrides.runZoned(
+      () => _accepted(server, certPin: TestCertificate.selfSigned.sha256),
+      findProxyFromEnvironment: (_, _) => 'PROXY 127.0.0.1:${proxy.port}',
+    );
+
+    expect(proxy.connections, 0);
   });
 }
