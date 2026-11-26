@@ -15,6 +15,7 @@ import 'instance.dart';
 import 'instance_draft.dart';
 import 'instance_link.dart';
 import 'instance_rules.dart';
+import 'probe_snapshot.dart';
 import 'probe_snapshot_json.dart';
 import 'profile.dart';
 import 'rule_violation.dart';
@@ -80,6 +81,21 @@ class ProfileRepository {
         .get();
     await _erase([for (final row in pending) row.secretKey]);
   }
+
+  /// Fires after every change, made through this database, to the profiles,
+  /// their instances or which profile is active; also after one to another
+  /// app-wide preference. A change of a credential alone is not one, but saving
+  /// an instance always is.
+  Stream<void> get changes => _database
+      .tableUpdates(
+        TableUpdateQuery.onAllTables([
+          _database.profiles,
+          _database.instances,
+          _database.instanceLinks,
+          _database.appPreferences,
+        ]),
+      )
+      .map((_) {});
 
   /// All profiles, in their order.
   Future<List<Profile>> profiles() async {
@@ -451,6 +467,26 @@ class ProfileRepository {
     if (cookie == null || stored?.sessionCookie != cookie) return;
     await _writeSession(id, stored, null, secrets);
   });
+
+  /// Keeps what a successful probe through [used] found, as `lastProbe` and
+  /// `detectedVersion`. It is not an edit: `updatedAt` stays. False, storing
+  /// nothing, if the instance is gone or its address, authKind or what the user
+  /// enters has changed since: something else was probed.
+  Future<bool> recordProbe(InstanceAccess used, ProbeSnapshot probe) =>
+      _database.transaction(() async {
+        final id = used.instance.id;
+        final current = await instanceWithCredential(id);
+        if (current == null || !_isUnchanged(current, used)) return false;
+        await (_database.update(
+          _database.instances,
+        )..where((row) => row.id.equals(id))).write(
+          InstancesCompanion(
+            detectedVersion: Value(probe.version),
+            lastProbe: Value(encodeProbeSnapshot(probe)),
+          ),
+        );
+        return true;
+      });
 
   /// Gives the instance [id], which has [stored] now, the session [cookie].
   Future<void> _writeSession(
