@@ -9,8 +9,10 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
+import '../../app/navigation/locations.dart';
 import '../../app/providers.dart';
 import '../../src/l10n/generated/app_localizations.dart';
+import '../library/state_appearance.dart';
 import 'merge.dart';
 import 'service_answer.dart';
 
@@ -51,18 +53,18 @@ class ReleaseTile extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Icon(
-                  _stateIcon(event.state),
+                  event.state.icon,
                   // As large as the text beside it.
                   size: MediaQuery.textScalerOf(context).scale(16),
                 ),
               ),
               const SizedBox(width: 4),
-              Expanded(child: Text(_stateLabel(strings, event.state))),
+              Expanded(child: Text(event.state.label(strings))),
             ],
           ),
         ],
       ),
-      onTap: () => openItem(context, ref, event.itemRef),
+      onTap: () => openItem(context, ref, event.itemRef, event.title),
     );
   }
 }
@@ -93,33 +95,28 @@ class ImportTile extends ConsumerWidget {
         ].join(' · '),
       ),
       // Without an item the server matched nothing to open.
-      onTap: itemRef == null ? null : () => openItem(context, ref, itemRef),
+      onTap: itemRef == null
+          ? null
+          : () => openItem(context, ref, itemRef, item.title),
     );
   }
 }
 
 /// Opens the item's screen, which its module owns.
-void openItem(BuildContext context, WidgetRef ref, ItemRef item) {
+void openItem(BuildContext context, WidgetRef ref, ItemRef item, String title) {
   final library = ref
       .read(scopeProvider)
       ?.instance(item.instanceId)
       ?.capability(CapabilityKind.library);
-  ModuleRoute? route;
+  if (library == null) return;
+  String location;
+  // A module without detail screens yet throws; the page says so.
   try {
-    route = library?.detailRoute(item);
+    location = library.detailRoute(item).location;
   } on UnimplementedError {
-    // The modules have no detail screens yet; this goes when they do.
-    route = null;
+    location = itemPlaceholderLocation(item.instanceId, title);
   }
-  if (route != null) {
-    unawaited(context.push(route.location));
-    return;
-  }
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).calendarNoDetails)),
-    );
+  unawaited(context.push<void>(location));
 }
 
 /// A heading above the rows of a day.
@@ -246,22 +243,3 @@ String? _kindLabel(AppLocalizations strings, CalendarDateKind kind) =>
       CalendarDateKind.releaseDate => strings.calendarReleased,
       CalendarDateKind.unknown => null,
     };
-
-String _stateLabel(AppLocalizations strings, ItemState state) =>
-    switch (state) {
-      ItemState.downloading => strings.stateDownloading,
-      ItemState.downloaded => strings.stateDownloaded,
-      ItemState.partial => strings.statePartial,
-      ItemState.unmonitored => strings.stateUnmonitored,
-      ItemState.unreleased => strings.stateUnreleased,
-      ItemState.missing => strings.stateMissing,
-    };
-
-IconData _stateIcon(ItemState state) => switch (state) {
-  ItemState.downloading => Icons.downloading_outlined,
-  ItemState.downloaded => Icons.check_circle_outline,
-  ItemState.partial => Icons.incomplete_circle_outlined,
-  ItemState.unmonitored => Icons.visibility_off_outlined,
-  ItemState.unreleased => Icons.schedule_outlined,
-  ItemState.missing => Icons.error_outline,
-};

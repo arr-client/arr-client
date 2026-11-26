@@ -363,19 +363,17 @@ void main() {
     await calendar.stop(tester);
   });
 
-  testWidgets('an item without a screen says so', (tester) async {
+  testWidgets('an item without a screen opens the page that says so', (
+    tester,
+  ) async {
     final calendar = await CalendarHarness.start(tester, now: noon);
     calendar.release('Films', 'Film', DateTime(2026, 11, 26));
     await calendar.pump(tester);
 
     await tester.tap(find.text('Film'));
-    await tester.pump();
-
-    expect(
-      find.text('Details cannot be opened in this version yet.'),
-      findsOneWidget,
-    );
     await tester.pumpAndSettle();
+
+    expect(find.text('placeholder of Film'), findsOneWidget);
     await calendar.stop(tester);
   });
 

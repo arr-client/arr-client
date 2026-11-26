@@ -5,6 +5,7 @@ library;
 import 'dart:async';
 
 import 'package:arr_client/app/localization.dart';
+import 'package:arr_client/app/navigation/locations.dart';
 import 'package:arr_client/app/providers.dart';
 import 'package:arr_client/features/calendar/calendar_screen.dart';
 import 'package:arr_client/features/calendar/today.dart';
@@ -194,6 +195,12 @@ class CalendarHarness {
         GoRoute(
           path: '/',
           builder: (context, state) => CalendarScreen(initialTab: tab),
+        ),
+        GoRoute(
+          path: '/instances/:instanceId/$itemPlaceholderPath',
+          builder: (context, state) => Scaffold(
+            body: Text('placeholder of ${state.uri.queryParameters['title']}'),
+          ),
         ),
         GoRoute(
           path: '/instances/:instanceId/items/:itemId',

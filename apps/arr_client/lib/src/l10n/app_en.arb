@@ -766,8 +766,6 @@
   "@calendarNoImports": {"description": "No imports on an earlier day."},
   "calendarNoImportsKnown": "No downloads from the services that answered.",
   "@calendarNoImportsKnown": {"description": "No imports while a service failed or has not answered."},
-  "calendarNoDetails": "Details cannot be opened in this version yet.",
-  "@calendarNoDetails": {"description": "Shown when an item is tapped and has no screen yet."},
   "calendarInCinemas": "In cinemas",
   "@calendarInCinemas": {"description": "Kind of a movie date."},
   "calendarDigitalRelease": "Digital release",
@@ -777,17 +775,5 @@
   "calendarAirs": "Airs",
   "@calendarAirs": {"description": "Kind of an episode date, after its time."},
   "calendarReleased": "Release",
-  "@calendarReleased": {"description": "Kind of an album or book date."},
-  "stateDownloading": "Downloading",
-  "@stateDownloading": {"description": "State of a library item."},
-  "stateDownloaded": "Downloaded",
-  "@stateDownloaded": {"description": "State of a library item."},
-  "statePartial": "Partly downloaded",
-  "@statePartial": {"description": "State of a library item."},
-  "stateUnmonitored": "Not monitored",
-  "@stateUnmonitored": {"description": "State of a library item."},
-  "stateUnreleased": "Not released",
-  "@stateUnreleased": {"description": "State of a library item."},
-  "stateMissing": "Missing",
-  "@stateMissing": {"description": "State of a library item."}
+  "@calendarReleased": {"description": "Kind of an album or book date."}
 }
