@@ -14,7 +14,7 @@ final class RadarrApi {
   /// The API of the instance of [context].
   RadarrApi(InstanceContext context)
     : _http = context.http,
-      _shared = ServarrClient(
+      shared = ServarrClient(
         context.http,
         apiPath: _apiPath,
         includeUnknownParameter: 'includeUnknownMovieItems',
@@ -32,7 +32,9 @@ final class RadarrApi {
       );
 
   final ServiceHttpClient _http;
-  final ServarrClient _shared;
+
+  /// The reads the Servarr family has in common, set up for Radarr.
+  final ServarrClient shared;
 
   /// Every movie, as received.
   ServiceResult<List<JsonObject>> movies() => _get('movie', _objects);
@@ -71,14 +73,14 @@ final class RadarrApi {
       );
 
   /// The whole download queue.
-  ServiceResult<List<QueueItem>> queue() => _shared.queue();
+  ServiceResult<List<QueueItem>> queue() => shared.queue();
 
   /// The events of one movie, newest first.
   ServiceResult<List<HistoryEvent>> movieHistory(int movieId) =>
-      _shared.itemHistory('history/movie', query: _ofMovie(movieId));
+      shared.itemHistory('history/movie', query: _ofMovie(movieId));
 
   /// Quality profiles, root folders and tags.
-  ServiceResult<List<ServerOption>> options() => _shared.options();
+  ServiceResult<List<ServerOption>> options() => shared.options();
 
   static Map<String, List<String>> _ofMovie(int id) => {
     'movieId': ['$id'],

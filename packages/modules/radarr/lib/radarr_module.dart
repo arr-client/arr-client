@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
+import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
 import 'src/api/radarr_api.dart';
