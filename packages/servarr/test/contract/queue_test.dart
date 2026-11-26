@@ -21,8 +21,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'support.dart';
 
-const _hash = 'ABCDEF0000000000000000000000000000000001';
-
 FakeServer _server(List<Object?> records, {int? limit}) => FakeServer(
   (request) => request.path == 'api/v3/queue'
       ? page(request, records, limit: limit)
@@ -32,13 +30,23 @@ FakeServer _server(List<Object?> records, {int? limit}) => FakeServer(
 Future<List<QueueItem>> _read(Service service, List<Object?> records) =>
     value(service.client(_server(records)).queue());
 
-/// The first record of the fixture, downloading, with [changes].
+/// The first recorded download in progress.
+Map<String, Object?> _downloading(Service service) => service
+    .records('queue')
+    .firstWhere((record) => record['status'] == 'downloading');
+
+/// The recorded release held back by the delay profile.
+Map<String, Object?> _delayed(Service service) => service
+    .records('queue')
+    .firstWhere((record) => record['status'] == 'delay');
+
+/// The recorded download in progress, with [changes].
 Future<QueueItem> _one(
   Service service, [
   Map<String, Object?> changes = const {},
   List<String> without = const [],
 ]) async {
-  final record = service.records('queue').first
+  final record = _downloading(service)
     ..addAll(changes)
     ..removeWhere((key, _) => without.contains(key));
   return (await _read(service, [record])).single;
@@ -46,8 +54,7 @@ Future<QueueItem> _one(
 
 /// [count] downloads with ids from 1.
 List<Object?> _many(Service service, int count) => [
-  for (var id = 1; id <= count; id++)
-    {...service.records('queue').first, 'id': id},
+  for (var id = 1; id <= count; id++) {..._downloading(service), 'id': id},
 ];
 
 void main() {
@@ -76,18 +83,33 @@ void main() {
       });
 
       test('maps a download in progress', () async {
-        final item = (await _read(service, service.records('queue'))).first;
+        final record = _downloading(service);
+        final item = await _one(service);
 
-        expect(item.title, contains('1080p'));
+        expect(item.id, record['id']);
+        expect(item.title, record['title']);
         expect(item.status, QueueStatus.downloading);
         expect(item.trackedState, TrackedState.downloading);
         expect(item.severity, QueueSeverity.ok);
         expect(item.messages, isEmpty);
-        expect(item.progress, 0.75);
-        expect(item.sizeLeft, service == radarr ? 2000000000 : 500000000);
-        expect(item.eta, const Duration(minutes: 45, seconds: 30));
-        expect(item.downloadId, _hash);
-        expect(item.downloadClient, 'qBittorrent');
+        expect(
+          item.progress,
+          closeTo(service == radarr ? 0.017578125 : 0.013021, 0.000001),
+        );
+        expect(item.sizeLeft, service == radarr ? 24723456 : 24838145);
+        expect(
+          item.eta,
+          service == radarr
+              ? const Duration(hours: 1, seconds: 28)
+              : const Duration(hours: 1, minutes: 2, seconds: 33),
+        );
+        expect(
+          item.downloadId,
+          'ABCDEF000000000000000000000000000000000'
+          '${service == radarr ? 2 : 5}',
+        );
+        expect(item.downloadClient, record['downloadClient']);
+        expect(item.downloadClient, isNotEmpty);
         expect(item.protocol, DownloadProtocol.torrent);
         expect(item.quality?.id, service == radarr ? 7 : 3);
         expect(
@@ -97,8 +119,15 @@ void main() {
         expect(item.needsManualImport, isFalse);
       });
 
+      test('computes progress from what is left', () async {
+        final item = await _one(service, {'size': 2000, 'sizeleft': 500});
+
+        expect(item.progress, 0.75);
+        expect(item.sizeLeft, 500);
+      });
+
       test('refers to the item and its parent', () async {
-        final item = (await _read(service, service.records('queue'))).first;
+        final item = await _one(service);
 
         if (service == radarr) {
           expect(
@@ -106,7 +135,7 @@ void main() {
             const ItemRef(
               instanceId: instanceId,
               kind: MediaKind.movie,
-              remoteId: 11,
+              remoteId: 1,
             ),
           );
           expect(item.parent, isNull);
@@ -116,7 +145,7 @@ void main() {
             const ItemRef(
               instanceId: instanceId,
               kind: MediaKind.episode,
-              remoteId: 301,
+              remoteId: 13,
             ),
           );
           expect(
@@ -124,50 +153,86 @@ void main() {
             const ItemRef(
               instanceId: instanceId,
               kind: MediaKind.series,
-              remoteId: 21,
+              remoteId: 1,
             ),
           );
         }
       });
 
       test('keeps a download the server cannot match', () async {
-        final item = (await _read(service, service.records('queue')))[1];
+        final record = service.records('queue').last;
+        final item = (await _read(service, service.records('queue'))).last;
 
         expect(item.itemRef, isNull);
         expect(item.parent, isNull);
-        expect(item.title, 'Some.Unmatched.Release-GRP');
+        expect(item.title, record['title']);
         expect(item.status, QueueStatus.completed);
-        expect(item.trackedState, TrackedState.importPending);
+        expect(item.trackedState, TrackedState.importBlocked);
         expect(item.severity, QueueSeverity.warning);
         expect(item.needsManualImport, isTrue);
         expect(item.progress, 1);
         expect(item.sizeLeft, 0);
-        expect(
-          item.messages,
-          unorderedEquals([
-            service == radarr
-                ? 'Unable to parse movie title from the file name'
-                : 'Unable to parse the series from the file name',
-            'No files found are eligible for import',
-          ]),
-        );
+        final statusMessage =
+            (record['statusMessages']! as List<Object?>).single! as JsonObject;
+        expect(item.messages, statusMessage['messages']);
+        expect(item.messages, hasLength(1));
+      });
+
+      test('takes the title of a status message without messages', () async {
+        final item = await _one(service, {
+          'statusMessages': [
+            {
+              'title': 'Some.Release-GRP',
+              'messages': ['Unable to parse the file name'],
+            },
+            {
+              'title': 'No files found are eligible for import',
+              'messages': <Object?>[],
+            },
+          ],
+        });
+
+        expect(item.messages, [
+          'Unable to parse the file name',
+          'No files found are eligible for import',
+        ]);
       });
 
       test('maps a delayed release that has no download yet', () async {
-        final item = (await _read(service, service.records('queue')))[2];
+        final item = (await _read(service, [_delayed(service)])).single;
 
         expect(item.status, QueueStatus.delayed);
         expect(item.trackedState, TrackedState.unknown);
         expect(item.severity, QueueSeverity.ok);
         expect(item.downloadId, isNull);
         expect(item.downloadClient, isNull);
-        expect(item.protocol, DownloadProtocol.usenet);
+        expect(item.protocol, DownloadProtocol.torrent);
         expect(item.progress, 0);
         expect(
           item.eta,
-          const Duration(days: 1, hours: 2, minutes: 3, seconds: 4),
+          service == radarr
+              ? const Duration(
+                  days: 1,
+                  hours: 2,
+                  minutes: 23,
+                  seconds: 27,
+                  microseconds: 546777,
+                )
+              : const Duration(
+                  days: 1,
+                  hours: 2,
+                  minutes: 8,
+                  seconds: 28,
+                  microseconds: 210610,
+                ),
         );
         expect(item.needsManualImport, isFalse);
+      });
+
+      test('reads usenet', () async {
+        final item = await _one(service, {'protocol': 'usenet'});
+
+        expect(item.protocol, DownloadProtocol.usenet);
       });
 
       final statuses = {
@@ -296,7 +361,9 @@ void main() {
       });
 
       test('is empty when nothing is queued', () async {
-        final server = _server(const []);
+        final server = FakeServer.paths({
+          'queue': service.fixture('queue_empty'),
+        });
 
         expect(await value(service.client(server).queue()), isEmpty);
         expect(server.requests, hasLength(1));

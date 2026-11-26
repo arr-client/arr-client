@@ -16,6 +16,10 @@ FakeServer _server(List<Object?> records, {int? limit}) => FakeServer(
       : const Reply(404, ''),
 );
 
+/// The recorded record with [id].
+Map<String, Object?> _recorded(Service service, int id) =>
+    service.records('history').singleWhere((record) => record['id'] == id);
+
 Future<HistoryEvent> _one(
   Service service, [
   Map<String, Object?> changes = const {},
@@ -53,43 +57,77 @@ void main() {
 
         expect(result.page, 1);
         expect(result.hasMore, isFalse);
-        expect(result.items.map((event) => event.id), [
-          for (final record in service.records('history')) record['id'],
-        ]);
+        expect(result.items.map((event) => event.id), [5, 4, 3, 2, 1]);
         expect(result.items.map((event) => event.eventType), [
+          HistoryEventType.failed,
+          HistoryEventType.deleted,
           HistoryEventType.imported,
           HistoryEventType.grabbed,
-          HistoryEventType.deleted,
+          HistoryEventType.grabbed,
         ]);
       });
 
       test('maps an event', () async {
-        final event = await _one(service);
+        final record = _recorded(service, 1);
+        final data = record['data']! as JsonObject;
 
-        expect(event.date, DateTime.utc(2026, 11, 20, 10, 15));
+        final event = await _one(service, record);
+
+        expect(
+          event.date,
+          DateTime.utc(
+            2026,
+            11,
+            26,
+            13,
+            service == radarr ? 23 : 24,
+            service == radarr ? 59 : 4,
+          ),
+        );
         expect(event.date.isUtc, isTrue);
-        expect(event.sourceTitle, contains('1080p'));
-        expect(event.downloadId, 'ABCDEF0000000000000000000000000000000001');
+        expect(event.sourceTitle, record['sourceTitle']);
+        expect(
+          event.downloadId,
+          'ABCDEF000000000000000000000000000000000'
+          '${service == radarr ? 2 : 5}',
+        );
         expect(
           event.itemRef,
           ItemRef(
             instanceId: instanceId,
             kind: service == radarr ? MediaKind.movie : MediaKind.episode,
-            remoteId: service == radarr ? 11 : 301,
+            remoteId: service == radarr ? 1 : 13,
           ),
         );
-        expect(event.details['releaseGroup'], 'GRP');
-        expect(event.details['downloadClientName'], 'qBittorrent');
+        expect(event.details['releaseGroup'], data['releaseGroup']);
+        expect(event.details['downloadClientName'], data['downloadClientName']);
+        expect(event.details['protocol'], '2');
+      });
+
+      test('keeps no address of a recorded grab', () async {
+        final record = _recorded(service, 1);
+        final data = record['data']! as JsonObject;
+        const addresses = ['downloadUrl', 'nzbInfoUrl', 'guid'];
+        expect(data.keys, containsAll(addresses));
+
+        final event = await _one(service, record);
+
+        expect(
+          event.details.keys,
+          unorderedEquals([
+            for (final MapEntry(:key, :value) in data.entries)
+              if (value != null && !addresses.contains(key)) key,
+          ]),
+        );
       });
 
       test('leaves out a detail without a value', () async {
-        final result = await value(
-          service.client(_server(service.records('history'))).history(),
-        );
+        // The import by hand has `"downloadClient": null`.
+        final event = await _one(service, _recorded(service, 3));
 
-        // The grab has `"nzbInfoUrl": null`.
-        expect(result.items[1].details, isNot(contains('nzbInfoUrl')));
-        expect(result.items[1].details['indexer'], 'Example Indexer');
+        expect(event.eventType, HistoryEventType.imported);
+        expect(event.details, isNot(contains('downloadClient')));
+        expect(event.details['fileId'], '1');
       });
 
       test('accepts an event without a download or details', () async {
@@ -188,7 +226,8 @@ void main() {
         (3, 0, false),
       ]) {
         test('reads page $number only', () async {
-          final server = _server(service.records('history'), limit: 2);
+          final records = service.records('history').sublist(0, 3);
+          final server = _server(records, limit: 2);
 
           final result = await value(
             service.client(server).history(page: number),
@@ -209,6 +248,17 @@ void main() {
         );
 
         expect(result.items, hasLength(2));
+        expect(result.hasMore, isFalse);
+      });
+
+      test('is empty on a fresh server', () async {
+        final server = FakeServer.paths({
+          'history': service.fixture('history_empty'),
+        });
+
+        final result = await value(service.client(server).history());
+
+        expect(result.items, isEmpty);
         expect(result.hasMore, isFalse);
       });
 

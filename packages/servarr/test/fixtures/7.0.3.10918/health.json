@@ -2,22 +2,19 @@
   {
     "source": "IndexerRssCheck",
     "type": "error",
-    "message": "No indexers available with RSS sync enabled",
-    "wikiUrl": "https://wiki.servarr.com/radarr/system#no-indexers-available-with-rss-sync-enabled",
-    "id": 1
+    "message": "redacted-2",
+    "wikiUrl": "https://redacted.invalid/3"
   },
   {
     "source": "DownloadClientCheck",
     "type": "warning",
-    "message": "No download client is available",
-    "wikiUrl": "https://wiki.servarr.com/radarr/system#no-download-client-is-available",
-    "id": 2
+    "message": "redacted-4",
+    "wikiUrl": "https://redacted.invalid/5"
   },
   {
-    "source": "PackageGlobalMessageCheck",
-    "type": "notice",
-    "message": "Example notice from the package",
-    "wikiUrl": "https://wiki.servarr.com/radarr/system#example-notice-from-the-package",
-    "id": 3
+    "source": "IndexerSearchCheck",
+    "type": "warning",
+    "message": "redacted-6",
+    "wikiUrl": "https://redacted.invalid/7"
   }
 ]

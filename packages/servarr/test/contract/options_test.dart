@@ -42,17 +42,24 @@ void main() {
 
         final options = await value(service.client(server).options());
 
-        expect(options, hasLength(5));
+        expect(options, hasLength(9));
+        final profiles = service.list('qualityprofile');
+        expect(profiles.first['name'], 'Any');
         expect(_of(options, ServerOptionKind.qualityProfile), [
-          (1, 'Any', null),
-          (4, 'HD-1080p', null),
+          for (var id = 1; id <= 6; id++) (id, profiles[id - 1]['name'], null),
         ]);
         expect(_of(options, ServerOptionKind.rootFolder), [
-          (1, service == radarr ? '/data/movies' : '/data/tv', 500000000000),
+          (
+            1,
+            service.list('rootfolder').single['path'],
+            service == radarr ? 655278714880 : 655361568768,
+          ),
         ]);
+        // The server lists these two by descending id.
+        final tags = service.list('tag');
         expect(_of(options, ServerOptionKind.tag), [
-          (1, 'kids', null),
-          (2, '4k', null),
+          (2, tags[0]['label'], null),
+          (1, tags[1]['label'], null),
         ]);
       });
 

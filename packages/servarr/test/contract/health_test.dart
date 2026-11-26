@@ -40,24 +40,38 @@ void main() {
 
         final issues = await value(service.client(server).health());
 
-        expect(issues.map((issue) => issue.level), [
-          HealthLevel.error,
-          HealthLevel.warning,
-          HealthLevel.notice,
+        final recorded = service.list('health');
+        expect(
+          issues.map((issue) => (issue.source, issue.level)),
+          service == radarr
+              ? [
+                  ('IndexerRssCheck', HealthLevel.error),
+                  ('DownloadClientCheck', HealthLevel.warning),
+                  ('IndexerSearchCheck', HealthLevel.warning),
+                ]
+              : [
+                  ('IndexerSearchCheck', HealthLevel.warning),
+                  ('IndexerRssCheck', HealthLevel.error),
+                  ('DownloadClientCheck', HealthLevel.warning),
+                ],
+        );
+        expect(issues.map((issue) => issue.message), [
+          for (final entry in recorded) entry['message'],
         ]);
-        expect(issues.first.source, 'IndexerRssCheck');
-        expect(
-          issues.first.message,
-          'No indexers available with RSS sync enabled',
-        );
-        expect(
-          issues.first.helpUrl,
-          Uri.parse(
-            'https://wiki.servarr.com/${service.name.toLowerCase()}/system'
-            '#no-indexers-available-with-rss-sync-enabled',
-          ),
-        );
+        expect(issues.map((issue) => issue.helpUrl), [
+          for (final entry in recorded) Uri.parse(entry['wikiUrl']! as String),
+        ]);
       });
+
+      for (final (word, level) in [
+        ('notice', HealthLevel.notice),
+        ('warning', HealthLevel.warning),
+        ('error', HealthLevel.error),
+      ]) {
+        test('reads level $word', () async {
+          expect((await _one(service, {'type': word})).level, level);
+        });
+      }
 
       test('reads a level it does not know as unknown', () async {
         final issue = await _one(service, {'type': 'someFutureLevel'});

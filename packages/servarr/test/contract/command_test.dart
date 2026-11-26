@@ -22,7 +22,7 @@ Future<Command> _read(
 
 void main() {
   for (final service in services) {
-    final id = service == radarr ? 77 : 88;
+    final id = service == radarr ? 8 : 4;
 
     group('${service.name} command', () {
       test('asks for the one command', () async {
@@ -49,7 +49,8 @@ void main() {
         );
         expect(command.status, CommandStatus.completed);
         expect(command.result, CommandResult.successful);
-        expect(command.message, endsWith('search completed'));
+        expect(command.message, service.object('command')['message']);
+        expect(command.message, isNotEmpty);
         expect(command.outcome, CommandOutcome.succeeded);
         expect(command.isFinished, isTrue);
       });

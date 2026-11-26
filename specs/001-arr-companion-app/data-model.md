@@ -137,7 +137,10 @@ quality, downloadClient?, protocol, needsManualImport.
 
 ### HistoryEvent / HealthIssue / DiskSpace / Command
 HistoryEvent: id, eventType (grabbed, imported, failed, renamed, deleted, other), date, itemRef?,
-downloadId?, sourceTitle, details. HealthIssue: source, level, message, helpUrl?. DiskSpace: path, free, total.
+downloadId?, sourceTitle, details. details are the server's text values, without any that holds a URL
+(also percent-encoded, or a magnet link) or looks like a secret, and without any under a key that
+names a URL, GUID or secret: a grab records indexer addresses that carry the indexer's API key.
+HealthIssue: source, level, message, helpUrl?. DiskSpace: path, free, total.
 Command: id, name, status (queued, started, completed, failed, aborted, cancelled, orphaned,
 unknown), result? (successful, unsuccessful, indeterminate, unknown), message?. `failed`,
 `aborted`, `cancelled` and `orphaned` are terminal failures. `completed` is success only when

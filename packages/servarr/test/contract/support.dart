@@ -1,10 +1,12 @@
 // What the contract tests share: the two services, their recorded shapes and a
 // server that answers as `ServiceHttpClient` of the core would report it.
 //
-// Fixtures: system_status.json was recorded from the dev stack and sanitised
-// (as in the module probe tests). The others are written by hand, with made-up
-// values, in the shapes of the API v3 resource classes and enums of Radarr
-// v7.0.3.10918 and Sonarr v4.0.20.3014: the dev stack has no downloads.
+// Fixtures: recorded from a throwaway Radarr 7.0.3.10918 and Sonarr
+// 4.0.20.3014 in the dev stack's images and passed through
+// tool/sanitize_fixture.dart. health, qualityprofile, queue_empty and
+// history_empty are of the fresh servers. The queue and history items were made
+// with qBittorrent as download client and releases pushed to the server; an
+// import was done by hand. What a test needs beyond them it changes.
 
 import 'dart:convert';
 import 'dart:io';

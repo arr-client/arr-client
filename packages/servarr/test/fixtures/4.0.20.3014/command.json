@@ -1,23 +1,28 @@
 {
   "name": "SeriesSearch",
   "commandName": "Series Search",
-  "message": "Series search completed",
+  "message": "redacted-40",
   "body": {
+    "seriesId": 1,
     "sendUpdatesToClient": true,
     "updateScheduledTask": true,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isLongRunning": false,
     "name": "SeriesSearch",
-    "trigger": "manual"
+    "trigger": "manual",
+    "suppressMessages": false
   },
   "priority": "normal",
   "status": "completed",
   "result": "successful",
-  "queued": "2026-11-20T10:00:00Z",
-  "started": "2026-11-20T10:00:01Z",
-  "ended": "2026-11-20T10:00:05Z",
-  "duration": "00:00:04.0000000",
+  "queued": "2026-11-26T13:23:56Z",
+  "started": "2026-11-26T13:23:56Z",
+  "ended": "2026-11-26T13:23:56Z",
+  "duration": "00:00:00.0764406",
   "trigger": "manual",
-  "stateChangeTime": "2026-11-20T10:00:01Z",
+  "stateChangeTime": "2026-11-26T13:23:56Z",
   "sendUpdatesToClient": true,
   "updateScheduledTask": true,
-  "id": 88
+  "id": 4
 }

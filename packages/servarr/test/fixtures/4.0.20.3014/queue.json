@@ -2,12 +2,12 @@
   "page": 1,
   "pageSize": 250,
   "sortKey": "timeleft",
-  "sortDirection": "ascending",
-  "totalRecords": 3,
+  "sortDirection": "descending",
+  "totalRecords": 4,
   "records": [
     {
-      "seriesId": 21,
-      "episodeId": 301,
+      "seriesId": 1,
+      "episodeId": 14,
       "seasonNumber": 1,
       "languages": [
         {
@@ -30,24 +30,102 @@
       },
       "customFormats": [],
       "customFormatScore": 0,
-      "size": 2000000000,
-      "title": "Example.Show.S01E01.1080p.WEB-DL-GRP",
-      "estimatedCompletionTime": "2026-11-20T11:00:00Z",
-      "added": "2026-11-20T10:00:00Z",
+      "size": 2097153,
+      "title": "redacted-46",
+      "added": "2026-11-26T13:24:06Z",
+      "status": "queued",
+      "trackedDownloadStatus": "ok",
+      "trackedDownloadState": "downloading",
+      "statusMessages": [],
+      "downloadId": "ABCDEF0000000000000000000000000000000004",
+      "protocol": "torrent",
+      "downloadClient": "redacted-9",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-12",
+      "episodeHasFile": false,
+      "sizeleft": 2097153,
+      "id": 2081170987
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 15,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 0,
+      "title": "redacted-56",
+      "estimatedCompletionTime": "2026-11-27T15:34:40Z",
+      "added": "2026-11-26T13:24:40Z",
+      "status": "delay",
+      "protocol": "torrent",
+      "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-12",
+      "episodeHasFile": false,
+      "sizeleft": 0,
+      "timeleft": "1.02:08:28.2106109",
+      "id": 401329872
+    },
+    {
+      "seriesId": 1,
+      "episodeId": 13,
+      "seasonNumber": 1,
+      "languages": [
+        {
+          "id": 1,
+          "name": "English"
+        }
+      ],
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "WEBDL-1080p",
+          "source": "web",
+          "resolution": 1080
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "customFormatScore": 0,
+      "size": 25165825,
+      "title": "redacted-53",
+      "estimatedCompletionTime": "2026-11-26T14:27:36Z",
+      "added": "2026-11-26T13:24:04Z",
       "status": "downloading",
       "trackedDownloadStatus": "ok",
       "trackedDownloadState": "downloading",
       "statusMessages": [],
-      "downloadId": "ABCDEF0000000000000000000000000000000001",
+      "downloadId": "ABCDEF0000000000000000000000000000000005",
       "protocol": "torrent",
-      "downloadClient": "qBittorrent",
-      "indexer": "Example Indexer",
-      "outputPath": "/data/downloads/Example.Show.S01E01.1080p.WEB-DL-GRP",
-      "sizeleft": 500000000,
-      "timeleft": "00:45:30",
+      "downloadClient": "redacted-9",
       "downloadClientHasPostImportCategory": false,
+      "indexer": "redacted-12",
       "episodeHasFile": false,
-      "id": 1001
+      "sizeleft": 24838145,
+      "timeleft": "01:02:33",
+      "id": 105416425
     },
     {
       "languages": [
@@ -69,74 +147,30 @@
           "isRepack": false
         }
       },
-      "customFormats": [],
       "customFormatScore": 0,
-      "size": 1500000000,
-      "title": "Some.Unmatched.Release-GRP",
-      "added": "2026-11-19T08:00:00Z",
+      "size": 524288,
+      "title": "redacted-57",
+      "estimatedCompletionTime": "2026-11-26T13:25:03Z",
       "status": "completed",
       "trackedDownloadStatus": "warning",
-      "trackedDownloadState": "importPending",
+      "trackedDownloadState": "importBlocked",
       "statusMessages": [
         {
-          "title": "Some.Unmatched.Release-GRP",
+          "title": "redacted-58",
           "messages": [
-            "Unable to parse the series from the file name"
+            "redacted-59"
           ]
-        },
-        {
-          "title": "No files found are eligible for import",
-          "messages": []
         }
       ],
-      "downloadId": "ABCDEF0000000000000000000000000000000002",
+      "downloadId": "ABCDEF0000000000000000000000000000000006",
       "protocol": "torrent",
-      "downloadClient": "qBittorrent",
-      "outputPath": "/data/downloads/Some.Unmatched.Release-GRP",
+      "downloadClient": "redacted-9",
+      "downloadClientHasPostImportCategory": false,
+      "outputPath": "/redacted/60.mkv",
+      "episodeHasFile": false,
       "sizeleft": 0,
       "timeleft": "00:00:00",
-      "downloadClientHasPostImportCategory": false,
-      "episodeHasFile": false,
-      "id": 1002
-    },
-    {
-      "seriesId": 21,
-      "episodeId": 302,
-      "seasonNumber": 1,
-      "languages": [
-        {
-          "id": 1,
-          "name": "English"
-        }
-      ],
-      "quality": {
-        "quality": {
-          "id": 3,
-          "name": "WEBDL-1080p",
-          "source": "web",
-          "resolution": 1080
-        },
-        "revision": {
-          "version": 1,
-          "real": 0,
-          "isRepack": false
-        }
-      },
-      "customFormats": [],
-      "customFormatScore": 0,
-      "size": 900000000,
-      "title": "Example.Show.S01E02.1080p.WEB-DL-GRP",
-      "estimatedCompletionTime": "2026-11-21T12:00:00Z",
-      "added": "2026-11-20T09:00:00Z",
-      "status": "delay",
-      "statusMessages": [],
-      "protocol": "usenet",
-      "indexer": "Example Indexer",
-      "sizeleft": 900000000,
-      "timeleft": "1.02:03:04",
-      "downloadClientHasPostImportCategory": false,
-      "episodeHasFile": false,
-      "id": 1003
+      "id": 1491576350
     }
   ]
 }
