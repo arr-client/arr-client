@@ -92,6 +92,29 @@ void main() {
     expect(page.items[index].score, isNull);
   });
 
+  // What the server sends for an entry stored without a language.
+  test('shows an event whose language is all null', () async {
+    final record = records('movies_history').first
+      ..['language'] = {
+        'name': null,
+        'code2': null,
+        'code3': null,
+        'forced': null,
+        'hi': null,
+      };
+    final harness = Harness();
+    harness.server.routes['GET movies/history'] = jsonAnswer({
+      'data': [record],
+      'total': 1,
+    });
+
+    final page = await succeed(
+      harness.subtitles.history(SubtitleMediaType.movie),
+    );
+
+    expect(tag(page.items.single.language), '');
+  });
+
   test('shows an action it does not know', () async {
     final record = records('movies_history').first
       ..['action'] = 99

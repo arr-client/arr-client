@@ -2,33 +2,57 @@
 library;
 
 import 'package:core/core.dart';
+import 'package:flutter/widgets.dart';
 
-/// The Bazarr service. Declared for its contract tests (T135); T136 and T137
-/// implement it.
+import 'src/adapters/probe.dart';
+import 'src/adapters/subtitles.dart';
+import 'src/api/bazarr_api.dart';
+
+/// The Bazarr service.
 final class BazarrModule implements ServiceModule {
   @override
-  String get id => throw UnimplementedError('T136');
+  String get id => 'bazarr';
 
   @override
-  ModuleDescriptor get descriptor => throw UnimplementedError('T136');
+  ModuleDescriptor get descriptor => const ModuleDescriptor(
+    displayName: 'Bazarr',
+    // Material's `subtitles_outlined`; widgets.dart has no named icons.
+    icon: IconData(0xf3fd, fontFamily: 'MaterialIcons'),
+    category: ModuleCategory.subtitles,
+    authKinds: [AuthKind.apiKey],
+    apiKeyHeader: ApiKeyHeader('X-API-KEY'),
+    defaultPort: 6767,
+    minimumVersion: minimumVersion,
+    testedVersion: testedVersion,
+  );
 
   @override
-  SessionHandler? get sessionHandler => throw UnimplementedError('T136');
+  SessionHandler? get sessionHandler => null;
 
   @override
   ServiceResult<ProbeResult> probe(InstanceContext context) =>
-      throw UnimplementedError('T136');
+      probeBazarr(context.http);
 
+  // An API key may use everything, in every supported version.
   @override
   Set<CapabilityKind> capabilitiesFor(
     ProbeResult probe,
     SessionInfo? session,
-  ) => throw UnimplementedError('T136');
+  ) => const {CapabilityKind.subtitle};
 
   @override
-  T? capability<T extends Capability>(InstanceContext context) =>
-      throw UnimplementedError('T136');
+  T? capability<T extends Capability>(InstanceContext context) {
+    final Capability? found = switch (T) {
+      const (SubtitleProvider) => BazarrSubtitleProvider(
+        BazarrApi(context.http),
+        context.instance.id,
+      ),
+      _ => null,
+    };
+    return found as T?;
+  }
 
+  // The screens are not built yet.
   @override
-  List<ModuleScreen> routes() => throw UnimplementedError('T137');
+  List<ModuleScreen> routes() => const [];
 }

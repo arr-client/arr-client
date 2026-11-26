@@ -107,6 +107,29 @@ void main() {
     await accepted(harness.subtitles.download(_movie, _candidate()));
   });
 
+  // Bazarr answers a path it does not have with its web interface.
+  test('does not take a web page for acceptance', () async {
+    final harness = Harness();
+    harness.server.routes['POST providers/movies'] = textAnswer(
+      '<!doctype html><title>Bazarr</title>',
+    );
+
+    expect(
+      await failureOf(harness.subtitles.download(_movie, _candidate())),
+      isA<ProxyInterception>(),
+    );
+  });
+
+  test('cannot understand another body', () async {
+    final harness = Harness();
+    harness.server.routes['POST providers/movies'] = textAnswer('"Busy"');
+
+    expect(
+      await failureOf(harness.subtitles.download(_movie, _candidate())),
+      isA<MalformedResponse>(),
+    );
+  });
+
   test('is not offered for a whole series', () async {
     final harness = Harness();
 
