@@ -1,8 +1,9 @@
 // The history read: one page of `GET history`, newest first.
 //
 // `eventType` words of the family map to `HistoryEventType`; `details` holds the
-// text values of `data` under the server's keys. Events since a time, item
-// history and mark-failed come with later tasks.
+// text values of `data` under the server's keys, but none that may hold a secret:
+// a grab records the indexer's addresses, which carry its API key. Events since a
+// time, item history and mark-failed come with later tasks.
 
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -96,6 +97,41 @@ void main() {
 
         expect(event.downloadId, isNull);
         expect(event.details, isEmpty);
+      });
+
+      test('keeps no address or secret among the details', () async {
+        // All made up.
+        const key = 'not-a-real-key';
+        final event = await _one(service, {
+          'data': {
+            'indexer': 'Example Indexer',
+            'releaseGroup': 'GRP',
+            // Addresses, whatever they are called.
+            'link': 'http://indexer.invalid/download/$key/file.torrent',
+            'source': 'magnet:?xt=urn:btih:0000&tr=$key',
+            'redirect': 'indexer.invalid/get?u=https%3A%2F%2Fx.invalid%2F$key',
+            'message': 'Failed to get https://indexer.invalid/$key/1',
+            'query': '/api?apikey=$key',
+            'note': 'apikey=$key',
+            // Names for secrets and addresses, whatever they hold.
+            'downloadUrl': key,
+            'nzbInfoUrl': key,
+            'guid': key,
+            'apiKey': key,
+            'pass_key': key,
+            'authToken': key,
+            'password': key,
+            'Cookie': key,
+            'Authorization': key,
+            // A value that is only a key in shape.
+            'other': '0123456789abcdef0123456789abcdef',
+          },
+        });
+
+        expect(event.details, {
+          'indexer': 'Example Indexer',
+          'releaseGroup': 'GRP',
+        });
       });
 
       final types = {

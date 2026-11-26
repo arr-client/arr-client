@@ -355,6 +355,25 @@ void main() {
         expect(server.requests, hasLength(2));
       });
 
+      // A server or proxy that ignores the page number, with a total that
+      // would never be reached.
+      test('stops when the server repeats a page', () async {
+        final records = _many(service, 2);
+        final server = FakeServer(
+          (_) => Reply.json({
+            'page': 1,
+            'pageSize': 2,
+            'totalRecords': 1000000,
+            'records': records,
+          }),
+        );
+
+        final items = await value(service.client(server).queue());
+
+        expect(items.map((item) => item.id), [1, 2]);
+        expect(server.requests, hasLength(2));
+      });
+
       test('gives no partial queue when a later page fails', () async {
         final records = _many(service, 3);
         final server = FakeServer(
