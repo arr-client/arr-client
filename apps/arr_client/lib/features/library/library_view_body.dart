@@ -17,6 +17,9 @@ import 'library_query.dart';
 import 'library_state.dart';
 import 'library_tiles.dart';
 import 'library_toolbar.dart';
+import 'manage/search_progress.dart';
+import 'manage/selection_actions.dart';
+import 'manage/selection_bar.dart';
 
 /// The least width of a poster at the normal text size.
 const _posterWidth = 104.0;
@@ -41,6 +44,12 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
 
   /// Whether the library is on screen, not behind another tab or page.
   var _onScreen = false;
+
+  /// The items selected, all of one instance; null while not selecting.
+  Set<ItemRef>? _selected;
+
+  /// Whether a change of the selection is being sent.
+  var _sending = false;
 
   @override
   void initState() {
@@ -90,6 +99,14 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
   LibraryController get _controller =>
       ref.read(libraryProvider(widget.kind).notifier);
 
+  void _select(Set<ItemRef>? selected) => setState(() => _selected = selected);
+
+  void _toggle(ItemRef item) {
+    final selected = {...?_selected};
+    if (!selected.remove(item)) selected.add(item);
+    _select(selected);
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(libraryProvider(widget.kind));
@@ -122,18 +139,29 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
     final refreshing = state.shown.any(
       (source) => source.isLoading && source.fetchedAt == null,
     );
-    return Column(
+    // What is no longer shown is no longer selected.
+    final selected = _selected?.intersection({
+      for (final entry in state.visible) entry.item.ref,
+    });
+    Widget column(double height) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        LibraryToolbar(
-          view: view,
-          text: _text,
-          activeFilters: activeFilterCount(state),
-          onText: _controller.setText,
-          onSort: _controller.setSort,
-          onFilters: () => unawaited(showLibraryFilters(context, widget.kind)),
-          onLayout: _controller.setLayout,
-        ),
+        // In the toolbar's place, so that the filters cannot hide what is
+        // selected.
+        if (selected != null)
+          _selectionBar(state, selected)
+        else
+          LibraryToolbar(
+            view: view,
+            text: _text,
+            activeFilters: activeFilterCount(state),
+            onText: _controller.setText,
+            onSort: _controller.setSort,
+            onFilters: () =>
+                unawaited(showLibraryFilters(context, widget.kind)),
+            onLayout: _controller.setLayout,
+            onSelect: state.visible.isEmpty ? null : () => _select({}),
+          ),
         // Takes its height either way, so that nothing moves.
         SizedBox(
           height: 4,
@@ -142,6 +170,19 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
                   semanticsLabel: strings.libraryRefreshing,
                 )
               : null,
+        ),
+        // Above the items, not among them: in sight however far they are
+        // scrolled, and leaving them room.
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: height * 0.4),
+          child: SingleChildScrollView(
+            // The items are the screen's primary scroll view.
+            primary: false,
+            child: SearchProgress(
+              kind: widget.kind,
+              instanceIds: {for (final source in state.shown) source.id},
+            ),
+          ),
         ),
         Expanded(
           child: RefreshIndicator(
@@ -156,7 +197,7 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 slivers: [
-                  if (state.sources.length > 1)
+                  if (state.sources.length > 1 && selected == null)
                     SliverToBoxAdapter(child: _scopes(state)),
                   SliverToBoxAdapter(
                     child: LibraryNotices(
@@ -164,13 +205,85 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
                       onRetry: (id) => unawaited(_controller.retry(id)),
                     ),
                   ),
-                  _items(state),
+                  _items(state, selected),
                 ],
               ),
             ),
           ),
         ),
       ],
+    );
+    // Back leaves the selection before it leaves the screen.
+    return PopScope(
+      canPop: selected == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _select(null);
+      },
+      child: LayoutBuilder(
+        builder: (context, constraints) => column(constraints.maxHeight),
+      ),
+    );
+  }
+
+  Widget _selectionBar(LibraryState state, Set<ItemRef> selected) {
+    final strings = AppLocalizations.of(context);
+    final source = selected.isEmpty
+        ? null
+        : state.source(selected.first.instanceId);
+    final items = [
+      for (final entry in state.visible)
+        if (selected.contains(entry.item.ref)) entry.item,
+    ];
+    // Nothing is changed on the strength of saved data.
+    final stale =
+        source != null && (source.fetchedAt != null || source.failure != null);
+    final actionable = source != null && !stale && !_sending;
+    return SelectionBar(
+      count: items.length,
+      instanceName: state.shown.length > 1 ? source?.name : null,
+      note: stale
+          ? strings.selectionStale(source.name)
+          : state.shown.length > 1
+          ? strings.selectionOneService
+          : null,
+      onCancel: () => _select(null),
+      showSearch:
+          source == null ||
+          source.active.capability(CapabilityKind.command) != null,
+      onSearch: actionable
+          ? () => unawaited(
+              searchSelection(
+                context,
+                ref,
+                source.active,
+                items,
+                onStarted: () {
+                  if (mounted) _select(null);
+                },
+              ),
+            )
+          : null,
+      onEdit: actionable
+          ? () => unawaited(
+              editSelection(
+                context,
+                ref,
+                source,
+                items,
+                onSending: () {
+                  if (mounted) setState(() => _sending = true);
+                },
+                // Kept where it failed, to be looked at and tried again.
+                onSent: (accepted) {
+                  if (!mounted) return;
+                  setState(() {
+                    _sending = false;
+                    if (accepted) _selected = null;
+                  });
+                },
+              ),
+            )
+          : null,
     );
   }
 
@@ -203,7 +316,7 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
     );
   }
 
-  Widget _items(LibraryState state) {
+  Widget _items(LibraryState state, Set<ItemRef>? selected) {
     final entries = state.visible;
     if (entries.isEmpty) {
       // Items there are, and the filters hide them all.
@@ -253,6 +366,20 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
     // Places by item, so that a tile keeps its poster when others come or go.
     Key keyOf(LibraryEntry entry) => ValueKey(entry.item.ref);
 
+    // The first one chosen decides the instance.
+    final lockedTo = selected == null || selected.isEmpty
+        ? null
+        : selected.first.instanceId;
+    bool? marked(LibraryEntry entry) => selected?.contains(entry.item.ref);
+    VoidCallback? tap(LibraryEntry entry) {
+      if (selected == null) return () => _open(state, entry);
+      if (lockedTo != null && lockedTo != entry.instanceId) return null;
+      return () => _toggle(entry.item.ref);
+    }
+
+    VoidCallback? longPress(LibraryEntry entry) =>
+        selected == null ? () => _toggle(entry.item.ref) : null;
+
     final view = state.view!;
     if (view.layout == LibraryLayout.list) {
       final field = LibrarySortField.of(view.sort.field);
@@ -267,7 +394,9 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
             artwork: artwork[entry.instanceId]!,
             sortField: field,
             instanceName: showsInstance ? names[entry.instanceId] : null,
-            onTap: () => _open(state, entry),
+            onTap: tap(entry),
+            onLongPress: longPress(entry),
+            selected: marked(entry),
           );
         },
       );
@@ -309,7 +438,9 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
                 artwork: artwork[entry.instanceId]!,
                 width: width,
                 instanceName: showsInstance ? names[entry.instanceId] : null,
-                onTap: () => _open(state, entry),
+                onTap: tap(entry),
+                onLongPress: longPress(entry),
+                selected: marked(entry),
               );
             },
           ),

@@ -113,10 +113,24 @@ void main() {
         .context
         .navigator;
 
+    // The edit sheet and the delete dialog lie over the screen that asked.
+    for (final (flow, title) in <(Future<void> Function(), String)>[
+      (() => navigator.openEdit(ref), 'Edit'),
+      (() => navigator.openDelete(ref), 'Delete movie?'),
+    ]) {
+      var done = false;
+      flow().then((_) => done = true).ignore();
+      await tester.pumpAndSettle();
+      expect(find.text(title), findsOneWidget);
+      expect(done, isFalse);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(done, isTrue, reason: title);
+    }
+
     for (final (flow, title) in <(Future<void> Function(), String)>[
       (() => navigator.openReleases(MediaTarget(ref)), 'Releases'),
-      (() => navigator.openEdit(ref), 'Edit'),
-      (() => navigator.openDelete(ref), 'Delete'),
       (() => navigator.openHistory(ref), 'History'),
       (
         () => navigator.openAdd(

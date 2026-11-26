@@ -84,11 +84,15 @@ enum InstanceFlow { releases, edit, delete, history }
 String instanceFlowLocation(String instanceId, InstanceFlow flow) =>
     Uri(path: '/instances/$instanceId/${flow.name}').toString();
 
-/// Where the history of [ref] is.
-String itemHistoryLocation(ItemRef ref) => Uri(
-  path: instanceFlowLocation(ref.instanceId, InstanceFlow.history),
+/// Where [flow] is for the item [ref].
+String itemFlowLocation(ItemRef ref, InstanceFlow flow) => Uri(
+  path: instanceFlowLocation(ref.instanceId, flow),
   queryParameters: _itemQuery(ref),
 ).toString();
+
+/// Where the history of [ref] is.
+String itemHistoryLocation(ItemRef ref) =>
+    itemFlowLocation(ref, InstanceFlow.history);
 
 /// Where the release search for [target] is.
 String releasesLocation(MediaTarget target) => Uri(
@@ -115,7 +119,7 @@ Map<String, String> _itemQuery(ItemRef ref) => {
   'item': '${ref.remoteId}',
 };
 
-/// The item that the query of an [itemHistoryLocation] or a [releasesLocation]
+/// The item that the query of an [itemFlowLocation] or a [releasesLocation]
 /// names, or null if it names none.
 ItemRef? itemQueryRef(String instanceId, Map<String, String> query) {
   final kind = MediaKind.values.asNameMap()[query['kind']];

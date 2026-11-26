@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../features/activity/history/item_history.dart';
 import '../../features/activity/manual_import/manual_import_screen.dart';
 import '../../features/activity/queue/queue_details_screen.dart';
+import '../../features/library/manage/manage_pages.dart';
 import '../../features/library/releases/releases_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
@@ -157,44 +158,44 @@ GoRouter createRouter(ModuleRegistry modules) {
           queueId: int.tryParse(state.pathParameters['queueId'] ?? ''),
         ),
       ),
-      for (final flow in InstanceFlow.values)
-        scoped('/${flow.name}', (context, active, state) {
-          final strings = AppLocalizations.of(context);
-          return switch (flow) {
-            InstanceFlow.releases => switch (releaseTarget(
-              active.instance.id,
-              state.uri.queryParameters,
-            )) {
-              final target? => ReleasesScreen(
-                // Another target at the same path starts over.
-                key: ValueKey(target),
-                instance: active,
-                target: target,
-              ),
-              null => MessagePage(
-                title: strings.releases,
-                message: strings.pageUnknown,
-              ),
-            },
-            InstanceFlow.edit => PlaceholderPage(title: strings.editItem),
-            InstanceFlow.delete => PlaceholderPage(title: strings.deleteItem),
-            InstanceFlow.history => switch (itemQueryRef(
-              active.instance.id,
-              state.uri.queryParameters,
-            )) {
-              final item? => ItemHistoryScreen(
-                // Another item at the same path starts over.
-                key: ValueKey(item),
-                instance: active,
-                item: item,
-              ),
-              null => MessagePage(
-                title: strings.itemHistory,
-                message: strings.pageUnknown,
-              ),
-            },
-          };
-        }),
+      scoped('/${InstanceFlow.releases.name}', (context, active, state) {
+        final strings = AppLocalizations.of(context);
+        return switch (releaseTarget(
+          active.instance.id,
+          state.uri.queryParameters,
+        )) {
+          final target? => ReleasesScreen(
+            // Another target at the same path starts over.
+            key: ValueKey(target),
+            instance: active,
+            target: target,
+          ),
+          null => MessagePage(
+            title: strings.releases,
+            message: strings.pageUnknown,
+          ),
+        };
+      }),
+      editItemRoute(),
+      deleteItemRoute(),
+      scoped('/${InstanceFlow.history.name}', (context, active, state) {
+        final strings = AppLocalizations.of(context);
+        return switch (itemQueryRef(
+          active.instance.id,
+          state.uri.queryParameters,
+        )) {
+          final item? => ItemHistoryScreen(
+            // Another item at the same path starts over.
+            key: ValueKey(item),
+            instance: active,
+            item: item,
+          ),
+          null => MessagePage(
+            title: strings.itemHistory,
+            message: strings.pageUnknown,
+          ),
+        };
+      }),
       scoped(
         '/$itemPlaceholderPath',
         (context, active, state) =>

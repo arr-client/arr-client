@@ -81,8 +81,7 @@ Future<void> removeQueueEntries(
     searchReplacement: true,
   );
 
-  // Several titles would push what the removal does out of sight, so they
-  // follow it.
+  // Several titles would push the choices out of sight, so they follow them.
   final several = titles.length > 1;
   final choices = RemoveChoices(
     initial: options,

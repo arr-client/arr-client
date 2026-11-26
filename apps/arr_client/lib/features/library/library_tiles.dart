@@ -28,26 +28,84 @@ double _iconSize(BuildContext context) =>
 int _stateLines(BuildContext context) =>
     MediaQuery.textScalerOf(context).scale(14) > 14 * 1.3 ? 2 : 1;
 
-/// Everything the tile says, as one node for a screen reader that opens it.
+/// Everything the tile says, as one node for a screen reader that opens it, or
+/// selects it while selecting.
 class _Tile extends StatelessWidget {
-  const _Tile({required this.label, required this.onTap, required this.child});
+  const _Tile({
+    required this.label,
+    required this.onTap,
+    required this.onLongPress,
+    required this.selected,
+    required this.child,
+  });
 
   final List<String?> label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  /// Null while not selecting.
+  final bool? selected;
+
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: label.nonNulls.join(', '),
-    onTap: onTap,
-    excludeSemantics: true,
-    child: InkWell(
-      borderRadius: BorderRadius.circular(8),
+  Widget build(BuildContext context) {
+    // One that cannot join the selection.
+    final barred = selected != null && onTap == null;
+    return Semantics(
+      button: true,
+      enabled: barred ? false : null,
+      checked: selected,
+      label: label.nonNulls.join(', '),
       onTap: onTap,
-      child: child,
-    ),
-  );
+      onLongPress: onLongPress,
+      excludeSemantics: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: Opacity(opacity: barred ? 0.4 : 1, child: child),
+      ),
+    );
+  }
+}
+
+/// [poster] with the mark of whether it is selected, while selecting.
+class _Marked extends StatelessWidget {
+  const _Marked({required this.selected, required this.poster});
+
+  final bool? selected;
+  final Widget poster;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final selected = this.selected;
+    // The same tree either way, so that the poster is not loaded again.
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        poster,
+        if (selected != null)
+          Align(
+            alignment: AlignmentDirectional.topStart,
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.surface,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  selected ? Icons.check_circle : Icons.radio_button_unchecked,
+                  color: selected ? colors.primary : colors.onSurface,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }
 
 class _StateLine extends StatelessWidget {
@@ -88,6 +146,8 @@ class LibraryGridTile extends StatelessWidget {
     required this.artwork,
     required this.width,
     required this.onTap,
+    this.onLongPress,
+    this.selected,
     this.instanceName,
     super.key,
   });
@@ -95,7 +155,13 @@ class LibraryGridTile extends StatelessWidget {
   final LibraryEntry entry;
   final ArtworkLoader artwork;
   final double width;
-  final VoidCallback onTap;
+
+  /// Null where the item cannot join the selection.
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  /// Null while not selecting.
+  final bool? selected;
   final String? instanceName;
 
   /// The height of a tile [width] wide: the poster, two lines of title, the
@@ -135,17 +201,22 @@ class LibraryGridTile extends StatelessWidget {
         instanceName,
       ],
       onTap: onTap,
+      onLongPress: onLongPress,
+      selected: selected,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: ArtworkPoster(
-                kind: item.ref.kind,
-                images: item.images,
-                artwork: artwork,
-                width: width,
+            child: _Marked(
+              selected: selected,
+              poster: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: ArtworkPoster(
+                  kind: item.ref.kind,
+                  images: item.images,
+                  artwork: artwork,
+                  width: width,
+                ),
               ),
             ),
           ),
@@ -192,6 +263,8 @@ class LibraryListTile extends StatelessWidget {
     required this.artwork,
     required this.sortField,
     required this.onTap,
+    this.onLongPress,
+    this.selected,
     this.instanceName,
     super.key,
   });
@@ -201,7 +274,13 @@ class LibraryListTile extends StatelessWidget {
 
   /// What the list is ordered by, whose value the row then shows.
   final LibrarySortField sortField;
-  final VoidCallback onTap;
+
+  /// Null where the item cannot join the selection.
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  /// Null while not selecting.
+  final bool? selected;
   final String? instanceName;
 
   static const _posterWidth = 56.0;
@@ -237,6 +316,8 @@ class LibraryListTile extends StatelessWidget {
         item.state.label(AppLocalizations.of(context)),
       ],
       onTap: onTap,
+      onLongPress: onLongPress,
+      selected: selected,
       child: LayoutBuilder(
         builder: (context, constraints) => Padding(
           padding: EdgeInsets.symmetric(
@@ -245,16 +326,19 @@ class LibraryListTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: SizedBox(
-                  width: _posterWidth,
-                  height: _posterWidth * 1.5,
-                  child: ArtworkPoster(
-                    kind: item.ref.kind,
-                    images: item.images,
-                    artwork: artwork,
-                    width: _posterWidth,
+              SizedBox(
+                width: _posterWidth,
+                height: _posterWidth * 1.5,
+                child: _Marked(
+                  selected: selected,
+                  poster: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: ArtworkPoster(
+                      kind: item.ref.kind,
+                      images: item.images,
+                      artwork: artwork,
+                      width: _posterWidth,
+                    ),
                   ),
                 ),
               ),

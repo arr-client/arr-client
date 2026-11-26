@@ -12,6 +12,7 @@ void main() {
     double textScale = 1,
     Widget? options,
     bool destructive = true,
+    String target = 'Alien (1979)',
   }) async {
     await tester.pumpWidget(
       testApp(
@@ -20,7 +21,7 @@ void main() {
             onPressed: () => answer = showConfirmDialog(
               context,
               title: 'Delete movie?',
-              target: 'Alien (1979)',
+              target: target,
               consequence: 'It is removed from the server.',
               confirmLabel: 'Delete movie',
               options: options,
@@ -85,6 +86,37 @@ void main() {
 
     await open(tester, destructive: false);
     expect(background(), isNull);
+  });
+
+  testWidgets('keeps the consequence in sight above a long list of targets', (
+    tester,
+  ) async {
+    tester.view
+      ..physicalSize = const Size(360, 740)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await open(
+      tester,
+      textScale: 2,
+      target: [for (var i = 1; i <= 40; i++) 'Title $i'].join('\n'),
+    );
+
+    // Without any scrolling: whole, within what the dialog shows.
+    final consequence = find.text('It is removed from the server.');
+    final shown = tester.getRect(
+      find
+          .ancestor(
+            of: consequence,
+            matching: find.byType(SingleChildScrollView),
+          )
+          .first,
+    );
+    final rect = tester.getRect(consequence);
+    expect(rect.top, greaterThanOrEqualTo(shown.top));
+    expect(rect.bottom, lessThanOrEqualTo(shown.bottom));
+    expect(consequence.hitTestable(), findsOneWidget);
+    expect(find.text('Delete movie').hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('works at 200% text on a small screen', (tester) async {
