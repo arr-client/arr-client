@@ -27,12 +27,14 @@ final class ServarrClient with _ServarrActivity, _ServarrManage {
   ///
   /// [includeUnknownParameter] is the service's queue flag for downloads it
   /// cannot match. [refs] reads the ids of each queue, history and blocklist
-  /// record.
+  /// record. [hasMetadataProfiles] says that the service has metadata profiles
+  /// beside quality profiles, as those for music and books do.
   ServarrClient(
     this._http, {
     required this._apiPath,
     required this._includeUnknownParameter,
     required this.refs,
+    this._hasMetadataProfiles = false,
   });
 
   static const _queuePageSize = 250;
@@ -41,6 +43,7 @@ final class ServarrClient with _ServarrActivity, _ServarrManage {
   final ServiceHttpClient _http;
   final String _apiPath;
   final String _includeUnknownParameter;
+  final bool _hasMetadataProfiles;
 
   /// Reads the ids of a queue or history record.
   final ServarrRefs Function(JsonObject record) refs;
@@ -57,11 +60,13 @@ final class ServarrClient with _ServarrActivity, _ServarrManage {
     );
   });
 
-  /// Quality profiles, root folders and tags. Fails if any of them does.
+  /// Quality profiles, metadata profiles where the service has them, root
+  /// folders and tags. Fails if any of them does.
   ServiceResult<List<ServerOption>> options() async {
     final options = <ServerOption>[];
-    for (final (path, option) in const [
+    for (final (path, option) in [
       ('qualityprofile', qualityProfileOption),
+      if (_hasMetadataProfiles) ('metadataprofile', metadataProfileOption),
       ('rootfolder', rootFolderOption),
       ('tag', tagOption),
     ]) {

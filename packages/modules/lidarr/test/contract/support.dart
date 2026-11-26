@@ -511,7 +511,9 @@ class FakeLidarr implements ServiceHttpClient {
     if (term == searchTerm) return _json(searched);
     return _json(
       [
-        for (final item in [...searched, ...byForeignId])
+        // First what was recorded for an id: the searches are from before the
+        // server had artist 1, and would not name it.
+        for (final item in [...byForeignId, ...searched])
           if (term == 'lidarr:${item['foreign${kind}Id']}') item,
       ].take(1).toList(),
     );

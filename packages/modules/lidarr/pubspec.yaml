@@ -12,6 +12,11 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
+  # Translations of the Flutter widgets; imported by the generated localizations.
+  flutter_localizations:
+    sdk: flutter
+  # Imported by the generated localizations. BSD-3-Clause.
+  intl: ^0.20.2
   # The client of the API the Servarr family shares.
   servarr:
     path: ../../servarr
@@ -19,3 +24,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter:
+  # `flutter pub get` runs gen-l10n with l10n.yaml.
+  generate: true
