@@ -323,6 +323,72 @@ void main() {
     });
   });
 
+  group('a value that must not be empty', () {
+    final list = AllowList([
+      AllowedRequest.read(
+        'api/v3/release',
+        query: {'movieId': const ParamRule.nonEmpty()},
+      ),
+      AllowedRequest.write(
+        HttpMethod.post,
+        'api/v3/command',
+        body: const BodyRule.jsonObject({'movieIds': ParamRule.nonEmpty()}),
+      ),
+      AllowedRequest.authentication(
+        HttpMethod.post,
+        'api/v2/auth/login',
+        body: const BodyRule.form({'username': ParamRule.nonEmpty()}),
+      ),
+    ]);
+    ServiceRequest read(List<String> values) =>
+        _get('api/v3/release', query: {'movieId': values});
+    ServiceRequest command(Object? value) => ServiceRequest(
+      HttpMethod.post,
+      'api/v3/command',
+      body: JsonBody({'movieIds': value}),
+    );
+    ServiceRequest login(String username) => ServiceRequest(
+      HttpMethod.post,
+      'api/v2/auth/login',
+      body: FormBody({'username': username}),
+    );
+
+    final filled = {
+      'a parameter': read(['1']),
+      'a repeated parameter': read(['1', '2']),
+      'a number': command(0),
+      'a string': command('1'),
+      'a list': command([1]),
+      'an object': command({'id': 1}),
+      'a form field': login('a'),
+    };
+    for (final MapEntry(:key, :value) in filled.entries) {
+      test('permits $key', () => expect(list.permits(value), isTrue));
+    }
+
+    final empty = {
+      'a missing parameter': _get('api/v3/release'),
+      'an empty parameter': read(['']),
+      'a blank parameter': read([' ']),
+      'a repeated parameter, once empty': read(['', '1']),
+      'a missing field': ServiceRequest(
+        HttpMethod.post,
+        'api/v3/command',
+        body: const JsonBody(<String, Object?>{}),
+      ),
+      'null': command(null),
+      'an empty string': command(''),
+      'an empty list': command(<Object?>[]),
+      'a list of null': command([null]),
+      'a list of an empty string': command(['']),
+      'an empty object': command(<String, Object?>{}),
+      'an empty form field': login(''),
+    };
+    for (final MapEntry(:key, :value) in empty.entries) {
+      test('refuses $key', () => expect(list.permits(value), isFalse));
+    }
+  });
+
   group('rejects the pattern', () {
     for (final path in [
       '',

@@ -9,7 +9,7 @@ import 'package:core/core.dart';
 import 'package:core/testing/allow_list.dart';
 
 const _any = ParamRule.any();
-const _required = ParamRule.any(required: true);
+const _nonEmpty = ParamRule.nonEmpty();
 const _flag = ParamRule.only({'true', 'false'}, required: false);
 // For a flag whose server default is not what leaving it out should mean.
 const _statedFlag = ParamRule.only({'true', 'false'});
@@ -28,7 +28,7 @@ const _queueRemoval = {
   'skipRedownload': _flag,
 };
 
-const _ids = BodyRule.jsonObject({'ids': _required});
+const _ids = BodyRule.jsonObject({'ids': _nonEmpty});
 
 /// `POST command` with one command name. The server runs any command it knows,
 /// and some act on the whole library when [target] is left out.
@@ -37,7 +37,7 @@ AllowedRequest _command(String name, String target) => AllowedRequest.write(
   'api/v3/command',
   body: BodyRule.jsonObject({
     'name': ParamRule.only({name}),
-    target: _required,
+    target: _nonEmpty,
   }),
 );
 
@@ -73,7 +73,7 @@ final allowList = AllowList([
   ),
   AllowedRequest.read(
     'api/v3/history/since',
-    query: {'date': _required, 'eventType': _any, 'includeMovie': _flag},
+    query: {'date': _nonEmpty, 'eventType': _any, 'includeMovie': _flag},
   ),
   for (final path in ['wanted/missing', 'wanted/cutoff'])
     AllowedRequest.read(
@@ -104,7 +104,7 @@ final allowList = AllowList([
     query: {..._paging, 'movieIds': _any, 'protocols': _any},
   ),
   // Without a movie the server answers with its RSS feeds instead.
-  AllowedRequest.read('api/v3/release', query: {'movieId': _required}),
+  AllowedRequest.read('api/v3/release', query: {'movieId': _nonEmpty}),
   AllowedRequest.read('api/v3/command/{id}'),
   AllowedRequest.read(
     'api/v3/manualimport',
@@ -115,8 +115,12 @@ final allowList = AllowList([
       'filterExistingFiles': _flag,
     },
   ),
-  // `h` is the cache buster of the image addresses the server returns.
-  AllowedRequest.read('api/v3/mediacover/{movieId}/**', query: {'h': _any}),
+  // The cache buster of the image addresses the server returns: `lastWrite` up
+  // to Radarr 6.0, `h` in later releases.
+  AllowedRequest.read(
+    'api/v3/mediacover/{movieId}/**',
+    query: {'h': _any, 'lastWrite': _any},
+  ),
 
   // Library, lookup and item history.
   AllowedRequest.read('api/v3/movie', query: {'tmdbId': _any}),
@@ -125,11 +129,11 @@ final allowList = AllowList([
     'api/v3/moviefile',
     query: {'movieId': _any, 'movieFileIds': _any},
   ),
-  AllowedRequest.read('api/v3/credit', query: {'movieId': _required}),
-  AllowedRequest.read('api/v3/movie/lookup', query: {'term': _required}),
+  AllowedRequest.read('api/v3/credit', query: {'movieId': _nonEmpty}),
+  AllowedRequest.read('api/v3/movie/lookup', query: {'term': _nonEmpty}),
   AllowedRequest.read(
     'api/v3/history/movie',
-    query: {'movieId': _required, 'eventType': _any, 'includeMovie': _flag},
+    query: {'movieId': _nonEmpty, 'eventType': _any, 'includeMovie': _flag},
   ),
 
   // Queue, history, releases and blocklist.
@@ -150,8 +154,8 @@ final allowList = AllowList([
     HttpMethod.post,
     'api/v3/release',
     body: const BodyRule.jsonObject({
-      'guid': _required,
-      'indexerId': _required,
+      'guid': _nonEmpty,
+      'indexerId': _nonEmpty,
     }),
   ),
   AllowedRequest.write(HttpMethod.delete, 'api/v3/blocklist/{id}'),
@@ -188,7 +192,7 @@ final allowList = AllowList([
   AllowedRequest.write(
     HttpMethod.put,
     'api/v3/movie/editor',
-    body: const BodyRule.jsonObject({'movieIds': _required}),
+    body: const BodyRule.jsonObject({'movieIds': _nonEmpty}),
   ),
   AllowedRequest.write(HttpMethod.delete, 'api/v3/moviefile/{id}'),
 ]);

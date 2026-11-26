@@ -64,10 +64,22 @@ final class _JsonObject extends BodyRule {
             final num value => field.value.permits(['$value']),
             final bool value => field.value.permits(['$value']),
             // Null, a list or an object is not one of a set of values.
-            _ => field.value.values == null,
+            final other =>
+              field.value.values == null &&
+                  (!field.value.nonEmpty || _holdsSomething(other)),
           };
         });
   }
+
+  static bool _holdsSomething(Object? value) => switch (value) {
+    final List<Object?> list =>
+      list.isNotEmpty &&
+          list.every(
+            (item) => item != null && !(item is String && item.trim().isEmpty),
+          ),
+    final Map<Object?, Object?> map => map.isNotEmpty,
+    _ => false,
+  };
 
   // What would be sent, which a `toJson` method decides. Null if it cannot be,
   // so that the request is refused and reported like any other.

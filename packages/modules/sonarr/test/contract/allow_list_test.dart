@@ -47,6 +47,13 @@ void main() {
           'episodeIds': [1],
         },
       ),
+      _send(
+        HttpMethod.get,
+        'mediacover/1/poster.jpg',
+        query: {
+          'lastWrite': ['1'],
+        },
+      ),
     ];
     for (final request in listed) {
       expect(allowList.permits(request), isTrue, reason: request.path);
@@ -74,6 +81,35 @@ void main() {
         _send(HttpMethod.post, 'command', body: {'name': name}),
       // Without its series it would refresh the whole library.
       _send(HttpMethod.post, 'command', body: {'name': 'RefreshSeries'}),
+      // Empty targets, which the server reads as the whole library or its feeds.
+      for (final body in <Map<String, Object?>>[
+        {'name': 'EpisodeSearch', 'episodeIds': <int>[]},
+        {'name': 'SeasonSearch', 'seriesId': null, 'seasonNumber': 1},
+        {'name': 'SeriesSearch', 'seriesId': null},
+        {'name': 'RefreshSeries', 'seriesIds': <int>[]},
+        {'name': 'RefreshSeries', 'seriesIds': null},
+        {'name': 'RefreshSeries', 'seriesId': 1},
+        {'name': 'RefreshSeries', 'seriesId': 1, 'seriesIds': <int>[]},
+        {'name': 'RescanSeries', 'seriesId': null},
+        {'name': 'ManualImport', 'files': <Object>[]},
+      ])
+        _send(HttpMethod.post, 'command', body: body),
+      _send(
+        HttpMethod.get,
+        'release',
+        query: {
+          'episodeId': [''],
+        },
+      ),
+      _send(
+        HttpMethod.delete,
+        'queue/bulk',
+        query: {
+          'removeFromClient': ['true'],
+          'blocklist': ['false'],
+        },
+        body: {'ids': <int>[]},
+      ),
       // Hides unmatched downloads.
       _send(HttpMethod.get, 'queue'),
     ];

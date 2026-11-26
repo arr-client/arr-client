@@ -9,7 +9,7 @@ import 'package:core/core.dart';
 import 'package:core/testing/allow_list.dart';
 
 const _any = ParamRule.any();
-const _required = ParamRule.any(required: true);
+const _nonEmpty = ParamRule.nonEmpty();
 const _flag = ParamRule.only({'true', 'false'}, required: false);
 // For a flag whose server default is not what leaving it out should mean.
 const _statedFlag = ParamRule.only({'true', 'false'});
@@ -28,7 +28,7 @@ const _queueRemoval = {
   'skipRedownload': _flag,
 };
 
-const _ids = BodyRule.jsonObject({'ids': _required});
+const _ids = BodyRule.jsonObject({'ids': _nonEmpty});
 
 /// `POST command` with one command name. The server runs any command it knows,
 /// and some act on the whole library when [targets] are left out.
@@ -38,7 +38,7 @@ AllowedRequest _command(String name, List<String> targets) =>
       'api/v3/command',
       body: BodyRule.jsonObject({
         'name': ParamRule.only({name}),
-        for (final target in targets) target: _required,
+        for (final target in targets) target: _nonEmpty,
       }),
     );
 
@@ -85,7 +85,7 @@ final allowList = AllowList([
   AllowedRequest.read(
     'api/v3/history/since',
     query: {
-      'date': _required,
+      'date': _nonEmpty,
       'eventType': _any,
       'includeSeries': _flag,
       'includeEpisode': _flag,
@@ -141,10 +141,10 @@ final allowList = AllowList([
   ),
   // An episode or a season: without either the server answers with its RSS
   // feeds instead.
-  AllowedRequest.read('api/v3/release', query: {'episodeId': _required}),
+  AllowedRequest.read('api/v3/release', query: {'episodeId': _nonEmpty}),
   AllowedRequest.read(
     'api/v3/release',
-    query: {'seriesId': _required, 'seasonNumber': _required},
+    query: {'seriesId': _nonEmpty, 'seasonNumber': _nonEmpty},
   ),
   AllowedRequest.read('api/v3/command/{id}'),
   AllowedRequest.read(
@@ -188,11 +188,11 @@ final allowList = AllowList([
     'api/v3/episodefile',
     query: {'seriesId': _any, 'episodeFileIds': _any},
   ),
-  AllowedRequest.read('api/v3/series/lookup', query: {'term': _required}),
+  AllowedRequest.read('api/v3/series/lookup', query: {'term': _nonEmpty}),
   AllowedRequest.read(
     'api/v3/history/series',
     query: {
-      'seriesId': _required,
+      'seriesId': _nonEmpty,
       'seasonNumber': _any,
       'eventType': _any,
       'includeSeries': _flag,
@@ -218,8 +218,8 @@ final allowList = AllowList([
     HttpMethod.post,
     'api/v3/release',
     body: const BodyRule.jsonObject({
-      'guid': _required,
-      'indexerId': _required,
+      'guid': _nonEmpty,
+      'indexerId': _nonEmpty,
     }),
   ),
   AllowedRequest.write(HttpMethod.delete, 'api/v3/blocklist/{id}'),
@@ -229,8 +229,6 @@ final allowList = AllowList([
   _command('EpisodeSearch', ['episodeIds']),
   _command('SeasonSearch', ['seriesId', 'seasonNumber']),
   _command('SeriesSearch', ['seriesId']),
-  // Sonarr 4 takes one series or a list; older releases only the former.
-  _command('RefreshSeries', ['seriesId']),
   _command('RefreshSeries', ['seriesIds']),
   _command('RescanSeries', ['seriesId']),
   _command('ManualImport', ['files']),
@@ -260,7 +258,7 @@ final allowList = AllowList([
   AllowedRequest.write(
     HttpMethod.put,
     'api/v3/series/editor',
-    body: const BodyRule.jsonObject({'seriesIds': _required}),
+    body: const BodyRule.jsonObject({'seriesIds': _nonEmpty}),
   ),
 
   // Monitoring, monitoring option and file delete.
@@ -268,14 +266,14 @@ final allowList = AllowList([
     HttpMethod.put,
     'api/v3/episode/monitor',
     body: const BodyRule.jsonObject({
-      'episodeIds': _required,
+      'episodeIds': _nonEmpty,
       'monitored': _statedFlag,
     }),
   ),
   AllowedRequest.write(
     HttpMethod.post,
     'api/v3/seasonpass',
-    body: const BodyRule.jsonObject({'series': _required}),
+    body: const BodyRule.jsonObject({'series': _nonEmpty}),
   ),
   AllowedRequest.write(HttpMethod.delete, 'api/v3/episodefile/{id}'),
 ]);

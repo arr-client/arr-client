@@ -45,6 +45,14 @@ void main() {
           'movieIds': [1],
         },
       ),
+      for (final buster in ['h', 'lastWrite'])
+        _send(
+          HttpMethod.get,
+          'mediacover/1/poster.jpg',
+          query: {
+            buster: ['1'],
+          },
+        ),
     ];
     for (final request in listed) {
       expect(allowList.permits(request), isTrue, reason: request.path);
@@ -72,6 +80,45 @@ void main() {
         _send(HttpMethod.post, 'command', body: {'name': name}),
       // Without its movies it would refresh the whole library.
       _send(HttpMethod.post, 'command', body: {'name': 'RefreshMovie'}),
+      // Empty targets, which the server reads as the whole library or its feeds.
+      _send(
+        HttpMethod.post,
+        'command',
+        body: {'name': 'ManualImport', 'files': <Object>[]},
+      ),
+      for (final empty in [null, <int>[]]) ...[
+        _send(
+          HttpMethod.post,
+          'command',
+          body: {'name': 'MoviesSearch', 'movieIds': empty},
+        ),
+        _send(
+          HttpMethod.post,
+          'command',
+          body: {'name': 'RefreshMovie', 'movieIds': empty},
+        ),
+      ],
+      _send(
+        HttpMethod.post,
+        'command',
+        body: {'name': 'RescanMovie', 'movieId': null},
+      ),
+      _send(
+        HttpMethod.get,
+        'release',
+        query: {
+          'movieId': [''],
+        },
+      ),
+      _send(
+        HttpMethod.delete,
+        'queue/bulk',
+        query: {
+          'removeFromClient': ['true'],
+          'blocklist': ['false'],
+        },
+        body: {'ids': <int>[]},
+      ),
       // Hides unmatched downloads.
       _send(HttpMethod.get, 'queue'),
     ];
