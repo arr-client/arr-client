@@ -108,9 +108,14 @@ class _BulkEditSheetState extends State<_BulkEditSheet> {
 
     final confirmed = await showConfirmDialog(
       context,
-      title: strings.bulkConfirmTitle(count, widget.instanceName),
-      target: widget.titles.join('\n'),
+      title: strings.bulkConfirmTitle(count),
+      // One is named; several are counted, and listed after what happens.
+      target: count == 1
+          ? '${widget.titles.single}\n'
+                '${strings.itemOnService(widget.instanceName)}'
+          : strings.bulkListed(count, widget.instanceName),
       consequence: summary,
+      options: count == 1 ? null : Text(widget.titles.join('\n')),
       confirmLabel: strings.bulkConfirm(count),
       destructive: false,
     );

@@ -59,6 +59,7 @@ Future<void> confirmImport(
   final confirmed = await showConfirmDialog(
     context,
     title: strings.manualImportConfirmTitle(files.length),
+    // Short, so that what will happen is in sight before any scrolling.
     target: strings.manualImportSummary(files.length, instanceName),
     consequence: [
       strings.manualImportConsequence(instanceName),

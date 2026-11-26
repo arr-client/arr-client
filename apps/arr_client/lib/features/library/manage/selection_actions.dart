@@ -133,11 +133,16 @@ Future<void> searchSelection(
   if (commands == null || own.isEmpty) return;
   final strings = AppLocalizations.of(context);
   final tasks = ref.read(searchTasksProvider.notifier);
+  final titles = [for (final item in own) itemName(item)];
   final confirmed = await showConfirmDialog(
     context,
     title: strings.bulkSearchConfirmTitle(own.length),
-    target: [for (final item in own) itemName(item)].join('\n'),
+    // One is named; several are counted, and listed after what happens.
+    target: own.length == 1
+        ? titles.single
+        : strings.bulkListed(own.length, instance.instance.name),
     consequence: strings.bulkSearchConsequence(instance.instance.name),
+    options: own.length == 1 ? null : Text(titles.join('\n')),
     confirmLabel: strings.bulkSearchConfirm(own.length),
     destructive: false,
   );

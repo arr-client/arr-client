@@ -37,20 +37,24 @@ Future<void> removeBlocklistEntries(
   if (count == 0) return;
 
   final several = feed.sources.length > 1;
+  final titles = [
+    for (final MapEntry(key: instance, value: entries) in batches.entries)
+      for (final entry in entries)
+        switch (serverText(entry.sourceTitle) ?? strings.historyUntitled) {
+          final title when several => strings.queueTitleOnInstance(
+            title,
+            instance.instance.name,
+          ),
+          final title => title,
+        },
+  ];
   final confirmed = await showConfirmDialog(
     context,
     title: strings.blocklistRemoveTitle(count),
-    target: [
-      for (final MapEntry(key: instance, value: entries) in batches.entries)
-        for (final entry in entries)
-          switch (serverText(entry.sourceTitle) ?? strings.historyUntitled) {
-            final title when several => strings.queueTitleOnInstance(
-              title,
-              instance.instance.name,
-            ),
-            final title => title,
-          },
-    ].join('\n'),
+    // Several titles would push what the removal does out of sight, so they
+    // follow it.
+    target: count == 1 ? titles.single : strings.queueRemoveListed(count),
+    options: count == 1 ? null : Text(titles.join('\n')),
     consequence: strings.blocklistRemoveConsequence(count),
     confirmLabel: strings.blocklistRemoveConfirm(count),
   );

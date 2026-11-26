@@ -143,7 +143,7 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
     final selected = _selected?.intersection({
       for (final entry in state.visible) entry.item.ref,
     });
-    Widget column(double height) => Column(
+    final column = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // In the toolbar's place, so that the filters cannot hide what is
@@ -171,43 +171,57 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
                 )
               : null,
         ),
-        // Above the items, not among them: in sight however far they are
-        // scrolled, and leaving them room.
-        ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: height * 0.4),
-          child: SingleChildScrollView(
-            // The items are the screen's primary scroll view.
-            primary: false,
-            child: SearchProgress(
-              kind: widget.kind,
-              instanceIds: {for (final source in state.shown) source.id},
-            ),
-          ),
-        ),
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: _controller.refresh,
-            child: Scrollbar(
-              controller: _scroll,
-              interactive: true,
-              child: CustomScrollView(
-                key: PageStorageKey('library ${widget.kind.name}'),
-                controller: _scroll,
-                physics: const AlwaysScrollableScrollPhysics(),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                slivers: [
-                  if (state.sources.length > 1 && selected == null)
-                    SliverToBoxAdapter(child: _scopes(state)),
-                  SliverToBoxAdapter(
-                    child: LibraryNotices(
-                      state: state,
-                      onRetry: (id) => unawaited(_controller.retry(id)),
+          // A share of what the toolbar leaves, so that it cannot overflow.
+          child: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Above the items, not among them: in sight however far they
+                // are scrolled.
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: constraints.maxHeight / 2,
+                  ),
+                  child: SingleChildScrollView(
+                    // The items are the screen's primary scroll view.
+                    primary: false,
+                    child: SearchProgress(
+                      kind: widget.kind,
+                      instanceIds: {
+                        for (final source in state.shown) source.id,
+                      },
                     ),
                   ),
-                  _items(state, selected),
-                ],
-              ),
+                ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: _controller.refresh,
+                    child: Scrollbar(
+                      controller: _scroll,
+                      interactive: true,
+                      child: CustomScrollView(
+                        key: PageStorageKey('library ${widget.kind.name}'),
+                        controller: _scroll,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        slivers: [
+                          if (state.sources.length > 1 && selected == null)
+                            SliverToBoxAdapter(child: _scopes(state)),
+                          SliverToBoxAdapter(
+                            child: LibraryNotices(
+                              state: state,
+                              onRetry: (id) => unawaited(_controller.retry(id)),
+                            ),
+                          ),
+                          _items(state, selected),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -219,9 +233,7 @@ class _LibraryViewBodyState extends ConsumerState<LibraryViewBody> {
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) _select(null);
       },
-      child: LayoutBuilder(
-        builder: (context, constraints) => column(constraints.maxHeight),
-      ),
+      child: column,
     );
   }
 

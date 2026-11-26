@@ -12,7 +12,9 @@ void main() {
     double textScale = 1,
     Widget? options,
     bool destructive = true,
+    String title = 'Delete movie?',
     String target = 'Alien (1979)',
+    String consequence = 'It is removed from the server.',
   }) async {
     await tester.pumpWidget(
       testApp(
@@ -20,9 +22,9 @@ void main() {
           builder: (context) => TextButton(
             onPressed: () => answer = showConfirmDialog(
               context,
-              title: 'Delete movie?',
+              title: title,
               target: target,
-              consequence: 'It is removed from the server.',
+              consequence: consequence,
               confirmLabel: 'Delete movie',
               options: options,
               destructive: destructive,
@@ -88,33 +90,61 @@ void main() {
     expect(background(), isNull);
   });
 
-  testWidgets('keeps the consequence in sight above a long list of targets', (
-    tester,
-  ) async {
+  /// Whether all of [text] shows without any scrolling.
+  void expectInSight(WidgetTester tester, String text) {
+    final found = find.text(text);
+    final shown = tester.getRect(
+      find
+          .ancestor(of: found, matching: find.byType(SingleChildScrollView))
+          .first,
+    );
+    final rect = tester.getRect(found);
+    expect(rect.top, greaterThanOrEqualTo(shown.top), reason: text);
+    expect(rect.bottom, lessThanOrEqualTo(shown.bottom), reason: text);
+    expect(found.hitTestable(), findsOneWidget, reason: text);
+  }
+
+  void usePhone(WidgetTester tester) {
     tester.view
-      ..physicalSize = const Size(360, 740)
+      ..physicalSize = const Size(360, 640)
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
+  }
+
+  testWidgets('names the target in sight above a long consequence', (
+    tester,
+  ) async {
+    usePhone(tester);
     await open(
       tester,
       textScale: 2,
-      target: [for (var i = 1; i <= 40; i++) 'Title $i'].join('\n'),
+      title: 'Remove?',
+      target: 'Films',
+      consequence: List.filled(20, 'Its saved data is deleted.').join(' '),
     );
 
-    // Without any scrolling: whole, within what the dialog shows.
-    final consequence = find.text('It is removed from the server.');
-    final shown = tester.getRect(
-      find
-          .ancestor(
-            of: consequence,
-            matching: find.byType(SingleChildScrollView),
-          )
-          .first,
+    expectInSight(tester, 'Films');
+    expect(find.text('Delete movie').hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  // A caller with many names gives a count as the target and the names as
+  // options.
+  testWidgets('keeps the consequence in sight above a long list of names', (
+    tester,
+  ) async {
+    usePhone(tester);
+    await open(
+      tester,
+      textScale: 2,
+      title: 'Delete?',
+      target: '40 titles',
+      consequence: 'Gone.',
+      options: Text([for (var i = 1; i <= 40; i++) 'Title $i'].join('\n')),
     );
-    final rect = tester.getRect(consequence);
-    expect(rect.top, greaterThanOrEqualTo(shown.top));
-    expect(rect.bottom, lessThanOrEqualTo(shown.bottom));
-    expect(consequence.hitTestable(), findsOneWidget);
+
+    expectInSight(tester, '40 titles');
+    expectInSight(tester, 'Gone.');
     expect(find.text('Delete movie').hitTestable(), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

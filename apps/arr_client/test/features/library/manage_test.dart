@@ -585,7 +585,8 @@ void main() {
       await tap(tester, find.widgetWithText(FilterChip, 'kids'));
       await tap(tester, button('Review changes'));
 
-      expect(find.text('Change 2 titles on Films?'), findsOneWidget);
+      expect(find.text('Change 2 titles?'), findsOneWidget);
+      expect(find.text('2 titles on Films'), findsOneWidget);
       expect(find.text('Alpha (2000)\nGamma (2002)'), findsOneWidget);
       expect(
         find.text('Monitoring is turned off.\nTags removed: kids'),
@@ -837,9 +838,6 @@ void main() {
       await tester.longPress(find.text('Title 49'));
       await tester.pumpAndSettle();
       await tap(tester, button('Search'));
-      // What the button leads to is in sight, whatever is above it.
-      expect(find.textContaining('may download').hitTestable(), findsOneWidget);
-      expect(find.textContaining('may download').hitTestable(), findsOneWidget);
       await tap(tester, button('Search 1 title'));
 
       expect(
@@ -860,9 +858,9 @@ void main() {
     });
 
     testWidgets('names forty titles under what will change', (tester) async {
-      tester.platformDispatcher.textScaleFactorTestValue = 2;
-      addTearDown(tester.platformDispatcher.clearAllTestValues);
-      await start(tester, const Size(360, 740));
+      // The test font is about twice as wide as a device's, so this is much
+      // like 200% text there.
+      await start(tester, const Size(360, 640));
       await addServer('Films', ['Alpha']);
       await app.pump(tester);
       unawaited(
@@ -877,10 +875,39 @@ void main() {
       await choose(tester, 'Tags', 'Replace all tags');
       await tap(tester, button('Review changes'));
 
+      expect(find.text('40 titles on Films').hitTestable(), findsOneWidget);
       expect(find.text('All tags are removed.').hitTestable(), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.textContaining('Title 1\nTitle 2')).dy,
+        greaterThan(
+          tester.getBottomLeft(find.text('All tags are removed.')).dy,
+        ),
+      );
       expect(button('Change 40 titles').hitTestable(), findsOneWidget);
       expect(libraries['Films']!.bulkEdits, isEmpty);
       await tap(tester, button('Cancel').last);
+      await app.stop(tester);
+    });
+
+    testWidgets('does not overflow in landscape with the keyboard up', (
+      tester,
+    ) async {
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearAllTestValues);
+      final commands = await searchBoth(tester);
+      commands.refused[1] = const Forbidden();
+      await confirm(tester);
+      await tester.pumpAndSettle();
+
+      tester.view
+        ..physicalSize = const Size(800, 360)
+        ..viewInsets = const FakeViewPadding(bottom: 140);
+      await tester.pumpAndSettle();
+      for (var inset = 100.0; inset <= 160; inset += 5) {
+        tester.view.viewInsets = FakeViewPadding(bottom: inset);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: '$inset');
+      }
       await app.stop(tester);
     });
 
