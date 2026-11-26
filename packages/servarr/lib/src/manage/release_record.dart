@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 
 import '../json_reading.dart';
+import '../records/protocol_record.dart';
 import '../records/quality_record.dart';
 
 /// A record of `GET release`, found by searching for [target]. Without its guid
@@ -10,9 +11,7 @@ Release releaseRecord(JsonObject record, Map<String, int> target) => Release(
   indexerId: requireInt(record, 'indexerId'),
   indexer: optionalString(record, 'indexer') ?? '',
   title: optionalString(record, 'title') ?? '',
-  protocol:
-      DownloadProtocol.values.asNameMap()[record['protocol']] ??
-      DownloadProtocol.unknown,
+  protocol: recordProtocol(record['protocol']),
   size: optionalNumber(record, 'size')?.toInt() ?? 0,
   ageHours: optionalNumber(record, 'ageHours')?.toDouble() ?? 0,
   quality: recordQuality(record['quality']),

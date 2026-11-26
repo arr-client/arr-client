@@ -1,0 +1,97 @@
+[
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-155",
+    "foreignRecordingId": "redacted-156",
+    "trackFileId": 1,
+    "albumId": 2,
+    "explicit": false,
+    "absoluteTrackNumber": 1,
+    "trackNumber": "redacted-157",
+    "title": "redacted-158",
+    "duration": 306000,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 188
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-159",
+    "foreignRecordingId": "redacted-160",
+    "trackFileId": 2,
+    "albumId": 2,
+    "explicit": false,
+    "absoluteTrackNumber": 2,
+    "trackNumber": "redacted-161",
+    "title": "redacted-162",
+    "duration": 254000,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 189
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-163",
+    "foreignRecordingId": "redacted-164",
+    "trackFileId": 3,
+    "albumId": 2,
+    "explicit": false,
+    "absoluteTrackNumber": 3,
+    "trackNumber": "redacted-165",
+    "title": "redacted-166",
+    "duration": 238000,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 190
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-167",
+    "foreignRecordingId": "redacted-168",
+    "trackFileId": 4,
+    "albumId": 2,
+    "explicit": false,
+    "absoluteTrackNumber": 4,
+    "trackNumber": "redacted-169",
+    "title": "redacted-170",
+    "duration": 260000,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 191
+  },
+  {
+    "artistId": 1,
+    "foreignTrackId": "redacted-171",
+    "foreignRecordingId": "redacted-172",
+    "trackFileId": 5,
+    "albumId": 2,
+    "explicit": false,
+    "absoluteTrackNumber": 5,
+    "trackNumber": "redacted-173",
+    "title": "redacted-174",
+    "duration": 294000,
+    "mediumNumber": 1,
+    "hasFile": true,
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    },
+    "id": 192
+  }
+]

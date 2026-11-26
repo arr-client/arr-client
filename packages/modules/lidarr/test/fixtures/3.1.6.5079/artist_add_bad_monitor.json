@@ -1,0 +1,11 @@
+{
+  "type": "https://redacted.invalid/317",
+  "title": "redacted-318",
+  "status": 400,
+  "errors": {
+    "redactedKey1": [
+      "redacted-319"
+    ]
+  },
+  "traceId": "redacted-320"
+}

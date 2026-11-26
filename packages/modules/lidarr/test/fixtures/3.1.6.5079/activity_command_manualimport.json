@@ -1,0 +1,96 @@
+{
+  "name": "ManualImport",
+  "commandName": "Manual Import",
+  "body": {
+    "files": [
+      {
+        "path": "/redacted/205.mp3",
+        "artistId": 1,
+        "albumId": 1,
+        "albumReleaseId": 1,
+        "trackIds": [
+          1
+        ],
+        "quality": {
+          "quality": {
+            "id": 4,
+            "name": "MP3-320"
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "indexerFlags": 0,
+        "downloadId": "ABCDEF0000000000000000000000000000000004",
+        "disableReleaseSwitching": false
+      },
+      {
+        "path": "/redacted/203.mp3",
+        "artistId": 1,
+        "albumId": 1,
+        "albumReleaseId": 1,
+        "trackIds": [
+          2
+        ],
+        "quality": {
+          "quality": {
+            "id": 4,
+            "name": "MP3-320"
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "indexerFlags": 0,
+        "downloadId": "ABCDEF0000000000000000000000000000000004",
+        "disableReleaseSwitching": false
+      },
+      {
+        "path": "/redacted/224.mp3",
+        "artistId": 1,
+        "albumId": 1,
+        "albumReleaseId": 1,
+        "trackIds": [
+          3
+        ],
+        "quality": {
+          "quality": {
+            "id": 4,
+            "name": "MP3-320"
+          },
+          "revision": {
+            "version": 1,
+            "real": 0,
+            "isRepack": false
+          }
+        },
+        "indexerFlags": 0,
+        "downloadId": "ABCDEF0000000000000000000000000000000004",
+        "disableReleaseSwitching": false
+      }
+    ],
+    "sendUpdatesToClient": true,
+    "requiresDiskAccess": true,
+    "importMode": "redacted-228",
+    "replaceExistingFiles": false,
+    "updateScheduledTask": true,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "ManualImport",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "high",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T21:36:50Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 21
+}

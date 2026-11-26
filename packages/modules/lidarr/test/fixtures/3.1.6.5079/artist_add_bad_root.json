@@ -1,0 +1,15 @@
+[
+  {
+    "propertyName": "RootFolderPath",
+    "errorMessage": "redacted-310",
+    "attemptedValue": "/redacted/311",
+    "severity": "error",
+    "errorCode": "RootFolderExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "path": "/redacted/311",
+      "propertyName": "redacted-312",
+      "propertyValue": "/redacted/311"
+    }
+  }
+]

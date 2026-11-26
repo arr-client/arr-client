@@ -1,0 +1,31 @@
+{
+  "@@locale": "en",
+  "monitorAll": "All albums",
+  "@monitorAll": {
+    "description": "Choice of what to monitor of an artist, being added or already there: every album."
+  },
+  "monitorFuture": "Future albums",
+  "@monitorFuture": {
+    "description": "Choice of what to monitor of an artist, being added or already there: albums that have not been released yet."
+  },
+  "monitorMissing": "Missing albums",
+  "@monitorMissing": {
+    "description": "Choice of what to monitor of an artist, being added or already there: albums without files, and those not released yet."
+  },
+  "monitorExisting": "Existing albums",
+  "@monitorExisting": {
+    "description": "Choice of what to monitor of an artist, being added or already there: albums with files, and those not released yet."
+  },
+  "monitorFirst": "First album",
+  "@monitorFirst": {
+    "description": "Choice of what to monitor of an artist, being added or already there: only the first album."
+  },
+  "monitorLatest": "Latest album",
+  "@monitorLatest": {
+    "description": "Choice of what to monitor of an artist, being added or already there: only the latest album."
+  },
+  "monitorNone": "None",
+  "@monitorNone": {
+    "description": "Choice of what to monitor of an artist, being added or already there: nothing."
+  }
+}

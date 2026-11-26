@@ -1,0 +1,122 @@
+[
+  {
+    "status": "continuing",
+    "ended": false,
+    "artistName": "redacted-32",
+    "foreignArtistId": "redacted-33",
+    "tadbId": 0,
+    "discogsId": 0,
+    "artistType": "Group",
+    "disambiguation": "",
+    "links": [
+      {
+        "url": "http://redacted.invalid/34",
+        "name": "redacted-35"
+      }
+    ],
+    "nextAlbum": null,
+    "lastAlbum": null,
+    "images": [
+      {
+        "coverType": "fanart",
+        "url": "/redacted/258.jpg",
+        "remoteUrl": "https://redacted.invalid/259.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "poster",
+        "url": "/redacted/260.jpg",
+        "remoteUrl": "https://redacted.invalid/261.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "banner",
+        "url": "/redacted/262.jpg",
+        "remoteUrl": "https://redacted.invalid/263.jpg",
+        "extension": "redacted-51"
+      },
+      {
+        "coverType": "clearlogo",
+        "url": "/redacted/264.png",
+        "remoteUrl": "https://redacted.invalid/265.png",
+        "extension": "redacted-58"
+      }
+    ],
+    "remotePoster": "https://redacted.invalid/261.jpg",
+    "qualityProfileId": 0,
+    "metadataProfileId": 0,
+    "monitored": false,
+    "monitorNewItems": "all",
+    "folder": "redacted-32",
+    "genres": [
+      "redacted-48"
+    ],
+    "tags": [],
+    "added": "0001-01-01T00:00:00Z",
+    "ratings": {
+      "votes": 22,
+      "value": 9.1
+    }
+  },
+  {
+    "status": "continuing",
+    "ended": false,
+    "artistName": "redacted-266",
+    "foreignArtistId": "redacted-267",
+    "tadbId": 0,
+    "discogsId": 0,
+    "artistType": "Group",
+    "disambiguation": "redacted-268",
+    "links": [
+      {
+        "url": "https://redacted.invalid/269",
+        "name": "redacted-270"
+      }
+    ],
+    "nextAlbum": null,
+    "lastAlbum": null,
+    "images": [],
+    "qualityProfileId": 0,
+    "metadataProfileId": 0,
+    "monitored": false,
+    "monitorNewItems": "all",
+    "folder": "redacted-266",
+    "genres": [],
+    "tags": [],
+    "added": "0001-01-01T00:00:00Z",
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    }
+  },
+  {
+    "status": "continuing",
+    "ended": false,
+    "artistName": "redacted-271",
+    "foreignArtistId": "redacted-272",
+    "tadbId": 0,
+    "discogsId": 0,
+    "disambiguation": "redacted-273",
+    "links": [
+      {
+        "url": "https://redacted.invalid/274",
+        "name": "redacted-54"
+      }
+    ],
+    "nextAlbum": null,
+    "lastAlbum": null,
+    "images": [],
+    "qualityProfileId": 0,
+    "metadataProfileId": 0,
+    "monitored": false,
+    "monitorNewItems": "all",
+    "folder": "redacted-271",
+    "genres": [],
+    "tags": [],
+    "added": "0001-01-01T00:00:00Z",
+    "ratings": {
+      "votes": 0,
+      "value": 0
+    }
+  }
+]

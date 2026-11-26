@@ -1,0 +1,31 @@
+{
+  "name": "AlbumSearch",
+  "commandName": "Album Search",
+  "message": "redacted-257",
+  "body": {
+    "albumIds": [
+      3
+    ],
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "AlbumSearch",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "completed",
+  "result": "successful",
+  "queued": "2026-11-26T21:37:17Z",
+  "started": "2026-11-26T21:37:17Z",
+  "ended": "2026-11-26T21:37:17Z",
+  "duration": "00:00:00.0073710",
+  "trigger": "manual",
+  "stateChangeTime": "2026-11-26T21:37:17Z",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 25
+}

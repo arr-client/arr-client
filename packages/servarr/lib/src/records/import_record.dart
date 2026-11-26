@@ -3,27 +3,29 @@ import 'package:core/core.dart';
 import '../json_reading.dart';
 import 'quality_record.dart';
 
-/// An import from a download folder, as `eventType` of both history reads
-/// takes it.
+/// An import from a download, as `eventType` of both history reads takes it.
 const importEventNumber = '3';
 
-/// The word the records of such an import carry.
-const _importEventWord = 'downloadFolderImported';
+/// The word the records of such an import carry in the services for movies and
+/// series.
+const downloadFolderImported = 'downloadFolderImported';
 
 /// The imports among [records], of `GET history` or `GET history/since`, newest
 /// first and each item once with its latest import. Records the server cannot
 /// match to an item are all kept.
 ///
-/// [within] says whether an import of that instant counts at all.
+/// [eventWord] is the service's word for an import, and [within] says whether
+/// an import of that instant counts at all.
 List<ImportedItem> importedItems(
   List<JsonObject> records, {
   required ItemRef? Function(JsonObject record) itemRef,
   required String Function(JsonObject record) title,
+  String eventWord = downloadFolderImported,
   bool Function(DateTime importedAt)? within,
 }) {
   final imports = <({int id, ImportedItem item})>[];
   for (final record in records) {
-    if (record['eventType'] != _importEventWord) continue;
+    if (record['eventType'] != eventWord) continue;
     final id = requireInt(record, 'id');
     final importedAt = DateTime.parse(requireString(record, 'date')).toUtc();
     if (within != null && !within(importedAt)) continue;

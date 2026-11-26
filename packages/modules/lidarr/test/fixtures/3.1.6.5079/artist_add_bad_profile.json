@@ -1,0 +1,26 @@
+[
+  {
+    "propertyName": "QualityProfileId",
+    "errorMessage": "redacted-313",
+    "attemptedValue": 99,
+    "severity": "error",
+    "errorCode": "QualityProfileExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-314",
+      "propertyValue": 99
+    }
+  },
+  {
+    "propertyName": "MetadataProfileId",
+    "errorMessage": "redacted-315",
+    "attemptedValue": 99,
+    "severity": "error",
+    "errorCode": "MetadataProfileExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-316",
+      "propertyValue": 99
+    }
+  }
+]

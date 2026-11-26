@@ -1,0 +1,78 @@
+{
+  "status": "continuing",
+  "ended": false,
+  "artistName": "redacted-32",
+  "foreignArtistId": "redacted-33",
+  "tadbId": 0,
+  "discogsId": 0,
+  "artistType": "Group",
+  "disambiguation": "",
+  "links": [
+    {
+      "url": "http://redacted.invalid/34",
+      "name": "redacted-35"
+    }
+  ],
+  "nextAlbum": null,
+  "lastAlbum": null,
+  "images": [
+    {
+      "coverType": "poster",
+      "url": "/MediaCover/1/poster.jpg",
+      "remoteUrl": "https://redacted.invalid/261.jpg",
+      "extension": "redacted-51"
+    },
+    {
+      "coverType": "fanart",
+      "url": "/MediaCover/1/fanart.jpg",
+      "remoteUrl": "https://redacted.invalid/259.jpg",
+      "extension": "redacted-51"
+    },
+    {
+      "coverType": "banner",
+      "url": "/MediaCover/1/banner.jpg",
+      "remoteUrl": "https://redacted.invalid/263.jpg",
+      "extension": "redacted-51"
+    },
+    {
+      "coverType": "clearlogo",
+      "url": "/MediaCover/1/clearlogo.png",
+      "remoteUrl": "https://redacted.invalid/265.png",
+      "extension": "redacted-58"
+    }
+  ],
+  "path": "/redacted/49",
+  "qualityProfileId": 1,
+  "metadataProfileId": 1,
+  "monitored": true,
+  "monitorNewItems": "all",
+  "rootFolderPath": "/redacted/29",
+  "genres": [
+    "redacted-48"
+  ],
+  "cleanName": "redacted-35",
+  "sortName": "redacted-35",
+  "tags": [
+    1
+  ],
+  "added": "2026-11-26T21:33:52Z",
+  "addOptions": {
+    "searchForMissingAlbums": false,
+    "monitor": "redacted-30",
+    "albumsToMonitor": [],
+    "monitored": false
+  },
+  "ratings": {
+    "votes": 22,
+    "value": 9.1
+  },
+  "statistics": {
+    "albumCount": 0,
+    "trackFileCount": 0,
+    "trackCount": 0,
+    "totalTrackCount": 0,
+    "sizeOnDisk": 0,
+    "percentOfTracks": 0
+  },
+  "id": 1
+}

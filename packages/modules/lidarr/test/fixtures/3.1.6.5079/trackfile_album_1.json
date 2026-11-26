@@ -1,0 +1,95 @@
+[
+  {
+    "artistId": 1,
+    "albumId": 1,
+    "path": "/redacted/175.mp3",
+    "size": 1322884,
+    "dateAdded": "2026-11-26T21:36:50Z",
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 21,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "320 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 13
+  },
+  {
+    "artistId": 1,
+    "albumId": 1,
+    "path": "/redacted/176.mp3",
+    "size": 1242426,
+    "dateAdded": "2026-11-26T21:36:50Z",
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 21,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "320 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 14
+  },
+  {
+    "artistId": 1,
+    "albumId": 1,
+    "path": "/redacted/177.mp3",
+    "size": 1282132,
+    "dateAdded": "2026-11-26T21:36:50Z",
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 21,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioChannels": 2,
+      "audioBitRate": "320 kbps",
+      "audioCodec": "MP3",
+      "audioBits": "",
+      "audioSampleRate": "44.1kHz"
+    },
+    "qualityCutoffNotMet": true,
+    "id": 15
+  }
+]

@@ -1,0 +1,302 @@
+[
+  {
+    "path": "/redacted/205.mp3",
+    "name": "redacted-204",
+    "size": 1322884,
+    "artist": {
+      "status": "continuing",
+      "ended": false,
+      "artistName": "redacted-32",
+      "foreignArtistId": "redacted-33",
+      "tadbId": 0,
+      "discogsId": 0,
+      "artistType": "Group",
+      "disambiguation": "",
+      "links": [
+        {
+          "url": "http://redacted.invalid/34",
+          "name": "redacted-35"
+        }
+      ],
+      "nextAlbum": null,
+      "lastAlbum": null,
+      "images": [],
+      "path": "/redacted/49",
+      "qualityProfileId": 4,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [
+        "redacted-48"
+      ],
+      "cleanName": "redacted-35",
+      "sortName": "redacted-35",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T21:33:52Z",
+      "ratings": {
+        "votes": 22,
+        "value": 9.1
+      },
+      "id": 1
+    },
+    "albumReleaseId": 0,
+    "tracks": [],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 21,
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-192",
+        "type": "permanent"
+      }
+    ],
+    "audioTags": {
+      "title": "redacted-204",
+      "artistTitleInfo": {
+        "year": 0
+      },
+      "discNumber": 0,
+      "discCount": 0,
+      "year": 0,
+      "duration": "00:00:33.0948000",
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "MP3-320"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "mediaInfo": {
+        "audioFormat": "redacted-223",
+        "audioBitrate": 320,
+        "audioChannels": 2,
+        "audioBits": 0,
+        "audioSampleRate": 44100
+      },
+      "trackNumbers": [
+        0
+      ]
+    },
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 1541481368
+  },
+  {
+    "path": "/redacted/203.mp3",
+    "name": "redacted-202",
+    "size": 1242426,
+    "artist": {
+      "status": "continuing",
+      "ended": false,
+      "artistName": "redacted-32",
+      "foreignArtistId": "redacted-33",
+      "tadbId": 0,
+      "discogsId": 0,
+      "artistType": "Group",
+      "disambiguation": "",
+      "links": [
+        {
+          "url": "http://redacted.invalid/34",
+          "name": "redacted-35"
+        }
+      ],
+      "nextAlbum": null,
+      "lastAlbum": null,
+      "images": [],
+      "path": "/redacted/49",
+      "qualityProfileId": 4,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [
+        "redacted-48"
+      ],
+      "cleanName": "redacted-35",
+      "sortName": "redacted-35",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T21:33:52Z",
+      "ratings": {
+        "votes": 22,
+        "value": 9.1
+      },
+      "id": 1
+    },
+    "albumReleaseId": 0,
+    "tracks": [],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 21,
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-192",
+        "type": "permanent"
+      }
+    ],
+    "audioTags": {
+      "title": "redacted-202",
+      "artistTitleInfo": {
+        "year": 0
+      },
+      "discNumber": 0,
+      "discCount": 0,
+      "year": 0,
+      "duration": "00:00:31.0851000",
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "MP3-320"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "mediaInfo": {
+        "audioFormat": "redacted-223",
+        "audioBitrate": 320,
+        "audioChannels": 2,
+        "audioBits": 0,
+        "audioSampleRate": 44100
+      },
+      "trackNumbers": [
+        0
+      ]
+    },
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 769162311
+  },
+  {
+    "path": "/redacted/224.mp3",
+    "name": "redacted-225",
+    "size": 1282132,
+    "artist": {
+      "status": "continuing",
+      "ended": false,
+      "artistName": "redacted-32",
+      "foreignArtistId": "redacted-33",
+      "tadbId": 0,
+      "discogsId": 0,
+      "artistType": "Group",
+      "disambiguation": "",
+      "links": [
+        {
+          "url": "http://redacted.invalid/34",
+          "name": "redacted-35"
+        }
+      ],
+      "nextAlbum": null,
+      "lastAlbum": null,
+      "images": [],
+      "path": "/redacted/49",
+      "qualityProfileId": 4,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [
+        "redacted-48"
+      ],
+      "cleanName": "redacted-35",
+      "sortName": "redacted-35",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T21:33:52Z",
+      "ratings": {
+        "votes": 22,
+        "value": 9.1
+      },
+      "id": 1
+    },
+    "albumReleaseId": 0,
+    "tracks": [],
+    "quality": {
+      "quality": {
+        "id": 4,
+        "name": "MP3-320"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 21,
+    "downloadId": "ABCDEF0000000000000000000000000000000004",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-192",
+        "type": "permanent"
+      }
+    ],
+    "audioTags": {
+      "title": "redacted-225",
+      "artistTitleInfo": {
+        "year": 0
+      },
+      "discNumber": 0,
+      "discCount": 0,
+      "year": 0,
+      "duration": "00:00:32.0769000",
+      "quality": {
+        "quality": {
+          "id": 4,
+          "name": "MP3-320"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "mediaInfo": {
+        "audioFormat": "redacted-223",
+        "audioBitrate": 320,
+        "audioChannels": 2,
+        "audioBits": 0,
+        "audioSampleRate": 44100
+      },
+      "trackNumbers": [
+        0
+      ]
+    },
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 1793440656
+  }
+]

@@ -1,0 +1,148 @@
+[
+  {
+    "name": "redacted-18",
+    "primaryAlbumTypes": [
+      {
+        "albumType": {
+          "id": 2,
+          "name": "redacted-19"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 4,
+          "name": "Other"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 1,
+          "name": "redacted-20"
+        },
+        "allowed": false
+      }
+    ],
+    "secondaryAlbumTypes": [
+      {
+        "albumType": {
+          "id": 0,
+          "name": "redacted-21"
+        },
+        "allowed": true
+      },
+      {
+        "albumType": {
+          "id": 3,
+          "name": "redacted-22"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 2,
+          "name": "redacted-23"
+        },
+        "allowed": false
+      }
+    ],
+    "releaseStatuses": [
+      {
+        "releaseStatus": {
+          "id": 3,
+          "name": "redacted-24"
+        },
+        "allowed": false
+      },
+      {
+        "releaseStatus": {
+          "id": 1,
+          "name": "redacted-25"
+        },
+        "allowed": false
+      },
+      {
+        "releaseStatus": {
+          "id": 0,
+          "name": "redacted-26"
+        },
+        "allowed": true
+      }
+    ],
+    "id": 1
+  },
+  {
+    "name": "redacted-27",
+    "primaryAlbumTypes": [
+      {
+        "albumType": {
+          "id": 2,
+          "name": "redacted-19"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 4,
+          "name": "Other"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 1,
+          "name": "redacted-20"
+        },
+        "allowed": false
+      }
+    ],
+    "secondaryAlbumTypes": [
+      {
+        "albumType": {
+          "id": 0,
+          "name": "redacted-21"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 3,
+          "name": "redacted-22"
+        },
+        "allowed": false
+      },
+      {
+        "albumType": {
+          "id": 2,
+          "name": "redacted-23"
+        },
+        "allowed": false
+      }
+    ],
+    "releaseStatuses": [
+      {
+        "releaseStatus": {
+          "id": 3,
+          "name": "redacted-24"
+        },
+        "allowed": false
+      },
+      {
+        "releaseStatus": {
+          "id": 1,
+          "name": "redacted-25"
+        },
+        "allowed": false
+      },
+      {
+        "releaseStatus": {
+          "id": 0,
+          "name": "redacted-26"
+        },
+        "allowed": false
+      }
+    ],
+    "id": 2
+  }
+]

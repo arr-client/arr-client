@@ -1,0 +1,71 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "date",
+  "sortDirection": "descending",
+  "totalRecords": 1,
+  "records": [
+    {
+      "artistId": 1,
+      "albumIds": [
+        1
+      ],
+      "sourceTitle": "redacted-183",
+      "quality": {
+        "quality": {
+          "id": 6,
+          "name": "FLAC"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "customFormats": [],
+      "date": "2026-11-26T21:36:51Z",
+      "protocol": "TorrentDownloadProtocol",
+      "indexer": "redacted-186",
+      "message": "redacted-201",
+      "artist": {
+        "status": "continuing",
+        "ended": false,
+        "artistName": "redacted-32",
+        "foreignArtistId": "redacted-33",
+        "tadbId": 0,
+        "discogsId": 0,
+        "artistType": "Group",
+        "disambiguation": "",
+        "links": [
+          {
+            "url": "http://redacted.invalid/34",
+            "name": "redacted-35"
+          }
+        ],
+        "nextAlbum": null,
+        "lastAlbum": null,
+        "images": [],
+        "path": "/redacted/49",
+        "qualityProfileId": 4,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "genres": [
+          "redacted-48"
+        ],
+        "cleanName": "redacted-35",
+        "sortName": "redacted-35",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T21:33:52Z",
+        "ratings": {
+          "votes": 22,
+          "value": 9.1
+        },
+        "id": 1
+      },
+      "id": 1
+    }
+  ]
+}
