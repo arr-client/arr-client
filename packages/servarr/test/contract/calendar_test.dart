@@ -133,6 +133,32 @@ void main() {
         expect(dates, hasLength(service == radarr ? 7 : 4));
       });
 
+      // A whole season can be released at one moment. `List.sort` keeps the
+      // order of equal elements only in short lists.
+      test('keeps the server order of releases of one moment', () async {
+        // The later moment first, so that there is something to sort.
+        final records = [
+          for (var id = 1; id <= 100; id++)
+            _dated(
+              service,
+              id,
+              id.isOdd ? '2026-09-15T00:00:00Z' : '2026-09-14T00:00:00Z',
+            ),
+        ];
+
+        final events = await _events(
+          service,
+          from: _from,
+          to: _to,
+          records: records,
+        );
+
+        expect(events.map((event) => event.itemRef.remoteId), [
+          for (var id = 2; id <= 100; id += 2) id,
+          for (var id = 1; id <= 99; id += 2) id,
+        ]);
+      });
+
       test('holds the start of the window but not its end', () async {
         final from = DateTime.utc(2026, 9, 14);
         final to = DateTime.utc(2026, 9, 21);

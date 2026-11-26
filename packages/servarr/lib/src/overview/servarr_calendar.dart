@@ -51,7 +51,8 @@ final class ServarrCalendar implements CalendarProvider {
       DateTime(year, month, day);
 
   /// The releases dated from [from] up to, but not including, [to], oldest
-  /// first, by the dates the module's mapper gives.
+  /// first, by the dates the module's mapper gives. Releases of the same date
+  /// keep the server's order.
   @override
   ServiceResult<List<CalendarEvent>> events(DateTime from, DateTime to) =>
       _client.read(
@@ -65,7 +66,14 @@ final class ServarrCalendar implements CalendarProvider {
                 if (!event.date.isBefore(from) && event.date.isBefore(to))
                   event,
           ];
-          return events..sort((a, b) => a.date.compareTo(b.date));
+          // Releases of one moment, such as a whole season, keep the server's
+          // order. `List.sort` alone would not: it is not stable.
+          final ordered = events.indexed.toList()
+            ..sort((a, b) {
+              final byDate = a.$2.date.compareTo(b.$2.date);
+              return byDate != 0 ? byDate : a.$1.compareTo(b.$1);
+            });
+          return [for (final (_, event) in ordered) event];
         },
         query: {
           ..._calendarQuery,
