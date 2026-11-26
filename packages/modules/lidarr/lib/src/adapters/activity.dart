@@ -54,7 +54,11 @@ final class LidarrQueueAdapter implements QueueProvider {
   /// album is [Validation], and then nothing is written. Only the server
   /// chooses a release, so a newly chosen album takes a [reprocess] first.
   ///
-  /// The files the album has are never replaced.
+  /// Importing deletes files. `replaceExistingFiles` is never sent, so the
+  /// album's files are not all removed first, but Lidarr still deletes the file
+  /// each matched track already has before it puts the new one there: for good
+  /// where the server has no recycle bin. A screen that imports with this must
+  /// warn of that before it does.
   @override
   ServiceResult<Command> importFiles(
     List<ManualImportCandidate> candidates,
