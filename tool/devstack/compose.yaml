@@ -22,7 +22,7 @@
 # Setup done by hand in each web UI, only as far as a test needs it:
 #   - Root folders: /data/movies, /data/tv, /data/music, /data/books.
 #   - Seerr, Overseerr and Jellyseerr answer only public requests until set up, and setup needs a
-#     media server: finish Jellyfin's wizard first, then use http://jellyfin:8096 as its address.
+#     media server (Overseerr: Plex only). Others: do Jellyfin's wizard, use http://jellyfin:8096.
 #     Inside the stack, services reach each other by name (http://radarr:7878).
 #
 # The stack adds no indexers and downloads no media, so queue items, imports and release search

@@ -157,6 +157,48 @@ void main() {
       }
     });
 
+    test('in a cover URL whose hash has any other shape', () {
+      const hash = '0123456789abcdef0123';
+      for (final query in [
+        'h=',
+        'h=fakeperson',
+        'h=fake-cover-key',
+        // Not 20 characters
+        'h=0123456789abcdef012',
+        'h=0123456789abcdef01234',
+        'h=0123456789abcdef0123456789abcdef',
+        // Not lower-case hex
+        'h=0123456789ABCDEF0123',
+        'h=0123456789abcdefg123',
+        // Anything more, or another name
+        'h=$hash&apikey=fake-cover-key',
+        'apikey=fake-cover-key&h=$hash',
+        'h=$hash&lastWrite=1',
+        'lastWrite=1&h=$hash',
+        'h=$hash#fakeperson',
+        'h=$hash\nfakeperson',
+        'h=$hash\n',
+        'H=$hash',
+        'hash=$hash',
+        'apikey=$hash',
+      ]) {
+        final url = '/MediaCover/1/poster.jpg?$query';
+        expect(FixtureSanitizer().sanitizeJson({'url': url}), {
+          'url': startsWith('/redacted/'),
+        }, reason: url);
+      }
+      for (final url in [
+        'http://nas.invalid/MediaCover/1/poster.jpg?h=$hash',
+        '/fakeperson/MediaCover/1/poster.jpg?h=$hash',
+        '/MediaCover/1/fakeperson.jpg?h=$hash',
+        '/other/poster.jpg?h=$hash',
+      ]) {
+        final out = _sanitize({'url': url});
+        expect(out, isNot(contains(hash)), reason: url);
+        expect(out, isNot(contains('fake')), reason: url);
+      }
+    });
+
     test('as an IPv4 address in a version field', () {
       for (final ip in ['10.0.0.1', '192.168.1.20', 'v192.0.2.1']) {
         expect(_sanitize({'version': ip}), isNot(contains(ip)));
@@ -262,6 +304,18 @@ void main() {
         'url': '/MediaCover/12/poster-500.jpg?lastWrite=638000000000000000',
       };
       expect(FixtureSanitizer().sanitizeJson(input), input);
+    });
+
+    test('keeps cover URLs with either cache buster or none', () {
+      for (final url in [
+        '/MediaCover/1/poster.jpg?h=0123456789abcdef0123',
+        '/MediaCover/12/fanart-360.jpg?h=ffffffffffffffffffff',
+        '/MediaCover/3/clearlogo.png?h=00000000000000000000',
+        '/MediaCover/Albums/4/cover.jpg?lastWrite=638000000000000000',
+        '/MediaCover/1/banner.jpg',
+      ]) {
+        expect(FixtureSanitizer().sanitizeJson({'url': url}), {'url': url});
+      }
     });
 
     test('keeps what Bazarr manual search results are sent back with', () {
