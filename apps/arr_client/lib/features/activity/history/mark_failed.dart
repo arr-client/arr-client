@@ -49,7 +49,9 @@ Future<void> markEventFailed(
     ].join('\n'),
     consequence: [
       strings.historyMarkFailedConsequence,
-      if (shared) strings.historyMarkFailedShared,
+      // The grabs of one download can be several episodes. A movie's is one.
+      if (shared && event.itemRef?.kind == MediaKind.episode)
+        strings.historyMarkFailedShared,
     ].join('\n\n'),
     confirmLabel: strings.historyMarkFailed,
   );

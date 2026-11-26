@@ -114,12 +114,16 @@ HistoryEvent grab(
   int day = 1,
   HistoryEventType type = HistoryEventType.grabbed,
   String? downloadId,
+  MediaKind? kind,
 }) => HistoryEvent(
   id: id,
   eventType: type,
   date: DateTime.utc(2026, 3, day, 12),
   sourceTitle: title ?? 'Release $id',
   downloadId: downloadId,
+  itemRef: kind == null
+      ? null
+      : ItemRef(instanceId: 'any', kind: kind, remoteId: id),
 );
 
 BlocklistEntry blocked(int id, {String? title, int day = 1, String? reason}) =>

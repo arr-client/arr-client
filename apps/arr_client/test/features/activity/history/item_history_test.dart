@@ -289,8 +289,17 @@ void main() {
       size: const Size(400, 2000),
       arrange: (fake) => fake.pages = [
         [
-          event(3, day: 3, downloadId: 'pack'),
-          event(2, day: 2, downloadId: 'pack'),
+          for (final id in [3, 2])
+            event(
+              id,
+              day: id,
+              downloadId: 'pack',
+              itemRef: const ItemRef(
+                instanceId: 'any',
+                kind: MediaKind.episode,
+                remoteId: 1,
+              ),
+            ),
           event(1, type: HistoryEventType.imported, downloadId: 'pack'),
         ],
       ],

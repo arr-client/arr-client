@@ -123,7 +123,14 @@ void main() {
     useScreen(tester);
     final fake = module.of('Cellar')
       ..pages = [
-        [grab(7, title: 'Bad.Release', downloadId: 'abc')],
+        [
+          grab(
+            7,
+            title: 'Bad.Release',
+            downloadId: 'abc',
+            kind: MediaKind.episode,
+          ),
+        ],
       ];
     final (app, _) = await startWith(tester, module, ['Cellar']);
     await openHistoryTab(tester);
@@ -139,6 +146,15 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('adds the release to its blocklist'), findsOne);
+    expect(
+      find.textContaining('decide only whether it searches for another'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('The download is not removed or stopped'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('cannot be undone'), findsOneWidget);
     expect(find.textContaining('season pack'), findsOneWidget);
     await tester.tap(find.text('Cancel'));
     await step(tester);
@@ -164,6 +180,22 @@ void main() {
     expect(fake.writes, hasLength(1));
     expect(fake.reads, [1, 1]);
     expect(enabled(tester, 'Mark as failed'), [true]);
+    await app.stop(tester);
+  });
+
+  testWidgets('a movie grab speaks of no season pack', (tester) async {
+    useScreen(tester);
+    module.of('Cellar').pages = [
+      [grab(7, downloadId: 'abc', kind: MediaKind.movie)],
+    ];
+    final (app, _) = await startWith(tester, module, ['Cellar']);
+    await openHistoryTab(tester);
+
+    await tester.tap(find.text('Mark as failed'));
+    await step(tester);
+
+    expect(find.text('Mark this download as failed?'), findsOneWidget);
+    expect(find.textContaining('season pack'), findsNothing);
     await app.stop(tester);
   });
 
