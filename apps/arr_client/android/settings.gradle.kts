@@ -24,3 +24,14 @@ plugins {
 }
 
 include(":app")
+
+// Gradle refuses a project in a directory that it cannot write to, and the SDK's plugin of the
+// integration tests is in one where the Flutter SDK is read-only, as under Nix (shell.nix). It is
+// then built from a copy.
+findProject(":integration_test")?.let { plugin ->
+    if (!plugin.projectDir.canWrite()) {
+        val copy = file("../build/integration_test_plugin")
+        plugin.projectDir.copyRecursively(copy, overwrite = true)
+        plugin.projectDir = copy
+    }
+}

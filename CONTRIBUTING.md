@@ -86,6 +86,20 @@ emulator -avd arr -no-window -gpu swiftshader_indirect -feature -Vulkan
 This headless form is the one that has been tested. `-no-window` hides the screen; leave it out to
 see it. The two graphics options avoid an emulator crash seen with software rendering.
 
+### Integration tests
+
+The tests in `apps/arr_client/integration_test/` run the app on a device or emulator, against fake
+servers that the tests start on the device itself; they need no server and keep their data apart from
+what an installed app has saved. Run one file at a time, as CI does:
+
+```sh
+cd apps/arr_client
+flutter test integration_test/connect_test.dart -d <device id from `flutter devices`>
+```
+
+A run ends by uninstalling the app, so use an emulator rather than a phone whose app data you want
+to keep. What the tests share is in `integration_test/support/`.
+
 ## Optional tools
 
 None of these is required.

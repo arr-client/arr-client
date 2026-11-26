@@ -56,6 +56,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Runs the tests of integration_test/ on a device or emulator. Part of the
+  # Flutter SDK (BSD-3-Clause); release builds leave its Android plugin out.
+  integration_test:
+    sdk: flutter
 
 flutter:
   # `flutter pub get` runs gen-l10n with l10n.yaml.

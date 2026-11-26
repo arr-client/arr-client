@@ -16,9 +16,16 @@ import 'platform/local_network.dart';
 import 'platform/secret_store.dart';
 import 'platform/text_sharer.dart';
 
-/// Starts the app's services on the device's own.
-Future<AppServices> startOnDevice() async {
-  final directory = await getApplicationSupportDirectory();
+/// Starts the app's services on the device's own. The integration tests keep
+/// their data apart from what the installed app has stored, and stand in for a
+/// permission that their emulator does not enforce.
+Future<AppServices> startOnDevice({
+  Future<Directory> Function() dataDirectory = getApplicationSupportDirectory,
+  Future<Directory> Function() cacheDirectory = getApplicationCacheDirectory,
+  SecretStore secrets = const KeystoreSecretStore(),
+  LocalNetworkPermission? localNetwork,
+}) async {
+  final directory = await dataDirectory();
   return AppServices.start(
     // No part of the app's data is backed up (res/xml).
     database: NativeDatabase.createInBackground(
@@ -26,10 +33,10 @@ Future<AppServices> startOnDevice() async {
       // SQLite finds no directory for temporary files on Android.
       setup: (database) => database.execute('PRAGMA temp_store = MEMORY'),
     ),
-    secrets: const KeystoreSecretStore(),
+    secrets: secrets,
     connectivity: DeviceNetworkConnectivity(),
-    localNetwork: DeviceLocalNetworkPermission(),
-    cacheDirectory: getApplicationCacheDirectory,
+    localNetwork: localNetwork ?? DeviceLocalNetworkPermission(),
+    cacheDirectory: cacheDirectory,
   );
 }
 
