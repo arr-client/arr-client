@@ -64,6 +64,9 @@ void main() {
       CapabilityKind.lookup,
       CapabilityKind.queue,
       CapabilityKind.history,
+      CapabilityKind.wanted,
+      CapabilityKind.calendar,
+      CapabilityKind.health,
     });
     for (final kind in CapabilityKind.values) {
       expect(

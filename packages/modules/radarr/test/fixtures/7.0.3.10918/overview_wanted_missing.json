@@ -1,0 +1,320 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "movieMetadata.sortTitle",
+  "sortDirection": "ascending",
+  "totalRecords": 3,
+  "records": [
+    {
+      "title": "redacted-77",
+      "originalTitle": "redacted-77",
+      "originalLanguage": {
+        "id": 1,
+        "name": "English"
+      },
+      "alternateTitles": [],
+      "secondaryYearSourceId": 0,
+      "sortTitle": "redacted-92",
+      "sizeOnDisk": 0,
+      "status": "released",
+      "overview": "redacted-93",
+      "inCinemas": "2016-11-10T00:00:00Z",
+      "physicalRelease": "2017-02-14T00:00:00Z",
+      "digitalRelease": "2017-04-07T00:00:00Z",
+      "releaseDate": "2016-11-10T00:00:00Z",
+      "images": [
+        {
+          "coverType": "poster",
+          "url": "/MediaCover/5/poster.jpg?h=8664108df23b9cc166a5",
+          "remoteUrl": "https://redacted.invalid/94.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "url": "/MediaCover/5/fanart.jpg?h=900934e1f1309ea2390a",
+          "remoteUrl": "https://redacted.invalid/95.jpg"
+        }
+      ],
+      "website": "http://redacted.invalid/96",
+      "year": 2016,
+      "youTubeTrailerId": "redacted-97",
+      "studio": "redacted-98",
+      "path": "/redacted/99",
+      "qualityProfileId": 6,
+      "hasFile": false,
+      "movieFileId": 0,
+      "monitored": true,
+      "minimumAvailability": "tba",
+      "isAvailable": true,
+      "folderName": "/redacted/99",
+      "runtime": 116,
+      "cleanTitle": "redacted-92",
+      "imdbId": "tt2543164",
+      "tmdbId": 329865,
+      "titleSlug": "redacted-100",
+      "certification": "PG-13",
+      "genres": [
+        "redacted-55",
+        "redacted-54",
+        "redacted-101"
+      ],
+      "keywords": [
+        "redacted-102",
+        "redacted-103",
+        "redacted-104",
+        "redacted-105",
+        "redacted-106",
+        "redacted-107",
+        "redacted-108",
+        "redacted-109",
+        "redacted-110",
+        "redacted-111",
+        "redacted-112",
+        "redacted-113",
+        "redacted-114",
+        "redacted-115",
+        "redacted-116",
+        "redacted-117",
+        "redacted-118",
+        "redacted-119",
+        "redacted-120",
+        "redacted-121",
+        "redacted-70",
+        "redacted-122",
+        "redacted-123",
+        "redacted-124"
+      ],
+      "tags": [],
+      "added": "2026-11-26T14:31:04Z",
+      "ratings": {
+        "imdb": {
+          "votes": 887427,
+          "value": 7.9,
+          "type": "user"
+        },
+        "tmdb": {
+          "votes": 20239,
+          "value": 7.638,
+          "type": "user"
+        },
+        "metacritic": {
+          "votes": 0,
+          "value": 81,
+          "type": "user"
+        },
+        "trakt": {
+          "votes": 45615,
+          "value": 7.98097,
+          "type": "user"
+        }
+      },
+      "popularity": 21.7063,
+      "statistics": {
+        "movieFileCount": 0,
+        "sizeOnDisk": 0,
+        "releaseGroups": [],
+        "movieFileQualities": []
+      },
+      "id": 5
+    },
+    {
+      "title": "redacted-278",
+      "originalTitle": "redacted-278",
+      "originalLanguage": {
+        "id": 1,
+        "name": "English"
+      },
+      "alternateTitles": [],
+      "secondaryYearSourceId": 0,
+      "sortTitle": "redacted-296",
+      "sizeOnDisk": 0,
+      "status": "announced",
+      "overview": "redacted-297",
+      "inCinemas": "2026-12-15T00:00:00Z",
+      "releaseDate": "2026-12-15T00:00:00Z",
+      "images": [
+        {
+          "coverType": "poster",
+          "url": "/MediaCover/3/poster.jpg?h=bb0f849f2de1b66328fb",
+          "remoteUrl": "https://redacted.invalid/298.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "url": "/MediaCover/3/fanart.jpg?h=9522a6848939f8009b60",
+          "remoteUrl": "https://redacted.invalid/299.jpg"
+        }
+      ],
+      "website": "https://redacted.invalid/300",
+      "year": 2026,
+      "youTubeTrailerId": "redacted-301",
+      "studio": "redacted-195",
+      "path": "/redacted/302",
+      "qualityProfileId": 6,
+      "hasFile": false,
+      "movieFileId": 0,
+      "monitored": true,
+      "minimumAvailability": "tba",
+      "isAvailable": true,
+      "folderName": "/redacted/302",
+      "runtime": 150,
+      "cleanTitle": "redacted-303",
+      "imdbId": "tt31378509",
+      "tmdbId": 1170608,
+      "titleSlug": "redacted-304",
+      "certification": "PG-13",
+      "genres": [
+        "redacted-54",
+        "redacted-56"
+      ],
+      "keywords": [
+        "redacted-60",
+        "redacted-203",
+        "redacted-305",
+        "redacted-273",
+        "redacted-306",
+        "redacted-307",
+        "redacted-158",
+        "redacted-69",
+        "redacted-308",
+        "redacted-217"
+      ],
+      "tags": [],
+      "added": "2026-11-26T14:31:04Z",
+      "ratings": {
+        "tmdb": {
+          "votes": 0,
+          "value": 0,
+          "type": "user"
+        }
+      },
+      "collection": {
+        "title": "redacted-224",
+        "tmdbId": 726871
+      },
+      "popularity": 48.0643,
+      "statistics": {
+        "movieFileCount": 0,
+        "sizeOnDisk": 0,
+        "releaseGroups": [],
+        "movieFileQualities": []
+      },
+      "id": 3
+    },
+    {
+      "title": "redacted-225",
+      "originalTitle": "redacted-225",
+      "originalLanguage": {
+        "id": 1,
+        "name": "English"
+      },
+      "alternateTitles": [],
+      "secondaryYearSourceId": 0,
+      "sortTitle": "redacted-258",
+      "sizeOnDisk": 0,
+      "status": "released",
+      "overview": "redacted-259",
+      "inCinemas": "2024-02-27T00:00:00Z",
+      "physicalRelease": "2024-05-14T00:00:00Z",
+      "digitalRelease": "2024-04-15T00:00:00Z",
+      "releaseDate": "2024-02-27T00:00:00Z",
+      "images": [
+        {
+          "coverType": "poster",
+          "url": "/MediaCover/2/poster.jpg?h=2ace71ed7e091318ffe9",
+          "remoteUrl": "https://redacted.invalid/260.jpg"
+        },
+        {
+          "coverType": "fanart",
+          "url": "/MediaCover/2/fanart.jpg?h=1a01b280b9b172efba08",
+          "remoteUrl": "https://redacted.invalid/261.jpg"
+        }
+      ],
+      "website": "https://redacted.invalid/262",
+      "year": 2024,
+      "youTubeTrailerId": "redacted-263",
+      "studio": "redacted-195",
+      "path": "/redacted/264",
+      "qualityProfileId": 6,
+      "hasFile": false,
+      "movieFileId": 0,
+      "monitored": true,
+      "minimumAvailability": "tba",
+      "isAvailable": true,
+      "folderName": "/redacted/264",
+      "runtime": 167,
+      "cleanTitle": "redacted-265",
+      "imdbId": "tt15239678",
+      "tmdbId": 693134,
+      "titleSlug": "redacted-266",
+      "certification": "PG-13",
+      "genres": [
+        "redacted-54",
+        "redacted-56"
+      ],
+      "keywords": [
+        "redacted-267",
+        "redacted-268",
+        "redacted-269",
+        "redacted-60",
+        "redacted-201",
+        "redacted-202",
+        "redacted-203",
+        "redacted-204",
+        "redacted-270",
+        "redacted-271",
+        "redacted-207",
+        "redacted-208",
+        "redacted-272",
+        "redacted-211",
+        "redacted-273",
+        "redacted-274",
+        "redacted-275",
+        "redacted-216",
+        "redacted-276",
+        "redacted-158",
+        "redacted-217",
+        "redacted-277"
+      ],
+      "tags": [],
+      "added": "2026-11-26T14:31:04Z",
+      "ratings": {
+        "imdb": {
+          "votes": 801867,
+          "value": 8.4,
+          "type": "user"
+        },
+        "tmdb": {
+          "votes": 8876,
+          "value": 8.144,
+          "type": "user"
+        },
+        "metacritic": {
+          "votes": 0,
+          "value": 79,
+          "type": "user"
+        },
+        "rottenTomatoes": {
+          "votes": 0,
+          "value": 92,
+          "type": "user"
+        },
+        "trakt": {
+          "votes": 43102,
+          "value": 8.55313,
+          "type": "user"
+        }
+      },
+      "collection": {
+        "title": "redacted-224",
+        "tmdbId": 726871
+      },
+      "popularity": 68.1398,
+      "statistics": {
+        "movieFileCount": 0,
+        "sizeOnDisk": 0,
+        "releaseGroups": [],
+        "movieFileQualities": []
+      },
+      "id": 2
+    }
+  ]
+}
