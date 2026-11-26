@@ -121,16 +121,29 @@ class NotificationEngine {
     final found = await Future.wait([
       for (final instance in scope.instances) _check(scope, instance),
     ]);
-    if (!await _isActive(scope)) return const [];
+    if (!await _isStillActive(scope)) return const [];
     return [for (final notices in found) ...notices];
+  }
+
+  /// [_isActive] once the markers have moved: what was found is lost if this
+  /// throws. A transaction waits for the other connection to finish writing,
+  /// and if the database still cannot be read, [scope] has to do.
+  Future<bool> _isStillActive(ProfileScope scope) async {
+    try {
+      return await _database.transaction(() => _isActive(scope));
+    } catch (error, stackTrace) {
+      _report(error, stackTrace);
+      return scope.isCurrent;
+    }
   }
 
   Future<void> _initialiseOne(ActiveInstance instance) async {
     try {
       final requests = _Requests(this, instance);
-      for (final type in await subscribed(instance.instance.id)) {
-        await _baseline(instance, type, requests);
-      }
+      await Future.wait([
+        for (final type in await subscribed(instance.instance.id))
+          _baseline(instance, type, requests),
+      ]);
     } catch (error, stackTrace) {
       _report(error, stackTrace);
     }
@@ -151,34 +164,49 @@ class NotificationEngine {
     }
   }
 
+  /// The types are read at the same time, so that a server that does not
+  /// answer holds up the check, and with it the other instances' notices, no
+  /// longer than its slowest type.
   Future<List<Notice>> _check(
     ProfileScope scope,
     ActiveInstance instance,
   ) async {
     final id = instance.instance.id;
-    final notices = <Notice>[];
+    var notices = <Notice>[];
     try {
       final requests = _Requests(this, instance);
-      for (final type in await subscribed(id)) {
-        // Each by itself: one that fails must not lose what the others found,
-        // as their markers have moved.
-        try {
-          final marker = await _marker(id, type);
-          final step = await _step(instance, type, marker, requests);
-          if (step == null) continue;
-          if (await _store(instance, type, marker, step.marker, scope: scope)) {
-            notices.addAll(step.notices);
-          }
-        } catch (error, stackTrace) {
-          _report(error, stackTrace);
-        }
-      }
+      final found = await Future.wait([
+        for (final type in await subscribed(id))
+          _checkType(scope, instance, type, requests),
+      ]);
+      notices = [for (final some in found) ...some];
     } catch (error, stackTrace) {
       _report(error, stackTrace);
     }
     return notices.length > _mostNotices
         ? [SummaryNotice(instanceId: id, count: notices.length)]
         : notices;
+  }
+
+  /// Does not throw: one type that fails must not lose what the others found,
+  /// as their markers have moved.
+  Future<List<Notice>> _checkType(
+    ProfileScope scope,
+    ActiveInstance instance,
+    NotificationEventType type,
+    _Requests requests,
+  ) async {
+    try {
+      final marker = await _marker(instance.instance.id, type);
+      final step = await _step(instance, type, marker, requests);
+      if (step != null &&
+          await _store(instance, type, marker, step.marker, scope: scope)) {
+        return step.notices;
+      }
+    } catch (error, stackTrace) {
+      _report(error, stackTrace);
+    }
+    return const [];
   }
 
   /// What reading [type] now finds against [marker], and the marker to store.

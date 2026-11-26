@@ -5,6 +5,7 @@ library;
 import 'dart:async';
 
 import 'package:core/core.dart';
+import 'package:drift/drift.dart' show ApplyInterceptor, QueryInterceptor;
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart' show IconData;
 import 'package:flutter_test/flutter_test.dart';
@@ -319,10 +320,15 @@ class _Navigator implements AppNavigator {
 
 /// The app's records, with the steps the app takes around the engine.
 class World {
-  World._();
+  World._(QueryInterceptor? interceptor)
+    : database = AppDatabase(
+        interceptor == null
+            ? NativeDatabase.memory()
+            : NativeDatabase.memory().interceptWith(interceptor),
+      );
 
   final servers = <Uri, FakeServer>{};
-  final database = AppDatabase(NativeDatabase.memory());
+  final AppDatabase database;
   final log = DiagnosticLog();
   final secrets = MemorySecrets();
   final directory = temporaryDirectory();
@@ -344,8 +350,9 @@ class World {
   /// The profile made at first launch.
   late final String home;
 
-  static Future<World> start() async {
-    final world = World._();
+  /// [interceptor] sees every statement run on the database.
+  static Future<World> start({QueryInterceptor? interceptor}) async {
+    final world = World._(interceptor);
     addTearDown(world.database.close);
     await world.profiles.ensureDefaultProfile();
     world.home = (await world.profiles.profiles()).single.id;

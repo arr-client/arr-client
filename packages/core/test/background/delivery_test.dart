@@ -5,7 +5,7 @@ library;
 
 import 'package:core/core.dart';
 import 'package:core/src/storage/database.dart';
-import 'package:drift/drift.dart' show Value;
+import 'package:drift/drift.dart' show QueryExecutor, QueryInterceptor, Value;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../artwork/support.dart';
@@ -14,15 +14,48 @@ import 'support.dart';
 const _imported = NotificationEventType.imported;
 const _health = NotificationEventType.healthIssue;
 
+/// Once [armed], fails every read of the preferences made after a marker has
+/// been written, as a database another connection keeps locked would.
+class _LockedAfterMarking extends QueryInterceptor {
+  var armed = false;
+  var _marked = false;
+  var failed = 0;
+
+  @override
+  Future<int> runInsert(
+    QueryExecutor executor,
+    String statement,
+    List<Object?> args,
+  ) {
+    if (armed && statement.contains('event_markers')) _marked = true;
+    return executor.runInsert(statement, args);
+  }
+
+  @override
+  Future<List<Map<String, Object?>>> runSelect(
+    QueryExecutor executor,
+    String statement,
+    List<Object?> args,
+  ) {
+    if (_marked && statement.contains('app_preferences')) {
+      failed++;
+      throw StateError('locked');
+    }
+    return executor.runSelect(statement, args);
+  }
+}
+
 void main() {
   setUpImages();
 
   late World world;
   late FakeServer server;
   late String id;
+  late _LockedAfterMarking database;
 
   setUp(() async {
-    world = await World.start();
+    database = _LockedAfterMarking();
+    world = await World.start(interceptor: database);
     server = FakeServer('series');
     id = await world.add(server);
   });
@@ -332,6 +365,33 @@ void main() {
       );
       expect(notices.whereType<SummaryNotice>().single.instanceId, id);
     });
+  });
+
+  test('types of one instance are read at the same time', () async {
+    await world.subscribe(id, [_imported, _health]);
+    server
+      ..hold(historyRead)
+      ..hold(healthRead);
+
+    final checking = world.check();
+    await server.arrival(healthRead);
+    await server.arrival(historyRead);
+    server
+      ..release(historyRead)
+      ..release(healthRead);
+
+    expect(await checking, isEmpty);
+  });
+
+  test('a database that fails after the check loses no notice', () async {
+    await world.subscribe(id, [_imported]);
+    server.imported('One');
+    database.armed = true;
+
+    final notices = await world.check();
+
+    expect(database.failed, 1);
+    expect(described(notices), ['imported One']);
   });
 
   group('profiles', () {
