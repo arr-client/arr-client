@@ -3,6 +3,7 @@ library;
 
 export 'src/artwork/artwork_loader.dart';
 export 'src/cache/cache_entry.dart';
+export 'src/cache/cache_repository.dart';
 export 'src/cache/cache_scope.dart';
 export 'src/cache/cache_snapshot.dart';
 export 'src/cache/cached.dart';
@@ -147,3 +148,4 @@ export 'src/platform/network_connectivity.dart';
 export 'src/platform/network_status.dart';
 export 'src/platform/network_transport.dart';
 export 'src/secrets/secret_store.dart';
+export 'src/storage/database.dart' show AppDatabase;
