@@ -390,6 +390,8 @@
   "@homeNothingUpcoming": {"description": "Home, when no service has a release in the days it looks ahead.", "placeholders": {"count": {"type": "int"}}},
   "homeOpenCalendar": "Open calendar",
   "@homeOpenCalendar": {"description": "Button below the releases on Home."},
+  "homeMoreNotShown": "{count, plural, one{1 more not shown} other{{count} more not shown}}",
+  "@homeMoreNotShown": {"description": "Below a section of Home that lists only some rows of each service.", "placeholders": {"count": {"type": "int"}}},
   "homeAllDownloadedToday": "See all {count} downloads from today",
   "@homeAllDownloadedToday": {"description": "Button on Home when more was downloaded today than it lists.", "placeholders": {"count": {"type": "int"}}},
   "homeEarlierDownloads": "Downloads by day",

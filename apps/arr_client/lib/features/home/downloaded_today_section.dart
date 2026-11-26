@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -24,7 +25,13 @@ class DownloadedTodaySection extends ConsumerWidget {
     final provider = importedOnProvider(ref.watch(todayProvider));
     final answers = ref.watch(provider);
     if (answers == null || answers.isEmpty) return const SliverToBoxAdapter();
-    final imports = importsNewestFirst(answers);
+    final (capped, left) = capEachService<ImportedItem>(
+      answers,
+      (answer) => [
+        for (final entry in importsNewestFirst([answer])) entry.item,
+      ],
+    );
+    final imports = importsNewestFirst(capped);
 
     return HomeSection(
       title: strings.calendarDownloadedToday,
@@ -35,7 +42,7 @@ class DownloadedTodaySection extends ConsumerWidget {
           onRetry: (id) =>
               unawaited(ref.read(provider.notifier).reload(instanceId: id)),
         ),
-        for (final entry in imports.take(homeRowLimit))
+        for (final entry in imports)
           ImportTile(entry: entry, showService: answers.length > 1),
         if (imports.isEmpty && answers.anyRead)
           HomeNote(
@@ -43,9 +50,10 @@ class DownloadedTodaySection extends ConsumerWidget {
                 ? strings.calendarNoImportsToday
                 : strings.calendarNoImportsKnown,
           ),
+        if (left > 0) HomeNote(strings.homeMoreNotShown(left)),
         HomeSectionLink(
-          label: imports.length > homeRowLimit
-              ? strings.homeAllDownloadedToday(imports.length)
+          label: left > 0
+              ? strings.homeAllDownloadedToday(imports.length + left)
               : strings.homeEarlierDownloads,
           onPressed: () => unawaited(
             context.push<void>(calendarLocation(CalendarTab.downloaded.name)),

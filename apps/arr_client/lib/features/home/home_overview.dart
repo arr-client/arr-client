@@ -8,6 +8,7 @@ import 'areas_section.dart';
 import 'disk_space_section.dart';
 import 'downloaded_today_section.dart';
 import 'health_section.dart';
+import 'home_freshness.dart';
 import 'recently_added_section.dart';
 import 'refresh_home.dart';
 import 'services_section.dart';
@@ -29,27 +30,29 @@ class HomeOverview extends ConsumerWidget {
       contentPadding: EdgeInsets.symmetric(
         horizontal: screenMargin(constraints.maxWidth),
       ),
-      child: RefreshIndicator(
-        onRefresh: () => refreshHome(ref),
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverSafeArea(
-              top: false,
-              sliver: SliverMainAxisGroup(
-                slivers: [
-                  const UpcomingSection(),
-                  const DownloadedTodaySection(),
-                  const RecentlyAddedSection(),
-                  const ActiveDownloadsSection(),
-                  const HealthSection(),
-                  const DiskSpaceSection(),
-                  ServicesSection(instances: instances),
-                  const AreasSection(),
-                ],
+      child: HomeFreshness(
+        child: RefreshIndicator(
+          onRefresh: () => refreshHome(ref),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverSafeArea(
+                top: false,
+                sliver: SliverMainAxisGroup(
+                  slivers: [
+                    const UpcomingSection(),
+                    const DownloadedTodaySection(),
+                    const RecentlyAddedSection(),
+                    const ActiveDownloadsSection(),
+                    const HealthSection(),
+                    const DiskSpaceSection(),
+                    ServicesSection(instances: instances),
+                    const AreasSection(),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ),

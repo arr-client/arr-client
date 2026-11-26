@@ -164,7 +164,9 @@ void main() {
       'Download 2',
       'Download 3',
       'Download 4',
+      'Download 5',
     ]);
+    expect(find.text('1 more not shown'), findsOneWidget);
 
     await _tap(tester, find.text('Download 1'));
     expect(find.text('Queue entry'), findsOneWidget);

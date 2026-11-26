@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
@@ -7,11 +10,12 @@ import 'calendar_data.dart';
 import 'calendar_page.dart';
 import 'calendar_tiles.dart';
 import 'merge.dart';
+import 'on_shown.dart';
 import 'today.dart';
 
 /// What was imported on one local day, newest first, with a way back to
 /// earlier days.
-class DownloadedView extends StatelessWidget {
+class DownloadedView extends ConsumerWidget {
   const DownloadedView({
     required this.today,
     required this.day,
@@ -31,7 +35,7 @@ class DownloadedView extends StatelessWidget {
   final ValueChanged<Set<String>> onHiddenChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final isToday = day == today;
@@ -92,29 +96,44 @@ class DownloadedView extends StatelessWidget {
       ),
     );
 
-    return CalendarPage<ImportedItem>(
-      provider: importedOnProvider(day),
-      hidden: hidden,
-      onHiddenChanged: onHiddenChanged,
-      leading: [header],
-      builder: (content) {
-        final imports = importsNewestFirst(content.answers);
-        if (imports.isEmpty) {
+    // What was read before may be old, as when Home has had it since the app
+    // started: it is shown while it is read again.
+    void readAgain({required bool first}) {
+      final provider = importedOnProvider(day);
+      // One not there yet reads by itself.
+      if (!ref.read(provider.exists)) return;
+      scheduleMicrotask(() {
+        if (context.mounted) unawaited(ref.read(provider.notifier).reload());
+      });
+    }
+
+    return OnShown(
+      subject: day,
+      onShown: readAgain,
+      child: CalendarPage<ImportedItem>(
+        provider: importedOnProvider(day),
+        hidden: hidden,
+        onHiddenChanged: onHiddenChanged,
+        leading: [header],
+        builder: (content) {
+          final imports = importsNewestFirst(content.answers);
+          if (imports.isEmpty) {
+            return [
+              CalendarNote(
+                !content.isComplete
+                    ? strings.calendarNoImportsKnown
+                    : isToday
+                    ? strings.calendarNoImportsToday
+                    : strings.calendarNoImports,
+              ),
+            ];
+          }
           return [
-            CalendarNote(
-              !content.isComplete
-                  ? strings.calendarNoImportsKnown
-                  : isToday
-                  ? strings.calendarNoImportsToday
-                  : strings.calendarNoImports,
-            ),
+            for (final entry in imports)
+              ImportTile(entry: entry, showService: content.several),
           ];
-        }
-        return [
-          for (final entry in imports)
-            ImportTile(entry: entry, showService: content.several),
-        ];
-      },
+        },
+      ),
     );
   }
 }

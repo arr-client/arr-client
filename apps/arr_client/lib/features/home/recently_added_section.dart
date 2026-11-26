@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
@@ -22,7 +23,13 @@ class RecentlyAddedSection extends ConsumerWidget {
     final today = ref.watch(todayProvider);
     final answers = ref.watch(recentlyAddedProvider);
     if (answers == null || answers.isEmpty) return const SliverToBoxAdapter();
-    final imports = importsNewestFirst(answers).take(homeRowLimit).toList();
+    final (capped, left) = capEachService<ImportedItem>(
+      answers,
+      (answer) => [
+        for (final entry in importsNewestFirst([answer])) entry.item,
+      ],
+    );
+    final imports = importsNewestFirst(capped);
     final days = [for (final entry in imports) dayOf(entry.item.importedAt)];
 
     final yesterday = addDays(today, -1);
@@ -48,6 +55,7 @@ class RecentlyAddedSection extends ConsumerWidget {
             HomeSubheading(heading(days[index])),
           ImportTile(entry: entry, showService: answers.length > 1),
         ],
+        if (left > 0) HomeNote(strings.homeMoreNotShown(left)),
         if (imports.isEmpty && answers.anyRead)
           HomeNote(
             answers.allRead

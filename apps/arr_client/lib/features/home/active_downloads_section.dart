@@ -33,6 +33,19 @@ class _Downloads extends ConsumerWidget {
     QueueSeverity.ok || QueueSeverity.unknown => 2,
   };
 
+  /// [rows] with errors first, then warnings, otherwise in their order.
+  static List<(InstanceQueue, QueueItem)> _worstFirst(
+    List<(InstanceQueue, QueueItem)> rows,
+  ) {
+    // `List.sort` is not stable, so the position breaks ties.
+    final indexed = rows.indexed.toList()
+      ..sort((a, b) {
+        final order = _rank(a.$2.$2).compareTo(_rank(b.$2.$2));
+        return order != 0 ? order : a.$1.compareTo(b.$1);
+      });
+    return [for (final (_, row) in indexed) row];
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
@@ -42,12 +55,14 @@ class _Downloads extends ConsumerWidget {
       for (final queue in queues)
         for (final item in queue.items ?? const <QueueItem>[]) (queue, item),
     ];
-    // `List.sort` is not stable, so the position breaks ties.
-    final ranked = all.indexed.toList()
-      ..sort((a, b) {
-        final order = _rank(a.$2.$2).compareTo(_rank(b.$2.$2));
-        return order != 0 ? order : a.$1.compareTo(b.$1);
-      });
+    // The worst of each queue up to the limit, then the worst of those first.
+    final shown = _worstFirst([
+      for (final queue in queues)
+        ..._worstFirst([
+          for (final item in queue.items ?? const <QueueItem>[]) (queue, item),
+        ]).take(homeRowLimit),
+    ]);
+    final left = all.length - shown.length;
 
     return HomeSection(
       title: strings.homeActiveDownloads,
@@ -63,7 +78,7 @@ class _Downloads extends ConsumerWidget {
                     .retry(queue.instance.instance.id),
               ),
             ),
-        for (final (_, (queue, item)) in ranked.take(homeRowLimit))
+        for (final (queue, item) in shown)
           ListTile(
             key: ValueKey((queue.instance.instance.id, item.id)),
             title: Text(
@@ -89,8 +104,9 @@ class _Downloads extends ConsumerWidget {
                 ? strings.queueEmpty
                 : strings.homeNoQueueKnown,
           ),
+        if (left > 0) HomeNote(strings.homeMoreNotShown(left)),
         HomeSectionLink(
-          label: all.length > homeRowLimit
+          label: left > 0
               ? strings.homeAllQueue(all.length)
               : strings.homeOpenQueue,
           onPressed: () =>

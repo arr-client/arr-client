@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -35,14 +36,23 @@ class UpcomingSection extends ConsumerWidget {
       return date;
     }
 
+    final (capped, left) = capEachService<CalendarEvent>(
+      answers,
+      (answer) => [
+        for (final MapEntry(key: day, value: releases) in releasesByDay([
+          answer,
+        ]).entries)
+          // A change of time zone can leave an earlier day in what was read.
+          if (!day.isBefore(today))
+            for (final release in releases) release.event,
+      ],
+    );
     final releases = [
       for (final MapEntry(key: day, value: releases) in releasesByDay(
-        answers,
+        capped,
       ).entries)
-        // A change of time zone can leave an earlier day in what was read.
-        if (!day.isBefore(today))
-          for (final release in releases) (day, release),
-    ].take(homeRowLimit).toList();
+        for (final release in releases) (day, release),
+    ];
 
     return HomeSection(
       title: strings.homeUpcoming,
@@ -64,6 +74,7 @@ class UpcomingSection extends ConsumerWidget {
                 ? strings.homeNothingUpcoming(upcomingDays)
                 : strings.calendarNothingKnown,
           ),
+        if (left > 0) HomeNote(strings.homeMoreNotShown(left)),
         HomeSectionLink(
           label: strings.homeOpenCalendar,
           onPressed: () => unawaited(

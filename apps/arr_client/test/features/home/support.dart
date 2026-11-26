@@ -34,6 +34,7 @@ class FakeServer {
   Completer<void>? held;
 
   /// How often each was read.
+  var importReads = 0;
   var eventReads = 0;
   var healthReads = 0;
 
@@ -59,10 +60,13 @@ class _Calendar implements CalendarProvider {
   }
 
   @override
-  ServiceResult<List<ImportedItem>> importedOn(DateTime day) => server.answer([
-    for (final item in server.imports)
-      if (dayOf(item.importedAt) == day) item,
-  ]);
+  ServiceResult<List<ImportedItem>> importedOn(DateTime day) {
+    server.importReads++;
+    return server.answer([
+      for (final item in server.imports)
+        if (dayOf(item.importedAt) == day) item,
+    ]);
+  }
 
   @override
   ServiceResult<List<ImportedItem>> recentlyAdded() =>

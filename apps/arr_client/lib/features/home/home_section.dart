@@ -5,9 +5,36 @@ import '../../src/l10n/generated/app_localizations.dart';
 import '../calendar/calendar_tiles.dart';
 import '../calendar/service_answer.dart';
 
-/// How many rows a section of Home lists before it leaves the rest to the
-/// screen it links to.
+/// How many rows of each service a section of Home lists before it leaves the
+/// rest to the screen it links to. Counted for each, so that one with much to
+/// show does not hide another.
 const homeRowLimit = 5;
+
+/// [answers] with only the first [homeRowLimit] of what each has given, in the
+/// order of [order], and how many that leaves out.
+(ServiceAnswers<T>, int) capEachService<T>(
+  ServiceAnswers<T> answers,
+  List<T> Function(ServiceAnswer<T> answer) order,
+) {
+  var left = 0;
+  final capped = <ServiceAnswer<T>>[];
+  for (final answer in answers) {
+    final all = answer.value == null ? <T>[] : order(answer);
+    final shown = all.take(homeRowLimit).toList();
+    left += all.length - shown.length;
+    capped.add(
+      ServiceAnswer(
+        instanceId: answer.instanceId,
+        name: answer.name,
+        loading: answer.loading,
+        value: answer.value == null ? null : shown,
+        fetchedAt: answer.fetchedAt,
+        failure: answer.failure,
+      ),
+    );
+  }
+  return (capped, left);
+}
 
 /// The margin of the rows of Home, which its other parts line up with.
 EdgeInsetsGeometry _margin(BuildContext context) =>
