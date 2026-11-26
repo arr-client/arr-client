@@ -1,3 +1,4 @@
+import 'command_outcome.dart';
 import 'command_result.dart';
 import 'command_status.dart';
 
@@ -26,4 +27,24 @@ final class Command {
 
   /// The server's message.
   final String? message;
+
+  /// What can be said about the task: [status] decides, and [result] only
+  /// counts once it is [CommandStatus.completed].
+  CommandOutcome get outcome => switch (status) {
+    CommandStatus.queued || CommandStatus.started => CommandOutcome.pending,
+    CommandStatus.completed => switch (result) {
+      null || CommandResult.successful => CommandOutcome.succeeded,
+      CommandResult.unsuccessful => CommandOutcome.failed,
+      CommandResult.indeterminate ||
+      CommandResult.unknown => CommandOutcome.unknown,
+    },
+    CommandStatus.failed ||
+    CommandStatus.aborted ||
+    CommandStatus.cancelled ||
+    CommandStatus.orphaned => CommandOutcome.failed,
+    CommandStatus.unknown => CommandOutcome.unknown,
+  };
+
+  /// Whether to stop polling the command.
+  bool get isFinished => outcome != CommandOutcome.pending;
 }

@@ -9,6 +9,7 @@ enum CommandResult {
   /// The server cannot tell.
   indeterminate,
 
-  /// Not reported, or a value the app does not know.
+  /// The server says it does not know, or a value the app does not know. A
+  /// result the server does not report is null instead.
   unknown,
 }
