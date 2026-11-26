@@ -169,5 +169,23 @@
   "failureOutcomeUnknown": "The change may or may not have reached the server. It was not sent again. Check the current state before retrying.",
   "@failureOutcomeUnknown": {
     "description": "Error: unknown outcome of a change."
-  }
+  },
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {"description": "A size in bytes; the number is already formatted.", "placeholders": {"value": {"type": "String"}}},
+  "sizeKibibytes": "{value} KiB",
+  "@sizeKibibytes": {"description": "A size in kibibytes.", "placeholders": {"value": {"type": "String"}}},
+  "sizeMebibytes": "{value} MiB",
+  "@sizeMebibytes": {"description": "A size in mebibytes.", "placeholders": {"value": {"type": "String"}}},
+  "sizeGibibytes": "{value} GiB",
+  "@sizeGibibytes": {"description": "A size in gibibytes.", "placeholders": {"value": {"type": "String"}}},
+  "sizeTebibytes": "{value} TiB",
+  "@sizeTebibytes": {"description": "A size in tebibytes.", "placeholders": {"value": {"type": "String"}}},
+  "durationDaysHours": "{days} d {hours} h",
+  "@durationDaysHours": {"description": "A length of time of a day or more.", "placeholders": {"days": {"type": "int", "format": "decimalPattern"}, "hours": {"type": "int", "format": "decimalPattern"}}},
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {"description": "A length of time of an hour or more.", "placeholders": {"hours": {"type": "int", "format": "decimalPattern"}, "minutes": {"type": "int", "format": "decimalPattern"}}},
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {"description": "A length of time of a minute or more.", "placeholders": {"minutes": {"type": "int", "format": "decimalPattern"}}},
+  "durationUnderAMinute": "under 1 min",
+  "@durationUnderAMinute": {"description": "A length of time below a minute."}
 }

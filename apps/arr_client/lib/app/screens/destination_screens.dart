@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
+import '../../features/activity/queue/queue_tab.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../navigation/destinations.dart';
 import '../navigation/locations.dart';
@@ -101,13 +102,21 @@ class ActivityScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
+    final tabs = Navigation.of(ref.watch(scopeProvider)).activityTabs;
     return _Tabbed(
       title: strings.navActivity,
       tabs: [
-        for (final tab in Navigation.of(ref.watch(scopeProvider)).activityTabs)
+        for (final tab in tabs)
           switch (tab) {
             ActivityTab.queue => strings.tabQueue,
             ActivityTab.history => strings.tabHistory,
+          },
+      ],
+      views: [
+        for (final tab in tabs)
+          switch (tab) {
+            ActivityTab.queue => const QueueTab(),
+            ActivityTab.history => const _NotBuilt(),
           },
       ],
     );
@@ -223,10 +232,14 @@ class _Tabbed extends StatelessWidget {
     required this.title,
     required this.tabs,
     this.actions = const [],
+    this.views,
   });
 
   final String title;
   final List<String> tabs;
+
+  /// One for each of [tabs]; without them each says it is not built.
+  final List<Widget>? views;
   final List<Widget> actions;
 
   @override
@@ -252,7 +265,9 @@ class _Tabbed extends StatelessWidget {
             tabs: [for (final tab in tabs) Tab(text: tab)],
           ),
         ),
-        body: TabBarView(children: [for (final _ in tabs) const _NotBuilt()]),
+        body: TabBarView(
+          children: views ?? [for (final _ in tabs) const _NotBuilt()],
+        ),
       ),
     );
   }

@@ -209,4 +209,31 @@ void main() {
     expect(find.byIcon(Icons.close).hitTestable(), findsOneWidget);
     semantics.dispose();
   });
+
+  testWidgets('a failure can be reworded', (tester) async {
+    await tester.pumpWidget(
+      testApp(
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () => runAction<void>(
+              context,
+              action: () async => const Err(NotFound()),
+              acceptedMessage: 'Accepted',
+              describeFailure: (message) => 'Films: $message',
+              onRefresh: () {},
+            ),
+            child: const Text('Send'),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Send'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Films: This item no longer exists on the server.'),
+      findsOneWidget,
+    );
+  });
 }
