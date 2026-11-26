@@ -162,5 +162,6 @@ export 'src/preferences/library_sort.dart';
 export 'src/preferences/library_view.dart';
 export 'src/preferences/preferences.dart';
 export 'src/preferences/preferences_repository.dart';
+export 'src/progress/match_progress.dart';
 export 'src/secrets/secret_store.dart';
 export 'src/storage/database.dart' show AppDatabase;
