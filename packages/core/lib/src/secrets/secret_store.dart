@@ -2,8 +2,9 @@
 ///
 /// An instance's credential is stored under `cred/<instanceId>`.
 ///
-/// A value the platform can no longer decrypt is lost and reads as null, so
-/// treat null as "ask the user again". Other storage failures are thrown.
+/// The platform may erase what it can no longer decrypt, which then reads as
+/// null, so treat null as "ask the user again". [read], [write] and [delete]
+/// can also throw, even on every call, and callers must handle that.
 abstract interface class SecretStore {
   /// Null if nothing is stored under [key].
   Future<String?> read(String key);

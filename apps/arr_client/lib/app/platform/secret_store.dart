@@ -3,15 +3,18 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// [SecretStore] whose values are encrypted with a key that is itself wrapped
 /// by an Android Keystore key, hardware-backed where the device offers that.
+///
+/// [read], [write] and [delete] can throw, and for some Keystore faults they
+/// throw on every call. Callers must handle that.
 final class KeystoreSecretStore implements SecretStore {
   /// Creates a [KeystoreSecretStore].
   const KeystoreSecretStore();
 
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(
-      // Without this, a lost or broken Keystore key makes every later call
-      // fail, writes included, until the app's data is cleared. With it, what
-      // cannot be read is erased and the user can enter it again.
+      // A key that can no longer unwrap the data is reset, erasing it, and a
+      // value that fails to decrypt is erased. Other Keystore faults, such as
+      // UnrecoverableKeyException, are thrown with nothing reset.
       resetOnError: true,
       // No biometric prompt: background checks read secrets with no UI.
       enforceBiometrics: false,

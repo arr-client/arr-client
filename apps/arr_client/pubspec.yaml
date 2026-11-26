@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   # Implements core's SecretStore: values encrypted with a key that the Android
-  # Keystore protects. BSD-3-Clause; its Android side uses Google Tink
+  # Keystore protects. BSD-3-Clause; its Android side declares Google Tink
   # (Apache-2.0), not Play services.
   flutter_secure_storage: ^11.2.0
   # Material widgets. package:flutter/material.dart is deprecated.
