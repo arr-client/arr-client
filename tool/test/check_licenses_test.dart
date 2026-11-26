@@ -165,6 +165,18 @@ void main() {
       expect(identifyLicense(File('LICENSE').readAsStringSync()), 'GPL-3.0');
     });
 
+    // As in file_selector_android.
+    test('accepts a part headed by the name of its component', () {
+      expect(
+        identifyLicense('$bsd3\n---\naFileChooser\n\n${licenseOf('clock')}'),
+        'BSD-3-Clause AND Apache-2.0',
+      );
+      expect(
+        identifyLicense('$mit\n---\naFileChooser\n$nonCommercial'),
+        isNull,
+      );
+    });
+
     final rejected = {
       'an advertising clause': bsd4,
       'a non-commercial license': nonCommercial,

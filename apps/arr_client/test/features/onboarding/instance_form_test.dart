@@ -508,22 +508,6 @@ void main() {
     await app.stop(tester);
   });
 
-  testWidgets('says that certificates cannot be reviewed yet', (tester) async {
-    final (app, films) = await start(tester);
-    films.answer = () async =>
-        const Err(CertificateUntrusted(CertificateInfo(sha256: 'ab')));
-    await openForm(tester);
-    await fill(tester);
-
-    await press(tester, button('Test connection'));
-
-    expect(find.text('Certificate not trusted'), findsOneWidget);
-    expect(find.textContaining('cannot review certificates'), findsOneWidget);
-    expect(button('Review certificate'), findsNothing);
-    expect(button('Save anyway'), findsOneWidget);
-    await app.stop(tester);
-  });
-
   testWidgets('a certificate screen plugs in, and what it accepts is tested', (
     tester,
   ) async {
@@ -537,8 +521,13 @@ void main() {
         overrides: [
           appServicesProvider.overrideWithValue(app.services),
           certificateReviewProvider.overrideWithValue(
-            (context, {required url, required failure}) async =>
-                const CertificateTrust(certPin: 'ab'),
+            (
+              context, {
+              required url,
+              required failure,
+              required pinned,
+              required hasCustomCa,
+            }) async => const CertificateTrust.certificate('ab'),
           ),
         ],
         child: const MaterialApp(

@@ -14,6 +14,8 @@ import '../../app/providers.dart';
 import '../../app/screens/message_page.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import 'address.dart';
+import 'certificate/authority_import_screen.dart';
+import 'certificate/trust_section.dart';
 import 'certificate_review.dart';
 import 'connection_tester.dart';
 import 'form_fields.dart';
@@ -99,9 +101,10 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
   late AuthKind _authKind;
   late bool _advanced;
 
-  /// The accepted certificate and the origin it was accepted for.
-  String? _certPin;
-  String? _pinOrigin;
+  /// The accepted certificates, by the origin each was accepted for. The saved
+  /// one stays while another address is tried, so that a changed certificate
+  /// is not later taken for a new one.
+  final _pins = <String, String>{};
   String? _customCa;
 
   var _submitted = false;
@@ -133,8 +136,9 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     ];
     _authKind = instance?.authKind ?? _module.descriptor.authKinds.first;
     _advanced = _headers.isNotEmpty || _hasBasicAuth;
-    _certPin = instance?.certPin;
-    _pinOrigin = _certPin == null ? null : instance?.url.origin;
+    if (instance case Instance(:final certPin?, :final url)) {
+      _pins[url.origin] = certPin;
+    }
     _customCa = instance?.customCa;
   }
 
@@ -204,9 +208,7 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
               header.name.text.trim(): header.value.text.trim(),
         },
       ),
-      certPin: url.isScheme('https') && url.origin == _pinOrigin
-          ? _certPin
-          : null,
+      certPin: url.isScheme('https') ? _pins[url.origin] : null,
       customCa: _customCa,
     );
   }
@@ -259,19 +261,61 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     return goOn ?? false;
   }
 
-  Future<void> _reviewCertificate(
-    CertificateReview review,
-    TestFailed failed,
-  ) async {
-    final url = failed.input.url;
-    final trust = await review(context, url: url, failure: failed.failure);
+  Future<void> _reviewCertificate(TestFailed failed) async {
+    final input = failed.input;
+    final trust = await ref.read(certificateReviewProvider)(
+      context,
+      url: input.url,
+      failure: failed.failure,
+      pinned: input.certPin,
+      hasCustomCa: input.customCa != null,
+    );
     if (trust == null || !mounted) return;
-    _certPin = trust.certPin;
-    _pinOrigin = trust.certPin == null ? null : url.origin;
-    _customCa = trust.customCa ?? _customCa;
-    _controller.invalidate();
+    if (trust.certPin case final pin?) {
+      _pins[input.url.origin] = pin;
+    } else {
+      _pins.remove(input.url.origin);
+      _customCa = trust.customCa;
+    }
+    _changed();
     await _test();
   }
+
+  /// The address typed, if it can be read.
+  Uri? get _url => switch (parseAddress(_address.text)) {
+    Ok(:final value) => value,
+    Err() => null,
+  };
+
+  /// The accepted certificate for [url]. Without an address, any there is.
+  String? _pinAt(Uri? url) =>
+      url == null ? _pins.values.firstOrNull : _pins[url.origin];
+
+  void _forgetPin() {
+    final url = _url;
+    url == null ? _pins.clear() : _pins.remove(url.origin);
+  }
+
+  /// An accepted certificate would take precedence over the authority, so
+  /// importing one gives up the certificate accepted for the address.
+  Future<void> _importAuthority() async {
+    final url = _url;
+    final pem = await importAuthority(
+      context,
+      url: url,
+      replacesPin: _pinAt(url) != null,
+    );
+    if (pem == null || !mounted) return;
+    _forgetPin();
+    _customCa = pem;
+    _changed();
+  }
+
+  /// Whether the user gave up the saved certificate, which saving then removes.
+  bool get _gaveUpSavedPin => switch (_instance) {
+    Instance(certPin: _?, :final url) => !_pins.containsKey(url.origin),
+    _ => false,
+  };
 
   Future<void> _save() async {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -282,7 +326,12 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     final name = _name.text.trim();
     final Result<Instance, RuleViolation> result;
     try {
-      result = await _controller.save(widget.seed, name, input);
+      result = await _controller.save(
+        widget.seed,
+        name,
+        input,
+        removeCertPin: _gaveUpSavedPin,
+      );
     } catch (error) {
       if (!mounted) return;
       final services = ref.read(appServicesProvider);
@@ -376,7 +425,6 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     final strings = AppLocalizations.of(context);
     final state = ref.watch(instanceFormProvider(widget.target));
     final descriptor = _module.descriptor;
-    final review = ref.watch(certificateReviewProvider);
 
     ref.listen(instanceFormProvider(widget.target), (before, after) {
       if (before?.test.runtimeType != after.test.runtimeType &&
@@ -424,14 +472,10 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
                               child: TestResult(
                                 status: state.test,
                                 service: descriptor.displayName,
-                                onReviewCertificate: switch ((
-                                  review,
-                                  state.test,
-                                )) {
-                                  (final review?, final TestFailed failed) =>
-                                    () => unawaited(
-                                      _reviewCertificate(review, failed),
-                                    ),
+                                onReviewCertificate: switch (state.test) {
+                                  final TestFailed failed => () => unawaited(
+                                    _reviewCertificate(failed),
+                                  ),
                                   _ => null,
                                 },
                               ),
@@ -587,6 +631,20 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 8),
+          CertificateTrustSection(
+            pin: _pinAt(_url),
+            customCa: _customCa,
+            onImport: () => unawaited(_importAuthority()),
+            onForgetPin: () {
+              _forgetPin();
+              _changed();
+            },
+            onRemoveAuthority: () {
+              _customCa = null;
+              _changed();
+            },
+          ),
+          const SizedBox(height: 24),
           FormHeading(strings.formBasicAuth),
           const SizedBox(height: 12),
           EntryField(
