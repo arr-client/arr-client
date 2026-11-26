@@ -7,5 +7,167 @@
   "retry": "Retry",
   "@retry": {
     "description": "Button that tries a failed load again."
+  },
+  "goBack": "Go back",
+  "@goBack": {
+    "description": "Button that leaves a screen that can no longer be shown."
+  },
+  "loading": "Loading",
+  "@loading": {
+    "description": "Read by screen readers while content is loading."
+  },
+  "nothingToShow": "Nothing to show",
+  "@nothingToShow": {
+    "description": "Shown when a screen has no content and no more specific text."
+  },
+  "itemGone": "This item no longer exists on the server.",
+  "@itemGone": {
+    "description": "Shown when an item was deleted on the server."
+  },
+  "staleUnderAMinute": "Saved data from less than a minute ago",
+  "@staleUnderAMinute": {
+    "description": "Age of cached data being shown."
+  },
+  "staleMinutes": "{count, plural, one{Saved data from {count} minute ago} other{Saved data from {count} minutes ago}}",
+  "@staleMinutes": {
+    "description": "Age of cached data being shown, in minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "staleHours": "{count, plural, one{Saved data from {count} hour ago} other{Saved data from {count} hours ago}}",
+  "@staleHours": {
+    "description": "Age of cached data being shown, in hours.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "staleDays": "{count, plural, one{Saved data from {count} day ago} other{Saved data from {count} days ago}}",
+  "@staleDays": {
+    "description": "Age of cached data being shown, in days.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "failureUnreachable": "The server did not answer. Check that it is running and that this device can reach its address.",
+  "@failureUnreachable": {
+    "description": "Error: no answer from the server."
+  },
+  "failureDns": "The server name could not be found. Check the address and your network.",
+  "@failureDns": {
+    "description": "Error: host name not resolved."
+  },
+  "failureCertificateUntrusted": "The server's certificate is not trusted, so nothing was sent. Review it in the connection settings.",
+  "@failureCertificateUntrusted": {
+    "description": "Error: untrusted certificate."
+  },
+  "failureCertificateChanged": "The server's certificate has changed, so nothing was sent. Review it in the connection settings.",
+  "@failureCertificateChanged": {
+    "description": "Error: changed certificate."
+  },
+  "failureAuth": "The sign-in was rejected. Check the token or login in the connection settings.",
+  "@failureAuth": {
+    "description": "Error: wrong token or login."
+  },
+  "failureForbidden": "The server does not allow this account to do that. Check its permissions on the server.",
+  "@failureForbidden": {
+    "description": "Error: not permitted."
+  },
+  "failureWrongService": "The address answers, but it is not the expected service. Check the address and port.",
+  "@failureWrongService": {
+    "description": "Error: wrong kind of server."
+  },
+  "failureProxy": "A web page, often a proxy sign-in page, came back instead of data. Check the address and the proxy settings.",
+  "@failureProxy": {
+    "description": "Error: proxy page."
+  },
+  "failureRedirected": "The server redirected to another address, where sign-in details are not sent. Check the address.",
+  "@failureRedirected": {
+    "description": "Error: redirect, target unknown."
+  },
+  "failureRedirectedTo": "The server redirected to {host}, where sign-in details are not sent. Check the address.",
+  "@failureRedirectedTo": {
+    "description": "Error: redirect to a named host.",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "failureHostRejected": "The server refused the host name. Add it to the server's allowed host names.",
+  "@failureHostRejected": {
+    "description": "Error: host name rejected."
+  },
+  "failureUnsupportedVersion": "This server version is not supported. Update the server.",
+  "@failureUnsupportedVersion": {
+    "description": "Error: server too old."
+  },
+  "failureUnsupportedVersionNumber": "Server version {version} is not supported. Update the server.",
+  "@failureUnsupportedVersionNumber": {
+    "description": "Error: server too old, version known.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "failureWritesRefused": "The server shows data but refused the change. Check the server and proxy security settings.",
+  "@failureWritesRefused": {
+    "description": "Error: reads work, writes rejected."
+  },
+  "failureLocalNetworkPermission": "The app is not allowed to use the local network. Allow it in the system settings.",
+  "@failureLocalNetworkPermission": {
+    "description": "Error: missing Android permission."
+  },
+  "failureNotFound": "The server could not find what the app asked for. Check the server address and version.",
+  "@failureNotFound": {
+    "description": "Error: not found."
+  },
+  "failureConflict": "The change clashes with what is on the server. Refresh and check before trying again.",
+  "@failureConflict": {
+    "description": "Error: conflict."
+  },
+  "failureValidation": "The server rejected the values. Check them and try again.",
+  "@failureValidation": {
+    "description": "Error: validation without a message."
+  },
+  "failureValidationMessages": "The server rejected the values:\n{messages}",
+  "@failureValidationMessages": {
+    "description": "Error: validation; messages are the server's own text.",
+    "placeholders": {
+      "messages": {
+        "type": "String"
+      }
+    }
+  },
+  "failureServer": "The server reported an error. Try again later or check the server's log.",
+  "@failureServer": {
+    "description": "Error: server error."
+  },
+  "failureServerStatus": "The server reported error {status}. Try again later or check the server's log.",
+  "@failureServerStatus": {
+    "description": "Error: server error with HTTP status.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "failureMalformed": "The server's reply could not be read. Check the address and the server version.",
+  "@failureMalformed": {
+    "description": "Error: malformed response."
+  },
+  "failureOutcomeUnknown": "The change may or may not have reached the server. It was not sent again. Check the current state before retrying.",
+  "@failureOutcomeUnknown": {
+    "description": "Error: unknown outcome of a change."
   }
 }
