@@ -24,6 +24,7 @@ export 'src/models/calendar_date_kind.dart';
 export 'src/models/calendar_event.dart';
 export 'src/models/command.dart';
 export 'src/models/command_action.dart';
+export 'src/models/command_outcome.dart';
 export 'src/models/command_result.dart';
 export 'src/models/command_status.dart';
 export 'src/models/credit.dart';

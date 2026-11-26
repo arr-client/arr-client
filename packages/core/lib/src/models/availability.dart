@@ -19,5 +19,9 @@ enum Availability {
   blocklisted,
 
   /// Removed from the server.
-  deleted,
+  deleted;
+
+  /// Whether this rules out requesting the variant. The other values do not by
+  /// themselves mean a request is offered.
+  bool get blocksRequest => this == Availability.blocklisted;
 }
