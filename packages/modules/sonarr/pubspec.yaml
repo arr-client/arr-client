@@ -9,3 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+dev_dependencies:
+  # The request allow-list harness, core/testing/allow_list.dart.
+  core:
+    path: ../../core
+  flutter_test:
+    sdk: flutter
