@@ -1,0 +1,17 @@
+name: Task, documentation or translation
+description: Claim a task from tasks.md, or propose docs or translation work
+labels: ["status: needs triage"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What will be done?
+      description: Include the task id from tasks.md if there is one.
+    validations:
+      required: true
+  - type: checkboxes
+    id: who
+    attributes:
+      label: Who
+      options:
+        - label: I would like to do this

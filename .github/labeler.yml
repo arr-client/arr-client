@@ -1,0 +1,34 @@
+# Path based labels for pull requests
+"service: sonarr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/sonarr/**"
+"service: radarr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/radarr/**"
+"service: lidarr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/lidarr/**"
+"service: readarr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/readarr/**"
+"service: prowlarr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/prowlarr/**"
+"service: bazarr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/bazarr/**"
+"service: seerr":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/seerr/**"
+"service: qbittorrent":
+  - changed-files:
+      - any-glob-to-any-file: "packages/modules/qbittorrent/**"
+"area: core":
+  - changed-files:
+      - any-glob-to-any-file: ["packages/core/**", "packages/servarr/**", "packages/platform_local_network/**"]
+"area: ui":
+  - changed-files:
+      - any-glob-to-any-file: ["packages/ui/**", "apps/arr_client/lib/features/**"]
+"area: ci":
+  - changed-files:
+      - any-glob-to-any-file: [".github/**", "tool/**"]

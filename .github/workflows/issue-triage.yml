@@ -1,0 +1,49 @@
+name: Issue triage
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+permissions:
+  issues: write
+jobs:
+  label-service:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            // Issue text is untrusted: it is only compared against a fixed table.
+            const services = new Map(Object.entries({
+              'Sonarr': 'sonarr', 'Radarr': 'radarr', 'Lidarr': 'lidarr',
+              'Readarr / Bookshelf': 'readarr', 'Prowlarr': 'prowlarr', 'Bazarr': 'bazarr',
+              'Seerr': 'seerr', 'qBittorrent': 'qbittorrent',
+            }));
+            const match = (context.payload.issue.body || '').match(/^### Service[ \t]*\r?\n\s*(.+)/m);
+            const key = match && services.get(match[1].trim());
+            // Only issue forms have a Service field; leave hand-applied labels on other issues.
+            if (!match) return;
+            const target = { ...context.repo, issue_number: context.issue.number };
+            for (const { name } of context.payload.issue.labels) {
+              if (name.startsWith('service: ') && name !== `service: ${key}`) {
+                await github.rest.issues.removeLabel({ ...target, name });
+              }
+            }
+            if (key) await github.rest.issues.addLabels({ ...target, labels: [`service: ${key}`] });
+  reporter-replied:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.comment.user.login == github.event.issue.user.login &&
+      contains(github.event.issue.labels.*.name, 'status: needs info')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const target = { ...context.repo, issue_number: context.issue.number };
+            const present = new Set(context.payload.issue.labels.map((l) => l.name));
+            for (const name of ['status: needs info', 'stale']) {
+              if (present.has(name)) await github.rest.issues.removeLabel({ ...target, name });
+            }
+            await github.rest.issues.addLabels({ ...target, labels: ['status: needs triage'] });

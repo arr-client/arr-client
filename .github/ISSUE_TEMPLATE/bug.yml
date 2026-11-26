@@ -1,0 +1,45 @@
+name: Bug report
+description: Something does not work as it should
+labels: ["type: bug", "status: needs triage"]
+body:
+  - type: dropdown
+    id: service
+    attributes:
+      label: Service
+      options:
+        - Sonarr
+        - Radarr
+        - Lidarr
+        - Readarr / Bookshelf
+        - Prowlarr
+        - Bazarr
+        - Seerr
+        - qBittorrent
+        - The app in general
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: arr-client, Android, and the server version
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Diagnostic log
+      description: Remove any keys, passwords and host names before pasting.
+      render: text

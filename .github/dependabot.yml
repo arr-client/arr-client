@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels: ["type: dependencies", "area: ci"]
+  # Add a "pub" entry here once the first pubspec.yaml exists.

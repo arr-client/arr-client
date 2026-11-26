@@ -1,0 +1,22 @@
+name: Close unanswered issues
+# Only issues waiting on the reporter are ever closed.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+permissions:
+  actions: write
+  issues: write
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11
+        with:
+          only-labels: "status: needs info"
+          days-before-stale: 21
+          days-before-close: 14
+          stale-issue-label: "stale"
+          stale-issue-message: "We are still waiting for more information. This will close in 14 days without it."
+          days-before-pr-stale: -1
+          days-before-pr-close: -1

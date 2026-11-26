@@ -1,0 +1,57 @@
+name: PR labeler
+# pull_request_target so that forks get labels. Never check out or run pull request code here.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+permissions:
+  contents: read
+  pull-requests: write
+# actions/labeler rewrites the whole label set, so runs and jobs must not overlap.
+concurrency:
+  group: pr-labeler-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  by-path:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7
+        with:
+          sync-labels: false
+  by-type:
+    needs: by-path
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            // Title and file names are untrusted: they are only compared, never executed.
+            const target = { ...context.repo, issue_number: context.issue.number };
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              ...context.repo, pull_number: context.issue.number,
+            });
+            const paths = files.flatMap((f) => [f.filename, f.previous_filename].filter(Boolean));
+            const only = (test) => paths.length > 0 && paths.every(test);
+            const specOnly = only((p) => p.startsWith('specs/') || p.startsWith('.specify/'));
+            const docsOnly = only((p) => p.startsWith('docs/') || /^[^/]+\.md$/.test(p));
+            const types = new Map([['feat', 'type: feature'], ['fix', 'type: bug'], ['docs', 'type: docs']]);
+            const match = /^([a-z]+)(\([^)]*\))?!?:/.exec(context.payload.pull_request.title);
+            const fromTitle = match && types.get(match[1]);
+
+            const wanted = new Set();
+            if (fromTitle) wanted.add(fromTitle);
+            if (docsOnly) wanted.add('type: docs');
+            if (specOnly) wanted.add('type: spec');
+            // Labels this job may remove. Hand-applied feature or bug labels stay
+            // unless the title says otherwise.
+            const managed = ['type: spec', 'type: docs'];
+            if (fromTitle) managed.push('type: feature', 'type: bug');
+
+            // Read now: the event payload is a snapshot from before earlier queued runs.
+            const current = await github.paginate(github.rest.issues.listLabelsOnIssue, target);
+            const present = new Set(current.map((l) => l.name));
+            for (const name of managed) {
+              if (present.has(name) && !wanted.has(name)) {
+                await github.rest.issues.removeLabel({ ...target, name });
+              }
+            }
+            if (wanted.size) await github.rest.issues.addLabels({ ...target, labels: [...wanted] });

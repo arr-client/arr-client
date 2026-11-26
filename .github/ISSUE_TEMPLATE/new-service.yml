@@ -1,0 +1,29 @@
+name: New service module
+description: Propose support for another service
+labels: ["type: new service", "status: needs triage"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Service name and link
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: API documentation and authentication
+    validations:
+      required: true
+  - type: textarea
+    id: usage
+    attributes:
+      label: What would people do with it from a phone?
+    validations:
+      required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - label: I can write the spec or the module
+        - label: I run this service and can test

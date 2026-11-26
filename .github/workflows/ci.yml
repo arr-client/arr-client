@@ -1,0 +1,92 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  repo-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Check repository files
+        run: python3 .github/scripts/check_repo.py
+  flutter:
+    runs-on: ubuntu-latest
+    outputs:
+      integration: ${{ steps.project.outputs.integration }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - id: project
+        run: |
+          if [ -f pubspec.yaml ]; then echo "present=true" >> "$GITHUB_OUTPUT"
+          else echo "No Flutter code yet; nothing to build."; fi
+          if [ -d apps/arr_client/android ]; then echo "android=true" >> "$GITHUB_OUTPUT"; fi
+          if [ -d apps/arr_client/integration_test ]; then echo "integration=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.project.outputs.present == 'true'
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
+        with:
+          distribution: temurin
+          java-version: "17"
+      - if: steps.project.outputs.present == 'true'
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - if: steps.project.outputs.present == 'true'
+        run: |
+          flutter pub get
+          bash .github/scripts/codegen.sh
+          dart format --output=none --set-exit-if-changed .
+          flutter analyze
+          for dir in apps/* packages/* packages/modules/*; do
+            # flutter test fails on a test directory that holds no tests.
+            if [ -n "$(find "$dir/test" -name '*_test.dart' -print -quit 2>/dev/null)" ]; then
+              (cd "$dir" && flutter test)
+            fi
+          done
+          if [ -n "$(find tool/test -name '*_test.dart' -print -quit 2>/dev/null)" ]; then dart test tool/test; fi
+          for check in tool/check_dependencies.dart tool/check_licenses.dart; do
+            if [ -f "$check" ]; then dart run "$check"; fi
+          done
+      - if: steps.project.outputs.android == 'true'
+        run: cd apps/arr_client && flutter build apk --debug
+  integration:
+    needs: flutter
+    if: needs.flutter.outputs.integration == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - run: |
+          flutter pub get
+          bash .github/scripts/codegen.sh
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        with:
+          api-level: 35
+          arch: x86_64
+          script: cd apps/arr_client && flutter test integration_test
