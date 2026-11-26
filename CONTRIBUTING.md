@@ -45,10 +45,12 @@ flutter analyze
 dart run tool/check_dependencies.dart
 python3 .github/scripts/check_repo.py
 flutter test tool/test
-(cd apps/arr_client && flutter test)
+for dir in apps/* packages/* packages/modules/*; do
+  if [ -d "$dir/test" ]; then (cd "$dir" && flutter test) || echo "FAILED: $dir"; fi
+done
 ```
 
-Package tests run per package, from its directory; so far only the app has any. Run the tool tests
+Package tests run per package, from its directory, which is what the loop does. Run the tool tests
 with `flutter test`: in the Nix shell, `dart test` cannot find the Flutter SDK.
 
 Build and run from the app directory:
