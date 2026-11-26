@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ui/ui.dart';
 
+import '../../../app/navigation/locations.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
 import 'queue_actions.dart';
 import 'queue_controller.dart';
@@ -179,6 +181,18 @@ class _Entry extends StatelessWidget {
           if (item.needsManualImport) ...[
             const SizedBox(height: 16),
             Text(strings.queueNeedsManualImport),
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: FilledButton(
+                onPressed: () => unawaited(
+                  context.push<void>(
+                    queueImportLocation(queue.instance.instance.id, item.id),
+                  ),
+                ),
+                child: Text(strings.manualImportOpen),
+              ),
+            ),
           ],
           if (!waiting) ...[
             const SizedBox(height: 16),

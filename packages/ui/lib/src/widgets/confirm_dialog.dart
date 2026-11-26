@@ -12,6 +12,10 @@ import '../l10n/generated/ui_localizations.dart';
 ///
 /// [options] are choices shown above the buttons, such as whether to delete
 /// files. The widget holds its own state and reports changes to the caller.
+///
+/// The dialog scrolls with its buttons in place, so keep [target] short: a long
+/// one pushes [consequence] out of sight. A list of what is acted on goes in
+/// [options], which follow it.
 Future<bool> showConfirmDialog(
   BuildContext context, {
   required String title,

@@ -81,10 +81,20 @@ Future<void> removeQueueEntries(
     searchReplacement: true,
   );
 
+  // Several titles would push what the removal does out of sight, so they
+  // follow it.
+  final several = titles.length > 1;
+  final choices = RemoveChoices(
+    initial: options,
+    onChanged: (value) => options = value,
+    hasDownload: hasDownload,
+    hasWaiting: entries.any(isWaitingRelease),
+  );
+
   final confirmed = await showConfirmDialog(
     context,
     title: strings.queueRemoveTitle(entries.length),
-    target: titles.join('\n'),
+    target: several ? strings.queueRemoveListed(titles.length) : titles.single,
     consequence: [
       hasDownload
           ? strings.queueRemoveConsequence(entries.length)
@@ -93,12 +103,17 @@ Future<void> removeQueueEntries(
       if (sharingRelease > 0) strings.queueRemoveSharedRelease(sharingRelease),
     ].join('\n\n'),
     confirmLabel: strings.queueRemoveConfirm(entries.length),
-    options: RemoveChoices(
-      initial: options,
-      onChanged: (value) => options = value,
-      hasDownload: hasDownload,
-      hasWaiting: entries.any(isWaitingRelease),
-    ),
+    options: several
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              choices,
+              const SizedBox(height: 16),
+              Text(titles.join('\n')),
+            ],
+          )
+        : choices,
   );
   if (!confirmed || !context.mounted) return;
   onSent?.call();
