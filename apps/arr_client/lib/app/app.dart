@@ -12,6 +12,7 @@ import 'composition.dart';
 import 'localization.dart';
 import 'navigation/router.dart';
 import 'providers.dart';
+import 'slots/detail_slots.dart';
 
 /// Root widget of the running app.
 class ArrClientApp extends StatefulWidget {
@@ -73,7 +74,7 @@ class _ArrClientAppState extends State<ArrClientApp> {
             // Above the navigator, so that every screen is told.
             builder: (context, child) => ThirdPartyArtworkScope(
               allowed: preferences.loadThirdPartyArtwork,
-              child: child!,
+              child: DetailSlotScope(builder: buildDetailSlot, child: child!),
             ),
           ),
         );
