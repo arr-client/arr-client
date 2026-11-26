@@ -411,10 +411,26 @@ repositories { maven { url "https://example.org" } }
   });
 
   group('the command', () {
-    Future<ProcessResult> run(Workspace workspace) => Process.run(
-      Platform.resolvedExecutable,
-      ['run', 'tool/check_licenses.dart', workspace.root.path],
-    );
+    Future<ProcessResult> run(Workspace workspace) async {
+      // `dart` from the PATH, not Platform.resolvedExecutable: under
+      // `flutter test` that is flutter_tester, which never exits.
+      final process = await Process.start('dart', [
+        'run',
+        'tool/check_licenses.dart',
+        workspace.root.path,
+      ]);
+      // Runs after a timeout too. Does nothing if the process has exited.
+      addTearDown(() async {
+        process.kill(ProcessSignal.sigkill);
+        await process.exitCode;
+      });
+      final (exitCode, stdout, stderr) = await (
+        process.exitCode,
+        utf8.decodeStream(process.stdout),
+        utf8.decodeStream(process.stderr),
+      ).wait;
+      return ProcessResult(process.pid, exitCode, stdout, stderr);
+    }
 
     test('exits 0 when every dependency is compatible', () async {
       final workspace = Workspace()
