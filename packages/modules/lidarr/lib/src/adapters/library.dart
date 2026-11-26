@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:core/core.dart';
 
 import '../api/lidarr_api.dart';
+import '../lidarr_routes.dart';
 import '../models/json_fields.dart';
 import '../models/library_record.dart';
 import '../models/media_record.dart';
@@ -20,7 +21,8 @@ import 'monitor_options.dart';
 /// it was: a queued album would otherwise be shown, and cached, as missing.
 /// An item the server no longer has is removed from the cache.
 ///
-/// A track is read and cached only as a child of its album.
+/// A track is read and cached only as a child of its album, with its file: the
+/// record the server gives of the file is kept in the track's, as `trackFile`.
 final class LidarrLibraryAdapter implements LibraryProvider {
   /// Reads with [_api] into [_cache].
   LidarrLibraryAdapter(this._api, this._cache)
@@ -197,7 +199,7 @@ final class LidarrLibraryAdapter implements LibraryProvider {
   ServiceResult<void> deleteFile(MediaFile file) => _writes.deleteFile(file);
 
   @override
-  ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError('T118');
+  ModuleRoute detailRoute(ItemRef ref) => itemRoute(ref);
 
   ServiceResult<List<MediaFile>> _files(
     ItemRef ref,
@@ -285,30 +287,46 @@ final class LidarrLibraryAdapter implements LibraryProvider {
       case Err(:final error):
         return Err(error);
     }
+    return _reading(() => _keepAlbums(parent, artist, records, queue));
+  }
+
+  /// Reads the albums in [records] and caches them with their artist.
+  ///
+  /// Not a closure inside [_albums]: written that way, the AOT compiler of
+  /// Dart 3.14.0 crashes (`linearscan.cc: unreachable code`) and no release
+  /// build with this module can be made.
+  Future<List<LibraryItem>> _keepAlbums(
+    ItemRef parent,
+    JsonObject artist,
+    List<JsonObject> records,
+    List<QueueItem> queue,
+  ) async {
     final downloading = {for (final item in queue) ?item.itemRef?.remoteId};
-    return _reading(() async {
-      final now = DateTime.now().toUtc();
-      final (read, artistEntry) = _artist(
-        artist,
-        downloading: queue.any((item) => item.parent == parent),
+    final now = DateTime.now().toUtc();
+    final (read, artistEntry) = _artist(
+      artist,
+      downloading: queue.any((item) => item.parent == parent),
+      now: now,
+    );
+    final items = <LibraryItem>[];
+    final entries = <CacheEntry>[];
+    for (final record in records) {
+      final (album, entry) = _album(
+        record,
+        artistName: read.title,
+        downloading: downloading.contains(record['id']),
         now: now,
       );
-      final items = <LibraryItem>[];
-      final entries = <CacheEntry>[];
-      for (final record in records) {
-        final (album, entry) = _album(
-          record,
-          artistName: read.title,
-          downloading: downloading.contains(record['id']),
-          now: now,
-        );
-        items.add(album);
-        entries.add(entry);
-      }
-      await _cache.put(artistEntry);
-      await _cache.replace(MediaKind.album, entries, parentRemoteId: id);
-      return items;
-    });
+      items.add(album);
+      entries.add(entry);
+    }
+    await _cache.put(artistEntry);
+    await _cache.replace(
+      MediaKind.album,
+      entries,
+      parentRemoteId: parent.remoteId,
+    );
+    return items;
   }
 
   ServiceResult<List<LibraryItem>> _tracks(ItemRef parent) async {
@@ -336,39 +354,64 @@ final class LidarrLibraryAdapter implements LibraryProvider {
       case Err(:final error):
         return Err(error);
     }
+    // Last, so that a file deleted meanwhile is not shown as a track's.
+    final List<JsonObject> files;
+    switch (await _api.albumFiles(id)) {
+      case Ok(:final value):
+        files = value;
+      case Err(:final error):
+        return _gone(parent, error);
+    }
+    return _reading(() => _keepTracks(parent, album, records, files, queue));
+  }
+
+  /// Reads the tracks in [records], each with its one of [files], and caches
+  /// them with their album.
+  ///
+  /// Not a closure inside [_tracks], for the reason [_keepAlbums] is none
+  /// inside [_albums].
+  Future<List<LibraryItem>> _keepTracks(
+    ItemRef parent,
+    JsonObject album,
+    List<JsonObject> records,
+    List<JsonObject> files,
+    List<QueueItem> queue,
+  ) async {
     final queued = queue.any((item) => item.itemRef == parent);
-    return _reading(() async {
-      final now = DateTime.now().toUtc();
-      // Kept with its tracks, whose cached records do not name it.
-      final (read, albumEntry) = _album(
-        album,
-        artistName: embeddedArtistName(album),
-        downloading: queued,
-        now: now,
+    final fileById = {for (final file in files) file['id']: file};
+    final now = DateTime.now().toUtc();
+    // Kept with its tracks, whose cached records do not name it.
+    final (read, albumEntry) = _album(
+      album,
+      artistName: embeddedArtistName(album),
+      downloading: queued,
+      now: now,
+    );
+    final items = <LibraryItem>[];
+    final entries = <CacheEntry>[];
+    for (final listed in records) {
+      final record = switch (fileById[listed['trackFileId']]) {
+        final file? => {...listed, 'trackFile': file},
+        null => listed,
+      };
+      final track = readTrack(
+        record,
+        ref: _api.trackRef(requireInt(record, 'id')),
+        album: parent,
+        albumTitle: read.title,
+        monitored: read.monitored,
+        state: trackState(record, album: album, albumQueued: queued, now: now),
       );
-      final items = <LibraryItem>[];
-      final entries = <CacheEntry>[];
-      for (final record in records) {
-        final track = readTrack(
-          record,
-          ref: _api.trackRef(requireInt(record, 'id')),
-          album: parent,
-          albumTitle: read.title,
-          monitored: read.monitored,
-          state: trackState(
-            record,
-            album: album,
-            albumQueued: queued,
-            now: now,
-          ),
-        );
-        items.add(track);
-        entries.add(_entry(track, record, now: now));
-      }
-      await _cache.put(albumEntry);
-      await _cache.replace(MediaKind.track, entries, parentRemoteId: id);
-      return items;
-    });
+      items.add(track);
+      entries.add(_entry(track, record, now: now));
+    }
+    await _cache.put(albumEntry);
+    await _cache.replace(
+      MediaKind.track,
+      entries,
+      parentRemoteId: parent.remoteId,
+    );
+    return items;
   }
 
   /// The queue, for the states of items.
