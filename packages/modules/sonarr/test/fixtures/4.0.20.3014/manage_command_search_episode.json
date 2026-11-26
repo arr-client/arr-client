@@ -1,0 +1,26 @@
+{
+  "name": "EpisodeSearch",
+  "commandName": "Episode Search",
+  "body": {
+    "episodeIds": [
+      31,
+      32
+    ],
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "isLongRunning": false,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "name": "EpisodeSearch",
+    "trigger": "manual",
+    "suppressMessages": false
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T15:39:38Z",
+  "trigger": "manual",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 5
+}

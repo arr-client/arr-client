@@ -113,6 +113,49 @@ void main() {
       ),
       // Hides unmatched downloads.
       _send(HttpMethod.get, 'queue'),
+      // A delete states both of its flags.
+      _send(HttpMethod.delete, 'series/1'),
+      for (final flag in ['deleteFiles', 'addImportListExclusion'])
+        _send(
+          HttpMethod.delete,
+          'series/1',
+          query: {
+            flag: ['false'],
+          },
+        ),
+      // Radarr's name for the exclusion, which Sonarr ignores.
+      _send(
+        HttpMethod.delete,
+        'series/1',
+        query: {
+          'deleteFiles': ['true'],
+          'addImportExclusion': ['true'],
+        },
+      ),
+      // Several at once.
+      _send(
+        HttpMethod.delete,
+        'series/editor',
+        body: {
+          'seriesIds': [1],
+        },
+      ),
+      _send(
+        HttpMethod.delete,
+        'episodefile/bulk',
+        body: {
+          'episodeFileIds': [1],
+        },
+      ),
+      // Would move the files of the series.
+      _send(
+        HttpMethod.put,
+        'series/1',
+        query: {
+          'moveFiles': ['true'],
+        },
+        body: <String, Object?>{},
+      ),
     ];
     for (final request in unlisted) {
       expect(
