@@ -7,5 +7,12 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # The module contract; its tests also use core/testing/allow_list.dart.
+  core:
+    path: ../../core
   flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
     sdk: flutter

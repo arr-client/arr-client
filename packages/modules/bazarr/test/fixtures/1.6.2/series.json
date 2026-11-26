@@ -1,0 +1,55 @@
+{
+  "data": [
+    {
+      "alternativeTitles": [],
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "created_at_timestamp": "2026-11-26 22:05:36.367117",
+      "episodeFileCount": 4,
+      "ended": true,
+      "episodeMissingCount": 4,
+      "fanart": "/redacted/8.jpg",
+      "imdbId": "tt1748166",
+      "lastAired": "2011-12-13",
+      "monitored": true,
+      "overview": "redacted-9",
+      "path": "/redacted/10",
+      "poster": "/redacted/11.jpg",
+      "profileId": 1,
+      "seriesType": "standard",
+      "sonarrSeriesId": 1,
+      "tags": [],
+      "title": "redacted-12",
+      "tvdbId": 170551,
+      "year": "2010"
+    },
+    {
+      "alternativeTitles": [],
+      "audio_language": [],
+      "created_at_timestamp": "2026-11-26 22:05:36.863811",
+      "episodeFileCount": 0,
+      "ended": true,
+      "episodeMissingCount": 0,
+      "fanart": "/redacted/13.jpg",
+      "imdbId": "tt0046642",
+      "lastAired": "1955-10-17",
+      "monitored": true,
+      "overview": "redacted-14",
+      "path": "/redacted/15",
+      "poster": "/redacted/16.jpg",
+      "profileId": 1,
+      "seriesType": "standard",
+      "sonarrSeriesId": 2,
+      "tags": [],
+      "title": "redacted-17",
+      "tvdbId": 73529,
+      "year": "1954"
+    }
+  ],
+  "total": 2
+}

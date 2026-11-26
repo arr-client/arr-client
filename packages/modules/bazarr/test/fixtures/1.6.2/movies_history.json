@@ -1,0 +1,144 @@
+{
+  "data": [
+    {
+      "action": 2,
+      "title": "redacted-67",
+      "timestamp": "13 seconds ago",
+      "description": "redacted-99",
+      "radarrId": 2,
+      "monitored": true,
+      "path": null,
+      "language": {
+        "name": "English",
+        "code2": "en",
+        "code3": "eng",
+        "forced": false,
+        "hi": false
+      },
+      "tags": [],
+      "score": "100.0%",
+      "subs_id": "/redacted/100",
+      "provider": "redacted-88",
+      "subtitles_path": "/redacted/66.srt",
+      "upgradable": false,
+      "parsed_timestamp": "11/26/26 22:07:44",
+      "blacklisted": false,
+      "matches": [
+        "hash",
+        "hearing_impaired"
+      ],
+      "dont_matches": []
+    },
+    {
+      "action": 0,
+      "title": "redacted-67",
+      "timestamp": "51 seconds ago",
+      "description": "redacted-101",
+      "radarrId": 2,
+      "monitored": true,
+      "path": null,
+      "language": {
+        "name": "English",
+        "code2": "en",
+        "code3": "eng",
+        "forced": false,
+        "hi": false
+      },
+      "tags": [],
+      "score": null,
+      "subs_id": null,
+      "provider": null,
+      "subtitles_path": "/redacted/66.srt",
+      "upgradable": false,
+      "parsed_timestamp": "11/26/26 22:07:06",
+      "blacklisted": false,
+      "matches": [],
+      "dont_matches": []
+    },
+    {
+      "action": 5,
+      "title": "redacted-67",
+      "timestamp": "52 seconds ago",
+      "description": "redacted-85",
+      "radarrId": 2,
+      "monitored": true,
+      "path": null,
+      "language": {
+        "name": "English",
+        "code2": "en",
+        "code3": "eng",
+        "forced": false,
+        "hi": false
+      },
+      "tags": [],
+      "score": null,
+      "subs_id": null,
+      "provider": null,
+      "subtitles_path": "/redacted/66.srt",
+      "upgradable": false,
+      "parsed_timestamp": "11/26/26 22:07:05",
+      "blacklisted": false,
+      "matches": [],
+      "dont_matches": []
+    },
+    {
+      "action": 1,
+      "title": "redacted-31",
+      "timestamp": "a minute ago",
+      "description": "redacted-91",
+      "radarrId": 1,
+      "monitored": true,
+      "path": null,
+      "language": {
+        "name": "French",
+        "code2": "fr",
+        "code3": "fra",
+        "forced": false,
+        "hi": false
+      },
+      "tags": [],
+      "score": "100.0%",
+      "subs_id": "/redacted/102",
+      "provider": "redacted-88",
+      "subtitles_path": "/redacted/29.srt",
+      "upgradable": false,
+      "parsed_timestamp": "11/26/26 22:06:54",
+      "blacklisted": false,
+      "matches": [
+        "hash",
+        "hearing_impaired"
+      ],
+      "dont_matches": []
+    },
+    {
+      "action": 2,
+      "title": "redacted-67",
+      "timestamp": "a minute ago",
+      "description": "redacted-99",
+      "radarrId": 2,
+      "monitored": true,
+      "path": null,
+      "language": {
+        "name": "English",
+        "code2": "en",
+        "code3": "eng",
+        "forced": false,
+        "hi": false
+      },
+      "tags": [],
+      "score": "100.0%",
+      "subs_id": "/redacted/100",
+      "provider": "redacted-88",
+      "subtitles_path": "/redacted/66.srt",
+      "upgradable": false,
+      "parsed_timestamp": "11/26/26 22:06:53",
+      "blacklisted": false,
+      "matches": [
+        "hash",
+        "hearing_impaired"
+      ],
+      "dont_matches": []
+    }
+  ],
+  "total": 5
+}

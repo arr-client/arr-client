@@ -1,0 +1,97 @@
+{
+  "data": [
+    {
+      "alternativeTitles": [
+        "redacted-52",
+        "redacted-53",
+        "redacted-54",
+        "redacted-55",
+        "redacted-56",
+        "redacted-57",
+        "redacted-58",
+        "redacted-59",
+        "redacted-60",
+        "redacted-61"
+      ],
+      "audio_language": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng"
+        }
+      ],
+      "created_at_timestamp": "2026-11-26 22:05:36.720461",
+      "fanart": "/redacted/62",
+      "imdbId": "tt0063350",
+      "missing_subtitles": [
+        {
+          "name": "German",
+          "code2": "de",
+          "code3": "deu",
+          "forced": false,
+          "hi": true
+        },
+        {
+          "name": "Spanish",
+          "code2": "es",
+          "code3": "spa",
+          "forced": false,
+          "hi": false
+        },
+        {
+          "name": "Italian",
+          "code2": "it",
+          "code3": "ita",
+          "forced": true,
+          "hi": false
+        }
+      ],
+      "monitored": true,
+      "overview": "redacted-63",
+      "path": "/redacted/64.mkv",
+      "poster": "/redacted/65",
+      "profileId": 1,
+      "radarrId": 2,
+      "sceneName": null,
+      "subtitles": [
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": "/redacted/66.srt",
+          "forced": false,
+          "hi": false,
+          "file_size": 594,
+          "embedded_track_id": null,
+          "id": 5
+        },
+        {
+          "name": "English",
+          "code2": "en",
+          "code3": "eng",
+          "path": null,
+          "forced": false,
+          "hi": false,
+          "file_size": null,
+          "embedded_track_id": 2,
+          "id": 8
+        },
+        {
+          "name": "French",
+          "code2": "fr",
+          "code3": "fra",
+          "path": null,
+          "forced": false,
+          "hi": false,
+          "file_size": null,
+          "embedded_track_id": 3,
+          "id": 9
+        }
+      ],
+      "tags": [],
+      "title": "redacted-67",
+      "year": "1968"
+    }
+  ],
+  "total": 1
+}
