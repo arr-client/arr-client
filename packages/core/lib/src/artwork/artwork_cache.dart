@@ -196,8 +196,25 @@ final class _Loader implements ArtworkLoader {
   }
 }
 
-Uint8List _picture(Uint8List bytes) =>
-    bytes.isEmpty ? throw const ArtworkException('empty answer') : bytes;
+/// [bytes] if they begin as a picture does. Anything else, such as the page of a
+/// captive portal, must not be stored, nor replace a picture that is.
+Uint8List _picture(Uint8List bytes) => _isPicture(bytes)
+    ? bytes
+    : throw const ArtworkException('the answer is not a picture');
+
+/// Whether [bytes] start like a JPEG, PNG, GIF, BMP or WebP file. The content
+/// type is not asked, as it need not say what the content is.
+bool _isPicture(Uint8List bytes) {
+  bool has(String magic, [int at = 0]) =>
+      bytes.length >= at + magic.length &&
+      String.fromCharCodes(bytes, at, at + magic.length) == magic;
+  return has('\xFF\xD8\xFF') ||
+      has('\x89PNG\r\n\x1A\n') ||
+      has('GIF87a') ||
+      has('GIF89a') ||
+      has('BM') ||
+      (has('RIFF') && has('WEBP', 8));
+}
 
 String _digest(String text) => sha256.convert(utf8.encode(text)).toString();
 
@@ -231,6 +248,9 @@ ServiceRequest? _instanceRequest(String instancePath) {
   } on ArgumentError {
     // A broken escape, or a path that ServiceRequest refuses as it could leave
     // the instance's address.
+    return null;
+  } on FormatException {
+    // Escapes that are not UTF-8.
     return null;
   }
 }

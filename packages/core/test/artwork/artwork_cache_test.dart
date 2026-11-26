@@ -157,8 +157,34 @@ void main() {
     expect(directory.listSync(), isEmpty);
   });
 
-  test('what is not a picture is not kept', () async {
-    var body = utf8.encode('not a picture');
+  test('what is not a picture is not stored', () async {
+    final directory = temporaryDirectory();
+    var body = utf8.encode('<html>Sign in to the network</html>');
+    final server = await TestServer.start(
+      (_, response) => picture(response, body),
+    );
+    final loader = cacheIn(directory).loaderFor('a', client(server));
+
+    for (final image in [
+      instanceImage('poster'),
+      remoteImage(server.url('/remote')),
+    ]) {
+      await expectLater(widthOf(loader.image(image)), throwsArtworkException);
+    }
+    expect(
+      filesIn(directory).keys.where((name) => name.endsWith('.img')),
+      isEmpty,
+    );
+    await pause();
+    body = onePixel;
+
+    expect(await widthOf(loader.image(instanceImage('poster'))), 1);
+    expect(server.requests, hasLength(3));
+  });
+
+  test('a picture that cannot be decoded is not kept', () async {
+    // It starts like a PNG and ends there.
+    var body = onePixel.sublist(0, 12);
     final server = await TestServer.start(
       (_, response) => picture(response, body),
     );
@@ -174,6 +200,41 @@ void main() {
     expect(await widthOf(loader.image(instanceImage('poster'))), 1);
     expect(server.requests, hasLength(2));
   });
+
+  for (final (source, imageOf) in <(String, MediaImage Function(Uri))>[
+    ('instance', (_) => instanceImage('poster')),
+    ('remote', remoteImage),
+  ]) {
+    for (final type in ['text/html', 'text/plain', 'image/png']) {
+      test('a $type page does not replace a $source picture', () async {
+        var portal = false;
+        final server = await TestServer.start(
+          (_, response) => portal
+              ? reply(response, body: '<html></html>', contentType: type)
+              : picture(response, twoPixels),
+        );
+        final loader = cacheIn(
+          temporaryDirectory(),
+          freshFor: Duration.zero,
+        ).loaderFor('a', client(server));
+        Future<int> load() async {
+          forgetMemory();
+          final width = await widthOf(
+            loader.image(imageOf(server.url('/poster'))),
+          );
+          await pause();
+          return width;
+        }
+
+        await load();
+        portal = true;
+
+        expect(await load(), 2);
+        expect(await load(), 2);
+        expect(server.requests, hasLength(3));
+      });
+    }
+  }
 
   test('a failure is tried again the next time', () async {
     var status = 500;

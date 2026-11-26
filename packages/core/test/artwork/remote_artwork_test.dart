@@ -47,27 +47,47 @@ void main() {
     expectPlain(server.requests.single);
   });
 
-  test('follows redirects, still carrying nothing', () async {
-    final target = await pictureServer(threePixels);
-    final server = await TestServer.start(
-      (_, response) => reply(
-        response,
-        status: 302,
-        headers: {
-          'location': '${target.url('/moved')}',
-          'set-cookie': 'track=1',
-        },
-      ),
-    );
+  /// Redirects `/poster` to [location] and answers anything else.
+  Future<TestServer> redirecting(String location) => TestServer.start(
+    (received, response) => received.target == '/poster'
+        ? reply(
+            response,
+            status: 302,
+            headers: {'location': location, 'set-cookie': 'track=1'},
+          )
+        : picture(response, threePixels),
+  );
+
+  test('follows a redirect within the origin, carrying nothing', () async {
+    final server = await redirecting('/moved');
 
     final width = await widthOf(
       loader().image(remoteImage(server.url('/poster'))),
     );
 
     expect(width, 3);
-    expectPlain(server.requests.single);
-    expectPlain(target.requests.single);
+    expect(server.requests.map((r) => r.target), ['/poster', '/moved']);
+    server.requests.forEach(expectPlain);
   });
+
+  for (final (name, location) in <(String, String Function(int port))>[
+    ('port', (port) => 'http://127.0.0.1:$port/'),
+    ('host', (port) => 'http://localhost:$port/'),
+    ('host without a scheme', (port) => '//localhost:$port/'),
+  ]) {
+    test('does not follow a redirect to another $name', () async {
+      final target = await RawServer.start();
+      final server = await redirecting(location(target.port));
+
+      await expectLater(
+        widthOf(loader().image(remoteImage(server.url('/poster')))),
+        throwsArtworkException,
+      );
+      await pause();
+      expect(target.connections, 0);
+      expect(server.requests, hasLength(1));
+    });
+  }
 
   test('gives up on a chain of redirects', () async {
     final server = await TestServer.start(
@@ -83,12 +103,12 @@ void main() {
   });
 
   test('does not follow a redirect to a login in the address', () async {
-    final target = await RawServer.start();
-    final server = await TestServer.start(
+    late final TestServer server;
+    server = await TestServer.start(
       (_, response) => reply(
         response,
         status: 302,
-        headers: {'location': 'http://a:b@127.0.0.1:${target.port}/'},
+        headers: {'location': 'http://a:b@127.0.0.1:${server.port}/x'},
       ),
     );
 
@@ -97,19 +117,43 @@ void main() {
       throwsArtworkException,
     );
     await pause();
-    expect(target.connections, 0);
+    expect(server.requests, hasLength(1));
   });
 
-  test('which redirects are followed', () {
-    final https = Uri.parse('https://a.example/p');
-    final http = Uri.parse('http://a.example/p');
-    expect(followsRemoteRedirect(http, https), isTrue);
-    expect(
-      followsRemoteRedirect(https, Uri.parse('https://b.example')),
-      isTrue,
-    );
-    expect(followsRemoteRedirect(https, http), isFalse);
-    expect(followsRemoteRedirect(http, Uri.parse('file:///etc/x')), isFalse);
+  group('a redirect', () {
+    bool follows(String from, String to) =>
+        followsRemoteRedirect(Uri.parse(from), Uri.parse(to));
+
+    for (final (from, to) in [
+      ('http://a.example/p', 'http://a.example/q'),
+      ('https://a.example/p', 'https://A.example:443/q'),
+      ('http://a.example/p', 'https://a.example/p'),
+      ('http://a.example:80/p', 'https://a.example:443/p'),
+    ]) {
+      test('from $from to $to is followed', () {
+        expect(follows(from, to), isTrue);
+      });
+    }
+
+    for (final (from, to) in [
+      ('https://a.example/p', 'http://a.example/p'),
+      ('https://a.example/p', 'https://b.example/p'),
+      ('https://a.example/p', 'https://img.a.example/p'),
+      ('https://a.example/p', 'https://a.example:8443/p'),
+      ('http://a.example/p', 'https://b.example/p'),
+      ('http://a.example:8080/p', 'https://a.example/p'),
+      ('http://a.example/p', 'https://a.example:8443/p'),
+      ('http://a.example/p', 'http://192.168.1.1/p'),
+      ('http://a.example/p', 'http://127.0.0.1/p'),
+      ('http://a.example/p', 'http://[::1]/p'),
+      ('https://a.example/p', 'https://10.0.0.1/p'),
+      ('http://a.example/p', 'http://user@a.example/p'),
+      ('http://a.example/p', 'file:///etc/hosts'),
+    ]) {
+      test('from $from to $to is not followed', () {
+        expect(follows(from, to), isFalse);
+      });
+    }
   });
 
   for (final url in [

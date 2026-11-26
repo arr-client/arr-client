@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import '../instances/instance_rules.dart';
 import 'service_response.dart';
 import 'trust.dart';
 
@@ -20,17 +21,27 @@ bool isRemoteAddress(Uri url) =>
     url.host.isNotEmpty &&
     url.userInfo.isEmpty;
 
-/// Whether a redirect from [from] to [to] is followed: to any public address,
-/// but not from https to http.
+/// Whether a redirect from [from] to [to] is followed: within the origin, or
+/// from http to https of the same host on their default ports.
+///
+/// The app talks only to hosts that a service points to (constitution III,
+/// SC-007), which the target of a redirect to elsewhere is not. It could also
+/// be an address on the user's own network.
 bool followsRemoteRedirect(Uri from, Uri to) =>
-    isRemoteAddress(to) && (!from.isScheme('https') || to.isScheme('https'));
+    isRemoteAddress(to) &&
+    (!isOtherOrigin(from, to) ||
+        (from.isScheme('http') &&
+            from.port == 80 &&
+            to.isScheme('https') &&
+            to.port == 443 &&
+            to.host == from.host));
 
 /// Reads from public hosts, such as those of artwork.
 ///
 /// It is given an address and nothing else, so it can send no credential,
-/// cookie or custom header. It keeps no cookies. Redirects are followed, to any
-/// host as there is nothing to leak, but not from https to http. Certificates
-/// are checked against the system's roots, and no proxy is used.
+/// cookie or custom header. It keeps no cookies. Only the redirects of
+/// [followsRemoteRedirect] are followed. Certificates are checked against the
+/// system's roots, and no proxy is used.
 final class RemoteClient {
   /// [timeout] limits each wait for the server; a whole read may take four
   /// times that. An answer over [maximumBytes] is given up on.

@@ -134,6 +134,10 @@ void main() {
     'a%2Fb',
     r'a\b',
     'broken%zz',
+    'a%ff',
+    'a%C3',
+    'poster?h=%ff',
+    'poster?%ff=1',
   ]) {
     test('"$path" is no path to load', () {
       final loader = loaderFor(settingsFor(Uri.parse('http://127.0.0.1:1')));
