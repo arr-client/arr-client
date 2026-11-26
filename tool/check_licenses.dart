@@ -54,6 +54,8 @@ const _titles = {
   'bsd 2 clause license',
   'bsd 3 clause license',
   'all rights reserved',
+  // Names the Apache-2.0 part of file_selector_android's license file.
+  'afilechooser',
 };
 
 // The shape of a bare copyright statement. Anything it does not describe is

@@ -19,6 +19,9 @@ dependencies:
   drift: ^2.35.4
   # Reads the Android dynamic colour palette. Apache-2.0.
   dynamic_color: ^2.1.0
+  # The system's document picker, to import a certificate authority. BSD-3-Clause;
+  # its Android side declares only AndroidX annotations, and asks no permission.
+  file_selector: ^1.0.4
   flutter:
     sdk: flutter
   # Translations of the Flutter widgets; imported by the generated localizations.

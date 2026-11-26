@@ -11,6 +11,7 @@ final class InstanceDraft {
     required this.url,
     required this.authKind,
     this.acceptedCertPin,
+    this.removeCertPin = false,
     this.customCa,
     this.probe,
     this.authRejected = false,
@@ -31,8 +32,14 @@ final class InstanceDraft {
   final AuthKind authKind;
 
   /// A certificate fingerprint newly accepted for [url]. Null keeps the stored
-  /// one, unless the scheme, host or port of the url changes.
+  /// one, unless the scheme, host or port of the url changes or
+  /// [removeCertPin] is set.
   final String? acceptedCertPin;
+
+  /// The user no longer trusts the stored fingerprint, as when a certificate
+  /// authority takes its place: it is removed even if the address stays.
+  /// [acceptedCertPin] is stored all the same if given.
+  final bool removeCertPin;
 
   /// A private certificate authority, PEM, stored as given. Null removes it.
   final String? customCa;

@@ -398,7 +398,8 @@ class ProfileRepository {
               : credentialEdited
               ? const Value(false)
               : const Value.absent(),
-          certPin: draft.acceptedCertPin != null || newOrigin
+          certPin:
+              draft.acceptedCertPin != null || draft.removeCertPin || newOrigin
               ? Value(draft.acceptedCertPin)
               : const Value.absent(),
           customCa: Value(draft.customCa),

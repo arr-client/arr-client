@@ -144,6 +144,7 @@ export 'src/module/service_module.dart';
 export 'src/module/service_result.dart';
 export 'src/module/session_authenticator.dart';
 export 'src/module/session_handler.dart';
+export 'src/network/certificate_authority.dart';
 export 'src/network/certificate_info.dart';
 export 'src/network/client.dart';
 export 'src/network/connection_settings.dart';

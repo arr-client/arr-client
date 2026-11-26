@@ -21,8 +21,7 @@ class TestResult extends StatelessWidget {
   /// The name of the service that was expected.
   final String service;
 
-  /// Shows the certificate of a failed test; null if there is no screen for
-  /// that.
+  /// Shows the certificate of a failed test.
   final VoidCallback? onReviewCertificate;
 
   @override
@@ -64,11 +63,7 @@ class TestResult extends StatelessWidget {
           icon: Icons.error_outline,
           color: theme.colorScheme.error,
           title: text.title,
-          message: [
-            text.message,
-            if (isCertificate && onReviewCertificate == null)
-              strings.testCertificateNoReview,
-          ].join('\n'),
+          message: text.message,
           action: isCertificate && onReviewCertificate != null
               ? OutlinedButton(
                   onPressed: onReviewCertificate,
