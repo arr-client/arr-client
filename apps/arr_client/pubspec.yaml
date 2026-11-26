@@ -9,10 +9,14 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  # Reads the Android dynamic colour palette. Apache-2.0.
+  dynamic_color: ^2.1.0
   flutter:
     sdk: flutter
   # Material widgets. package:flutter/material.dart is deprecated.
   material_ui: ^1.11.1
+  ui:
+    path: ../../packages/ui
 
 dev_dependencies:
   flutter_test:

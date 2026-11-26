@@ -1,0 +1,11 @@
+{
+  "@@locale": "en",
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button that closes a dialog or form without doing anything."
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button that tries a failed load again."
+  }
+}
