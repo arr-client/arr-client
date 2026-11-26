@@ -8,6 +8,11 @@ import 'package:ui/ui.dart';
 
 import '../../../app/navigation/locations.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
+import '../../search/add/open_item.dart';
+import 'client_progress_controller.dart';
+import 'client_progress_lines.dart';
+import 'client_progress_notice.dart';
+import 'client_progress_watch.dart';
 import 'queue_actions.dart';
 import 'queue_controller.dart';
 import 'queue_labels.dart';
@@ -31,7 +36,9 @@ class QueueDetailsScreen extends StatelessWidget {
     appBar: AppBar(title: Text(AppLocalizations.of(context).queueEntryTitle)),
     body: SafeArea(
       child: QueueWatch(
-        child: _Details(instanceId: instanceId, queueId: queueId),
+        child: ClientProgressWatch(
+          child: _Details(instanceId: instanceId, queueId: queueId),
+        ),
       ),
     ),
   );
@@ -108,7 +115,7 @@ class _DetailsState extends ConsumerState<_Details> {
   }
 }
 
-class _Entry extends StatelessWidget {
+class _Entry extends ConsumerWidget {
   const _Entry({
     required this.queue,
     required this.item,
@@ -122,9 +129,20 @@ class _Entry extends StatelessWidget {
   final VoidCallback? onGrab;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final progress = ref.watch(clientProgressProvider);
+    final matched = progress.match(item);
+    // Where it is in the library, if the server knows what it is.
+    final location = switch (item.itemRef ?? item.parent) {
+      final target? => itemLocation(
+        queue.instance,
+        target,
+        queueTitle(strings, item),
+      ),
+      null => null,
+    };
     final (icon, color) = queueSeverityIcon(theme.colorScheme, item.severity);
     final severity = queueSeverityLabel(strings, item.severity);
     final waiting = isWaitingRelease(item);
@@ -211,6 +229,27 @@ class _Entry extends StatelessWidget {
             ),
           ],
           if (queueTimeLabel(context, item) case final time?) Text(time),
+          if (matched != null) ...[
+            const SizedBox(height: 12),
+            ClientProgressLines(
+              progress: matched,
+              client: progress.nameOf(matched.instanceId),
+              wholeDownload: shared > 0,
+            ),
+          ] else if (expectsClientProgress(item))
+            for (final client in progress.clients)
+              if (client.failure case final failure?) ...[
+                const SizedBox(height: 12),
+                ClientProgressNotice(
+                  client: progress.nameOf(client.instance.instance.id),
+                  failure: failure,
+                  onRetry: () => unawaited(
+                    ref
+                        .read(clientProgressProvider.notifier)
+                        .retry(client.instance.instance.id),
+                  ),
+                ),
+              ],
           fact(strings.queueService, queue.instance.instance.name),
           if (item.quality case final quality?)
             fact(strings.queueQuality, quality.name),
@@ -235,6 +274,11 @@ class _Entry extends StatelessWidget {
                 FilledButton(
                   onPressed: onGrab,
                   child: Text(strings.queueGrabNow),
+                ),
+              if (location != null)
+                OutlinedButton(
+                  onPressed: () => unawaited(context.push<void>(location)),
+                  child: Text(strings.queueOpenItem),
                 ),
               OutlinedButton(
                 onPressed: onRemove,

@@ -8,6 +8,10 @@ import 'package:ui/ui.dart';
 
 import '../../../app/navigation/locations.dart';
 import '../../../src/l10n/generated/app_localizations.dart';
+import 'client_progress_controller.dart';
+import 'client_progress_lines.dart';
+import 'client_progress_notice.dart';
+import 'client_progress_watch.dart';
 import 'queue_actions.dart';
 import 'queue_controller.dart';
 import 'queue_entry_summary.dart';
@@ -20,7 +24,8 @@ class QueueTab extends StatelessWidget {
   const QueueTab({super.key});
 
   @override
-  Widget build(BuildContext context) => const QueueWatch(child: _QueueList());
+  Widget build(BuildContext context) =>
+      const QueueWatch(child: ClientProgressWatch(child: _QueueList()));
 }
 
 class _QueueList extends ConsumerStatefulWidget {
@@ -47,6 +52,8 @@ class _QueueListState extends ConsumerState<_QueueList> {
     final strings = AppLocalizations.of(context);
     final queues = ref.watch(queueProvider).queues;
     final controller = ref.read(queueProvider.notifier);
+    final progress = ref.watch(clientProgressProvider);
+    final progressController = ref.read(clientProgressProvider.notifier);
 
     // Nothing from anyone yet.
     if (queues.isNotEmpty &&
@@ -86,7 +93,10 @@ class _QueueListState extends ConsumerState<_QueueList> {
           count: selected?.length,
           onSelect: () => _select({}),
           onCancel: () => _select(null),
-          onRefresh: () => unawaited(controller.refresh()),
+          onRefresh: () {
+            unawaited(controller.refresh());
+            unawaited(progressController.refresh());
+          },
           onRemove: canRemove
               ? () => unawaited(
                   removeQueueEntries(
@@ -105,6 +115,18 @@ class _QueueListState extends ConsumerState<_QueueList> {
           onRetry: () =>
               unawaited(controller.retry(queue.instance.instance.id)),
         ),
+      // Nothing is missed where no entry could be in a download client.
+      if (rows.any((row) => expectsClientProgress(row.$2)))
+        for (final client in progress.clients)
+          if (client.failure case final failure?)
+            ClientProgressNotice(
+              key: ValueKey(('client', client.instance.instance.id)),
+              client: progress.nameOf(client.instance.instance.id),
+              failure: failure,
+              onRetry: () => unawaited(
+                progressController.retry(client.instance.instance.id),
+              ),
+            ),
     ];
 
     final Widget list;
@@ -121,11 +143,19 @@ class _QueueListState extends ConsumerState<_QueueList> {
           if (index < head.length) return head[index];
           final (queue, item) = rows[index - head.length];
           final key = _key(queue, item);
+          final matched = progress.match(item);
           return _QueueRow(
             key: ValueKey(key),
             queue: queue,
             item: item,
             showInstance: queues.length > 1,
+            clientProgress: matched == null
+                ? null
+                : ClientProgressLines(
+                    progress: matched,
+                    client: progress.nameOf(matched.instanceId),
+                    wholeDownload: queue.goingWith(item).length > 1,
+                  ),
             selected: selected?.contains(key),
             onToggle: () => _toggle(key),
             onOpen: () => unawaited(
@@ -144,7 +174,14 @@ class _QueueListState extends ConsumerState<_QueueList> {
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) _select(null);
       },
-      child: RefreshIndicator(onRefresh: controller.refresh, child: list),
+      child: RefreshIndicator(
+        onRefresh: () {
+          // A slow download client does not keep the indicator turning.
+          unawaited(progressController.refresh());
+          return controller.refresh();
+        },
+        child: list,
+      ),
     );
   }
 
@@ -221,12 +258,14 @@ class _QueueRow extends StatelessWidget {
     required this.onToggle,
     required this.onOpen,
     required this.onGrab,
+    this.clientProgress,
     super.key,
   });
 
   final InstanceQueue queue;
   final QueueItem item;
   final bool showInstance;
+  final ClientProgressLines? clientProgress;
 
   /// Null while not selecting.
   final bool? selected;
@@ -246,6 +285,7 @@ class _QueueRow extends StatelessWidget {
     final summary = QueueEntrySummary(
       item: item,
       instanceName: showInstance ? queue.instance.instance.name : null,
+      clientProgress: clientProgress,
     );
     if (selected case final selected?) {
       return CheckboxListTile(

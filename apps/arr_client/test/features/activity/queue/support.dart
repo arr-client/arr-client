@@ -7,6 +7,7 @@ import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../app/fake_library.dart';
 import '../../../app/support.dart';
 
 /// A queue that answers what the test says and records what it was asked.
@@ -68,8 +69,19 @@ class FakeQueue implements QueueProvider {
 
 /// A service with a queue for each of its instances.
 class QueueModule extends FakeModule {
-  QueueModule()
-    : super('films', offers: {CapabilityKind.queue, CapabilityKind.history});
+  /// With a [library], the service has one.
+  QueueModule({FakeLibrary? library})
+    : _library = library,
+      super(
+        'films',
+        offers: {
+          CapabilityKind.queue,
+          CapabilityKind.history,
+          if (library != null) CapabilityKind.library,
+        },
+      );
+
+  final FakeLibrary? _library;
 
   /// By the instance's name.
   final queues = <String, FakeQueue>{};
@@ -80,11 +92,82 @@ class QueueModule extends FakeModule {
   T? capability<T extends Capability>(InstanceContext context) {
     final Capability? found = switch (T) {
       const (QueueProvider) => of(context.instance.name),
+      const (LibraryProvider) => _library,
       _ => null,
     };
     return found as T?;
   }
 }
+
+/// A download client that answers what the test says. It can only be read.
+class FakeProgress implements DownloadProgressProvider {
+  /// Set by the module once the instance is known.
+  var instanceId = '';
+  var torrents = <DownloadProgress>[];
+  ServiceFailure? failure;
+  Completer<void>? readGate;
+  var reads = 0;
+
+  @override
+  ServiceResult<List<DownloadProgress>> progress() async {
+    reads++;
+    await readGate?.future;
+    return switch (failure) {
+      final failure? => Err(failure),
+      null => Ok([
+        for (final one in torrents)
+          DownloadProgress(
+            instanceId: instanceId,
+            hash: one.hash,
+            infohashV1: one.infohashV1,
+            progress: one.progress,
+            downSpeed: one.downSpeed,
+            eta: one.eta,
+            state: one.state,
+          ),
+      ]),
+    };
+  }
+}
+
+/// A download client for each of its instances.
+class ProgressModule extends FakeModule {
+  ProgressModule()
+    : super('qBittorrent', offers: {CapabilityKind.downloadProgress});
+
+  /// By the instance's name.
+  final clients = <String, FakeProgress>{};
+
+  FakeProgress of(String name) => clients.putIfAbsent(name, FakeProgress.new);
+
+  @override
+  T? capability<T extends Capability>(InstanceContext context) {
+    final Capability? found = switch (T) {
+      const (DownloadProgressProvider) => of(
+        context.instance.name,
+      )..instanceId = context.instance.id,
+      _ => null,
+    };
+    return found as T?;
+  }
+}
+
+DownloadProgress torrent(
+  String hash, {
+  String? infohashV1,
+  double progress = 0.5,
+  int speed = 0,
+  Duration? eta,
+  DownloadState state = DownloadState.downloading,
+}) => DownloadProgress(
+  instanceId: '',
+  hash: hash,
+  infohashV1: infohashV1,
+  progress: progress,
+  downSpeed: speed,
+  eta: eta,
+  state: state,
+);
 
 QueueItem entry(
   int id,
@@ -97,6 +180,7 @@ QueueItem entry(
   Duration? eta = const Duration(minutes: 5),
   bool needsManualImport = false,
   ItemRef? parent,
+  ItemRef? itemRef,
 }) {
   final delayed = status == QueueStatus.delayed;
   return QueueItem(
@@ -119,6 +203,7 @@ QueueItem entry(
     downloadClient: delayed ? null : 'Torrents',
     needsManualImport: needsManualImport,
     parent: parent,
+    itemRef: itemRef,
   );
 }
 

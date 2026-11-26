@@ -180,6 +180,8 @@
   "@sizeGibibytes": {"description": "A size in gibibytes.", "placeholders": {"value": {"type": "String"}}},
   "sizeTebibytes": "{value} TiB",
   "@sizeTebibytes": {"description": "A size in tebibytes.", "placeholders": {"value": {"type": "String"}}},
+  "speedPerSecond": "{size}/s",
+  "@speedPerSecond": {"description": "A transfer speed: an already formatted size, each second.", "placeholders": {"size": {"type": "String"}}},
   "durationDaysHours": "{days} d {hours} h",
   "@durationDaysHours": {"description": "A length of time of a day or more.", "placeholders": {"days": {"type": "int", "format": "decimalPattern"}, "hours": {"type": "int", "format": "decimalPattern"}}},
   "durationHoursMinutes": "{hours} h {minutes} min",
