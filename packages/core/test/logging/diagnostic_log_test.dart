@@ -107,6 +107,45 @@ void main() {
     });
   });
 
+  group('parts of a custom header or cookie are registered', () {
+    for (final (name, credential, part) in [
+      for (final scheme in ['Bearer', 'bearer', 'Basic', 'Token', 'ApiKey'])
+        (
+          'the token after $scheme',
+          Credential(customHeaders: {'X-Gate': '$scheme  seed-token '}),
+          'seed-token',
+        ),
+      (
+        'a value of a Cookie header',
+        const Credential(customHeaders: {'cookie': 'a=seed-one; b=seed-two'}),
+        'seed-two',
+      ),
+      (
+        'a quoted value of a Cookie header',
+        const Credential(customHeaders: {'Cookie': 'a="seed-one"'}),
+        'seed-one',
+      ),
+      (
+        'a quoted session cookie value',
+        const Credential(sessionCookie: 'a="seed-one" ; b=2'),
+        'seed-one',
+      ),
+    ]) {
+      test(name, () {
+        final log = DiagnosticLog()..addCredential(credential);
+
+        expect(_record(log, 'saw $part.'), endsWith('saw [redacted].'));
+      });
+    }
+
+    test('and a quoted value is still removed with its quotes', () {
+      final log = DiagnosticLog()
+        ..addCredential(const Credential(sessionCookie: 'a="seed-one"'));
+
+      expect(_record(log, 'saw "seed-one".'), endsWith('saw [redacted].'));
+    });
+  });
+
   group('registering late', () {
     // Each entry was stored before its secret was known.
     for (final (name, secret, message) in [
@@ -200,6 +239,9 @@ void main() {
       'Invalid HTTP header field value: "s3cretZ\\n"',
       'Invalid argument (password): "s3cretZ"',
       'Invalid argument (apiKey): Must not be empty: "s3cretZ"',
+      // An exception named for a secret may quote it in its message.
+      'TokenException: invalid token s3cretZ',
+      'SecretStoreException: could not store s3cretZ',
     ];
 
     for (final line in lines) {
@@ -327,6 +369,16 @@ void main() {
         'Bad state: late\n'
         '#0 main',
       );
+    });
+
+    test('refuses a negative capacity', () {
+      expect(() => DiagnosticLog(capacity: -1), throwsA(isA<AssertionError>()));
+    });
+
+    test('may keep nothing', () {
+      final log = DiagnosticLog(capacity: 0)..log(LogLevel.info, 'one');
+
+      expect(log.entries, isEmpty);
     });
 
     test('keeps only the newest entries', () {

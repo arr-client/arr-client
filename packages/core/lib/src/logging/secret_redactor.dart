@@ -46,7 +46,8 @@ final class SecretRedactor {
   }
 
   /// Registers every secret of [credential], including the user names, as
-  /// [addSecrets] does.
+  /// [addSecrets] does. A cookie is registered value by value, and a custom
+  /// header such as `Bearer <token>` also by its token alone.
   Set<String> addCredential(Credential credential) {
     final basicUser = credential.basicUser;
     final basicPassword = credential.basicPassword;
@@ -59,13 +60,36 @@ final class SecretRedactor {
       ?basicPassword,
       if (basicUser != null)
         base64Encode(utf8.encode('$basicUser:${basicPassword ?? ''}')),
-      ...credential.customHeaders.values,
+      for (final MapEntry(key: name, :value)
+          in credential.customHeaders.entries) ...[
+        value,
+        // The token may be logged without its scheme.
+        if (_headerScheme.matchAsPrefix(value) case final scheme?)
+          value.substring(scheme.end),
+        if (name.trim().toLowerCase() == 'cookie') ..._cookieValues(value),
+      ],
       // The values only: the whole header changes whenever any of them does.
-      if (cookie != null)
-        for (final pair in cookie.split(';'))
-          pair.substring(pair.indexOf('=') + 1),
+      if (cookie != null) ..._cookieValues(cookie),
     ]);
   }
+
+  /// The value of each pair of a `Cookie` header, also without the double quotes
+  /// that may surround it.
+  static Iterable<String> _cookieValues(String header) sync* {
+    for (final pair in header.split(';')) {
+      final value = pair.substring(pair.indexOf('=') + 1);
+      yield value;
+      final bare = value.trim();
+      if (bare.length > 1 && bare.startsWith('"') && bare.endsWith('"')) {
+        yield bare.substring(1, bare.length - 1);
+      }
+    }
+  }
+
+  static final _headerScheme = RegExp(
+    r'\s*(?:bearer|basic|token|apikey)[ \t]+',
+    caseSensitive: false,
+  );
 
   /// [text] without the secrets.
   String redact(String text) => _guarded(() {
@@ -195,6 +219,9 @@ final class SecretRedactor {
       .map((m) => (m.start + m[1]!.length, m.end - suffix));
 
   /// What follows a sensitive name and `:` or `=`.
+  ///
+  /// This includes the message of an exception whose type name is sensitive, as
+  /// in `TokenException: ...`: such a message may well quote the value.
   static Iterable<(int, int)> _namedValues(String text) sync* {
     var done = 0;
     for (final match in _assignment.allMatches(text)) {

@@ -17,8 +17,9 @@ import 'secret_redactor.dart';
 /// stored entries that contain the first characters of a new value. It misses
 /// an entry where redaction or truncation had already left less than those.
 final class DiagnosticLog implements Logger {
-  /// Keeps at most [capacity] entries.
-  DiagnosticLog({this.capacity = 500, this._clock = DateTime.now});
+  /// Keeps at most [capacity] entries, which must not be negative.
+  DiagnosticLog({this.capacity = 500, this._clock = DateTime.now})
+    : assert(capacity >= 0, 'capacity must not be negative');
 
   /// Longer texts are cut off, after redaction.
   static const maximumTextLength = 4000;
