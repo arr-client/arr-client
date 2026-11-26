@@ -83,10 +83,11 @@ final class ConnectionTest {
         AuthKind.apiKey || AuthKind.none => false,
       };
       if (signsIn && handler != null) {
+        final http = _StatusClient(_open(credential));
         final login = await handler.login(
           authKind: input.authKind,
           credential: credential,
-          http: _open(credential),
+          http: http,
         );
         _client?.close();
         switch (login) {
@@ -94,7 +95,7 @@ final class ConnectionTest {
             _log.addCredential(Credential(sessionCookie: value));
             credential = _withSession(credential, value);
           case Err(:final error):
-            return Err(error);
+            return Err(_ofSignIn(error, http.status));
         }
         if (_cancelled) return _abandoned;
       }
@@ -110,6 +111,15 @@ final class ConnectionTest {
       _client?.close();
     }
   }
+
+  /// A sign-in changes nothing on the server, so that its outcome is unknown
+  /// only means that it failed (as `InstanceSession` has it).
+  static ServiceFailure _ofSignIn(ServiceFailure failure, int? status) =>
+      switch ((failure, status)) {
+        (OutcomeUnknown(), 502 || 504) => ServerError(statusCode: status),
+        (OutcomeUnknown(), _) => const Unreachable(),
+        _ => failure,
+      };
 
   Future<bool> _mayUseNetwork(ExplainLocalNetwork explain) async {
     final host = input.url.host;
@@ -184,4 +194,26 @@ final class ConnectionTest {
         customHeaders: credential.customHeaders,
         sessionCookie: cookie,
       );
+}
+
+/// Remembers the status of the last answer, which a [SessionHandler] does not
+/// pass on with its failure.
+final class _StatusClient implements ServiceHttpClient {
+  _StatusClient(this._client);
+
+  final ServiceHttpClient _client;
+
+  int? status;
+
+  @override
+  Future<Result<ServiceResponse, HttpError>> send(
+    ServiceRequest request,
+  ) async {
+    final result = await _client.send(request);
+    status = switch (result) {
+      Ok(:final value) => value.statusCode,
+      Err(:final error) => error.response?.statusCode,
+    };
+    return result;
+  }
 }

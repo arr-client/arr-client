@@ -150,6 +150,53 @@ void main() {
     expect(requests, hasLength(1));
   });
 
+  const account = Credential(username: 'admin', password: 'zq-pass-123456');
+
+  // The sign-in is a POST, whose outcome the core calls unknown here. A test
+  // changes nothing on the server, so it must not say that it may have.
+  for (final status in [502, 504]) {
+    test('a gateway error $status on sign-in is a server error', () async {
+      answer = (request) async => request.response.statusCode = status;
+
+      final result = await run(
+        QbittorrentModule(),
+        AuthKind.userPassword,
+        account,
+      );
+
+      expect(
+        failureOf(result),
+        isA<ServerError>().having((e) => e.statusCode, 'statusCode', status),
+      );
+      expect(requests, hasLength(1));
+    });
+  }
+
+  for (final MapEntry(key: name, value: reply) in {
+    'dropped': '',
+    'not HTTP': 'SSH-2.0-OpenSSH_9.9\r\n',
+  }.entries) {
+    test('a sign-in answered $name is no answer', () async {
+      final raw = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+      addTearDown(raw.close);
+      raw.listen((socket) async {
+        await socket.first;
+        socket.write(reply);
+        await socket.flush();
+        socket.destroy();
+      });
+      port = raw.port;
+
+      final result = await run(
+        QbittorrentModule(),
+        AuthKind.userPassword,
+        account,
+      );
+
+      expect(failureOf(result), isA<Unreachable>());
+    });
+  }
+
   test('neither key nor password reaches the log', () async {
     answer = (request) async => request.response.statusCode = 500;
 

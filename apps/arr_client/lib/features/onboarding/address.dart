@@ -20,6 +20,9 @@ enum AddressProblem {
 
 final _whitespace = RegExp(r'\s');
 
+// A scheme typed wrongly, such as `https:/host` or `http//host`.
+final _brokenScheme = RegExp(r'^https?:?[/\\]', caseSensitive: false);
+
 /// The address typed as [text], or why there is none.
 ///
 /// Without a scheme, `http://` is put before it; the form shows the result.
@@ -28,7 +31,14 @@ Result<Uri, AddressProblem> parseAddress(String text) {
   var value = text.trim();
   if (value.isEmpty) return const Err(AddressProblem.missing);
   if (value.contains(_whitespace)) return const Err(AddressProblem.invalid);
-  if (!value.contains('://')) value = 'http://$value';
+  if (!value.contains('://')) {
+    // It would be read as a host named "http" or "https", reached over plain
+    // http, and sent the key.
+    if (value.startsWith(_brokenScheme)) {
+      return const Err(AddressProblem.invalid);
+    }
+    value = 'http://$value';
+  }
   final parsed = Uri.tryParse(value);
   if (parsed == null) return const Err(AddressProblem.invalid);
   if (parsed.userInfo.isNotEmpty) return const Err(AddressProblem.userInfo);
