@@ -63,8 +63,8 @@ their own HTTP clients or read secure storage directly. Session-based services r
 
 | Capability | Operations | Providers |
 |---|---|---|
-| LibraryProvider | list, get, children, files, options, credits, setMonitored, applyMonitorOption, edit, bulkEdit, delete, deleteFile | sonarr radarr lidarr readarr |
-| LookupProvider | lookup, addOptions, add | sonarr radarr lidarr readarr |
+| LibraryProvider | list, get, children, cachedList, cachedItem, cachedChildren, files, options, credits, setMonitored, applyMonitorOption, edit, bulkEdit, delete, deleteFile | sonarr radarr lidarr readarr |
+| LookupProvider | lookup, addOptions(kind), add | sonarr radarr lidarr readarr |
 | CommandProvider | search, refresh, rescan, commandStatus | sonarr radarr lidarr readarr |
 | ReleaseProvider | releases(target), grab | sonarr radarr lidarr readarr |
 | QueueProvider | queue, remove, removeMany, grabNow, importCandidates, importChoices, reprocess, import | sonarr radarr lidarr readarr |
@@ -83,6 +83,8 @@ their own HTTP clients or read secure storage directly. Session-based services r
 1. Cross-service screens use capabilities only; they never check a module id.
 2. A capability absent or not permitted means the matching UI is not shown (FR-002).
 3. Operations return `Result<T, ServiceFailure>`; no raw transport exceptions escape a module.
+   `LibraryProvider`'s cached reads make no network request and return nothing if the data was never
+   fetched, otherwise the records and when they were fetched.
 4. `ServiceFailure`: unreachable, dnsFailure, certificateUntrusted, certificateChanged,
    authFailed, forbidden, wrongService, proxyInterception, redirected, hostRejected,
    unsupportedVersion, writesRefused,

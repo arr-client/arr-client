@@ -67,8 +67,8 @@ the server's newest event, current conditions and current requests on subscribe,
 re-enabling an instance and on activating its profile (at the first successful check if it is
 unreachable), without notifying. Only instances of the active profile are checked.
 - imported: history events after the cursor.
-- downloadProblem: queue items in warning or error state, plus history `failed` events after the
-  cursor (condition key: instance + download id, so one failure notifies once).
+- downloadProblem: queue items whose severity is warning or error, plus history `failed` events
+  after the cursor (condition key: instance + download id, so one failure notifies once).
 - healthIssue: health entries (condition key: source + message).
 - pendingRequest: ids new to the snapshot with status pending.
 - ownRequestUpdate: own requests whose status becomes approved or declined, or whose availability
@@ -82,7 +82,9 @@ monitored, qualityProfileId, tagIds, addedAt, rawJson, fetchedAt. Deleted with i
 
 ### LibraryItem (common)
 ref, title, sortTitle, year?, overview?, images[], monitored, state, qualityProfileId?, tags[],
-path?, sizeOnDisk, addedAt?
+path?, sizeOnDisk, addedAt?, parent?, parentTitle?
+- parent and parentTitle: an episode's series, an album's artist, a track's album, a book's author;
+  absent for top-level items.
 - state: downloaded, partial, missing, unreleased, downloading, unmonitored.
   Precedence: downloading > downloaded > partial > unmonitored > unreleased > missing.
 - Movie: runtime, genres, certification, ratings, studio, dates, minimumAvailability, file?
@@ -95,7 +97,8 @@ path?, sizeOnDisk, addedAt?
   Edition: title, format?, isbn?, pageCount?, releaseDate?, monitored
 
 ### AddCandidate
-externalIds, display fields, existingRefs[] (one per instance that already has it),
+externalIds, display fields (including parentTitle?: an album's artist or a book's author),
+existingRefs[] (one per instance that already has it),
 sourceByInstance {instanceId: rawJson}. Adding to a target instance whose lookup did not produce the
 candidate first looks it up on that instance by external id; that rawJson is posted back.
 
@@ -104,7 +107,8 @@ guid, indexerId, indexer, title, protocol (torrent, usenet), size, ageHours, qua
 score, seeders?, leechers?, rejections[], rawJson. Grab sends back what the service requires.
 
 ### QueueItem
-id, downloadId?, itemRef?, title, status, trackedState, messages[], progress 0–1, sizeLeft, eta?,
+id, downloadId?, itemRef?, parent? (series, artist or author of itemRef), title, status, trackedState,
+severity (ok, warning, error, unknown), messages[], progress 0–1, sizeLeft, eta?,
 quality, downloadClient?, protocol, needsManualImport.
 
 ### HistoryEvent / HealthIssue / DiskSpace / Command
@@ -138,7 +142,8 @@ sourceTitle, date, quality, reason};
 Indexer {id, name, protocol, enabled, failureUntil?, lastFailure?}; IndexerCategory {id, name}.
 
 ### Request service
-SessionUser {id, name, permissions, quota}; DiscoveryTitle {tmdbId, mediaId? (the server's own media record id, `mediaInfo.id`, present only for
+SessionUser {id, name, permissions, quota}; DiscoveryTitle {tmdbId, tvdbId?, year?, mediaId? (the
+server's own media record id, `mediaInfo.id`, present only for
 titles it already knows; issues are filed against it, so issue reporting is offered only when
 present), mediaType, title, posterPath?,
 availability and availability4k (each: unknown, pending, processing, partial, available, blocklisted, deleted)};
@@ -155,8 +160,10 @@ availability, seasons[], is4k}; Issue {id, type, status, mediaRef, tmdbId, title
 SubtitleWant {kind, seriesId?, episodeId?, radarrId?, title, missing[{language, forced, hi}]};
 SubtitleCandidate {provider, language, forced, hi, score, matches[], dontMatches[], originalFormat,
 token}; SubtitleFile {mediaType, mediaId, seriesId?, path, language, forced, hi};
-SubtitleHistoryEvent {whenText (server-supplied relative and server-local text, shown as is; keep the server's newest-first order), mediaRef, language, provider?, action, score?};
-SubtitleTitle {kind, seriesId?, radarrId?, title, year?, missingCount, files[]}.
+SubtitleHistoryEvent {whenText (server-supplied relative and server-local text, shown as is; keep
+the server's newest-first order), mediaRef, title, language, provider?, action, score?};
+SubtitleTitle {kind, seriesId?, radarrId?, title, year?, missingCount, missing[{language, forced,
+hi}] (movies and episodes), files[]}.
 
 ### SetupExport
 See [contracts/backup-format.md](contracts/backup-format.md).
