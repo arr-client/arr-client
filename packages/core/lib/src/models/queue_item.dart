@@ -25,7 +25,15 @@ final class QueueItem {
     this.downloadClient,
     this.messages = const [],
     this.needsManualImport = false,
-  });
+  }) : assert(progress >= 0 && progress <= 1, 'progress is from 0 to 1');
+
+  /// [progress] for a download of [size] bytes with [sizeLeft] still to come.
+  /// It is 0 while the size is not known.
+  static double progressFrom({required num size, required num sizeLeft}) {
+    if (!(size > 0)) return 0;
+    final fraction = (size - sizeLeft) / size;
+    return fraction.isNaN ? 0 : fraction.clamp(0, 1).toDouble();
+  }
 
   /// The server's id of the queue entry.
   final int id;
