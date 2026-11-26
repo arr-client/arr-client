@@ -1,0 +1,11 @@
+name: core
+description: Module contract, connections and shared services of arr-client.
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter

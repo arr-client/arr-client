@@ -1,0 +1,26 @@
+name: arr_client_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.14.0
+  # Exact version, matching .fvmrc. CI installs the version read from here.
+  flutter: 3.50.1
+
+workspace:
+  - apps/arr_client
+  - packages/core
+  - packages/modules/bazarr
+  - packages/modules/lidarr
+  - packages/modules/prowlarr
+  - packages/modules/qbittorrent
+  - packages/modules/radarr
+  - packages/modules/readarr
+  - packages/modules/seerr
+  - packages/modules/sonarr
+  - packages/platform_local_network
+  - packages/servarr
+  - packages/ui
+
+dev_dependencies:
+  # The root analysis_options.yaml includes it.
+  flutter_lints: ^6.0.0

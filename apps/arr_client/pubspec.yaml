@@ -1,0 +1,22 @@
+name: arr_client
+description: Mobile companion app for self-hosted media services.
+publish_to: none
+resolution: workspace
+# release.yml checks this against the tag.
+version: 0.0.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Material widgets. package:flutter/material.dart is deprecated.
+  material_ui: ^1.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
