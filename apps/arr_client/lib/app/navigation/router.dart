@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../features/activity/queue/queue_details_screen.dart';
 import '../../features/onboarding/instance_form_screen.dart';
 import '../../features/onboarding/service_picker_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
@@ -102,6 +103,13 @@ GoRouter createRouter(ModuleRegistry modules) {
               {...state.pathParameters, ...state.uri.queryParameters},
             ),
           ),
+      scoped(
+        '/queue/:queueId',
+        (context, active, state) => QueueDetailsScreen(
+          instanceId: active.instance.id,
+          queueId: int.tryParse(state.pathParameters['queueId'] ?? ''),
+        ),
+      ),
       for (final flow in InstanceFlow.values)
         scoped('/${flow.name}', (context, active, state) {
           final strings = AppLocalizations.of(context);

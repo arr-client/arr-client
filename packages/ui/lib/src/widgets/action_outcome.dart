@@ -24,6 +24,9 @@ final _unreadFailures = Expando<int>();
 ///   state from the server.
 /// - Any other failure: says what happened.
 ///
+/// [describeFailure] rewords the message of a failure, for example to name the
+/// instance where several are changed at once.
+///
 /// A failure stays on screen until dismissed, and later outcomes wait behind
 /// it. A success message passes on its own and gives way to a later outcome.
 ///
@@ -40,18 +43,20 @@ Future<Result<T, ServiceFailure>> runAction<T>(
   required String acceptedMessage,
   required VoidCallback onRefresh,
   VoidCallback? onGone,
+  String Function(String message)? describeFailure,
 }) async {
   // Taken before the wait, after which context may be unmounted.
   final messenger = ScaffoldMessenger.of(context);
   final result = await action();
 
   if (messenger.mounted) {
-    final message = switch (result) {
+    var message = switch (result) {
       Ok() => acceptedMessage,
       Err(error: NotFound()) => UiLocalizations.of(messenger.context).itemGone,
       Err(:final error) => failureMessage(messenger.context, error),
     };
     final failed = result is Err;
+    if (failed) message = describeFailure?.call(message) ?? message;
     final maxHeight = MediaQuery.sizeOf(messenger.context).height / 3;
     // Only success messages may be cleared: while a failure is unread, this
     // outcome waits behind it.

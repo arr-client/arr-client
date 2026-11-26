@@ -57,3 +57,8 @@ enum InstanceFlow { releases, edit, delete, history }
 /// Where [flow] is for an instance.
 String instanceFlowLocation(String instanceId, InstanceFlow flow) =>
     Uri(path: '/instances/$instanceId/${flow.name}').toString();
+
+/// Where the entry [queueId] of an instance's queue is. No module's paths can
+/// collide with it, as theirs start with the module's id.
+String queueEntryLocation(String instanceId, int queueId) =>
+    Uri(path: '/instances/$instanceId/queue/$queueId').toString();
