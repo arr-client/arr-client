@@ -28,7 +28,9 @@ let
   # The Nix store is read-only, so Gradle cannot download missing parts: list them all here.
   buildTools = "37.0.0";
   android = pkgs.androidenv.composeAndroidPackages {
-    platformVersions = [ "36" "37.0" ]; # 36: Flutter 3.50 default, used by plugins; 37: our target
+    # 35: package:jni, used by path_provider; 36: Flutter 3.50 default, used by plugins;
+    # 37: our target
+    platformVersions = [ "35" "36" "37.0" ];
     buildToolsVersions = [ "36.0.0" buildTools ];
     includeNDK = true;
     ndkVersions = [ "28.2.13676358" ]; # Flutter 3.50 default
