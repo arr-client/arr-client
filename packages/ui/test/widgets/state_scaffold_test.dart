@@ -146,6 +146,30 @@ void main() {
     }
   });
 
+  testWidgets('the notice has the screen margin for the width', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    for (final (width, margin) in [(599.0, 16.0), (600.0, 24.0)]) {
+      tester.view.physicalSize = Size(width, 800);
+      await tester.pumpWidget(
+        testApp(
+          scaffold(
+            ViewData(
+              const [],
+              staleness: stale(Duration.zero, const Unreachable()),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.getTopLeft(find.byIcon(Icons.history)).dx, margin);
+      expect(
+        tester.getTopRight(find.widgetWithText(TextButton, 'Retry')).dx,
+        width - margin,
+      );
+    }
+  });
+
   testWidgets('empty saved data is both empty and stale', (tester) async {
     await tester.pumpWidget(
       testApp(

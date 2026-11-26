@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../l10n/generated/ui_localizations.dart';
 import 'failure_message.dart';
+import 'screen_margin.dart';
 import 'view_state.dart';
 
 /// Marks the data below it as saved data: its age, and either why it could not
@@ -58,42 +59,47 @@ class _StaleNoticeState extends State<StaleNotice> {
     final l10n = UiLocalizations.of(context);
     final theme = Theme.of(context);
     final failure = widget.staleness.failure;
-    return Material(
-      color: theme.colorScheme.surfaceContainerHigh,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.history, color: theme.colorScheme.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_age(l10n), style: theme.textTheme.titleSmall),
-                  if (failure != null) ...[
-                    const SizedBox(height: 4),
-                    // Only this is announced: the age changes every minute.
-                    Semantics(
-                      liveRegion: true,
-                      child: Text(failureMessage(context, failure)),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: TextButton(
-                        onPressed: widget.onRetry,
-                        child: Text(l10n.retry),
+    return LayoutBuilder(
+      builder: (context, constraints) => Material(
+        color: theme.colorScheme.surfaceContainerHigh,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: screenMargin(constraints.maxWidth),
+            vertical: 8,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.history, color: theme.colorScheme.onSurfaceVariant),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_age(l10n), style: theme.textTheme.titleSmall),
+                    if (failure != null) ...[
+                      const SizedBox(height: 4),
+                      // Only this is announced: the age changes every minute.
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(failureMessage(context, failure)),
                       ),
-                    ),
-                  ] else ...[
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(semanticsLabel: l10n.loading),
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: TextButton(
+                          onPressed: widget.onRetry,
+                          child: Text(l10n.retry),
+                        ),
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(semanticsLabel: l10n.loading),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

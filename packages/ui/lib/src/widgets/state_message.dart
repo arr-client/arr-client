@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
+import 'screen_margin.dart';
+
 /// A centred icon and message with an optional button, which scrolls when it
 /// does not fit. The body of the empty, error and item-gone states.
 class StateMessage extends StatelessWidget {
@@ -29,7 +31,7 @@ class StateMessage extends StatelessWidget {
     final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
-        final margin = constraints.maxWidth < 600 ? 16.0 : 24.0;
+        final margin = screenMargin(constraints.maxWidth);
         return SingleChildScrollView(
           // So that a pull to refresh around this works when it all fits.
           physics: const AlwaysScrollableScrollPhysics(),
