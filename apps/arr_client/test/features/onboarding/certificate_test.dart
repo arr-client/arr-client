@@ -56,7 +56,8 @@ CertificateInfo presented(String sha256) => CertificateInfo(
   subject: '/CN=nas.test',
   issuer: '/CN=nas.test',
   notBefore: DateTime.utc(2025),
-  notAfter: DateTime.utc(2125),
+  // Midday, so that it is the same day in any time zone.
+  notAfter: DateTime.utc(2125, 1, 1, 12),
 );
 
 /// A server that presents the certificate [sha256], which no authority vouches
@@ -145,6 +146,8 @@ void main() {
     expect(find.textContaining('$host presented'), findsOneWidget);
     expect(fingerprint(newPrint), findsOneWidget);
     expect(find.text('CN=nas.test'), findsNWidgets(2));
+    // With the year.
+    expect(find.text('Jan 1, 2125'), findsOneWidget);
     expect(find.textContaining('no longer presents'), findsNothing);
     expect(enabled(tester, 'Trust this certificate'), isFalse);
 

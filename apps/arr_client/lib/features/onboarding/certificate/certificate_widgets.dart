@@ -187,7 +187,8 @@ class CertificateDetails extends StatelessWidget {
     final theme = Theme.of(context);
     final dates = MaterialLocalizations.of(context);
     String? date(DateTime? value) =>
-        value == null ? null : dates.formatMediumDate(value.toLocal());
+        // With the year, which is what matters of a certificate's dates.
+        value == null ? null : dates.formatShortDate(value.toLocal());
     final now = DateTime.now();
     final expired = certificate.notAfter?.isBefore(now) ?? false;
     final early = certificate.notBefore?.isAfter(now) ?? false;
