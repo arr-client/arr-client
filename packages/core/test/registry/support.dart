@@ -52,7 +52,7 @@ class FakeSessionHandler implements SessionHandler {
   };
 
   @override
-  bool isSessionExpired(ServiceResponse response) => false;
+  bool isSessionExpired(ServiceResponse response) => response.statusCode == 403;
 }
 
 class FakeModule implements ServiceModule {
@@ -133,6 +133,9 @@ class GatedServer {
   late final TestServer server;
   final String body;
   final held = <String, Completer<void>>{};
+
+  /// Paths answered with another status than 200.
+  final statuses = <String, int>{};
   final _arrived = <String, Completer<void>>{};
 
   static Future<GatedServer> start([String body = 'fine']) async {
@@ -168,7 +171,12 @@ class GatedServer {
     if (!arrived.isCompleted) arrived.complete();
     await held[path]?.future;
     try {
-      await reply(response, body: body, contentType: 'text/plain');
+      await reply(
+        response,
+        status: statuses[path] ?? 200,
+        body: body,
+        contentType: 'text/plain',
+      );
     } on Exception {
       // The client has gone.
     }

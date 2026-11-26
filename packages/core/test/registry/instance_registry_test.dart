@@ -297,31 +297,122 @@ void main() {
 
   group('an instance that signs in', () {
     late String away;
-    late String id;
-    late GatedServer refusing;
 
     setUp(() async {
       away = await world.profile('Away');
-      refusing = await GatedServer.start('no');
-      final added = await world.profiles.addInstance(
-        world.home,
-        InstanceDraft(
-          name: 'Client',
-          serviceType: 'client',
-          url: refusing.url,
-          authKind: AuthKind.userPassword,
-        ),
-        credential: const Credential(username: 'zq-user', password: 'zq-pass'),
-      );
-      id = (added as Ok<Instance, RuleViolation>).value.id;
-      await registry().refresh();
     });
 
-    test('has a way to sign in again', () {
+    InstanceDraft draft(String name, Uri url, {bool enabled = true}) =>
+        InstanceDraft(
+          name: name,
+          serviceType: 'client',
+          url: url,
+          authKind: AuthKind.userPassword,
+          enabled: enabled,
+        );
+
+    Future<String> addClient(Uri url) async {
+      final added = await world.profiles.addInstance(
+        world.home,
+        draft('Client', url),
+        credential: const Credential(username: 'zq-user', password: 'zq-pass'),
+      );
+      await registry().refresh();
+      return (added as Ok<Instance, RuleViolation>).value.id;
+    }
+
+    Future<void> save(String id, InstanceDraft changed) async {
+      await world.profiles.updateInstance(id, changed);
+      await registry().refresh();
+    }
+
+    Future<String?> cookie(String id) async =>
+        (await world.profiles.credential(id))?.sessionCookie;
+
+    Future<bool> latched(String id) async =>
+        (await world.profiles.instance(id))!.authFailed;
+
+    /// Long enough for a request that should not be made to arrive.
+    Future<void> settle() =>
+        Future<void>.delayed(const Duration(milliseconds: 200));
+
+    test('has a way to sign in again', () async {
+      final id = await addClient(server.url);
+
       expect(world.active(id).context.session, isNotNull);
     });
 
+    final retirements = <String, Future<void> Function(String id)>{
+      'a switch': (_) => registry().switchTo(away),
+      'being disabled': (id) =>
+          save(id, draft('Client', server.url, enabled: false)),
+      'the registry closing': (_) => registry().close(),
+    };
+    for (final MapEntry(key: name, value: retire) in retirements.entries) {
+      test('sends no read after a sign-in overtaken by $name', () async {
+        final id = await addClient(server.url);
+        server.hold('login');
+        final read = world.active(id).context.http.send(get('a'));
+        await server.arrival('login');
+
+        await retire(id);
+        expect(await read, failsWith<Unreachable>());
+        server.release('login');
+
+        // The sign-in itself finishes.
+        await _until(() async => await cookie(id) != null);
+        await settle();
+        expect(server.calls, ['POST /login']);
+      });
+    }
+
+    test('does not even sign in for a read given up before that', () async {
+      final id = await addClient(server.url);
+      final read = world.active(id).context.http.send(get('a'));
+
+      await registry().switchTo(away);
+
+      expect(await read, failsWith<Unreachable>());
+      await settle();
+      expect(server.calls, isEmpty);
+    });
+
+    test('does not sign in again for a read given up', () async {
+      final id = await addClient(server.url);
+      expect(await world.active(id).context.http.send(get('a')), succeeds);
+      server.statuses['expired'] = 403;
+      server.hold('expired');
+      final read = world.active(id).context.http.send(get('expired'));
+      await server.arrival('expired');
+
+      await registry().switchTo(away);
+      expect(await read, failsWith<Unreachable>());
+      server.release('expired');
+
+      await settle();
+      expect(server.calls, ['POST /login', 'GET /a', 'GET /expired']);
+    });
+
+    test('still sends a write after the sign-in it waited for', () async {
+      final id = await addClient(server.url);
+      server.hold('login');
+      final http = world.active(id).context.http;
+      final read = http.send(get('a'));
+      final write = http.send(request(HttpMethod.post, 'command'));
+      await server.arrival('login');
+
+      await registry().switchTo(away);
+      server.release('login');
+
+      expect(await read, failsWith<Unreachable>());
+      expect(await write, succeeds);
+      await settle();
+      expect(server.calls, ['POST /login', 'POST /command']);
+    });
+
     test('still records a rejection that arrives after a switch', () async {
+      final refusing = await GatedServer.start('no');
+      final id = await addClient(refusing.url);
       refusing.hold('login');
       final read = world.active(id).context.http.send(get('a'));
       await refusing.arrival('login');
@@ -330,8 +421,121 @@ void main() {
       expect(await read, failsWith<Unreachable>());
       refusing.release('login');
 
-      await _until(() async => (await world.profiles.instance(id))!.authFailed);
+      await _until(() => latched(id));
       expect(refusing.calls, ['POST /login']);
+    });
+
+    test('is not signed in twice at once because of an edit', () async {
+      final refusing = await GatedServer.start('no');
+      final id = await addClient(refusing.url);
+      refusing.hold('login');
+      final old = world.active(id).context.http.send(get('a'));
+      await refusing.arrival('login');
+
+      await save(id, draft('Renamed', refusing.url));
+      final renewed = world.active(id).context.http.send(get('b'));
+      expect(await old, failsWith<Unreachable>());
+      await settle();
+      refusing.release('login');
+
+      expect(await renewed, failsWith<AuthFailed>());
+      expect(refusing.calls, ['POST /login']);
+    });
+
+    test('rename during a failing sign-in sends one login', () async {
+      final id = await addClient(server.url);
+      server.statuses['login'] = 500;
+      server.hold('login');
+      final old = world.active(id).context.http.send(get('a'));
+      await server.arrival('login');
+
+      await save(id, draft('Renamed', server.url));
+      final renewed = world.active(id).context.http.send(get('b'));
+      expect(await old, failsWith<Unreachable>());
+      await settle();
+      server.release('login');
+
+      expect(await renewed, failsWith<ServerError>());
+      // Nor after another rename, or away and back.
+      await save(id, draft('Again', server.url));
+      await registry().switchTo(away);
+      await registry().switchTo(world.home);
+      expect(
+        await world.active(id).context.http.send(get('c')),
+        failsWith<ServerError>(),
+      );
+      expect(server.calls, ['POST /login']);
+    });
+
+    test('signs in again at once when asked after a failure', () async {
+      final id = await addClient(server.url);
+      server.statuses['login'] = 500;
+      expect(
+        await world.active(id).context.http.send(get('a')),
+        failsWith<ServerError>(),
+      );
+      server.statuses.remove('login');
+      await save(id, draft('Renamed', server.url));
+
+      final signedIn = await world.active(id).context.session!.login();
+
+      expect(signedIn, isA<Ok<void, ServiceFailure>>());
+      expect(server.calls, ['POST /login', 'POST /login']);
+    });
+
+    test('does not hold up a corrected address with a hung sign-in', () async {
+      final corrected = await GatedServer.start();
+      final id = await addClient(server.url);
+      server.hold('login');
+      final old = world.active(id).context.http.send(get('a'));
+      await server.arrival('login');
+
+      await save(id, draft('Client', corrected.url));
+
+      // The first sign-in is still unanswered.
+      expect(await world.active(id).context.http.send(get('b')), succeeds);
+      expect(corrected.calls, ['POST /login', 'GET /b']);
+      expect(await old, failsWith<Unreachable>());
+    });
+
+    test('sends no write to an address saved while it waited', () async {
+      final moved = await GatedServer.start();
+      final id = await addClient(server.url);
+      server.hold('login');
+      final old = world.active(id).context.http.send(get('a'));
+      await server.arrival('login');
+      await save(id, draft('Renamed', server.url));
+      final write = world
+          .active(id)
+          .context
+          .http
+          .send(request(HttpMethod.post, 'command/7'));
+      await settle();
+
+      await save(id, draft('Renamed', moved.url));
+      server.release('login');
+
+      expect(await old, failsWith<Unreachable>());
+      expect(await write, failsWith<Unreachable>());
+      await settle();
+      expect(server.calls, ['POST /login']);
+      expect(moved.calls, ['POST /login']);
+    });
+
+    test('uses the sign-in that an edit overtook', () async {
+      final id = await addClient(server.url);
+      server.hold('login');
+      final old = world.active(id).context.http.send(get('a'));
+      await server.arrival('login');
+
+      await save(id, draft('Renamed', server.url));
+      final renewed = world.active(id).context.http.send(get('b'));
+      expect(await old, failsWith<Unreachable>());
+      await settle();
+      server.release('login');
+
+      expect(await renewed, succeeds);
+      expect(server.calls, ['POST /login', 'GET /b']);
     });
   });
 

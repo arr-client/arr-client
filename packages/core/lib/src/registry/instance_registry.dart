@@ -29,7 +29,9 @@ import 'profile_scope.dart';
 ///
 /// - After a switch of profile nothing more of the old one arrives: its reads
 ///   under way fail, its writes under way finish and report their outcome, and
-///   nothing new is sent for it.
+///   nothing new is sent for it. A write the user has issued counts as under way
+///   even while it waits for a sign-in, so it is still sent after that, though
+///   never to an address or authKind saved meanwhile.
 /// - The same happens to an instance that is edited, disabled or removed. An
 ///   edited one gets a new session.
 /// - There is never more than one session in use for an instance.
@@ -65,6 +67,9 @@ final class InstanceRegistry {
 
   /// The sessions not yet closed, the one in use for each instance.
   final _links = <String, SessionLink>{};
+
+  /// So that replacing a session does not send a password again too soon.
+  final _signIns = SharedSignIns();
 
   /// Of the instances in the scope, by id and in its order.
   var _entries = <String, _Entry>{};
@@ -254,6 +259,7 @@ final class InstanceRegistry {
         log: _log,
         localNetwork: _localNetwork,
         timeout: _timeout,
+        signIns: _signIns,
       ),
       version: version,
       signsIn: _signsIn(instance, module),

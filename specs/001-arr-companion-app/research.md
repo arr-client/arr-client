@@ -39,7 +39,9 @@ send a token. **Alternative**: automatic local/remote selection (rejected).
 
 Switching profile cancels in-flight reads, rebuilds the per-instance providers for the new profile
 and marks connections unknown. A write already sent is not cancelled or repeated; its outcome is
-reported if known.
+reported if known. A write the user has issued counts as under way even while it waits for a
+sign-in, so it is still sent after it, though never to an address or kind of authentication saved
+meanwhile.
 
 Probes also run without a user-initiated test: after import, on re-enable, after an address or
 credential change, on profile activation and on first contact in each app launch, updating

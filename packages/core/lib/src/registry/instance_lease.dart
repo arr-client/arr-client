@@ -78,9 +78,10 @@ final class SessionLink {
 
 /// What a module gets to send with, for as long as its instance is in use.
 ///
-/// Once retired, nothing more is sent, and a read under way fails at once with
-/// [Unreachable], so that no late answer arrives. A write or sign-in under way
-/// is neither cancelled nor repeated, and its outcome is reported.
+/// Once retired, nothing new is sent, and a read under way fails at once with
+/// [Unreachable], so that no late answer arrives; it is not sent after a
+/// sign-in it was waiting for either. A write or sign-in under way is neither
+/// cancelled nor repeated, and its outcome is reported.
 final class InstanceLease implements ServiceHttpClient, SessionAuthenticator {
   /// Creates a lease of [link].
   InstanceLease(this.link);
@@ -122,9 +123,9 @@ final class InstanceLease implements ServiceHttpClient, SessionAuthenticator {
     }
     final read = Completer<Result<ServiceResponse, HttpError>>();
     _reads.add(read);
-    final sent = link.signsIn
-        ? link.hold(() => link.session.send(request))
-        : link.session.send(request);
+    Future<Result<ServiceResponse, HttpError>> ask() =>
+        link.session.send(request, abandoned: () => _retired);
+    final sent = link.signsIn ? link.hold(ask) : ask();
     // Neither completes it if retiring has done so.
     unawaited(
       sent.then(
