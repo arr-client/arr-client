@@ -21,10 +21,20 @@ workspace:
   - packages/servarr
   - packages/ui
 
+# SQLite is compiled from the vendored amalgamation instead of the prebuilt
+# library that package:sqlite3 would download (research R17).
+# tool/check_sqlite_source.dart enforces this.
+hooks:
+  user_defines:
+    sqlite3:
+      source: source
+      path: third_party/sqlite/sqlite3.c
+
 dev_dependencies:
   # tool/check_dependencies.dart parses Dart directives with it.
   analyzer: ^14.7.0
-  # tool/check_licenses.dart recognises long licence texts by their SHA-256.
+  # tool/check_licenses.dart recognises long licence texts by their SHA-256, and
+  # tool/check_sqlite_source.dart verifies the vendored SQLite with it.
   crypto: ^3.0.7
   # The root analysis_options.yaml includes it.
   flutter_lints: ^6.0.0

@@ -13,6 +13,7 @@ coverage/
 *.g.dart
 *.freezed.dart
 **/l10n/generated/
+**/test/storage/generated/
 # Android and signing
 local.properties
 key.properties

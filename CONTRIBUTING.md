@@ -26,7 +26,8 @@ NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE=1 nix-shell   # accepts the licences
 With direnv, `direnv allow` does the same through `.envrc`. Add `--arg withEmulator true` for an
 emulator.
 
-Without Nix, install Flutter 3.50.1, JDK 17 and the Android SDK.
+Without Nix, install Flutter 3.50.1, JDK 17 and the Android SDK. SQLite is compiled from the source
+in `third_party/`, so tests on Linux also need Clang and `llvm-ar` on the `PATH`.
 
 ## Build, run and check
 
@@ -34,7 +35,7 @@ These were tested in the Nix shell on x86_64 Linux. Start at the repository root
 
 ```sh
 flutter pub get                    # the whole workspace
-bash .github/scripts/codegen.sh    # generated files; nothing to generate yet
+bash .github/scripts/codegen.sh    # generated files, which are not committed
 ```
 
 Run the checks before opening a pull request:
@@ -44,6 +45,7 @@ dart format --output=none --set-exit-if-changed .
 flutter analyze
 dart run tool/check_dependencies.dart
 dart run tool/check_licenses.dart
+dart run tool/check_sqlite_source.dart
 python3 .github/scripts/check_repo.py
 dart test tool/test
 for dir in apps/* packages/* packages/modules/*; do

@@ -66,7 +66,12 @@ pkgs.mkShell {
     pkgs.actionlint
     pkgs.uv # to run GitHub Spec Kit's `specify`
   ]
-  ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.chromium ];
+  ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+    pkgs.chromium
+    # The build hook of package:sqlite3 compiles SQLite for host tests with them.
+    pkgs.llvmPackages.clang
+    pkgs.llvmPackages.llvm # llvm-ar
+  ];
 
   # `flutter` sets this for itself; plain `dart` needs it to resolve Flutter SDK packages.
   FLUTTER_ROOT = "${pkgs.flutter350}";

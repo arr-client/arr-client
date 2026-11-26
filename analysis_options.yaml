@@ -10,6 +10,7 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "**/l10n/generated/**"
+    - "**/test/storage/generated/**"
 
 linter:
   rules:
