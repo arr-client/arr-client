@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
+import 'src/adapters/library.dart';
+import 'src/api/radarr_api.dart';
+
 // Also Radarr's `appName` in `system/status`.
 const _product = 'Radarr';
 
@@ -47,15 +50,30 @@ final class RadarrModule implements ServiceModule {
     };
   }
 
-  // No capability is implemented yet.
+  // An API key may use everything, in every supported version.
   @override
   Set<CapabilityKind> capabilitiesFor(
     ProbeResult probe,
     SessionInfo? session,
-  ) => const {};
+  ) => const {
+    CapabilityKind.library,
+    CapabilityKind.queue,
+    CapabilityKind.history,
+  };
 
   @override
-  T? capability<T extends Capability>(InstanceContext context) => null;
+  T? capability<T extends Capability>(InstanceContext context) {
+    final Capability? found = switch (T) {
+      const (LibraryProvider) => RadarrLibraryAdapter(
+        RadarrApi(context),
+        context,
+      ),
+      const (QueueProvider) => RadarrQueueAdapter(RadarrApi(context)),
+      const (HistoryProvider) => RadarrHistoryAdapter(RadarrApi(context)),
+      _ => null,
+    };
+    return found as T?;
+  }
 
   @override
   List<ModuleScreen> routes() => const [];

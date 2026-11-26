@@ -164,7 +164,9 @@ sharing a downloadId share one DownloadProgress.
 ServerOption {kind: qualityProfile|metadataProfile|rootFolder|tag, id, label, freeSpace?};
 CalendarEvent {itemRef, title, date, dateKind, state};
 ImportedItem {itemRef?, title, importedAt, quality} (history import events from local midnight of the
-day to the next, grouped by item); Credit {person, role, character?, image?};
+day to the next, grouped by item); Credit {person, type (cast, crew, unknown), role?, character?,
+image?} (role is the server's own word, absent where it gives none, as Radarr does for cast; the screen
+labels from type);
 MediaFile {id, path, size, quality, languages[], video?, audio?}; BlocklistEntry {id, itemRef?,
 sourceTitle, date, quality, reason};
 Indexer {id, name, protocol, enabled, failureUntil?, lastFailure?}; IndexerCategory {id, name};

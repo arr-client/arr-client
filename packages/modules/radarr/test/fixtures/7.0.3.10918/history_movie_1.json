@@ -1,0 +1,199 @@
+[
+  {
+    "movieId": 1,
+    "sourceTitle": "/redacted/223.mkv",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T12:51:55Z",
+    "eventType": "movieFileRenamed",
+    "data": {
+      "sourcePath": "/redacted/223.mkv",
+      "sourceRelativePath": "redacted-224",
+      "path": "/redacted/34.mkv",
+      "relativePath": "redacted-33",
+      "releaseGroup": null,
+      "size": "21805813",
+      "indexerFlags": "0"
+    },
+    "id": 5
+  },
+  {
+    "movieId": 1,
+    "sourceTitle": "redacted-225",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T12:51:54Z",
+    "eventType": "downloadFolderImported",
+    "data": {
+      "fileId": "4",
+      "droppedPath": "/redacted/226.mkv",
+      "importedPath": "/redacted/223.mkv",
+      "downloadClient": null,
+      "downloadClientName": null,
+      "releaseGroup": null,
+      "customFormatScore": "0",
+      "size": "21805813",
+      "indexerFlags": "0"
+    },
+    "id": 4
+  },
+  {
+    "movieId": 1,
+    "sourceTitle": "/redacted/227.mp4",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 5,
+        "name": "WEBDL-720p",
+        "source": "webdl",
+        "resolution": 720,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": true,
+    "date": "2026-11-26T12:51:54Z",
+    "eventType": "movieFileDeleted",
+    "data": {
+      "reason": "Upgrade",
+      "releaseGroup": null,
+      "size": "11524858",
+      "indexerFlags": "0"
+    },
+    "id": 3
+  },
+  {
+    "movieId": 1,
+    "sourceTitle": "redacted-228",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 5,
+        "name": "WEBDL-720p",
+        "source": "webdl",
+        "resolution": 720,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": true,
+    "date": "2026-11-26T12:51:53Z",
+    "eventType": "downloadFolderImported",
+    "data": {
+      "fileId": "3",
+      "droppedPath": "/redacted/229.mp4",
+      "importedPath": "/redacted/227.mp4",
+      "downloadClient": null,
+      "downloadClientName": null,
+      "releaseGroup": null,
+      "customFormatScore": "0",
+      "size": "11524858",
+      "indexerFlags": "0"
+    },
+    "id": 2
+  },
+  {
+    "movieId": 1,
+    "sourceTitle": "/redacted/230.mkv",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      },
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T12:51:53Z",
+    "eventType": "movieFileDeleted",
+    "data": {
+      "reason": "Upgrade",
+      "releaseGroup": null,
+      "size": "21805813",
+      "indexerFlags": "0"
+    },
+    "id": 1
+  }
+]

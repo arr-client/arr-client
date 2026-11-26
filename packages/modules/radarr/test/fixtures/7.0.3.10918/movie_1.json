@@ -1,0 +1,211 @@
+{
+  "title": "redacted-1",
+  "originalTitle": "redacted-1",
+  "originalLanguage": {
+    "id": 1,
+    "name": "English"
+  },
+  "alternateTitles": [
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-2",
+      "id": 1
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-3",
+      "id": 2
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-4",
+      "id": 3
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-5",
+      "id": 4
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-6",
+      "id": 5
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-7",
+      "id": 6
+    },
+    {
+      "sourceType": "tmdb",
+      "movieMetadataId": 1,
+      "title": "redacted-8",
+      "id": 7
+    }
+  ],
+  "secondaryYearSourceId": 0,
+  "sortTitle": "redacted-9",
+  "sizeOnDisk": 21805813,
+  "status": "released",
+  "overview": "redacted-10",
+  "inCinemas": "2008-04-10T00:00:00Z",
+  "digitalRelease": "2008-04-10T00:00:00Z",
+  "releaseDate": "2008-04-10T00:00:00Z",
+  "images": [
+    {
+      "coverType": "poster",
+      "url": "/MediaCover/1/poster.jpg?h=575804ada86e356966a7",
+      "remoteUrl": "https://redacted.invalid/11.jpg"
+    },
+    {
+      "coverType": "fanart",
+      "url": "/MediaCover/1/fanart.jpg?h=a54364feca427354955c",
+      "remoteUrl": "https://redacted.invalid/12.jpg"
+    }
+  ],
+  "website": "https://redacted.invalid/13",
+  "year": 2008,
+  "youTubeTrailerId": "redacted-14",
+  "studio": "redacted-15",
+  "path": "/redacted/16",
+  "qualityProfileId": 4,
+  "hasFile": true,
+  "movieFileId": 4,
+  "monitored": true,
+  "minimumAvailability": "released",
+  "isAvailable": true,
+  "folderName": "/redacted/16",
+  "runtime": 8,
+  "cleanTitle": "redacted-17",
+  "imdbId": "tt1254207",
+  "tmdbId": 10378,
+  "titleSlug": "redacted-18",
+  "rootFolderPath": "/redacted/19",
+  "certification": "G",
+  "genres": [
+    "redacted-20",
+    "redacted-21",
+    "redacted-22"
+  ],
+  "keywords": [
+    "redacted-23",
+    "redacted-24",
+    "redacted-25",
+    "redacted-26",
+    "redacted-27",
+    "redacted-28",
+    "redacted-29",
+    "redacted-30",
+    "redacted-31",
+    "redacted-32"
+  ],
+  "tags": [
+    1
+  ],
+  "added": "2026-11-26T12:51:34Z",
+  "ratings": {
+    "imdb": {
+      "votes": 2269,
+      "value": 6.4,
+      "type": "user"
+    },
+    "tmdb": {
+      "votes": 203,
+      "value": 6.473,
+      "type": "user"
+    },
+    "trakt": {
+      "votes": 329,
+      "value": 7.04863,
+      "type": "user"
+    }
+  },
+  "movieFile": {
+    "movieId": 1,
+    "relativePath": "redacted-33",
+    "path": "/redacted/34.mkv",
+    "size": 21805813,
+    "dateAdded": "2026-11-26T12:51:54Z",
+    "edition": "",
+    "languages": [
+      {
+        "id": 1,
+        "name": "English"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "indexerFlags": 0,
+    "mediaInfo": {
+      "audioBitrate": 64000,
+      "audioChannels": 5.1,
+      "audioCodec": "AC3",
+      "audioLanguages": "eng/deu",
+      "audioStreamCount": 2,
+      "videoBitDepth": 8,
+      "videoBitrate": 0,
+      "videoCodec": "x264",
+      "videoFps": 24,
+      "videoDynamicRange": "",
+      "videoDynamicRangeType": "",
+      "resolution": "1920x1080",
+      "runTime": "10:00",
+      "scanType": "Progressive",
+      "subtitles": "",
+      "audioStreams": [
+        {
+          "codec": "redacted-35",
+          "bitrate": 64000,
+          "channels": 5.1,
+          "channelPositions": "redacted-36",
+          "language": "eng"
+        },
+        {
+          "codec": "redacted-35",
+          "bitrate": 64000,
+          "channels": 5.1,
+          "channelPositions": "redacted-36",
+          "language": "deu"
+        }
+      ],
+      "subtitleStreams": []
+    },
+    "originalFilePath": "redacted-37",
+    "qualityCutoffNotMet": false,
+    "id": 4
+  },
+  "popularity": 2.2048,
+  "statistics": {
+    "movieFileCount": 1,
+    "sizeOnDisk": 21805813,
+    "releaseGroups": [],
+    "movieFileQualities": [
+      {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      }
+    ]
+  },
+  "id": 1
+}

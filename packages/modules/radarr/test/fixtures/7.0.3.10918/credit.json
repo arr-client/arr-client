@@ -1,0 +1,83 @@
+[
+  {
+    "personName": "redacted-191",
+    "creditTmdbId": "redacted-192",
+    "personTmdbId": 97913,
+    "movieMetadataId": 3,
+    "images": [
+      {
+        "coverType": "headshot",
+        "url": "/redacted/193.jpg",
+        "remoteUrl": "https://redacted.invalid/194.jpg"
+      }
+    ],
+    "character": "redacted-195",
+    "order": 0,
+    "type": "cast",
+    "id": 23
+  },
+  {
+    "personName": "redacted-196",
+    "creditTmdbId": "redacted-197",
+    "personTmdbId": 97912,
+    "movieMetadataId": 3,
+    "images": [
+      {
+        "coverType": "headshot",
+        "url": "/redacted/198.jpg",
+        "remoteUrl": "https://redacted.invalid/199.jpg"
+      }
+    ],
+    "character": "redacted-200",
+    "order": 1,
+    "type": "cast",
+    "id": 24
+  },
+  {
+    "personName": "redacted-201",
+    "creditTmdbId": "redacted-202",
+    "personTmdbId": 97915,
+    "movieMetadataId": 3,
+    "images": [
+      {
+        "coverType": "headshot",
+        "url": "/redacted/203.jpg",
+        "remoteUrl": "https://redacted.invalid/204.jpg"
+      }
+    ],
+    "character": "redacted-205",
+    "order": 2,
+    "type": "cast",
+    "id": 25
+  },
+  {
+    "personName": "redacted-206",
+    "creditTmdbId": "redacted-207",
+    "personTmdbId": 14999,
+    "movieMetadataId": 3,
+    "images": [
+      {
+        "coverType": "headshot",
+        "url": "/redacted/208.jpg",
+        "remoteUrl": "https://redacted.invalid/209.jpg"
+      }
+    ],
+    "department": "redacted-210",
+    "job": "redacted-211",
+    "order": 0,
+    "type": "crew",
+    "id": 53
+  },
+  {
+    "personName": "redacted-212",
+    "creditTmdbId": "redacted-213",
+    "personTmdbId": 64831,
+    "movieMetadataId": 3,
+    "images": [],
+    "department": "redacted-214",
+    "job": "redacted-215",
+    "order": 2,
+    "type": "crew",
+    "id": 55
+  }
+]

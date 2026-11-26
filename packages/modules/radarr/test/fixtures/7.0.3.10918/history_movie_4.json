@@ -1,0 +1,95 @@
+[
+  {
+    "movieId": 4,
+    "sourceTitle": "redacted-231",
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T12:52:10Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "eventType": "downloadFailed",
+    "data": {
+      "downloadClient": "redacted-232",
+      "downloadClientName": null,
+      "message": "redacted-233",
+      "releaseGroup": "redacted-234",
+      "size": "1500000000",
+      "indexer": null
+    },
+    "id": 10
+  },
+  {
+    "movieId": 4,
+    "sourceTitle": "redacted-231",
+    "languages": [
+      {
+        "id": 4,
+        "name": "German"
+      }
+    ],
+    "quality": {
+      "quality": {
+        "id": 7,
+        "name": "Bluray-1080p",
+        "source": "bluray",
+        "resolution": 1080,
+        "modifier": "none"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "customFormats": [],
+    "customFormatScore": 0,
+    "qualityCutoffNotMet": false,
+    "date": "2026-11-26T12:52:07Z",
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "eventType": "grabbed",
+    "data": {
+      "indexer": null,
+      "nzbInfoUrl": null,
+      "releaseGroup": "redacted-234",
+      "age": "0",
+      "ageHours": "0.00014652858333333334",
+      "ageMinutes": "0.008791801666666666",
+      "publishedDate": "2026-11-26T12:52:07Z",
+      "downloadClient": "redacted-232",
+      "downloadClientName": "redacted-232",
+      "size": "1500000000",
+      "downloadUrl": null,
+      "guid": "redacted-235",
+      "tmdbId": "0",
+      "imdbId": "0",
+      "protocol": "2",
+      "customFormatScore": "0",
+      "movieMatchType": "Title",
+      "releaseSource": "ReleasePush",
+      "indexerFlags": "0",
+      "indexerId": "0",
+      "torrentInfoHash": "ABCDEF0000000000000000000000000000000001"
+    },
+    "id": 9
+  }
+]
