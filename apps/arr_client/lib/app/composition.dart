@@ -162,12 +162,20 @@ final class AppServices {
     await registry.start();
   }
 
-  /// Catches up with what was saved while the app was in the background.
+  /// Catches up with what was saved while the app was in the background, and
+  /// checks once more what could not be used when last checked, as it may be
+  /// back.
   Future<void> resume() async {
     try {
       await registry.refresh();
     } catch (error) {
       _warn('The profiles could not be read', error);
+    }
+    for (final active in registry.scope?.instances ?? <ActiveInstance>[]) {
+      // Nothing is sent for a latched one.
+      if (active.connection is ConnectionOffline) {
+        prober.probe(active.instance.id);
+      }
     }
   }
 

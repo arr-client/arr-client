@@ -12,6 +12,8 @@ import 'package:ui/ui.dart';
 
 import '../../features/activity/queue/queue_tab.dart';
 import '../../features/calendar/calendar_screen.dart';
+import '../../features/home/profile_switcher.dart';
+import '../../features/home/unreachable_offer.dart';
 import '../../features/library/library_controller.dart';
 import '../../features/library/library_view_body.dart';
 import '../../src/l10n/generated/app_localizations.dart';
@@ -30,15 +32,17 @@ class HomeScreen extends ConsumerWidget {
     final profile = ref.watch(activeProfileProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text(switch (profile) {
-          AsyncData(value: final active?) => active.profile.name,
-          _ => strings.navHome,
-        }),
+        title: switch (profile) {
+          AsyncData(value: final active?) => ProfileSwitcher(
+            active: active.profile,
+          ),
+          _ => Text(strings.navHome),
+        },
         actions: _searchActions(context, ref),
       ),
       body: switch (profile) {
         AsyncData(value: final active?) when active.hasInstances =>
-          const _NotBuilt(),
+          const UnreachableOffer(child: _NotBuilt()),
         AsyncData() => StateMessage(
           icon: Icons.dns_outlined,
           message: strings.noServicesYet,

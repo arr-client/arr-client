@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../features/settings/profiles/switch_profile.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../providers.dart';
 import '../screens/message_page.dart';
@@ -69,28 +70,8 @@ class _SwitchProfile extends ConsumerWidget {
   final Profile profile;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final strings = AppLocalizations.of(context);
-    return FilledButton(
-      onPressed: () async {
-        final services = ref.read(appServicesProvider);
-        // Taken now: this button is gone as soon as the switch begins.
-        final messenger = ScaffoldMessenger.of(context);
-        try {
-          await services.registry.switchTo(profile.id);
-        } catch (error) {
-          services.log.log(
-            LogLevel.warning,
-            'The profile could not be switched (${error.runtimeType})',
-          );
-          if (messenger.mounted) {
-            messenger.showSnackBar(
-              SnackBar(content: Text(strings.switchFailed)),
-            );
-          }
-        }
-      },
-      child: Text(strings.switchProfile(profile.name)),
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => FilledButton(
+    onPressed: () => switchProfile(context, ref, profile.id),
+    child: Text(AppLocalizations.of(context).switchProfile(profile.name)),
+  );
 }

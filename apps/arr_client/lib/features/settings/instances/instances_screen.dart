@@ -26,7 +26,16 @@ class InstancesScreen extends ConsumerWidget {
     final strings = AppLocalizations.of(context);
     final saved = ref.watch(profileInstancesProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(strings.moreServices)),
+      appBar: AppBar(
+        title: Text(strings.moreServices),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.switch_account_outlined),
+            tooltip: strings.manageProfiles,
+            onPressed: () => context.push(profilesLocation),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         // The shell keeps other pages alive, whose buttons would share a tag.
         heroTag: null,

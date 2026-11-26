@@ -29,7 +29,8 @@ import 'profile_scope.dart';
 ///
 /// - Nothing is sent for an instance whose `authFailed` is set, nor for one that
 ///   is disabled or not of the active profile.
-/// - A failed probe is not repeated until one of the above happens again.
+/// - A failed probe is not repeated until one of the above happens again, or the
+///   app asks with [probe].
 /// - Instances are probed at the same time, and one has at most one probe under
 ///   way.
 ///
@@ -77,8 +78,8 @@ final class InstanceProber {
     _probeUnknown();
   }
 
-  /// Probes one instance now, for a retry the user asks for. Does nothing if it
-  /// is not in the scope, is being probed or is latched: to have a latched one
+  /// Probes one instance now, for a retry the user asks for or when the app
+  /// returns to the foreground. Does nothing if it is not in the scope, is being probed or is latched: to have a latched one
   /// try again, call `ProfileRepository.retryAuth`. Like any request it does not
   /// repeat a sign-in that failed moments ago (see `InstanceSession`).
   void probe(String instanceId) {

@@ -88,6 +88,17 @@ final savedInstanceProvider = StreamProvider.autoDispose
       });
     });
 
+/// All profiles, in their order, and the id of the active one.
+typedef Profiles = ({List<Profile> all, String? activeId});
+
+final profilesProvider = StreamProvider.autoDispose<Profiles>((ref) {
+  final services = ref.watch(appServicesProvider);
+  return _onEveryChange(services.profiles, () async {
+    final activeId = (await services.preferences.read()).activeProfileId;
+    return (all: await services.profiles.profiles(), activeId: activeId);
+  });
+});
+
 /// [read] now and after every change to what [profiles] stores.
 Stream<T> _onEveryChange<T>(
   ProfileRepository profiles,

@@ -9,6 +9,7 @@ import '../../features/onboarding/service_picker_screen.dart';
 import '../../features/search/add_request.dart';
 import '../../features/search/search_screen.dart';
 import '../../features/settings/instances/instances_screen.dart';
+import '../../features/settings/profiles/profiles_screen.dart';
 import '../../src/l10n/generated/app_localizations.dart';
 import '../screens/destination_screens.dart';
 import '../screens/message_page.dart';
@@ -156,6 +157,10 @@ GoRouter createRouter(ModuleRegistry modules) {
         '/$itemPlaceholderPath',
         (context, active, state) =>
             PlaceholderPage(title: state.uri.queryParameters['title'] ?? ''),
+      ),
+      GoRoute(
+        path: profilesLocation,
+        builder: (context, state) => const ProfilesScreen(),
       ),
       // Any other path under an instance: the instance may be gone, or else
       // there is no such page.
