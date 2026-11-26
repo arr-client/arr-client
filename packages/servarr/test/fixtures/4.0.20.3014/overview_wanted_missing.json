@@ -1,0 +1,334 @@
+{
+  "page": 1,
+  "pageSize": 3,
+  "sortKey": "episodes.airDateUtc",
+  "sortDirection": "descending",
+  "totalRecords": 34,
+  "records": [
+    {
+      "seriesId": 1,
+      "tvdbId": 11839917,
+      "episodeFileId": 0,
+      "seasonNumber": 6,
+      "episodeNumber": 6,
+      "title": "redacted-220",
+      "airDate": "2026-10-21",
+      "airDateUtc": "2026-10-21T04:00:00Z",
+      "runtime": 62,
+      "finaleType": "season",
+      "overview": "redacted-221",
+      "hasFile": false,
+      "monitored": true,
+      "unverifiedSceneNumbering": false,
+      "series": {
+        "title": "redacted-201",
+        "sortTitle": "redacted-202",
+        "status": "continuing",
+        "ended": false,
+        "overview": "redacted-203",
+        "network": "redacted-204",
+        "airTime": "00:00",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/205.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/206.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/207.jpg"
+          },
+          {
+            "coverType": "clearlogo",
+            "remoteUrl": "https://redacted.invalid/208.png"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          }
+        ],
+        "year": 2022,
+        "path": "/redacted/209",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 46,
+        "tvdbId": 372264,
+        "tvRageId": 0,
+        "tvMazeId": 45039,
+        "tmdbId": 95480,
+        "firstAired": "2022-04-01T00:00:00Z",
+        "lastAired": "2026-10-21T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-210",
+        "imdbId": "tt5875444",
+        "titleSlug": "redacted-211",
+        "certification": "TV-MA",
+        "genres": [
+          "redacted-212",
+          "redacted-213"
+        ],
+        "tags": [],
+        "added": "2026-11-26T13:54:51Z",
+        "ratings": {
+          "votes": 172485,
+          "value": 8.4
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "id": 39
+    },
+    {
+      "seriesId": 1,
+      "tvdbId": 11839916,
+      "episodeFileId": 0,
+      "seasonNumber": 6,
+      "episodeNumber": 5,
+      "title": "redacted-222",
+      "airDate": "2026-10-14",
+      "airDateUtc": "2026-10-14T04:00:00Z",
+      "runtime": 47,
+      "overview": "redacted-223",
+      "hasFile": false,
+      "monitored": true,
+      "unverifiedSceneNumbering": false,
+      "series": {
+        "title": "redacted-201",
+        "sortTitle": "redacted-202",
+        "status": "continuing",
+        "ended": false,
+        "overview": "redacted-203",
+        "network": "redacted-204",
+        "airTime": "00:00",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/205.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/206.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/207.jpg"
+          },
+          {
+            "coverType": "clearlogo",
+            "remoteUrl": "https://redacted.invalid/208.png"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          }
+        ],
+        "year": 2022,
+        "path": "/redacted/209",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 46,
+        "tvdbId": 372264,
+        "tvRageId": 0,
+        "tvMazeId": 45039,
+        "tmdbId": 95480,
+        "firstAired": "2022-04-01T00:00:00Z",
+        "lastAired": "2026-10-21T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-210",
+        "imdbId": "tt5875444",
+        "titleSlug": "redacted-211",
+        "certification": "TV-MA",
+        "genres": [
+          "redacted-212",
+          "redacted-213"
+        ],
+        "tags": [],
+        "added": "2026-11-26T13:54:51Z",
+        "ratings": {
+          "votes": 172485,
+          "value": 8.4
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "id": 38
+    },
+    {
+      "seriesId": 1,
+      "tvdbId": 11839915,
+      "episodeFileId": 0,
+      "seasonNumber": 6,
+      "episodeNumber": 4,
+      "title": "redacted-218",
+      "airDate": "2026-10-07",
+      "airDateUtc": "2026-10-07T04:00:00Z",
+      "runtime": 50,
+      "overview": "redacted-219",
+      "hasFile": false,
+      "monitored": true,
+      "unverifiedSceneNumbering": false,
+      "series": {
+        "title": "redacted-201",
+        "sortTitle": "redacted-202",
+        "status": "continuing",
+        "ended": false,
+        "overview": "redacted-203",
+        "network": "redacted-204",
+        "airTime": "00:00",
+        "images": [
+          {
+            "coverType": "banner",
+            "remoteUrl": "https://redacted.invalid/205.jpg"
+          },
+          {
+            "coverType": "poster",
+            "remoteUrl": "https://redacted.invalid/206.jpg"
+          },
+          {
+            "coverType": "fanart",
+            "remoteUrl": "https://redacted.invalid/207.jpg"
+          },
+          {
+            "coverType": "clearlogo",
+            "remoteUrl": "https://redacted.invalid/208.png"
+          }
+        ],
+        "originalLanguage": {
+          "id": 1,
+          "name": "English"
+        },
+        "seasons": [
+          {
+            "seasonNumber": 0,
+            "monitored": false
+          },
+          {
+            "seasonNumber": 1,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 2,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 3,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 4,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 5,
+            "monitored": true
+          },
+          {
+            "seasonNumber": 6,
+            "monitored": true
+          }
+        ],
+        "year": 2022,
+        "path": "/redacted/209",
+        "qualityProfileId": 6,
+        "seasonFolder": true,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "useSceneNumbering": false,
+        "runtime": 46,
+        "tvdbId": 372264,
+        "tvRageId": 0,
+        "tvMazeId": 45039,
+        "tmdbId": 95480,
+        "firstAired": "2022-04-01T00:00:00Z",
+        "lastAired": "2026-10-21T00:00:00Z",
+        "seriesType": "standard",
+        "cleanTitle": "redacted-210",
+        "imdbId": "tt5875444",
+        "titleSlug": "redacted-211",
+        "certification": "TV-MA",
+        "genres": [
+          "redacted-212",
+          "redacted-213"
+        ],
+        "tags": [],
+        "added": "2026-11-26T13:54:51Z",
+        "ratings": {
+          "votes": 172485,
+          "value": 8.4
+        },
+        "languageProfileId": 1,
+        "id": 1
+      },
+      "id": 37
+    }
+  ]
+}
