@@ -18,106 +18,149 @@ jobs:
           persist-credentials: false
       - name: Check repository files
         run: python3 .github/scripts/check_repo.py
+  # In two shards that run side by side. "app" also holds the checks that run once for the whole
+  # repository. Together they test every directory under apps/ and packages/.
   analyze-test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-      - uses: ./.github/actions/setup-flutter
-      - run: |
-          flutter pub get
-          bash .github/scripts/codegen.sh
-          dart format --output=none --set-exit-if-changed .
-          flutter analyze
-          for dir in apps/* packages/* packages/modules/*; do
-            # flutter test fails on a test directory that holds no tests.
-            if [ -n "$(find "$dir/test" -name '*_test.dart' -print -quit 2>/dev/null)" ]; then
-              (cd "$dir" && flutter test)
-            fi
-          done
-          dart test tool/test
-          dart run tool/check_dependencies.dart
-          dart run tool/check_licenses.dart
-          dart run tool/check_sqlite_source.dart
-      # The runner is in UTC, where a local day and a UTC day are the same: a mix-up of the two in
-      # the calendar or in what was downloaded today only fails in a zone away from it.
-      - name: Test calendar days and imports east and west of UTC
-        run: |
-          ran=0
-          for dir in apps/arr_client packages/servarr packages/modules/*; do
-            if [ ! -d "$dir/test" ]; then continue; fi
-            files=$(cd "$dir" && find test -name '*calendar*_test.dart' -o -name '*import*_test.dart' | sort)
-            if [ -z "$files" ]; then continue; fi
-            for zone in Pacific/Auckland America/New_York; do
-              echo "$dir in $zone"
-              # shellcheck disable=SC2086 # One argument for each file; none has a space.
-              (cd "$dir" && TZ="$zone" flutter test $files)
-            done
-            ran=1
-          done
-          # Renamed tests must not leave this step passing with nothing run.
-          test "$ran" = 1
-  apk:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [app, packages]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # On a pull request, the merge commit and its parents, to list what changed.
           fetch-depth: 2
           persist-credentials: false
-      # A pull request that touches only documents builds no APK. Pushes to main always build.
-      # The steps are skipped, not the job, so the required check still gets a result.
       - id: changes
+        uses: ./.github/actions/changes
+      - if: steps.changes.outputs.code == 'true'
+        uses: ./.github/actions/setup-flutter
+      - if: steps.changes.outputs.code == 'true'
+        name: Fetch dependencies and generate code
         run: |
-          build=true
-          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
-            # The first parent of the merge commit is the base branch.
-            files=$(git diff --name-only --no-renames HEAD^1 HEAD)
-            if [ -n "$files" ] && ! grep -qvE '^(docs/|specs/|[^/]+\.md$)' <<< "$files"; then
-              build=false
-              echo "Only documents changed; not building the APK."
+          flutter pub get
+          bash .github/scripts/codegen.sh
+      - if: steps.changes.outputs.code == 'true' && matrix.shard == 'app'
+        name: Check formatting and analyze
+        run: |
+          dart format --output=none --set-exit-if-changed .
+          flutter analyze
+      - if: steps.changes.outputs.code == 'true' && matrix.shard == 'app'
+        name: Test the repository tools and check dependencies, licences and SQLite
+        run: |
+          dart test tool/test
+          dart run tool/check_dependencies.dart
+          dart run tool/check_licenses.dart
+          dart run tool/check_sqlite_source.dart
+      - if: steps.changes.outputs.code == 'true'
+        name: Test
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          case "$SHARD" in
+            app) dirs=(apps/*) ;;
+            packages) dirs=(packages/* packages/modules/*) ;;
+          esac
+          for dir in "${dirs[@]}"; do
+            # flutter test fails on a test directory that holds no tests.
+            if [ -n "$(find "$dir/test" -name '*_test.dart' -print -quit 2>/dev/null)" ]; then
+              echo "$dir"
+              # By default flutter test leaves some of the runner's cores idle.
+              (cd "$dir" && flutter test --concurrency="$(nproc)")
             fi
-          fi
-          echo "build=$build" >> "$GITHUB_OUTPUT"
+          done
+      # The runner is in UTC, where a local day and a UTC day are the same: a mix-up of the two in
+      # the calendar or in what was downloaded today only fails in a zone away from it.
+      - if: steps.changes.outputs.code == 'true'
+        name: Test calendar days and imports east and west of UTC
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          case "$SHARD" in
+            app) dirs=(apps/arr_client) ;;
+            packages) dirs=(packages/servarr packages/modules/*) ;;
+          esac
+          ran=0
+          for dir in "${dirs[@]}"; do
+            if [ ! -d "$dir/test" ]; then continue; fi
+            files=$(cd "$dir" && find test -name '*calendar*_test.dart' -o -name '*import*_test.dart' | sort)
+            if [ -z "$files" ]; then continue; fi
+            for zone in Pacific/Auckland America/New_York; do
+              echo "$dir in $zone"
+              # shellcheck disable=SC2086 # One argument for each file; none has a space.
+              (cd "$dir" && TZ="$zone" flutter test --concurrency="$(nproc)" $files)
+            done
+            ran=1
+          done
+          # Renamed tests must not leave this step passing with nothing run.
+          test "$ran" = 1
+  # The debug and the release build run side by side. The release one saves the caches on main.
+  apk:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [debug, release]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - id: changes
+        uses: ./.github/actions/changes
       - id: setup
-        if: steps.changes.outputs.build == 'true'
+        if: steps.changes.outputs.code == 'true'
         uses: ./.github/actions/setup-flutter
         with:
           gradle: true
-      - if: steps.changes.outputs.build == 'true'
+      # Start a new Gradle cache with an empty build cache, so that it holds only what this build
+      # uses and does not grow with every save.
+      - if: matrix.mode == 'release' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
+        run: rm -rf ~/.gradle/caches/build-cache-1
+      - if: steps.changes.outputs.code == 'true'
+        name: Fetch dependencies and generate code
         run: |
           mkdir -p ~/.gradle
           # Reuse task outputs between runs, and leave no daemon writing while the cache is saved.
           printf 'org.gradle.caching=true\norg.gradle.daemon=false\n' >> ~/.gradle/gradle.properties
           flutter pub get
-          bash .github/scripts/codegen.sh
-      - if: steps.changes.outputs.build == 'true'
+          bash .github/scripts/codegen.sh --no-test-helpers
+      - if: steps.changes.outputs.code == 'true' && matrix.mode == 'debug'
         run: cd apps/arr_client && flutter build apk --debug
-      # Reads what the build hooks of the build above did.
-      - if: steps.changes.outputs.build == 'true'
-        name: Check that SQLite was compiled from source, not downloaded
-        run: dart run tool/check_sqlite_source.dart --built=android
       # Only a release build compiles Dart ahead of time, which can fail on code that a debug
       # build and the tests accept. Built as release.yml builds, but unsigned.
-      - if: steps.changes.outputs.build == 'true'
+      - if: steps.changes.outputs.code == 'true' && matrix.mode == 'release'
         name: Check that the release build compiles
         run: cd apps/arr_client && flutter build apk --release --split-per-abi
+      # Reads what the build hooks of the build above did.
+      - if: steps.changes.outputs.code == 'true'
+        name: Check that SQLite was compiled from source, not downloaded
+        run: dart run tool/check_sqlite_source.dart --built=android
+      # The cache about to be saved has no transforms, and pull requests build debug from it too.
+      # This puts what a debug build needs into the build cache.
+      - if: matrix.mode == 'release' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
+        name: Build debug as well, for the Gradle cache
+        run: cd apps/arr_client && flutter build apk --debug
       # Caches are saved only by the steps below, and only from main.
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.flutter-hit != 'true'
+      - if: matrix.mode == 'release' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.flutter-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.setup.outputs.flutter-path }}
           key: ${{ steps.setup.outputs.flutter-key }}
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.pub-hit != 'true'
+      - if: matrix.mode == 'release' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.pub-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.setup.outputs.pub-path }}
           key: ${{ steps.setup.outputs.pub-key }}
-      # The wrapper needs only the unpacked distribution, not the archive it came from.
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
-        run: find ~/.gradle/wrapper/dists -name '*.zip' -delete
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
+      # The wrapper needs only the unpacked distribution, not the archive it came from. Transforms
+      # are a large part of the cache, and a build without them is no slower: Gradle makes them
+      # again, or takes them from the build cache.
+      - if: matrix.mode == 'release' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
+        run: |
+          find ~/.gradle/wrapper/dists -name '*.zip' -delete
+          rm -rf ~/.gradle/caches/*/transforms
+      - if: matrix.mode == 'release' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.setup.outputs.gradle-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -148,24 +191,32 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          fetch-depth: 2
           persist-credentials: false
-      - uses: ./.github/actions/setup-flutter
+      - id: changes
+        uses: ./.github/actions/changes
+      - if: steps.changes.outputs.code == 'true'
+        uses: ./.github/actions/setup-flutter
         with:
           gradle: true
-      - run: |
+      - if: steps.changes.outputs.code == 'true'
+        run: |
           mkdir -p ~/.gradle
           # Reuse the task outputs in the cache that main saves.
           printf 'org.gradle.caching=true\n' >> ~/.gradle/gradle.properties
           flutter pub get
           bash .github/scripts/codegen.sh
       # The long first build is done before the emulator runs beside it.
-      - run: cd apps/arr_client && flutter build apk --debug --target-platform android-x64
-      - name: Enable KVM
+      - if: steps.changes.outputs.code == 'true'
+        run: cd apps/arr_client && flutter build apk --debug --target-platform android-x64
+      - if: steps.changes.outputs.code == 'true'
+        name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+      - if: steps.changes.outputs.code == 'true'
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
           api-level: 35
           arch: x86_64

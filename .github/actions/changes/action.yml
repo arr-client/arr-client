@@ -1,0 +1,25 @@
+name: Did code change
+# A pull request that touches only documents needs no tests and no APK. Pushes to main always have
+# code. Callers skip steps, not jobs, so the required check still gets a result. The checkout before
+# this needs fetch-depth: 2.
+description: Say whether anything but documents changed
+outputs:
+  code:
+    description: false only on a pull request that changes nothing but documents
+    value: ${{ steps.changes.outputs.code }}
+runs:
+  using: composite
+  steps:
+    - id: changes
+      shell: bash
+      run: |
+        code=true
+        if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+          # The first parent of the merge commit is the base branch.
+          files=$(git diff --name-only --no-renames HEAD^1 HEAD)
+          if [ -n "$files" ] && ! grep -qvE '^(docs/|specs/|[^/]+\.md$)' <<< "$files"; then
+            code=false
+            echo "Only documents changed; skipping the code checks."
+          fi
+        fi
+        echo "code=$code" >> "$GITHUB_OUTPUT"
