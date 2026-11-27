@@ -64,8 +64,22 @@ flutter build apk --release    # build/app/outputs/flutter-apk/app-release.apk
 flutter run                    # needs a device or emulator; check with `flutter devices`
 ```
 
-Release builds are **unsigned** for now, so Android will not install them. Use a debug build. The
-app needs Android 8.0 (API 26) or later, and so far shows only an empty screen.
+The app needs Android 8.0 (API 26) or later, and so far shows only an empty screen.
+
+A release build is **unsigned** unless you give it a key, and Android does not install an unsigned
+APK, so use a debug build. To sign release builds with a key of your own, create
+`apps/arr_client/android/key.properties`:
+
+```properties
+storeFile=/absolute/path/to/your.p12
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+All four are needed; the build fails if one is missing. A PKCS12 keystore, which `keytool` makes by
+default, has one password: give it for both. In this file, write a backslash as `\\`. Git ignores the
+file and `*.jks` and `*.keystore` files; keep keys outside the repository all the same.
 
 ### Emulator
 
@@ -169,6 +183,11 @@ Maintainers set `version: X.Y.Z+N` in `apps/arr_client/pubspec.yaml` (N always h
 release), merge, then push tag `vX.Y.Z`. The release workflow refuses a mismatch. A pre-release uses
 `version: X.Y.Z-beta.1+N` with tag `vX.Y.Z-beta.1`; the `-` is what marks the GitHub release as a
 pre-release.
+
+The workflow signs the APKs with the key in the secrets of the `release` environment:
+`ANDROID_KEYSTORE_BASE64` (the keystore file in base64), `ANDROID_STORE_PASSWORD`,
+`ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`. It refuses to publish an APK that is unsigned or
+signed with a debug key.
 
 ## License
 

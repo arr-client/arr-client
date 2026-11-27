@@ -35,8 +35,9 @@ flutter build apk --debug    # build/app/outputs/flutter-apk/app-debug.apk
 flutter run                  # with an Android device or emulator connected
 ```
 
-Release builds are unsigned for now. See [Build, run and check](CONTRIBUTING.md#build-run-and-check)
-for the checks, release builds and setting up an emulator.
+Release builds that you make yourself are unsigned unless you give them a key. See
+[Build, run and check](CONTRIBUTING.md#build-run-and-check) for the checks, release builds and
+setting up an emulator.
 
 ## Documents
 
