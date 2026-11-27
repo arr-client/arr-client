@@ -627,6 +627,6 @@ Timings assume a mid-range phone, a server on the local network, and a healthy s
 - Minimum Android version is 8.0.
 - Distribution is through GitHub releases first, then F-Droid. Google Play is optional. Android's
   developer verification requirement, being rolled out from 2026, can add friction to installing
-  apps outside a store; registration is the owner's decision before first release.
+  apps outside a store; the owner registers the app before the first release.
 - The project name is `arr-client`, hosted at `github.com/arr-client/arr-client`. The application
-  identifier is still to be confirmed; it cannot change after publication.
+  identifier is `io.github.arrclient.app`; it cannot change after publication.

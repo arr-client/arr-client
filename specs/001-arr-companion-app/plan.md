@@ -114,7 +114,7 @@ Coding standards, patterns and the UI standard are in `docs/standards/`; lint ru
 | Readarr is dead and forks may diverge | Claim only Readarr 0.4 and Bookshelf; module is optional |
 | Android 17 local network permission | Handled in foundation, tested on API 37 and older |
 | Background work killed by vendors | Notifications documented as best effort |
-| Developer verification friction | Owner decides before first release |
+| Developer verification friction | Owner registers before the first release |
 | Large scope for a new project | Priority order gives a usable release after story 4 |
 
 ## Complexity Tracking

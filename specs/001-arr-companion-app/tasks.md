@@ -11,7 +11,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 ## Phase 1: Setup
 
 - [x] T001 Create pub workspace in `pubspec.yaml` (exact `environment.flutter` version, matching `.fvmrc`) with app and package skeletons per plan.md and `flutter_lints` as a root dev dependency (the existing root `analysis_options.yaml` includes it, so CI fails without it); extend `.gitignore`
-- [ ] T002 Owner decision: confirm the immutable application id and developer verification registration (name is `arr-client`); record in `docs/decisions.md`
+- [x] T002 Owner decision: confirm the immutable application id and developer verification registration (name is `arr-client`); record in `docs/decisions.md`
 - [x] T003 Create Android project in `apps/arr_client/android/` using the confirmed id, minSdk 26, compile/target 37, declaring `android.permission.INTERNET` in `src/main/AndroidManifest.xml` (the template adds it only to debug and profile builds)
 - [x] T004 [P] Check that every package is analyzed under the root `analysis_options.yaml` as `docs/standards/coding-standards.md` requires, with no package-level overrides
 - [x] T005 [P] Write `tool/check_dependencies.dart` enforcing plan.md allowed dependencies, with tests in `tool/test/`
@@ -107,7 +107,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T080 [US4] Implement the third-party artwork toggle in `apps/arr_client/lib/features/settings/`
 - [ ] T081 [US4] Pre-release gate: a connection check on the release-built APK, secret and traffic audit (SC-006, SC-007) and a TalkBack/200% text pass over US1–US4; record in `docs/release-checks.md`
 - [ ] T082 [US4] Record Radarr and Sonarr results in `docs/verification-matrix.md`
-- [ ] T083 [US4] Owner, only after the pre-release gate passes: create the Android signing key and the `release` environment secrets, wire `key.properties` into the Gradle build, set `version: 0.1.0-beta.1+1` in `apps/arr_client/pubspec.yaml` and tag `v0.1.0-beta.1`, the first pre-release, through `.github/workflows/release.yml`
+- [ ] T083 [US4] Owner, only after the pre-release gate passes, the owner has tried the app on a phone and the application id and signing certificate are registered for Android developer verification (the signing key and the `release` environment secrets exist since 2026-11-26): wire `key.properties` into the Gradle build, set `version: 0.1.0-beta.1+1` in `apps/arr_client/pubspec.yaml` and tag `v0.1.0-beta.1`, the first pre-release, through `.github/workflows/release.yml`
 
 ## Phase 7: US5 Manage and choose releases (P2)
 
@@ -158,7 +158,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [ ] T119 [US8] Implement Readarr/Bookshelf probe, library and lookup/add with metadata profile in `packages/modules/readarr/lib/`
 - [ ] T120 [US8] Implement Readarr/Bookshelf activity, manual import, blocklist, releases, commands, manage, calendar, wanted and health in `packages/modules/readarr/lib/src/adapters/`
 - [ ] T121 [US8] Implement Readarr/Bookshelf `detailRoute` and detail screens (with the `downloadProgress` slot) with monitor toggles, search, refresh, rescan, interactive-search, edit and delete-item entry points and file delete in `packages/modules/readarr/lib/src/screens/`
-- [ ] T122 [US8] Add Music and Books tabs, search groups and add options in `apps/arr_client/lib/features/library/` and `apps/arr_client/lib/features/search/`
+- [ ] T122 [US8] Add Music and Books tabs, search groups and add options (the add screen says that the search for a new artist's album starts after the artist is scanned) in `apps/arr_client/lib/features/library/` and `apps/arr_client/lib/features/search/`
 - [ ] T123 [US8] Extend manual import with artist/album/track and author/book pickers in `apps/arr_client/lib/features/activity/manual_import/`
 - [ ] T124 [US8] Add US8 integration test in `apps/arr_client/integration_test/music_books_test.dart`
 - [ ] T125 [US8] Record Lidarr, Readarr and Bookshelf in `docs/verification-matrix.md`
