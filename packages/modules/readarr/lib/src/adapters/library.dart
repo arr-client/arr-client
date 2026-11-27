@@ -9,9 +9,10 @@ import '../api/readarr_api.dart';
 import '../models/json_fields.dart';
 import '../models/library_record.dart';
 import '../models/media_record.dart';
+import 'manage.dart';
 import 'monitor_options.dart';
 
-/// Authors and their books.
+/// Authors and their books, with the writes of [ReadarrLibraryWrites].
 ///
 /// The state of an item depends on the download queue, so [list], [item] and
 /// [children] read it too. If that read fails they fail and leave the cache as
@@ -22,10 +23,12 @@ import 'monitor_options.dart';
 /// book, also over a later [children], which does not read them.
 final class ReadarrLibraryAdapter implements LibraryProvider {
   /// Reads with [_api] into [_cache].
-  ReadarrLibraryAdapter(this._api, this._cache);
+  ReadarrLibraryAdapter(this._api, this._cache)
+    : _writes = ReadarrLibraryWrites(_api, _cache);
 
   final ReadarrApi _api;
   final CacheScope _cache;
+  final ReadarrLibraryWrites _writes;
 
   @override
   MediaKind get itemKind => MediaKind.author;
@@ -150,30 +153,33 @@ final class ReadarrLibraryAdapter implements LibraryProvider {
 
   @override
   ServiceResult<void> setMonitored(MediaTarget target, bool monitored) =>
-      throw UnimplementedError('T120');
+      _writes.setMonitored(target, monitored);
 
   @override
   ServiceResult<void> applyMonitorOption(ItemRef ref, String optionId) =>
-      throw UnimplementedError('T120');
+      _writes.applyMonitorOption(ref, optionId);
 
   @override
   ServiceResult<void> edit(ItemRef ref, ItemEdit changes) =>
-      throw UnimplementedError('T120');
+      _writes.edit(ref, changes);
 
   @override
   ServiceResult<void> bulkEdit(List<ItemRef> refs, BulkEdit changes) =>
-      throw UnimplementedError('T120');
+      _writes.bulkEdit(refs, changes);
 
   @override
   ServiceResult<void> delete(
     ItemRef ref, {
     required bool deleteFiles,
     required bool addImportExclusion,
-  }) => throw UnimplementedError('T120');
+  }) => _writes.delete(
+    ref,
+    deleteFiles: deleteFiles,
+    addImportExclusion: addImportExclusion,
+  );
 
   @override
-  ServiceResult<void> deleteFile(MediaFile file) =>
-      throw UnimplementedError('T120');
+  ServiceResult<void> deleteFile(MediaFile file) => _writes.deleteFile(file);
 
   @override
   ModuleRoute detailRoute(ItemRef ref) => throw UnimplementedError('T121');

@@ -5,9 +5,13 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:servarr/servarr.dart';
 
+import 'src/adapters/activity.dart';
 import 'src/adapters/library.dart';
 import 'src/adapters/lookup.dart';
+import 'src/adapters/manage.dart';
+import 'src/adapters/overview.dart';
 import 'src/api/readarr_api.dart';
 
 // The app adds the delegate to its own, for the names the module supplies.
@@ -76,13 +80,19 @@ final class ReadarrModule implements ServiceModule {
 
   @override
   T? capability<T extends Capability>(InstanceContext context) {
-    // The other capabilities are T120's.
     final Capability? found = switch (T) {
       const (LibraryProvider) => ReadarrLibraryAdapter(
         ReadarrApi(context),
         context.cache,
       ),
       const (LookupProvider) => ReadarrLookupAdapter(ReadarrApi(context)),
+      const (CommandProvider) => ReadarrCommandAdapter(ReadarrApi(context)),
+      const (ReleaseProvider) => ReadarrReleaseAdapter(ReadarrApi(context)),
+      const (QueueProvider) => ReadarrQueueAdapter(ReadarrApi(context)),
+      const (HistoryProvider) => ReadarrHistoryAdapter(ReadarrApi(context)),
+      const (CalendarProvider) => ReadarrCalendarAdapter(ReadarrApi(context)),
+      const (WantedProvider) => ReadarrWantedAdapter(ReadarrApi(context)),
+      const (HealthProvider) => ServarrHealth(ReadarrApi(context).shared),
       _ => null,
     };
     return found as T?;

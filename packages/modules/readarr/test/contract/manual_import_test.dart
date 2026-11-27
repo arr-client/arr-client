@@ -197,6 +197,33 @@ void main() {
       expect(sent['foreignEditionId'], isNull);
     });
 
+    // The server leaves out what it has no value for, so the record would
+    // otherwise keep the edition of the book chosen before.
+    test('keeps no edition of the book before where none is given', () async {
+      final harness = Harness();
+      final candidate = await _reprocessed(harness);
+      final answered = records('activity_manualimport_reprocess').single
+        ..remove('foreignEditionId');
+      (answered['book']! as Map<String, Object?>)['id'] = 9;
+      harness.server.writeAnswer = FakeReadarr.body(
+        jsonEncode([answered]),
+        status: 202,
+      );
+
+      final answer = (await ok(
+        harness.queue.reprocess([_corrected(candidate, bookId: 9)]),
+      )).single;
+      harness.server.requests.clear();
+
+      expect(answer.bookId, 9);
+      expect(answer.rawJson.containsKey('foreignEditionId'), isFalse);
+      expect(
+        await failureOf(harness.queue.importFiles([answer])),
+        isA<Validation>(),
+      );
+      expect(harness.server.requests, isEmpty);
+    });
+
     // Readarr may add to its answer the files the chosen book already has.
     test('leaves out the files it adds of the book', () async {
       final harness = Harness();

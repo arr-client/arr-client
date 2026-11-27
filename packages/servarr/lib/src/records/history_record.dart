@@ -20,14 +20,17 @@ HistoryEventType _eventType(Object? word) => switch (word) {
   'movieFolderImported' ||
   'seriesFolderImported' ||
   // Not `downloadImported`, which would count a download a second time.
-  'trackFileImported' => HistoryEventType.imported,
+  'trackFileImported' ||
+  'bookFileImported' => HistoryEventType.imported,
   'downloadFailed' => HistoryEventType.failed,
   'movieFileRenamed' ||
   'episodeFileRenamed' ||
-  'trackFileRenamed' => HistoryEventType.renamed,
+  'trackFileRenamed' ||
+  'bookFileRenamed' => HistoryEventType.renamed,
   'movieFileDeleted' ||
   'episodeFileDeleted' ||
-  'trackFileDeleted' => HistoryEventType.deleted,
+  'trackFileDeleted' ||
+  'bookFileDeleted' => HistoryEventType.deleted,
   _ => HistoryEventType.other,
 };
 

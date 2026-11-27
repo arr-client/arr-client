@@ -25,8 +25,8 @@ Common to Sonarr, Radarr, Lidarr, Readarr:
 - **W** `POST queue/grab/{id}`, `history/failed/{id}`, `release`. A grab sends `guid` and
   `indexerId`. For a release the server could not match (`downloadAllowed` is false) it also sends
   what was searched for, as the web UI does after a confirmation: `movieId` (Radarr), `episodeId`,
-  or `seriesId` and `seasonNumber` (Sonarr), or `albumId` or `artistId` (Lidarr). No other field is
-  sent.
+  or `seriesId` and `seasonNumber` (Sonarr), or `albumId` or `artistId` (Lidarr), or `bookId` or
+  `authorId` (Readarr). No other field is sent.
 - **W** `DELETE blocklist/{id}`, `blocklist/bulk`
 - **W** `POST command` (search, refresh, rescan, manual import execution)
 - **W** `POST manualimport` (reprocess a corrected candidate)

@@ -100,6 +100,82 @@ final class ReadarrApi {
   /// Quality and metadata profiles, root folders and tags.
   ServiceResult<List<ServerOption>> options() => shared.options();
 
+  /// The events of an author, newest first.
+  ServiceResult<List<HistoryEvent>> authorHistory(int authorId) =>
+      shared.itemHistory('history/author', query: _ofAuthor(authorId));
+
+  /// One page of the events of a book, newest first.
+  ServiceResult<ResultPage<HistoryEvent>> bookHistory(
+    int bookId, {
+    required int page,
+  }) => shared.history(page: page, filter: _ofBook(bookId));
+
+  /// Turns monitoring of the books [ids] on or off.
+  ServiceResult<void> monitorBooks(List<int> ids, {required bool monitored}) =>
+      _write(
+        HttpMethod.put,
+        'book/monitor',
+        body: JsonBody({'bookIds': ids, 'monitored': monitored}),
+      );
+
+  /// Has the books of the author [id] monitored as [monitor] says. An author
+  /// the server does not have is [NotFound].
+  ServiceResult<void> bookshelf(int id, {required String monitor}) => _write(
+    HttpMethod.post,
+    'bookshelf',
+    body: JsonBody({
+      'authors': [
+        {'id': id},
+      ],
+      'monitoringOptions': {'monitor': monitor},
+    }),
+    classify: (error) => switch (error.failure) {
+      _ when _saysNoSuchRecord(error) => const NotFound(),
+      // The path names no author, so this does not say that it is gone.
+      NotFound() => const ServerError(statusCode: 404),
+      final failure => failure,
+    },
+  );
+
+  /// Deletes the author or book at [path], such as `book/1`.
+  ServiceResult<void> delete(
+    String path, {
+    required bool deleteFiles,
+    required bool addImportListExclusion,
+  }) => _write(
+    HttpMethod.delete,
+    path,
+    // Both stated: what is deleted never rests on a server default.
+    query: {
+      'deleteFiles': ['$deleteFiles'],
+      'addImportListExclusion': ['$addImportListExclusion'],
+    },
+  );
+
+  /// Deletes the book file [id].
+  ServiceResult<void> deleteBookFile(int id) =>
+      _write(HttpMethod.delete, 'bookfile/$id');
+
+  /// A write whose answer is not read.
+  ServiceResult<void> _write(
+    HttpMethod method,
+    String path, {
+    Map<String, List<String>> query = const {},
+    RequestBody? body,
+    ServiceFailure Function(HttpError error)? classify,
+  }) async {
+    final request = ServiceRequest(
+      method,
+      '$_apiPath/$path',
+      query: query,
+      body: body,
+    );
+    return switch (await _http.send(request)) {
+      Ok() => const Ok(null),
+      Err(:final error) => Err(classify?.call(error) ?? error.failure),
+    };
+  }
+
   // The server refuses an author it has by a validator, but a book only by its
   // database, which the HTTP client reports as [Conflict] itself.
   ServiceResult<int> _add(String path, JsonObject record) async {
@@ -134,6 +210,15 @@ final class ReadarrApi {
   static Map<String, List<String>> _ofBook(int id) => {
     'bookId': ['$id'],
   };
+}
+
+// What the server says of an id it has no record for, where it looks up a list
+// of them.
+bool _saysNoSuchRecord(HttpError error) {
+  final response = error.response;
+  return response != null &&
+      response.statusCode == 500 &&
+      response.text.contains('Expected query to return 1 rows but returned 0');
 }
 
 /// Whether a refused add says that the author is there already. Other
