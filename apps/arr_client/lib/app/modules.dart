@@ -2,6 +2,7 @@
 /// nowhere else (contracts/module-contract.md rule 8).
 library;
 
+import 'package:bazarr/bazarr_module.dart';
 import 'package:core/core.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:prowlarr/prowlarr_module.dart';
@@ -15,6 +16,7 @@ List<ServiceModule> serviceModules() => [
   SonarrModule(),
   QbittorrentModule(),
   ProwlarrModule(),
+  BazarrModule(),
 ];
 
 /// The strings of the modules: their labels and hints throw without these.
@@ -23,4 +25,5 @@ const List<LocalizationsDelegate<Object?>> moduleLocalizationsDelegates = [
   SonarrLocalizations.delegate,
   QbittorrentLocalizations.delegate,
   ProwlarrLocalizations.delegate,
+  BazarrLocalizations.delegate,
 ];

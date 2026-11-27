@@ -149,6 +149,9 @@ class FakeBazarr implements ServiceHttpClient {
   /// What was asked.
   final requests = <ServiceRequest>[];
 
+  /// What was asked, as [asked] writes it.
+  List<String> get sent => requests.map(asked).toList();
+
   @override
   Future<Result<ServiceResponse, HttpError>> send(
     ServiceRequest request,
@@ -193,7 +196,8 @@ class _FakeCache extends Fake implements CacheScope {}
 /// The module for one instance of [server], behind the Bazarr allow-list.
 /// Create it inside the test.
 class Harness {
-  Harness([String version = latest]) : server = FakeBazarr(version) {
+  Harness([String version = latest, FakeBazarr? server])
+    : server = server ?? FakeBazarr(version) {
     context = InstanceContext(
       instance: Instance(
         id: instanceId,
@@ -205,7 +209,7 @@ class Harness {
         createdAt: DateTime.utc(2026),
         updatedAt: DateTime.utc(2026),
       ),
-      http: AllowListClient(allowList, server),
+      http: AllowListClient(allowList, this.server),
       artwork: _FakeArtwork(),
       navigator: _FakeNavigator(),
       cache: _FakeCache(),

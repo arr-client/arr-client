@@ -9,6 +9,7 @@ import 'package:arr_client/app/composition.dart';
 import 'package:arr_client/app/localization.dart';
 import 'package:arr_client/app/modules.dart';
 import 'package:arr_client/app/navigation/destinations.dart';
+import 'package:bazarr/bazarr_module.dart';
 import 'package:core/core.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,12 +37,13 @@ Future<HttpServer> serveStatus() async {
 }
 
 void main() {
-  test('the app is built with Radarr, Sonarr, qBittorrent and Prowlarr', () {
+  test('the app is built with every module that has screens', () {
     expect(serviceModules().map((module) => module.id), [
       'radarr',
       'sonarr',
       'qbittorrent',
       'prowlarr',
+      'bazarr',
     ]);
   });
 
@@ -58,6 +60,7 @@ void main() {
     expect(RadarrLocalizations.of(context).monitorNone, isNotEmpty);
     expect(SonarrLocalizations.of(context).monitorAll, isNotEmpty);
     expect(ProwlarrLocalizations.of(context).searchTab, isNotEmpty);
+    expect(BazarrLocalizations.of(context).wantedTab, isNotEmpty);
     for (final module in serviceModules()) {
       for (final note in module.descriptor.authNotes) {
         expect(note.text(context), isNotEmpty);
