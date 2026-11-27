@@ -11,7 +11,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 ## Phase 1: Setup
 
 - [x] T001 Create pub workspace in `pubspec.yaml` (exact `environment.flutter` version, matching `.fvmrc`) with app and package skeletons per plan.md and `flutter_lints` as a root dev dependency (the existing root `analysis_options.yaml` includes it, so CI fails without it); extend `.gitignore`
-- [ ] T002 Owner decision: confirm the immutable application id and developer verification registration (name is `arr-client`); record in `docs/decisions.md`
+- [x] T002 Owner decision: confirm the immutable application id and developer verification registration (name is `arr-client`); record in `docs/decisions.md`
 - [x] T003 Create Android project in `apps/arr_client/android/` using the confirmed id, minSdk 26, compile/target 37, declaring `android.permission.INTERNET` in `src/main/AndroidManifest.xml` (the template adds it only to debug and profile builds)
 - [x] T004 [P] Check that every package is analyzed under the root `analysis_options.yaml` as `docs/standards/coding-standards.md` requires, with no package-level overrides
 - [x] T005 [P] Write `tool/check_dependencies.dart` enforcing plan.md allowed dependencies, with tests in `tool/test/`
