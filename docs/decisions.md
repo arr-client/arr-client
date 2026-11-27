@@ -11,6 +11,7 @@
 | 2026-11-26 | Adding an album of a new artist behaves as Lidarr does, and the add screen says the search starts after the artist is scanned (T122) |
 | 2026-11-26 | Application id `io.github.arrclient.app` confirmed; register it for Android developer verification before the first pre-release |
 | 2026-11-26 | The first pre-release follows the release gate (T081) and a test by the owner on a phone |
+| 2026-11-26 | Android signing key created; its secrets are in the repository's `release` environment |
 
 ## Open
 
