@@ -56,8 +56,11 @@ runs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: gradle-${{ runner.os }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'apps/*/android/**/*.gradle*', 'apps/*/android/**/gradle*.properties', 'packages/**/android/**/*.gradle*') }}
-        restore-keys: gradle-${{ runner.os }}-
+        # "v2": saved without transforms. The older caches are only a fallback until main saves one.
+        key: gradle-v2-${{ runner.os }}-${{ hashFiles('.fvmrc', 'pubspec.lock', 'apps/*/android/**/*.gradle*', 'apps/*/android/**/gradle*.properties', 'packages/**/android/**/*.gradle*') }}
+        restore-keys: |
+          gradle-v2-${{ runner.os }}-
+          gradle-${{ runner.os }}-
     # Uses the SDK restored above, or downloads it on a miss.
     - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
       with:
