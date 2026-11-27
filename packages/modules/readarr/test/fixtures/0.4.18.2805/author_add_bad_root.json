@@ -1,0 +1,15 @@
+[
+  {
+    "propertyName": "RootFolderPath",
+    "errorMessage": "redacted-102",
+    "attemptedValue": "redacted-103",
+    "severity": "error",
+    "errorCode": "PathValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "path": "redacted-103",
+      "propertyName": "redacted-104",
+      "propertyValue": "redacted-103"
+    }
+  }
+]

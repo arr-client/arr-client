@@ -21,6 +21,7 @@ ManualImportCandidate importCandidate(
     matchedRef: match.item,
     episodeIds: match.episodeIds,
     albumId: _albumId(record),
+    bookId: _bookId(record),
     trackIds: _trackIds(record),
     quality: recordQuality(record['quality']),
     languages: _languages(record['languages']),
@@ -46,6 +47,7 @@ ManualImportCandidate reprocessedCandidate(
     matchedRef: match.item,
     episodeIds: match.episodeIds,
     albumId: _albumId(record),
+    bookId: _bookId(record),
     trackIds: _trackIds(record),
     quality: recordQuality(record['quality']),
     languages: _languages(record['languages']),
@@ -118,6 +120,12 @@ Object? _sentQuality(
     if (recorded case {'revision': final Object revision}) 'revision': revision,
   };
 }
+
+// Only records of books have one.
+int? _bookId(JsonObject record) => switch (record['book']) {
+  {'id': final int id} when id > 0 => id,
+  _ => null,
+};
 
 // Only records of music have an album and tracks.
 int? _albumId(JsonObject record) => switch (record['album']) {

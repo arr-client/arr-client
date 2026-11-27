@@ -1,0 +1,26 @@
+{
+  "name": "AuthorSearch",
+  "commandName": "Author Search",
+  "body": {
+    "authorId": 1,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": true,
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "AuthorSearch",
+    "trigger": "manual",
+    "suppressMessages": false,
+    "clientUserAgent": "redacted-17"
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T23:10:09Z",
+  "trigger": "manual",
+  "clientUserAgent": "redacted-17",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": true,
+  "id": 35
+}

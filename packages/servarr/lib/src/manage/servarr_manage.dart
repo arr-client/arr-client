@@ -14,6 +14,8 @@ const _grabTargetFields = [
   'seasonNumber',
   'albumId',
   'artistId',
+  'bookId',
+  'authorId',
 ];
 
 /// Interactive search and grab, commands, and edits.

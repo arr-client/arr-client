@@ -1,0 +1,457 @@
+[
+  {
+    "foreignId": "redacted-6",
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "/MediaCover/1/poster.jpg?lastWrite=636428498560000000",
+          "coverType": "poster",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/8.jpg"
+        }
+      ],
+      "remotePoster": "https://redacted.invalid/8.jpg",
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "folder": "redacted-4",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "id": 1
+  },
+  {
+    "foreignId": "redacted-67",
+    "book": {
+      "title": "redacted-64",
+      "authorTitle": "redacted-65",
+      "seriesTitle": "redacted-66",
+      "disambiguation": "",
+      "overview": "redacted-199",
+      "authorId": 1,
+      "foreignBookId": "redacted-67",
+      "foreignEditionId": "redacted-68",
+      "titleSlug": "redacted-67",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 16,
+        "value": 3.69,
+        "popularity": 59.04
+      },
+      "releaseDate": "1900-05-17T08:00:00Z",
+      "pageCount": 332,
+      "genres": [],
+      "author": {
+        "authorMetadataId": 1,
+        "status": "continuing",
+        "ended": false,
+        "authorName": "redacted-4",
+        "authorNameLastFirst": "redacted-5",
+        "foreignAuthorId": "redacted-6",
+        "titleSlug": "redacted-6",
+        "overview": "redacted-7",
+        "links": [],
+        "images": [
+          {
+            "url": "https://redacted.invalid/8.jpg",
+            "coverType": "poster",
+            "extension": "redacted-9"
+          }
+        ],
+        "path": "/redacted/10",
+        "qualityProfileId": 1,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "folder": "redacted-4",
+        "genres": [],
+        "cleanName": "redacted-11",
+        "sortName": "redacted-12",
+        "sortNameLastFirst": "redacted-13",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T23:02:43Z",
+        "ratings": {
+          "votes": 620757,
+          "value": 3.9591675,
+          "popularity": 2457680.9397975
+        },
+        "statistics": {
+          "bookFileCount": 0,
+          "bookCount": 0,
+          "availableBookCount": 0,
+          "totalBookCount": 0,
+          "sizeOnDisk": 0,
+          "percentOfBooks": 0
+        },
+        "id": 1
+      },
+      "images": [],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:13:58Z",
+      "editions": [
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-200",
+          "titleSlug": "redacted-200",
+          "isbn13": "9780393049923",
+          "asin": "redacted-201",
+          "title": "redacted-202",
+          "language": "eng",
+          "overview": "redacted-203",
+          "format": "redacted-162",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-204",
+          "pageCount": 544,
+          "releaseDate": "2000-10-16T07:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/205.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 982,
+            "value": 4.24,
+            "popularity": 4163.68
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 46
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-206",
+          "titleSlug": "redacted-206",
+          "isbn13": "9780140621679",
+          "asin": "redacted-207",
+          "title": "redacted-64",
+          "language": "eng",
+          "overview": "redacted-208",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-209",
+          "pageCount": 154,
+          "releaseDate": "1995-01-01T08:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/210.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 447470,
+            "value": 4,
+            "popularity": 1789880
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 47
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-211",
+          "titleSlug": "redacted-211",
+          "isbn13": "9780141321028",
+          "asin": "redacted-212",
+          "title": "redacted-213",
+          "language": "eng",
+          "overview": "redacted-208",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-214",
+          "pageCount": 190,
+          "releaseDate": "2008-03-06T08:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/215.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 2328,
+            "value": 3.82,
+            "popularity": 8892.96
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 48
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-216",
+          "titleSlug": "redacted-216",
+          "isbn13": "9788817680493",
+          "asin": "redacted-217",
+          "title": "redacted-218",
+          "language": "ita",
+          "overview": "redacted-219",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-220",
+          "pageCount": 277,
+          "releaseDate": "1999-08-01T07:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/221.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 2489,
+            "value": 3.85,
+            "popularity": 9582.65
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 215
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-222",
+          "titleSlug": "redacted-222",
+          "isbn13": "9786074151756",
+          "asin": "redacted-223",
+          "title": "redacted-224",
+          "language": "spa",
+          "overview": "redacted-225",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-226",
+          "pageCount": 188,
+          "releaseDate": "2010-01-01T08:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/227.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 3120,
+            "value": 3.89,
+            "popularity": 12136.800000000001
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 216
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-228",
+          "titleSlug": "redacted-228",
+          "isbn13": "9788537809662",
+          "asin": "redacted-229",
+          "title": "redacted-230",
+          "language": "por",
+          "overview": "redacted-231",
+          "format": "redacted-162",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-232",
+          "pageCount": 224,
+          "releaseDate": "2013-02-14T08:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/233.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 2007,
+            "value": 4.08,
+            "popularity": 8188.56
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 217
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-234",
+          "titleSlug": "redacted-234",
+          "isbn13": "9788804618270",
+          "asin": "redacted-235",
+          "title": "redacted-236",
+          "language": "ita",
+          "overview": "redacted-237",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-238",
+          "pageCount": 190,
+          "releaseDate": "2012-05-08T07:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/239.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 864,
+            "value": 3.82,
+            "popularity": 3300.48
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 218
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-240",
+          "titleSlug": "redacted-240",
+          "isbn13": "9789996698996",
+          "asin": "redacted-241",
+          "title": "redacted-242",
+          "language": "ara",
+          "overview": "redacted-243",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-244",
+          "pageCount": 191,
+          "releaseDate": "2018-11-01T07:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/245.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 838,
+            "value": 3.8,
+            "popularity": 3184.3999999999996
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 219
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-246",
+          "titleSlug": "redacted-246",
+          "isbn13": "9786052957349",
+          "asin": "redacted-247",
+          "title": "redacted-248",
+          "language": "tur",
+          "overview": "redacted-249",
+          "format": "redacted-157",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-250",
+          "pageCount": 144,
+          "releaseDate": "2019-03-01T08:00:00Z",
+          "images": [
+            {
+              "url": "https://redacted.invalid/251.jpg",
+              "coverType": "cover",
+              "extension": "redacted-9"
+            }
+          ],
+          "links": [],
+          "ratings": {
+            "votes": 2243,
+            "value": 4.08,
+            "popularity": 9151.44
+          },
+          "monitored": false,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 220
+        },
+        {
+          "bookId": 18,
+          "foreignEditionId": "redacted-68",
+          "titleSlug": "redacted-68",
+          "isbn13": "9781620111741",
+          "asin": "redacted-252",
+          "title": "redacted-64",
+          "language": "eng",
+          "overview": "redacted-199",
+          "format": "redacted-152",
+          "isEbook": false,
+          "disambiguation": "",
+          "publisher": "redacted-153",
+          "pageCount": 332,
+          "releaseDate": "2012-04-11T07:00:00Z",
+          "images": [],
+          "links": [],
+          "ratings": {
+            "votes": 16,
+            "value": 3.69,
+            "popularity": 59.04
+          },
+          "monitored": true,
+          "manualAdd": false,
+          "grabbed": false,
+          "id": 49
+        }
+      ],
+      "grabbed": false,
+      "id": 18
+    },
+    "id": 2
+  }
+]

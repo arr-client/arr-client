@@ -1,0 +1,25 @@
+[
+  {
+    "name": "redacted-189",
+    "minPopularity": 350,
+    "skipMissingDate": true,
+    "skipMissingIsbn": false,
+    "skipPartsAndSets": true,
+    "skipSeriesSecondary": false,
+    "allowedLanguages": "redacted-190",
+    "minPages": 0,
+    "ignored": [],
+    "id": 1
+  },
+  {
+    "name": "redacted-191",
+    "minPopularity": 10000000000,
+    "skipMissingDate": false,
+    "skipMissingIsbn": false,
+    "skipPartsAndSets": false,
+    "skipSeriesSecondary": false,
+    "minPages": 0,
+    "ignored": [],
+    "id": 2
+  }
+]

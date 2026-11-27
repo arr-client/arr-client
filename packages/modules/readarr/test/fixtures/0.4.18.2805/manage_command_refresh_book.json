@@ -1,0 +1,27 @@
+{
+  "name": "RefreshBook",
+  "commandName": "Refresh Book",
+  "body": {
+    "bookId": 18,
+    "sendUpdatesToClient": true,
+    "updateScheduledTask": false,
+    "completionMessage": "redacted-177",
+    "requiresDiskAccess": false,
+    "isExclusive": false,
+    "isTypeExclusive": false,
+    "isLongRunning": false,
+    "name": "RefreshBook",
+    "trigger": "manual",
+    "suppressMessages": false,
+    "clientUserAgent": "redacted-17"
+  },
+  "priority": "normal",
+  "status": "queued",
+  "result": "unknown",
+  "queued": "2026-11-26T23:10:15Z",
+  "trigger": "manual",
+  "clientUserAgent": "redacted-17",
+  "sendUpdatesToClient": true,
+  "updateScheduledTask": false,
+  "id": 38
+}

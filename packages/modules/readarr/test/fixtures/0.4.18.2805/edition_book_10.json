@@ -1,0 +1,101 @@
+[
+  {
+    "bookId": 10,
+    "foreignEditionId": "redacted-79",
+    "titleSlug": "redacted-79",
+    "isbn13": "9781620122976",
+    "asin": "redacted-150",
+    "title": "redacted-75",
+    "language": "eng",
+    "overview": "redacted-151",
+    "format": "redacted-152",
+    "isEbook": false,
+    "disambiguation": "",
+    "publisher": "redacted-153",
+    "pageCount": 0,
+    "releaseDate": "2012-02-22T08:00:00Z",
+    "images": [
+      {
+        "url": "https://redacted.invalid/80.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9"
+      }
+    ],
+    "links": [],
+    "ratings": {
+      "votes": 5,
+      "value": 2.8,
+      "popularity": 14
+    },
+    "monitored": true,
+    "manualAdd": false,
+    "grabbed": false,
+    "id": 25
+  },
+  {
+    "bookId": 10,
+    "foreignEditionId": "redacted-154",
+    "titleSlug": "redacted-154",
+    "isbn13": "9781587260377",
+    "asin": "redacted-155",
+    "title": "redacted-75",
+    "language": "eng",
+    "overview": "redacted-156",
+    "format": "redacted-157",
+    "isEbook": false,
+    "disambiguation": "",
+    "publisher": "",
+    "pageCount": 261,
+    "releaseDate": "1909-01-01T08:00:00Z",
+    "images": [
+      {
+        "url": "https://redacted.invalid/158.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9"
+      }
+    ],
+    "links": [],
+    "ratings": {
+      "votes": 11676,
+      "value": 3.71,
+      "popularity": 43317.96
+    },
+    "monitored": false,
+    "manualAdd": false,
+    "grabbed": false,
+    "id": 23
+  },
+  {
+    "bookId": 10,
+    "foreignEditionId": "redacted-159",
+    "titleSlug": "redacted-159",
+    "isbn13": "9780688099978",
+    "asin": "redacted-160",
+    "title": "redacted-75",
+    "language": "eng",
+    "overview": "redacted-161",
+    "format": "redacted-162",
+    "isEbook": false,
+    "disambiguation": "",
+    "publisher": "redacted-163",
+    "pageCount": 267,
+    "releaseDate": "1991-04-24T07:00:00Z",
+    "images": [
+      {
+        "url": "https://redacted.invalid/164.jpg",
+        "coverType": "cover",
+        "extension": "redacted-9"
+      }
+    ],
+    "links": [],
+    "ratings": {
+      "votes": 490,
+      "value": 3.66,
+      "popularity": 1793.4
+    },
+    "monitored": false,
+    "manualAdd": false,
+    "grabbed": false,
+    "id": 24
+  }
+]

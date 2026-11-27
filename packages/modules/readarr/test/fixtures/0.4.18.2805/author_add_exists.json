@@ -1,0 +1,14 @@
+[
+  {
+    "propertyName": "ForeignAuthorId",
+    "errorMessage": "redacted-105",
+    "attemptedValue": "redacted-6",
+    "severity": "error",
+    "errorCode": "AuthorExistsValidator",
+    "formattedMessageArguments": [],
+    "formattedMessagePlaceholderValues": {
+      "propertyName": "redacted-106",
+      "propertyValue": "redacted-6"
+    }
+  }
+]

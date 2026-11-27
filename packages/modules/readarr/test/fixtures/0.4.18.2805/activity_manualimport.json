@@ -1,0 +1,55 @@
+[
+  {
+    "path": "/redacted/14.epub",
+    "name": "redacted-24",
+    "size": 201187,
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 12,
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-87",
+        "type": "permanent"
+      }
+    ],
+    "audioTags": {
+      "authors": [
+        "redacted-88"
+      ],
+      "authorTitle": "redacted-88",
+      "bookTitle": "redacted-89",
+      "discNumber": 0,
+      "discCount": 0,
+      "year": 0,
+      "duration": "00:00:00",
+      "quality": {
+        "quality": {
+          "id": 3,
+          "name": "EPUB"
+        },
+        "revision": {
+          "version": 1,
+          "real": 0,
+          "isRepack": false
+        }
+      },
+      "trackNumbers": [],
+      "language": "eng"
+    },
+    "additionalFile": false,
+    "replaceExistingFiles": true,
+    "disableReleaseSwitching": false,
+    "id": 1852197281
+  }
+]

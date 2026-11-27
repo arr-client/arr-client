@@ -1,0 +1,324 @@
+[
+  {
+    "guid": "http://redacted.invalid/45",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 301,
+    "age": 0,
+    "ageHours": 0.0002773174722222222,
+    "ageMinutes": 0.016639048333333333,
+    "size": 201186,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "releaseHash": "",
+    "title": "redacted-38",
+    "discography": false,
+    "sceneSource": false,
+    "authorName": "redacted-180",
+    "bookTitle": "redacted-170",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-181",
+      "redacted-182"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/45",
+    "downloadUrl": "http://redacted.invalid/46",
+    "infoUrl": "http://redacted.invalid/45",
+    "downloadAllowed": true,
+    "releaseWeight": 0,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000008",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "http://redacted.invalid/29",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 301,
+    "age": 0,
+    "ageHours": 0.0002773248611111111,
+    "ageMinutes": 0.016639491666666666,
+    "size": 201202,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "releaseHash": "",
+    "title": "redacted-26",
+    "discography": false,
+    "sceneSource": false,
+    "authorName": "redacted-180",
+    "bookTitle": "redacted-64",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-181",
+      "redacted-182"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/29",
+    "downloadUrl": "http://redacted.invalid/30",
+    "infoUrl": "http://redacted.invalid/29",
+    "downloadAllowed": true,
+    "releaseWeight": 1,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000009",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "http://redacted.invalid/41",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 301,
+    "age": 0,
+    "ageHours": 0.00027732555555555553,
+    "ageMinutes": 0.016639533333333335,
+    "size": 201198,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "releaseHash": "",
+    "title": "redacted-1",
+    "discography": false,
+    "sceneSource": false,
+    "authorName": "redacted-180",
+    "bookTitle": "redacted-58",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-184"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/41",
+    "downloadUrl": "http://redacted.invalid/42",
+    "infoUrl": "http://redacted.invalid/41",
+    "downloadAllowed": true,
+    "releaseWeight": 2,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000010",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "http://redacted.invalid/43",
+    "quality": {
+      "quality": {
+        "id": 2,
+        "name": "MOBI"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 201,
+    "age": 0,
+    "ageHours": 0.00027732611111111114,
+    "ageMinutes": 0.016639568333333334,
+    "size": 201190,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "releaseHash": "",
+    "title": "redacted-35",
+    "discography": false,
+    "sceneSource": false,
+    "authorName": "redacted-180",
+    "bookTitle": "redacted-75",
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-185"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/43",
+    "downloadUrl": "http://redacted.invalid/44",
+    "infoUrl": "http://redacted.invalid/43",
+    "downloadAllowed": true,
+    "releaseWeight": 3,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000011",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "http://redacted.invalid/33",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 1,
+    "age": 0,
+    "ageHours": 0.0002773267777777778,
+    "ageMinutes": 0.016639606666666668,
+    "size": 201187,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "title": "redacted-32",
+    "discography": false,
+    "sceneSource": false,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-186"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/33",
+    "downloadUrl": "http://redacted.invalid/34",
+    "infoUrl": "http://redacted.invalid/33",
+    "downloadAllowed": false,
+    "releaseWeight": 4,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000012",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "http://redacted.invalid/187",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 1,
+    "age": 0,
+    "ageHours": 0.0002773279722222222,
+    "ageMinutes": 0.016639678333333335,
+    "size": 201189,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "title": "redacted-96",
+    "discography": false,
+    "sceneSource": false,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-186"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/187",
+    "downloadUrl": "http://redacted.invalid/188",
+    "infoUrl": "http://redacted.invalid/187",
+    "downloadAllowed": false,
+    "releaseWeight": 5,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000013",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  },
+  {
+    "guid": "http://redacted.invalid/19",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 1,
+    "age": 0,
+    "ageHours": 0.00027732847222222223,
+    "ageMinutes": 0.01663971,
+    "size": 201190,
+    "indexerId": 1,
+    "indexer": "redacted-2",
+    "title": "redacted-18",
+    "discography": false,
+    "sceneSource": false,
+    "approved": false,
+    "temporarilyRejected": false,
+    "rejected": true,
+    "rejections": [
+      "redacted-186"
+    ],
+    "publishDate": "2026-11-26T23:13:58Z",
+    "commentUrl": "http://redacted.invalid/19",
+    "downloadUrl": "http://redacted.invalid/22",
+    "infoUrl": "http://redacted.invalid/19",
+    "downloadAllowed": false,
+    "releaseWeight": 6,
+    "customFormats": [],
+    "customFormatScore": 0,
+    "magnetUrl": "",
+    "infoHash": "abcdef0000000000000000000000000000000002",
+    "seeders": 5,
+    "leechers": 2,
+    "protocol": "torrent",
+    "indexerFlags": 0
+  }
+]

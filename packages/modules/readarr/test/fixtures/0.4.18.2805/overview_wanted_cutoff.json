@@ -1,0 +1,94 @@
+{
+  "page": 1,
+  "pageSize": 50,
+  "sortKey": "releaseDate",
+  "sortDirection": "descending",
+  "totalRecords": 1,
+  "records": [
+    {
+      "title": "redacted-75",
+      "authorTitle": "redacted-76",
+      "seriesTitle": "redacted-77",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-78",
+      "foreignEditionId": "redacted-79",
+      "titleSlug": "redacted-78",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 5,
+        "value": 2.8,
+        "popularity": 14
+      },
+      "releaseDate": "1909-01-01T08:00:00Z",
+      "pageCount": 0,
+      "genres": [],
+      "author": {
+        "authorMetadataId": 1,
+        "status": "continuing",
+        "ended": false,
+        "authorName": "redacted-4",
+        "authorNameLastFirst": "redacted-5",
+        "foreignAuthorId": "redacted-6",
+        "titleSlug": "redacted-6",
+        "overview": "redacted-7",
+        "links": [],
+        "images": [
+          {
+            "url": "https://redacted.invalid/8.jpg",
+            "coverType": "poster",
+            "extension": "redacted-9"
+          }
+        ],
+        "path": "/redacted/10",
+        "qualityProfileId": 1,
+        "metadataProfileId": 1,
+        "monitored": true,
+        "monitorNewItems": "all",
+        "genres": [],
+        "cleanName": "redacted-11",
+        "sortName": "redacted-12",
+        "sortNameLastFirst": "redacted-13",
+        "tags": [
+          1
+        ],
+        "added": "2026-11-26T23:02:43Z",
+        "ratings": {
+          "votes": 620757,
+          "value": 3.9591675,
+          "popularity": 2457680.9397975
+        },
+        "statistics": {
+          "bookFileCount": 0,
+          "bookCount": 0,
+          "availableBookCount": 0,
+          "totalBookCount": 0,
+          "sizeOnDisk": 0,
+          "percentOfBooks": 0
+        },
+        "id": 1
+      },
+      "images": [
+        {
+          "url": "/MediaCover/Books/10/cover.jpg?lastWrite=636432974680000000",
+          "coverType": "cover",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/80.jpg"
+        }
+      ],
+      "links": [],
+      "statistics": {
+        "bookFileCount": 1,
+        "bookCount": 1,
+        "totalBookCount": 1,
+        "sizeOnDisk": 201190,
+        "percentOfBooks": 100
+      },
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:10:09Z",
+      "grabbed": false,
+      "id": 10
+    }
+  ]
+}

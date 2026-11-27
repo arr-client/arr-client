@@ -1,0 +1,110 @@
+[
+  {
+    "path": "/redacted/14.epub",
+    "name": "redacted-24",
+    "size": 201187,
+    "author": {
+      "authorMetadataId": 1,
+      "status": "continuing",
+      "ended": false,
+      "authorName": "redacted-4",
+      "authorNameLastFirst": "redacted-5",
+      "foreignAuthorId": "redacted-6",
+      "titleSlug": "redacted-6",
+      "overview": "redacted-7",
+      "links": [],
+      "images": [
+        {
+          "url": "https://redacted.invalid/8.jpg",
+          "coverType": "poster",
+          "extension": "redacted-9"
+        }
+      ],
+      "path": "/redacted/10",
+      "qualityProfileId": 1,
+      "metadataProfileId": 1,
+      "monitored": true,
+      "monitorNewItems": "all",
+      "genres": [],
+      "cleanName": "redacted-11",
+      "sortName": "redacted-12",
+      "sortNameLastFirst": "redacted-13",
+      "tags": [
+        1
+      ],
+      "added": "2026-11-26T23:02:43Z",
+      "ratings": {
+        "votes": 620757,
+        "value": 3.9591675,
+        "popularity": 2457680.9397975
+      },
+      "statistics": {
+        "bookFileCount": 0,
+        "bookCount": 0,
+        "availableBookCount": 0,
+        "totalBookCount": 0,
+        "sizeOnDisk": 0,
+        "percentOfBooks": 0
+      },
+      "id": 1
+    },
+    "book": {
+      "title": "redacted-53",
+      "authorTitle": "redacted-54",
+      "seriesTitle": "redacted-55",
+      "disambiguation": "",
+      "authorId": 1,
+      "foreignBookId": "redacted-56",
+      "foreignEditionId": "redacted-15",
+      "titleSlug": "redacted-56",
+      "monitored": true,
+      "anyEditionOk": true,
+      "ratings": {
+        "votes": 20433,
+        "value": 3.78,
+        "popularity": 77236.73999999999
+      },
+      "releaseDate": "1904-01-01T08:00:00Z",
+      "pageCount": 192,
+      "genres": [],
+      "images": [
+        {
+          "url": "/redacted/93.jpg",
+          "coverType": "cover",
+          "extension": "redacted-9",
+          "remoteUrl": "https://redacted.invalid/57.jpg"
+        }
+      ],
+      "links": [],
+      "added": "2026-11-26T23:02:43Z",
+      "lastSearchTime": "2026-11-26T23:05:28Z",
+      "grabbed": false,
+      "id": 29
+    },
+    "foreignEditionId": "redacted-15",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "EPUB"
+      },
+      "revision": {
+        "version": 1,
+        "real": 0,
+        "isRepack": false
+      }
+    },
+    "qualityWeight": 0,
+    "downloadId": "ABCDEF0000000000000000000000000000000001",
+    "indexerFlags": 0,
+    "rejections": [
+      {
+        "reason": "redacted-94",
+        "type": "permanent"
+      }
+    ],
+    "additionalFile": false,
+    "replaceExistingFiles": false,
+    "disableReleaseSwitching": false,
+    "id": 1852197281
+  }
+]
