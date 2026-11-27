@@ -214,6 +214,25 @@ void main() {
     expect(messages.toSet(), hasLength(messages.length));
   });
 
+  appTest('takes an address without a scheme as https, never as http', (
+    app,
+  ) async {
+    final server = await app.serve(fakeRadarr(apiKey: key).call);
+    final bare = server.address.replaceFirst('http://', '');
+    final hint = find.textContaining(strings.testUnreachableHttpsAdded);
+
+    await app.openAddForm('Radarr');
+    await app.fillForm(address: bare, apiKey: key);
+    await app.testConnection(strings.testUnreachableTitle);
+    expect(find.text('https://$bare'), findsOneWidget);
+    expect(hint, findsOneWidget);
+    expect(server.requests, isEmpty);
+
+    await app.fillForm(address: server.address);
+    await app.testConnection(strings.testPassed('Radarr', radarrVersion));
+    await app.closeForm(strings.formAdd);
+  });
+
   appTest('saves a rejected key without sending it again', (app) async {
     final radarr = fakeRadarr(apiKey: key, movies: ['Example Movie']);
     final server = await app.serve(radarr.call);

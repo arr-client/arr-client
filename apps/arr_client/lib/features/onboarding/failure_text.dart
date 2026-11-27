@@ -12,12 +12,13 @@ import '../../src/l10n/generated/app_localizations.dart';
 typedef FailureText = ({String title, String message});
 
 /// [service] is the name of the service that was expected, [authKind] what was
-/// tested with.
+/// tested with. [httpsAdded] says that the user typed no scheme.
 FailureText testFailureText(
   BuildContext context,
   ServiceFailure failure, {
   required String service,
   required AuthKind authKind,
+  bool httpsAdded = false,
 }) {
   final strings = AppLocalizations.of(context);
   // What the shared widgets say already fits where this does not override it.
@@ -25,9 +26,13 @@ FailureText testFailureText(
   FailureText text(String title, [String? message]) =>
       (title: title, message: message ?? shared());
   return switch (failure) {
+    // A refused connection and a failed handshake are both this.
     Unreachable() => text(
       strings.testUnreachableTitle,
-      strings.testUnreachable,
+      [
+        strings.testUnreachable,
+        if (httpsAdded) strings.testUnreachableHttpsAdded,
+      ].join('\n'),
     ),
     DnsFailure() => text(strings.testDnsTitle),
     CertificateUntrusted() => text(

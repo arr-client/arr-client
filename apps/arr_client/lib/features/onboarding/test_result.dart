@@ -56,6 +56,7 @@ class TestResult extends StatelessWidget {
           failure,
           service: service,
           authKind: input.authKind,
+          httpsAdded: input.httpsAdded,
         );
         final isCertificate =
             failure is CertificateUntrusted || failure is CertificateChanged;

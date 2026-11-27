@@ -20,7 +20,8 @@ and token, test it, and go.
 | Real download progress (read only) | qBittorrent |
 
 Browse and search, add titles, handle the queue, pick releases, calendar, notifications without
-any third-party server, and switchable profiles. HTTP and HTTPS both work.
+any third-party server, and switchable profiles. HTTP and HTTPS both work; an address typed without
+either is taken as HTTPS.
 
 No analytics, no ads, no project-run servers.
 

@@ -113,6 +113,29 @@ void main() {
     expect(await test(), isA<Unreachable>());
   });
 
+  test('https to a server that speaks only http is no answer', () async {
+    answer = (request) async =>
+        json(request, '{"appName":"Radarr","version":"5.6.0.1"}');
+
+    // The failure that the advice to type http:// goes with.
+    final result = await ConnectionTest(
+      module: RadarrModule(),
+      input: ConnectionInput(
+        url: Uri.parse('https://127.0.0.1:$port'),
+        authKind: AuthKind.apiKey,
+        credential: const Credential(apiKey: key),
+      ),
+      log: log,
+      localNetwork: FakePermission(),
+      artwork: artwork,
+      cache: CacheRepository(database),
+      navigator: RouterAppNavigator(),
+    ).run(() async => true);
+
+    expect(failureOf(result), isA<Unreachable>());
+    expect(requests, isEmpty);
+  });
+
   test('signs in once and probes with the session', () async {
     answer = (request) async {
       if (request.uri.path.endsWith('/auth/login')) {

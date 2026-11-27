@@ -106,6 +106,9 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
   late final FormTrust _trust;
 
   var _submitted = false;
+
+  /// The `https://` in the address field was put there by the app.
+  var _httpsAdded = false;
   String? _nameError;
 
   ServiceModule get _module => widget.seed.module;
@@ -182,7 +185,8 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
     final address = parseAddress(_address.text);
     if (address is! Ok<Uri, AddressProblem>) return null;
     final url = address.value;
-    // So that the user sees what is used, such as the added `http://`.
+    if (!namesScheme(_address.text)) _httpsAdded = true;
+    // So that the user sees what is used, such as the added `https://`.
     _address.text = url.toString();
 
     final signsIn =
@@ -205,6 +209,7 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
       ),
       certPin: _trust.pinFor(url),
       customCa: _trust.customCa,
+      httpsAdded: _httpsAdded,
     );
   }
 
@@ -565,7 +570,11 @@ class _InstanceFormState extends ConsumerState<_InstanceForm> {
       helper: strings.formAddressHelper('${descriptor.defaultPort}'),
       keyboardType: TextInputType.url,
       validator: _checkAddress,
-      onChanged: _changed,
+      onChanged: (text) {
+        // A scheme that the user changes or takes away is no longer the app's.
+        if (!text.startsWith('https://')) _httpsAdded = false;
+        _changed();
+      },
     ),
     const SizedBox(height: 16),
     if (descriptor.authKinds.length > 1) ...[

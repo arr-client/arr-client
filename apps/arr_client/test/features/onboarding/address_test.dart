@@ -19,10 +19,13 @@ void main() {
     expect(parsed('http://[fd00::2]:7878'), 'http://[fd00::2]:7878');
   });
 
-  test('puts http before an address that names no scheme', () {
-    expect(parsed('192.168.1.10:7878'), 'http://192.168.1.10:7878');
-    expect(parsed('localhost:7878/radarr'), 'http://localhost:7878/radarr');
-    expect(parsed('radarr.local'), 'http://radarr.local');
+  test('puts https before an address that names no scheme', () {
+    expect(parsed('192.168.1.10:7878'), 'https://192.168.1.10:7878');
+    expect(parsed('localhost:7878/radarr'), 'https://localhost:7878/radarr');
+    expect(parsed('radarr.local'), 'https://radarr.local');
+    // The default port of https is not written out; another one is kept.
+    expect(parsed('nas:443'), 'https://nas');
+    expect(parsed('nas:80'), 'https://nas:80');
   });
 
   test('drops spaces around it and slashes at its end', () {
@@ -49,10 +52,10 @@ void main() {
   });
 
   test('keeps a host whose name only begins like a scheme', () {
-    expect(parsed('httpbin.test'), 'http://httpbin.test');
-    expect(parsed('https-proxy:8443'), 'http://https-proxy:8443');
-    expect(parsed('http:7878'), 'http://http:7878');
-    expect(parsed('https'), 'http://https');
+    expect(parsed('httpbin.test'), 'https://httpbin.test');
+    expect(parsed('https-proxy:8443'), 'https://https-proxy:8443');
+    expect(parsed('http:7878'), 'https://http:7878');
+    expect(parsed('https'), 'https://https');
   });
 
   test('says what is wrong', () {
