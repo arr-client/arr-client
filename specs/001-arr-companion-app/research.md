@@ -79,7 +79,17 @@ paged). Lists are built lazily.
 **Decision**: instance artwork is fetched through the instance's core HTTP client (pinning, headers,
 no cross-origin redirects) by a custom `FileService` for flutter_cache_manager.
 Its default service must not be used: it follows redirects and would forward `X-Api-Key` and custom
-headers. Remote artwork uses a separate client with no credentials or custom headers. Request
+headers. Remote artwork uses a separate client with no credentials, cookies or custom headers.
+It loads whatever address the service gives and follows its redirects to other hosts (the owner's
+decision: the services say where artwork is). Limits: 5 redirects; 20 MiB; only content that begins
+as a JPEG, PNG, GIF, BMP or WebP file; the setting is checked before every hop. Two redirects are
+refused. From https to http, which would show what is loaded to the network; no artwork host is
+known to need it. From a public host to a local one (loopback, private, link-local, carrier-grade
+NAT, multicast, `.local`), so that only an address the service itself gave can reach into the
+user's network. A name is resolved just before the request, so this does not stop DNS rebinding,
+where the harm is limited to a `GET` without credentials whose answer is only shown if it is a
+picture. Redirects of requests to an instance, its artwork included, stay within the origin (R4):
+no supported service is known to redirect its own artwork elsewhere. Request
 service posters use the instance's image proxy when its image cache is enabled: Seerr and later
 Jellyseerr use `/imageproxy/tmdb/<path>`; Overseerr and early Jellyseerr use `/imageproxy/<path>`
 (chosen by product and version, with fixtures for both). Otherwise image.tmdb.org is used unless

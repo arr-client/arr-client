@@ -29,7 +29,8 @@ understanding the others.
 
 ### III. Private and Secure by Default
 The app MUST talk only to the addresses the user configures, plus artwork hosts that those services
-point to or are documented to use; requests to artwork hosts MUST carry no credentials. It MUST NOT
+point to or are documented to use and hosts that those artwork hosts redirect to; requests to any of
+these artwork hosts MUST carry no credentials. It MUST NOT
 include analytics, advertising, crash reporting to third parties, or any project-operated backend.
 Credentials MUST be stored in hardware-backed or OS-provided secure storage, MUST NOT appear in
 logs, error reports or unencrypted exports, and MUST be sent only to the address the user saved or
@@ -87,4 +88,4 @@ redefining a principle, MINOR for adding one or materially expanding guidance, P
 clarifications. Plans and reviews MUST check compliance; deviations are recorded in the plan's
 Complexity Tracking table.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-26 | **Last Amended**: 2026-11-26
+**Version**: 1.1.0 | **Ratified**: 2026-11-26 | **Last Amended**: 2026-11-26
