@@ -276,32 +276,48 @@ final class ReadarrLibraryAdapter implements LibraryProvider {
       case Err(:final error):
         return Err(error);
     }
+    return _reading(() => _keepBooks(parent, author, records, queue));
+  }
+
+  /// Reads the books in [records] and caches them with their author.
+  ///
+  /// Not a closure inside [_books]: written that way, the AOT compiler of
+  /// Dart 3.14.0 crashes (`linearscan.cc: unreachable code`) and no release
+  /// build with this module can be made.
+  Future<List<LibraryItem>> _keepBooks(
+    ItemRef parent,
+    JsonObject author,
+    List<JsonObject> records,
+    List<QueueItem> queue,
+  ) async {
     final downloading = {for (final item in queue) ?item.itemRef?.remoteId};
-    return _reading(() async {
-      final now = DateTime.now().toUtc();
-      final (read, authorEntry) = _author(
-        author,
-        downloading: queue.any((item) => item.parent == parent),
+    final now = DateTime.now().toUtc();
+    final (read, authorEntry) = _author(
+      author,
+      downloading: queue.any((item) => item.parent == parent),
+      now: now,
+    );
+    final items = <LibraryItem>[];
+    final entries = <CacheEntry>[];
+    for (final record in records) {
+      final bookId = requireInt(record, 'id');
+      final (book, entry) = _book(
+        // Editions read before stay with the book.
+        {...record, 'editions': ?await _cachedEditions(bookId)},
+        authorName: read.title,
+        downloading: downloading.contains(bookId),
         now: now,
       );
-      final items = <LibraryItem>[];
-      final entries = <CacheEntry>[];
-      for (final record in records) {
-        final bookId = requireInt(record, 'id');
-        final (book, entry) = _book(
-          // Editions read before stay with the book.
-          {...record, 'editions': ?await _cachedEditions(bookId)},
-          authorName: read.title,
-          downloading: downloading.contains(bookId),
-          now: now,
-        );
-        items.add(book);
-        entries.add(entry);
-      }
-      await _cache.put(authorEntry);
-      await _cache.replace(MediaKind.book, entries, parentRemoteId: id);
-      return items;
-    });
+      items.add(book);
+      entries.add(entry);
+    }
+    await _cache.put(authorEntry);
+    await _cache.replace(
+      MediaKind.book,
+      entries,
+      parentRemoteId: parent.remoteId,
+    );
+    return items;
   }
 
   /// A read beside that of an item: its NotFound would say that the item is
