@@ -59,10 +59,12 @@ jobs:
           SHARD: ${{ matrix.shard }}
         run: |
           case "$SHARD" in
-            app) dirs=(apps/*) ;;
+            app) dirs=(apps/* packages/core) ;;
             packages) dirs=(packages/* packages/modules/*) ;;
           esac
           for dir in "${dirs[@]}"; do
+            # The app shard has it, so that the two take about as long.
+            if [ "$SHARD" = packages ] && [ "$dir" = packages/core ]; then continue; fi
             # flutter test fails on a test directory that holds no tests.
             if [ -n "$(find "$dir/test" -name '*_test.dart' -print -quit 2>/dev/null)" ]; then
               echo "$dir"
