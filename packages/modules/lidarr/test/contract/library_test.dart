@@ -256,6 +256,36 @@ void main() {
       },
     );
 
+    test('carry the file each has, also from what was saved', () async {
+      final harness = Harness();
+      final raw = byId(harness.server.trackFiles, 1);
+      final trackId = byId(harness.server.tracks, 188)..['trackFileId'] = 1;
+
+      final found = (await _tracks(harness, 2))[trackId['id']]!;
+
+      expect(found.file?.id, 1);
+      expect(found.file?.path, raw['path']);
+      expect(found.file?.quality?.name, 'MP3-192');
+
+      harness.server.goOffline();
+      final saved = await ok(harness.library.cachedChildren(albumRef(2)));
+      final cached = saved!.value.whereType<Track>().singleWhere(
+        (track) => track.ref == trackRef(188),
+      );
+      expect(cached.file?.path, raw['path']);
+    });
+
+    test('are not given when their files cannot be read', () async {
+      final harness = Harness();
+      harness.server.overrides['trackfile'] = FakeLidarr.body('', status: 500);
+
+      expect(
+        await failureOf(harness.library.children(albumRef(2))),
+        isA<ServerError>(),
+      );
+      expect(await ok(harness.library.cachedChildren(albumRef(2))), isNull);
+    });
+
     test('of an album the server does not have are not found', () async {
       expect(
         await failureOf(Harness().library.children(albumRef(99))),
@@ -419,5 +449,20 @@ void main() {
     byId(harness.server.artists, 1).remove('id');
 
     expect(await failureOf(harness.library.list()), isA<MalformedResponse>());
+  });
+
+  test('artists and albums have detail routes of their own', () {
+    final library = Harness().library;
+
+    expect(
+      library.detailRoute(artistRef(1)).location,
+      '/instances/i1/lidarr/artists/1',
+    );
+    expect(
+      library.detailRoute(albumRef(2)).location,
+      '/instances/i1/lidarr/albums/2',
+    );
+    // A track is shown on its album's screen only.
+    expect(() => library.detailRoute(trackRef(1)), throwsArgumentError);
   });
 }

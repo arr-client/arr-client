@@ -89,7 +89,8 @@ class _DeleteDialogState extends ConsumerState<DeleteDialog> {
       ),
     );
     if (result case Ok() || Err(error: NotFound() || OutcomeUnknown())) {
-      reloadLibrary(container, widget.item.kind, widget.item.instanceId);
+      // The library lists what holds an album, not the album.
+      reloadLibrary(container, widget.library.itemKind, widget.item.instanceId);
     }
 
     if (mounted) {

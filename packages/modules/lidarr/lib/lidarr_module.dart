@@ -13,6 +13,8 @@ import 'src/adapters/lookup.dart';
 import 'src/adapters/manage.dart';
 import 'src/adapters/overview.dart';
 import 'src/api/lidarr_api.dart';
+import 'src/screens/lidarr_screens.dart';
+import 'src/screens/lidarr_sources.dart';
 
 // The app adds the delegate to its own, for the names the module supplies.
 export 'src/l10n/generated/lidarr_localizations.dart' show LidarrLocalizations;
@@ -37,6 +39,11 @@ final _versionPattern = RegExp(r'^\d{1,9}(\.\d{1,9})*$');
 
 /// The Lidarr service.
 final class LidarrModule implements ServiceModule {
+  // One for each connection to an instance, which is its client: the app may
+  // build the context anew while a screen is open, as after a rename. The
+  // screens' state is kept under it.
+  final _sources = Expando<LidarrSources>();
+
   @override
   String get id => 'lidarr';
 
@@ -96,7 +103,17 @@ final class LidarrModule implements ServiceModule {
   }
 
   @override
-  List<ModuleScreen> routes() => throw UnimplementedError('T118');
+  List<ModuleScreen> routes() => lidarrScreens(
+    (context) => _sources[context.http] ??= LidarrSources(
+      instanceId: context.instance.id,
+      library: LidarrLibraryAdapter(LidarrApi(context), context.cache),
+      history: LidarrHistoryAdapter(LidarrApi(context)),
+      commands: LidarrCommandAdapter(LidarrApi(context)),
+      artwork: context.artwork,
+      navigator: context.navigator,
+      removals: context.cache.removals,
+    ),
+  );
 }
 
 ServiceFailure _classify(HttpError error) {

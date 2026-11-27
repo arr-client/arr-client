@@ -126,6 +126,11 @@ Track readTrack(
       null => null,
     },
     hasFile: record['hasFile'] == true,
+    // Put there by the library adapter.
+    file: switch (record['trackFile']) {
+      final JsonObject file => readFile(file),
+      _ => null,
+    },
   );
 }
 
