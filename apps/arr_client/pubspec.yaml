@@ -9,6 +9,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  bazarr:
+    path: ../../packages/modules/bazarr
   # Tells which network the device is on (Wi-Fi, mobile data, VPN), which the
   # local network permission and connection state depend on. BSD-3-Clause; on
   # Android it adds only AndroidX core and ACCESS_NETWORK_STATE.
