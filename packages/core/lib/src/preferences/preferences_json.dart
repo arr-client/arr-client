@@ -13,39 +13,50 @@ import 'library_filters.dart';
 import 'library_sort.dart';
 
 /// The `sort` column.
-String encodeSort(LibrarySort sort) =>
-    jsonEncode({'field': sort.field, 'ascending': sort.ascending});
+String encodeSort(LibrarySort sort) => jsonEncode(sortToJson(sort));
+
+/// [sort] as a JSON object.
+Map<String, Object?> sortToJson(LibrarySort sort) => {
+  'field': sort.field,
+  'ascending': sort.ascending,
+};
 
 /// Reads the `sort` column.
-LibrarySort decodeSort(String text) {
-  final json = _object(text);
-  return LibrarySort(
-    field: switch (json['field']) {
-      final String field => field,
-      _ => LibrarySort.title,
-    },
-    ascending: json['ascending'] != false,
-  );
-}
+LibrarySort decodeSort(String text) => sortFromJson(_object(text));
+
+/// Reads what [sortToJson] writes.
+LibrarySort sortFromJson(Map<String, Object?> json) => LibrarySort(
+  field: switch (json['field']) {
+    final String field => field,
+    _ => LibrarySort.title,
+  },
+  ascending: json['ascending'] != false,
+);
 
 /// The `filters` column.
-String encodeFilters(LibraryFilters filters) {
+String encodeFilters(LibraryFilters filters) =>
+    jsonEncode(filtersToJson(filters));
+
+/// [filters] as a JSON object.
+Map<String, Object?> filtersToJson(LibraryFilters filters) {
   List<Object> ids(Set<InstanceOptionId> ids) => [
     for (final id in ids) [id.instanceId, id.optionId],
   ];
 
-  return jsonEncode({
+  return {
     'text': filters.text,
     'states': [for (final state in filters.states) state.name],
     'monitored': filters.monitored,
     'qualityProfiles': ids(filters.qualityProfiles),
     'tags': ids(filters.tags),
-  });
+  };
 }
 
 /// Reads the `filters` column.
-LibraryFilters decodeFilters(String text) {
-  final json = _object(text);
+LibraryFilters decodeFilters(String text) => filtersFromJson(_object(text));
+
+/// Reads what [filtersToJson] writes.
+LibraryFilters filtersFromJson(Map<String, Object?> json) {
   final states = ItemState.values.asNameMap();
 
   Set<InstanceOptionId> ids(Object? list) => {
@@ -67,7 +78,11 @@ LibraryFilters decodeFilters(String text) {
 }
 
 /// The `choices` column.
-String encodeAddChoices(AddChoices choices) => jsonEncode({
+String encodeAddChoices(AddChoices choices) =>
+    jsonEncode(addChoicesToJson(choices));
+
+/// [choices] as a JSON object.
+Map<String, Object?> addChoicesToJson(AddChoices choices) => {
   'rootFolderId': choices.rootFolderId,
   'qualityProfileId': choices.qualityProfileId,
   'monitorOptionId': choices.monitorOptionId,
@@ -77,11 +92,13 @@ String encodeAddChoices(AddChoices choices) => jsonEncode({
   'seriesType': choices.seriesType?.name,
   'seasonFolder': choices.seasonFolder,
   'minimumAvailability': choices.minimumAvailability?.name,
-});
+};
 
 /// Reads the `choices` column. Null if a required choice is missing.
-AddChoices? decodeAddChoices(String text) {
-  final json = _object(text);
+AddChoices? decodeAddChoices(String text) => addChoicesFromJson(_object(text));
+
+/// Reads what [addChoicesToJson] writes. Null if a required choice is missing.
+AddChoices? addChoicesFromJson(Map<String, Object?> json) {
   if (json case {
     'rootFolderId': final int rootFolderId,
     'qualityProfileId': final int qualityProfileId,

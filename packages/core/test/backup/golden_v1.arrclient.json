@@ -1,0 +1,18 @@
+{
+  "format": "arr-client-setup",
+  "version": 1,
+  "createdAt": "2026-01-02T00:00:00Z",
+  "encrypted": true,
+  "payload": {
+    "kdf": {
+      "name": "argon2id",
+      "salt": "AAECAwQFBgcICQoLDA0ODw==",
+      "memoryKiB": 65536,
+      "iterations": 3,
+      "parallelism": 1
+    },
+    "cipher": "aes-256-gcm",
+    "nonce": "ZGVmZ2hpamtsbW5v",
+    "data": "rABfNODaviPZScjBHpI5JmjkdGT8oC7Xwl+cKMp8IScjpM3XQJHKHhy/pvN3cxxpm5aQ6YeNntQy3qCQjVcQHGYtJ2Lqi8bhRqAD9n7fcdMR/IfEcfx64IArLXmYRNeIOb5b2tmcYZbTU94l1ZYWrQKn2gJNRemKxBM9lXqpk1UH4KJF35awVxAtKEAeS34tGYxlmjx6x3mtCOZkpwb7mMvZov44bSTsOvdU9Yez9hL39XmQaidA7fMxXPNdV6g4TfYSe1/FuSIVX9lmjfwBLwGSBzyTV1xcs0w7TB7OHciCgeqIykcc5vTfwThlPIKgLEfACOIFf5X1M/UBiane1sop5GOTsMSVq4dyzn4oyYOwn0zPk4a+BL1BqWhTYvWXZUS2/WecZEzYU5xnpqHhAw3ZMkauHppY0Vv8+mVcc+w9vkv0ogjKtiLj1CquJv4V3CpBH8dN2J6PkzJysyeBFwySdK06KMqaRfoNlmgGD77LQhjiHPkIXcIFl/7UkU5C6UEE8wER5TMDjpMjxAsl7afVGLW8ZeoE7n4CnyHplk9QIjE5m17VMJaVf01lDPBiWN5CAddaaOlbf0GuhdKm9/WRS/bDjALckAGvmcnHFdQZjeUKfpRO+NCntFROV6jRQy3c3eZ95k/ZFwfXQ8gz5WZ8k3fdxyP0SOnxJ37R2ifA9f059fj25ZZIpVwlEg/9MbISgvxw7AV1DjrgGStE6J0NHtsw2BIGnSFTIqY+oiurOZ/Kniveh+DzO5c/vMgyIRf80A9vJStq7CuFcRi/FHs5rKcaSuJYnHtSR25ZqL+bH4xTZL0NvQVAVB22MVEzoz5T1YioGgFXjFvNy7ROuI7ff3RILJVP1ItyXppq33n/w1RdKEn9BG7YX3zixd3/cVwvcYA9yeXity2WGPvgROMkcalfRNu0uWo0JQwLLcjMwJPJORKmsqP3mYJAPYn6Cy2FTMxWb0pLk70grCk2ICQbYE9c0HWkB6hSXuyy29oi7LynlilWrL5kSiAl+440A7s1D9KJyLbPyCQh3VZBVFI="
+  }
+}
