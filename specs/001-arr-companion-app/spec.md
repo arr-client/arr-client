@@ -407,6 +407,9 @@ The user exports their app setup and restores it on another device, and can lock
 - A server runs behind a reverse proxy under a sub-path, needs basic authentication or extra
   headers, or the proxy answers with a login web page instead of data (report as such).
 - A server redirects to a different host: credentials are not forwarded; the user is told.
+- Artwork on a public host is redirected to another host: with public artwork on, it is
+  followed, still without credentials. A redirect from https to http, or from a public host to a
+  local one, is not; a placeholder is shown.
 - A server rejects the host name used to reach it: reported with guidance on the server's allowed
   host names.
 - qBittorrent behind a proxy that wants basic authentication: with a qBittorrent API key this
@@ -607,8 +610,10 @@ Timings assume a mid-range phone, a server on the local network, and a healthy s
 - **SC-005**: With one of several instances unreachable, the others show content within 3 seconds.
 - **SC-006**: No credential appears in logs, unencrypted exports or traffic to any host other than
   its instance, as verified by automated tests and a pre-release review.
-- **SC-007**: The app makes zero network connections to hosts other than configured instances and
-  artwork hosts those services point to or are documented to use (the latter can be switched off).
+- **SC-007**: The app makes zero network connections to hosts other than configured instances,
+  artwork hosts those services point to or are documented to use, and hosts that those artwork
+  hosts redirect to. Artwork from public hosts, redirects included, can be switched off, and none
+  of these artwork requests carries a credential, cookie or custom header.
 - **SC-008**: Every connection failure class in FR-007 yields its own message.
 - **SC-009**: Adding a new service module requires no change to core or to other modules, apart from
   registering it in the app.
@@ -621,8 +626,8 @@ Timings assume a mid-range phone, a server on the local network, and a healthy s
 - Users already run the services and can obtain their keys or passwords.
 - Remote access (VPN, reverse proxy, port forwarding) is the user's responsibility.
 - Notifications are best effort: the operating system controls background timing.
-- Artwork may be served by the instance or by public metadata hosts that the instance names. A
-  request service without image caching gives only relative paths; the app then loads them from
+- Artwork may be served by the instance or by public metadata hosts that the instance names, and
+  those may redirect to further hosts, as some cover archives do. A request service without image caching gives only relative paths; the app then loads them from
   image.tmdb.org without credentials, and a setting turns this off (placeholders are shown).
 - Minimum Android version is 8.0.
 - Distribution is through GitHub releases first, then F-Droid. Google Play is optional. Android's
