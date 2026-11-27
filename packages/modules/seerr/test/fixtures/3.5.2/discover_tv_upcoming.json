@@ -1,0 +1,49 @@
+{
+  "page": 1,
+  "totalPages": 21,
+  "totalResults": 419,
+  "results": [
+    {
+      "id": 224377,
+      "firstAirDate": "2026-12-25",
+      "genreIds": [
+        10765,
+        10759
+      ],
+      "mediaType": "tv",
+      "name": "redacted-72",
+      "originCountry": [
+        "redacted-56",
+        "redacted-34"
+      ],
+      "originalLanguage": "en",
+      "originalName": "redacted-72",
+      "overview": "redacted-73",
+      "popularity": 17.1459,
+      "voteAverage": 0,
+      "voteCount": 0,
+      "backdropPath": "/redacted/74.jpg",
+      "posterPath": "/redacted/75.jpg"
+    },
+    {
+      "id": 331962,
+      "firstAirDate": "2026-12-01",
+      "genreIds": [
+        18
+      ],
+      "mediaType": "tv",
+      "name": "redacted-76",
+      "originCountry": [
+        "redacted-77"
+      ],
+      "originalLanguage": "no",
+      "originalName": "redacted-76",
+      "overview": "",
+      "popularity": 6.6176,
+      "voteAverage": 0,
+      "voteCount": 0,
+      "backdropPath": "/redacted/78.jpg",
+      "posterPath": null
+    }
+  ]
+}

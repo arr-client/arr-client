@@ -1,0 +1,48 @@
+{
+  "page": 1,
+  "totalPages": 154,
+  "totalResults": 3080,
+  "results": [
+    {
+      "id": 1003596,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        878,
+        28,
+        12
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-25",
+      "overview": "redacted-26",
+      "popularity": 261.3654,
+      "releaseDate": "2026-12-16",
+      "title": "redacted-25",
+      "video": false,
+      "voteAverage": 0,
+      "voteCount": 0,
+      "backdropPath": "/redacted/27.jpg",
+      "posterPath": "/redacted/28.jpg"
+    },
+    {
+      "id": 1170608,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        878,
+        12
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-68",
+      "overview": "redacted-69",
+      "popularity": 52.0432,
+      "releaseDate": "2026-12-15",
+      "title": "redacted-68",
+      "video": false,
+      "voteAverage": 0,
+      "voteCount": 0,
+      "backdropPath": "/redacted/70.jpg",
+      "posterPath": "/redacted/71.jpg"
+    }
+  ]
+}

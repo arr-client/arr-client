@@ -1,0 +1,72 @@
+{
+  "page": 1,
+  "totalPages": 1001,
+  "totalResults": 20001,
+  "keywords": [],
+  "results": [
+    {
+      "id": 1726,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        28,
+        878,
+        12
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-42",
+      "overview": "redacted-43",
+      "popularity": 1600.2376,
+      "releaseDate": "2008-04-30",
+      "title": "redacted-42",
+      "video": false,
+      "voteAverage": 7.669,
+      "voteCount": 29292,
+      "backdropPath": "/redacted/44.jpg",
+      "posterPath": "/redacted/45.jpg"
+    },
+    {
+      "id": 801688,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        18,
+        28,
+        14,
+        878
+      ],
+      "originalLanguage": "te",
+      "originalTitle": "redacted-46",
+      "overview": "redacted-47",
+      "popularity": 791.4882,
+      "releaseDate": "2024-06-26",
+      "title": "redacted-48",
+      "video": false,
+      "voteAverage": 6.4,
+      "voteCount": 215,
+      "backdropPath": "/redacted/49.jpg",
+      "posterPath": "/redacted/50.jpg"
+    },
+    {
+      "id": 1368337,
+      "mediaType": "movie",
+      "adult": false,
+      "genreIds": [
+        12,
+        28,
+        14
+      ],
+      "originalLanguage": "en",
+      "originalTitle": "redacted-51",
+      "overview": "redacted-52",
+      "popularity": 383.1028,
+      "releaseDate": "2026-07-15",
+      "title": "redacted-51",
+      "video": false,
+      "voteAverage": 8.026,
+      "voteCount": 5508,
+      "backdropPath": "/redacted/53.jpg",
+      "posterPath": "/redacted/54.jpg"
+    }
+  ]
+}

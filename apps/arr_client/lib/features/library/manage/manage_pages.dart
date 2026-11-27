@@ -34,24 +34,32 @@ GoRoute deleteItemRoute() => GoRoute(
       state,
       (instance, library, item) =>
           DeleteDialog(instance: instance, library: library, item: item),
+      // An album can be deleted on its own, but has nothing to edit beyond
+      // whether it is monitored.
+      also: (library, kind) =>
+          library.itemKind == MediaKind.artist && kind == MediaKind.album,
     ),
   ),
 );
 
 /// What [builder] makes of the item that [state] names, where it names one of
-/// those the instance's library holds at its top level. Nothing else can be
-/// edited or deleted here.
+/// those the instance's library holds at its top level, or one that [also]
+/// takes. Nothing else can be edited or deleted here.
 Widget _item(
   GoRouterState state,
-  Widget Function(ActiveInstance, LibraryProvider, ItemRef) builder,
-) {
+  Widget Function(ActiveInstance, LibraryProvider, ItemRef) builder, {
+  bool Function(LibraryProvider library, MediaKind kind)? also,
+}) {
   final instanceId = state.pathParameters['instanceId'] ?? '';
   return InstanceRoute(
     instanceId: instanceId,
     builder: (context, active) {
       final item = itemQueryRef(instanceId, state.uri.queryParameters);
       final library = active.capability(CapabilityKind.library);
-      if (item != null && library != null && library.itemKind == item.kind) {
+      if (item != null &&
+          library != null &&
+          (library.itemKind == item.kind ||
+              (also?.call(library, item.kind) ?? false))) {
         // Another item at the same path starts over.
         return KeyedSubtree(
           key: ValueKey(item),

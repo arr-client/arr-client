@@ -565,6 +565,67 @@ void main() {
     });
   });
 
+  group('an album of a library of artists', () {
+    Future<(String, ItemRef)> addAlbum(WidgetTester tester) async {
+      await start(tester);
+      final library = libraries['Music'] = ManagedLibrary(
+        itemKind: MediaKind.artist,
+      );
+      commandsOf['Music'] = FakeCommands();
+      final id = await app.add(module, 'Music');
+      final ref = ItemRef(instanceId: id, kind: MediaKind.album, remoteId: 3);
+      library.items = [
+        Album(
+          ref: ref,
+          title: 'Dummy',
+          sortTitle: 'dummy',
+          monitored: true,
+          state: ItemState.downloaded,
+          year: 1994,
+        ),
+      ];
+      await app.pump(tester);
+      return (id, ref);
+    }
+
+    testWidgets('can be deleted on its own', (tester) async {
+      final (id, ref) = await addAlbum(tester);
+      navigatorOf(id).openDelete(ref).ignore();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Delete album?'), findsOneWidget);
+      expect(find.text('Dummy (1994)'), findsOneWidget);
+      expect(
+        find.text('The album is removed from Music. This cannot be undone.'),
+        findsOneWidget,
+      );
+      await tap(tester, find.text('Delete files'));
+      expect(
+        find.text(
+          "All files of the album are permanently deleted from the server's "
+          'disk.',
+        ),
+        findsOneWidget,
+      );
+      await tap(tester, button('Delete album'));
+
+      expect(libraries['Music']!.deletes, [(ref, true, false)]);
+      await app.stop(tester);
+    });
+
+    testWidgets('has no settings to edit', (tester) async {
+      final (id, ref) = await addAlbum(tester);
+      navigatorOf(id).openEdit(ref).ignore();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('No service in this profile offers this.'),
+        findsOneWidget,
+      );
+      await app.stop(tester);
+    });
+  });
+
   group('several at once', () {
     testWidgets('changes those selected after naming them', (tester) async {
       await start(tester);

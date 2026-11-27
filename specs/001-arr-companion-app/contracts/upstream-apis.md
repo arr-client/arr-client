@@ -107,6 +107,40 @@ built by hand: spaces as `%20` (never `+`) and every reserved character escaped,
   `POST request/{id}/retry`, `POST issue`, `POST issue/{id}/comment`,
   `POST issue/{id}/{open|resolved}`
 
+Sign-in bodies, sent without any other field, answered with the session cookie `connect.sid`:
+
+| Sign-in | Body | Rejected |
+|---|---|---|
+| `POST auth/local` | `{"email", "password"}` | 403 `{"message":"Access denied."}` |
+| `POST auth/jellyfin` (Jellyfin and Emby; not on Overseerr) | `{"username", "password"}` | 401 `{"message":"INVALID_CREDENTIALS"}`; 403 `Access denied.` for a user who may not be created |
+
+`hostname`, `port` and `serverType` belong to first-time setup; a configured server refuses
+`hostname`. The user object a sign-in returns is partial: identity and permissions come from
+`auth/me`.
+
+A missing session or permission, an expired session and a wrong API key all get 403
+`{"status":403,"error":"You do not have permission to access this endpoint"}`; a request with neither
+cookie nor key gets 401. Other 403s carry `message` (quota, 4K or blocklist refusal, CSRF). Deleting a
+request or changing an issue's status without the right to is a **401** with a `message`, which must
+not count as a rejected credential. With an API key, `auth/me`, which needs no permission, tells a
+rejected key from a refusal: the core reads it after a 401 or the 403 above.
+
+Permission bits (the same in all three): 2 admin (implies every other), 16 manage requests, 32
+request, 1024 request 4K, 2048 4K movies, 4096 4K series, 262144 request movies, 524288 request
+series, 1048576 manage issues, 2097152 view issues, 4194304 create issues. 4K is also gated by
+`movie4kEnabled` and `series4kEnabled` of `settings/public`, as in the web interface.
+
+`POST request` takes `mediaType` (`movie`, `tv`), `mediaId` (the **TMDB** id), `is4k` and, for series,
+`seasons`. `POST issue` takes `issueType` (1 video, 2 audio, 3 subtitles, 4 other), `message` and
+`mediaId` (**`mediaInfo.id`**). Request status: 1 pending, 2 approved, 3 declined, 4 failed,
+5 completed (not in Overseerr 1.34 or early Jellyseerr). The product follows from the major version of
+`status`: 1 Overseerr, 2 Jellyseerr, 3 and later Seerr. Image proxy: `imageproxy/tmdb/...` on Seerr
+and Jellyseerr 2.6.0 and later, which is also where status 7 (deleted) appears.
+
+A development build reports `develop-<commit>`. It is accepted with the newer-than-tested notice, as
+Overseerr where `settings/public` has no `mediaServerType` and else as Seerr; having no version
+number, it counts as newer than every release.
+
 ## qBittorrent (`/api/v2`, read only)
 
 Either an API key (`Authorization: Bearer`, 5.2+; the `auth/` endpoints are not used with it) or a

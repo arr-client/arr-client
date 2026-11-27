@@ -1,0 +1,18 @@
+{
+  "initialized": true,
+  "applicationTitle": "redacted-2",
+  "applicationUrl": "",
+  "hideAvailable": false,
+  "localLogin": true,
+  "movie4kEnabled": true,
+  "series4kEnabled": true,
+  "region": "",
+  "originalLanguage": "",
+  "partialRequestsEnabled": true,
+  "cacheImages": true,
+  "vapidPublic": "redacted-3",
+  "enablePushRegistration": false,
+  "locale": "redacted-4",
+  "emailEnabled": false,
+  "newPlexLogin": true
+}

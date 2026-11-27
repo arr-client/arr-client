@@ -955,6 +955,36 @@ void main() {
       });
     }
 
+    for (final MapEntry(key: name, value: meStatus) in {
+      'latches when the key check is refused too': 403,
+      'does not latch when the key check succeeds': 200,
+    }.entries) {
+      test('with an API key $name', () async {
+        await edit(
+          authKind: AuthKind.apiKey,
+          credential: const Credential(apiKey: apiKey),
+        );
+        service.fixed['torrents'] = 403;
+        service.fixed['me'] = meStatus;
+        final rejects = meStatus == 403;
+        final client = session(
+          header: ApiKeyHeader(
+            'X-Api-Key',
+            check: ApiKeyCheck(
+              path: 'me',
+              refuses: (response) => response.statusCode == 403,
+            ),
+          ),
+        );
+
+        final error = expectError(await client.send(_write()));
+
+        expect(error.failure, rejects ? isA<AuthFailed>() : isA<Forbidden>());
+        expect(await latched(), rejects);
+        expect(service.calls, ['POST /torrents', 'GET /me']);
+      });
+    }
+
     test('with a login ignores the status that rejects a key', () async {
       service.fixed['admin'] = 403;
       final client = session(

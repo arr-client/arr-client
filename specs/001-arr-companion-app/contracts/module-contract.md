@@ -22,6 +22,12 @@ descriptor's API key header names it as `rejectionStatus`. The core client then 
 `authFailed` for an instance that authenticates with the key, and the saved instance is latched
 (data-model Instance.authFailed).
 
+Where a status does not by itself say that the key is wrong (Seerr), the header has a `check`: a read
+that every accepted key may make, and which refusals besides a 401 are in doubt. On either, an
+instance that authenticates with the key makes that read once. The request fails with `authFailed`,
+latching the instance, only if the read is answered with a 401 or such a refusal, and otherwise with
+`forbidden`.
+
 ## Navigation intents (declared in core)
 
 Modules never import the app. A module screen requests shared flows through `AppNavigator`, supplied

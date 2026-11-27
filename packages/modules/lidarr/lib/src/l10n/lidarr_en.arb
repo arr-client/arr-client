@@ -27,5 +27,269 @@
   "monitorNone": "None",
   "@monitorNone": {
     "description": "Choice of what to monitor of an artist, being added or already there: nothing."
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Button that reads the screen from the server again."
+  },
+  "automaticSearch": "Search automatically",
+  "@automaticSearch": {
+    "description": "Button: have the server search for the artist or album and pick releases itself."
+  },
+  "moreActions": "More actions",
+  "@moreActions": {
+    "description": "Tooltip of the menu of an artist or album screen."
+  },
+  "interactiveSearch": "Interactive search",
+  "@interactiveSearch": {
+    "description": "Button: list the releases of the artist or album, for the user to pick one."
+  },
+  "editArtist": "Edit artist",
+  "@editArtist": {
+    "description": "Menu entry that opens the artist's settings."
+  },
+  "refreshMetadata": "Refresh metadata",
+  "@refreshMetadata": {
+    "description": "Menu entry: have the server fetch the artist's or album's details again."
+  },
+  "rescanFiles": "Rescan files",
+  "@rescanFiles": {
+    "description": "Menu entry: have the server look for the artist's files on disk again."
+  },
+  "deleteArtist": "Delete artist",
+  "@deleteArtist": {
+    "description": "Menu entry that leads to deleting the artist."
+  },
+  "deleteAlbum": "Delete album",
+  "@deleteAlbum": {
+    "description": "Menu entry that leads to deleting the album."
+  },
+  "artistMonitorOnAccepted": "The artist is now monitored",
+  "@artistMonitorOnAccepted": {
+    "description": "The server accepted turning monitoring on."
+  },
+  "artistMonitorOffAccepted": "The artist is no longer monitored",
+  "@artistMonitorOffAccepted": {
+    "description": "The server accepted turning monitoring off."
+  },
+  "albumMonitorOnAccepted": "The album is now monitored",
+  "@albumMonitorOnAccepted": {
+    "description": "The server accepted turning monitoring on."
+  },
+  "albumMonitorOffAccepted": "The album is no longer monitored",
+  "@albumMonitorOffAccepted": {
+    "description": "The server accepted turning monitoring off."
+  },
+  "details": "Details",
+  "@details": {
+    "description": "Heading of the facts about an artist."
+  },
+  "albums": "Discography",
+  "@albums": {
+    "description": "Heading of an artist's albums before they are listed, or where there are none."
+  },
+  "noAlbums": "No albums",
+  "@noAlbums": {
+    "description": "Shown for an artist without albums."
+  },
+  "retryAlbums": "Retry albums",
+  "@retryAlbums": {
+    "description": "Button that tries to load the albums again."
+  },
+  "typeAlbum": "Albums",
+  "@typeAlbum": {
+    "description": "Heading of the releases that are full albums."
+  },
+  "typeEp": "EPs",
+  "@typeEp": {
+    "description": "Heading of the releases that are EPs."
+  },
+  "typeSingle": "Singles",
+  "@typeSingle": {
+    "description": "Heading of the releases that are singles."
+  },
+  "typeBroadcast": "Broadcasts",
+  "@typeBroadcast": {
+    "description": "Heading of the releases that are broadcasts."
+  },
+  "typeOther": "Other releases",
+  "@typeOther": {
+    "description": "Heading of the releases of no particular type."
+  },
+  "tracks": "Tracks",
+  "@tracks": {
+    "description": "Heading of an album's tracks."
+  },
+  "noTracks": "No tracks",
+  "@noTracks": {
+    "description": "Shown for an album without tracks."
+  },
+  "retryTracks": "Retry tracks",
+  "@retryTracks": {
+    "description": "Button that tries to load the tracks again."
+  },
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "Heading of one disc's tracks, where an album has several.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "numberedTrack": "{number}. {title}",
+  "@numberedTrack": {
+    "description": "A track in an album's list; the number is as printed.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "untitledTrack": "No title",
+  "@untitledTrack": {
+    "description": "A track whose title the server does not know."
+  },
+  "length": "{minutes}:{seconds}",
+  "@length": {
+    "description": "Playing time of a track.",
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "qualityProfile": "Quality profile",
+  "@qualityProfile": {
+    "description": "Name of a fact about an artist."
+  },
+  "metadataProfile": "Metadata profile",
+  "@metadataProfile": {
+    "description": "Name of a fact about an artist."
+  },
+  "tags": "Tags",
+  "@tags": {
+    "description": "Name of a fact about an artist."
+  },
+  "path": "Path",
+  "@path": {
+    "description": "Where the server stores an artist."
+  },
+  "sizeOnDisk": "{size} on disk",
+  "@sizeOnDisk": {
+    "description": "Space an artist or album takes on the server.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "openArtist": "Artist",
+  "@openArtist": {
+    "description": "Link from an album to its artist when the name is not known."
+  },
+  "deleteFile": "Delete file",
+  "@deleteFile": {
+    "description": "The confirm button of the dialog that deletes a track's file."
+  },
+  "deleteFileOf": "Delete the file of {track}",
+  "@deleteFileOf": {
+    "description": "Button that deletes a track's file.",
+    "placeholders": {
+      "track": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFileTitle": "Delete file?",
+  "@deleteFileTitle": {
+    "description": "Title of the dialog that confirms deleting a track file."
+  },
+  "deleteFileConsequence": "The server deletes this file of {track}. The track stays in the library, and if its album is monitored the server may download it again. If the file holds other tracks too, they lose it as well.",
+  "@deleteFileConsequence": {
+    "description": "What deleting a file does; track is the title of the track.",
+    "placeholders": {
+      "track": {
+        "type": "String"
+      }
+    }
+  },
+  "fileDeleted": "The file was deleted",
+  "@fileDeleted": {
+    "description": "The server accepted the deletion of a file."
+  },
+  "fileChanged": "Nothing was deleted: the file could no longer be confirmed. Check it and try again.",
+  "@fileChanged": {
+    "description": "The confirmed file is no longer the one the server lists, or the list cannot be relied on."
+  },
+  "dateAndTime": "{date}, {time}",
+  "@dateAndTime": {
+    "description": "A day and a time of day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "history": "History",
+  "@history": {
+    "description": "Heading of what happened to an item."
+  },
+  "noHistory": "No history",
+  "@noHistory": {
+    "description": "Shown for an item without history."
+  },
+  "historyFailed": "History could not be loaded.",
+  "@historyFailed": {
+    "description": "Shown instead of history, above the reason."
+  },
+  "retryHistory": "Retry history",
+  "@retryHistory": {
+    "description": "Button that tries to load history again."
+  },
+  "showAllHistory": "Show all history",
+  "@showAllHistory": {
+    "description": "Button that opens the whole history of an item."
+  },
+  "eventGrabbed": "Grabbed",
+  "@eventGrabbed": {
+    "description": "History: a release was sent to a download client."
+  },
+  "eventImported": "Imported",
+  "@eventImported": {
+    "description": "History: a file was imported."
+  },
+  "eventFailed": "Download failed",
+  "@eventFailed": {
+    "description": "History: a download failed."
+  },
+  "eventRenamed": "File renamed",
+  "@eventRenamed": {
+    "description": "History: a file was renamed."
+  },
+  "eventDeleted": "File deleted",
+  "@eventDeleted": {
+    "description": "History: a file was deleted."
+  },
+  "eventOther": "Other event",
+  "@eventOther": {
+    "description": "History: something else."
+  },
+  "separator": " · ",
+  "@separator": {
+    "description": "Between short facts on one line."
+  },
+  "listSeparator": ", ",
+  "@listSeparator": {
+    "description": "Between the items of a list on one line."
   }
 }

@@ -685,7 +685,8 @@ class _FakeLogger implements Logger {
 /// The Lidarr module's capabilities against [server], through the allow-list.
 /// Create inside a test or `setUp`.
 class Harness {
-  Harness() {
+  Harness({FakeLidarr? server, ArtworkLoader? artwork, AppNavigator? navigator})
+    : server = server ?? FakeLidarr() {
     context = InstanceContext(
       instance: Instance(
         id: instanceId,
@@ -697,15 +698,15 @@ class Harness {
         createdAt: DateTime.utc(2026),
         updatedAt: DateTime.utc(2026),
       ),
-      http: AllowListClient(allowList, server),
-      artwork: _FakeArtwork(),
-      navigator: _FakeNavigator(),
+      http: AllowListClient(allowList, this.server),
+      artwork: artwork ?? _FakeArtwork(),
+      navigator: navigator ?? _FakeNavigator(),
       cache: cache,
       logger: _FakeLogger(),
     );
   }
 
-  final server = FakeLidarr();
+  final FakeLidarr server;
   final cache = FakeCache();
 
   /// What the module is given for the instance.

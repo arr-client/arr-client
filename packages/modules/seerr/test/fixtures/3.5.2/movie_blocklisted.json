@@ -1,0 +1,43 @@
+{
+  "id": 961,
+  "title": "redacted-83",
+  "releaseDate": "1926-12-25",
+  "posterPath": "/redacted/84.jpg",
+  "backdropPath": "/redacted/85.jpg",
+  "overview": "redacted-86",
+  "externalIds": {
+    "facebookId": null,
+    "imdbId": "tt0017925",
+    "instagramId": null,
+    "twitterId": null
+  },
+  "mediaInfo": {
+    "downloadStatus": [],
+    "downloadStatus4k": [],
+    "id": 5,
+    "mediaType": "movie",
+    "tmdbId": 961,
+    "tvdbId": null,
+    "imdbId": null,
+    "status": 6,
+    "status4k": 6,
+    "createdAt": "2026-11-26T22:08:40.000Z",
+    "updatedAt": "2026-11-26T22:08:40.000Z",
+    "lastSeasonChange": "2026-11-26T22:08:40.000Z",
+    "mediaAddedAt": "2026-11-26T22:08:40.000Z",
+    "serviceId": null,
+    "serviceId4k": null,
+    "externalServiceId": null,
+    "externalServiceId4k": null,
+    "externalServiceSlug": null,
+    "externalServiceSlug4k": null,
+    "ratingKey": null,
+    "ratingKey4k": null,
+    "jellyfinMediaId": null,
+    "jellyfinMediaId4k": null,
+    "requests": [],
+    "issues": [],
+    "seasons": []
+  },
+  "originalTitle": "redacted-83"
+}
