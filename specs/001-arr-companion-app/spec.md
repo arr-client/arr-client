@@ -446,7 +446,12 @@ The user exports their app setup and restores it on another device, and can lock
   capabilities they support.
 - **FR-003**: Each instance MUST take one HTTP or HTTPS address (sub-path allowed) and the token or
   login its service uses, with optional HTTP basic authentication and custom headers (limits for
-  qBittorrent are in Edge Cases). HTTP MUST work without warnings or extra steps.
+  qBittorrent are in Edge Cases). HTTP MUST work without warnings or extra steps. An address typed
+  without a scheme MUST be taken as `https://`, and the app MUST show the address it uses; a typed
+  `http://` is kept. The app MUST NOT fall back to HTTP after a failed HTTPS attempt, which would
+  send the token in clear text. If the test of an address that was typed without a scheme cannot
+  connect or complete the TLS handshake, the message MUST say that `http://` can be typed for a
+  server without HTTPS. Saved addresses are not changed.
 - **FR-004**: Users MUST be able to create, copy, rename, delete and switch between profiles. The app
   MUST NOT switch profile or address by itself, and MUST show which profile is active.
 - **FR-005**: The app MUST support per-instance acceptance of a self-signed certificate by

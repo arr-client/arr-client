@@ -11,6 +11,7 @@ final class ConnectionInput {
     required this.credential,
     this.certPin,
     this.customCa,
+    this.httpsAdded = false,
   });
 
   final Uri url;
@@ -22,6 +23,10 @@ final class ConnectionInput {
 
   /// A private certificate authority, PEM.
   final String? customCa;
+
+  /// The user typed no scheme, so that [url] is https without having been
+  /// asked for. Only the words about a failure depend on it.
+  final bool httpsAdded;
 }
 
 /// Asks the user whether to go on to the system's local network prompt.

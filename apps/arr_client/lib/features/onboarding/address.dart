@@ -23,21 +23,24 @@ final _whitespace = RegExp(r'\s');
 // A scheme typed wrongly, such as `https:/host` or `http//host`.
 final _brokenScheme = RegExp(r'^https?:?[/\\]', caseSensitive: false);
 
+/// Whether [text] names a scheme. If not, [parseAddress] takes it as https.
+bool namesScheme(String text) => text.contains('://');
+
 /// The address typed as [text], or why there is none.
 ///
-/// Without a scheme, `http://` is put before it; the form shows the result.
+/// Without a scheme, `https://` is put before it; the form shows the result.
+/// Nothing falls back to http, which would send the key in clear text.
 /// Slashes at the end are dropped, and a sub-path is kept.
 Result<Uri, AddressProblem> parseAddress(String text) {
   var value = text.trim();
   if (value.isEmpty) return const Err(AddressProblem.missing);
   if (value.contains(_whitespace)) return const Err(AddressProblem.invalid);
-  if (!value.contains('://')) {
-    // It would be read as a host named "http" or "https", reached over plain
-    // http, and sent the key.
+  if (!namesScheme(value)) {
+    // It would be read as a host named "http" or "https", and sent the key.
     if (value.startsWith(_brokenScheme)) {
       return const Err(AddressProblem.invalid);
     }
-    value = 'http://$value';
+    value = 'https://$value';
   }
   final parsed = Uri.tryParse(value);
   if (parsed == null) return const Err(AddressProblem.invalid);

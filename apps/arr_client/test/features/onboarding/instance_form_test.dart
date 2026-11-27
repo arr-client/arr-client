@@ -161,13 +161,13 @@ void main() {
     await press(tester, button('Test connection'));
 
     expect(find.text('Connected to Films 5.1'), findsOneWidget);
-    expect(find.text('http://192.168.1.10:7878'), findsOneWidget);
+    expect(find.text('https://192.168.1.10:7878'), findsOneWidget);
     expect(await saved(app), isEmpty);
     await press(tester, button('Add service'));
 
     final instance = (await saved(app)).single;
     expect(instance.name, 'Films');
-    expect(instance.url, Uri.parse('http://192.168.1.10:7878'));
+    expect(instance.url, Uri.parse('https://192.168.1.10:7878'));
     expect(instance.authKind, AuthKind.apiKey);
     expect(instance.detectedVersion, '5.1');
     expect(instance.authFailed, isFalse);
@@ -207,6 +207,43 @@ void main() {
     final instance = (await saved(app)).single;
     expect(instance.lastProbe, isNull);
     expect(instance.authFailed, isFalse);
+    await app.stop(tester);
+  });
+
+  testWidgets('says how to ask for http only if no scheme was typed', (
+    tester,
+  ) async {
+    final (app, films) = await start(tester);
+    films.answer = () async => const Err(Unreachable());
+    await openForm(tester);
+    await fill(tester);
+    final hint = find.textContaining('type http:// instead');
+
+    await press(tester, button('Test connection'));
+    expect(hint, findsOneWidget);
+    // The field now holds the https:// that the app added.
+    await press(tester, button('Test again'));
+    expect(hint, findsOneWidget);
+    await enter(tester, 'address', 'https://192.168.1.10:7879');
+    await press(tester, button('Test connection'));
+    expect(hint, findsOneWidget);
+
+    await enter(tester, 'address', 'http://192.168.1.10:7878');
+    await press(tester, button('Test connection'));
+    expect(hint, findsNothing);
+    await enter(tester, 'address', 'https://nas.test');
+    await press(tester, button('Test connection'));
+    expect(hint, findsNothing);
+    expect(
+      [for (final probe in films.probed) '${probe.url}'],
+      [
+        'https://192.168.1.10:7878',
+        'https://192.168.1.10:7878',
+        'https://192.168.1.10:7879',
+        'http://192.168.1.10:7878',
+        'https://nas.test',
+      ],
+    );
     await app.stop(tester);
   });
 
