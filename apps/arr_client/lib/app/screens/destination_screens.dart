@@ -130,16 +130,47 @@ class DiscoverScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
+    final tabs = Navigation.of(ref.watch(scopeProvider)).discoverTabs;
     return _Tabbed(
       title: strings.navDiscover,
       actions: _searchActions(context, ref),
       tabs: [
-        for (final tab in Navigation.of(ref.watch(scopeProvider)).discoverTabs)
+        for (final tab in tabs)
           switch (tab) {
             DiscoverTab.browse => strings.tabBrowse,
             DiscoverTab.requests => strings.tabRequests,
             DiscoverTab.issues => strings.tabIssues,
           },
+      ],
+      views: [
+        for (final tab in tabs)
+          switch (tab) {
+            DiscoverTab.browse => const _BrowseTab(),
+            DiscoverTab.requests || DiscoverTab.issues => const _NotBuilt(),
+          },
+      ],
+    );
+  }
+}
+
+/// The request services to browse, whose screens are their modules'.
+class _BrowseTab extends ConsumerWidget {
+  const _BrowseTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scope = ref.watch(scopeProvider);
+    return ListView(
+      children: [
+        if (scope != null)
+          for (final (active, provider) in scope.providers(
+            CapabilityKind.discovery,
+          ))
+            ListTile(
+              title: Text(active.instance.name),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(provider.entryRoute().location),
+            ),
       ],
     );
   }

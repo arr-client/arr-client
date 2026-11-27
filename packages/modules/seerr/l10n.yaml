@@ -1,0 +1,6 @@
+arb-dir: lib/src/l10n
+template-arb-file: seerr_en.arb
+output-dir: lib/src/l10n/generated
+output-localization-file: seerr_localizations.dart
+output-class: SeerrLocalizations
+nullable-getter: false

@@ -1,6 +1,5 @@
 /// The paths of the Seerr screens, which the module's capabilities point to.
-/// The screens are not built yet (T129, T130), so the module is not registered
-/// with the app.
+/// Those of the lists of requests and issues have no screen yet (T130).
 library;
 
 import 'package:core/core.dart';
@@ -13,6 +12,9 @@ const titlePattern = 'seerr/titles/:mediaType/:tmdbId';
 
 /// Requesting one title; the query `is4k` chooses the variant.
 const requestPattern = 'seerr/titles/:mediaType/:tmdbId/request';
+
+/// What the user may still request. Only the module's screens lead to it.
+const quotaPattern = 'seerr/quota';
 
 /// The list of requests.
 const requestsPattern = 'seerr/requests';
