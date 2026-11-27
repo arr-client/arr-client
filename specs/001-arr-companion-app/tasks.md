@@ -107,7 +107,7 @@ files and no dependency on an unfinished task in the same phase. Unmarked tasks 
 - [x] T080 [US4] Implement the third-party artwork toggle in `apps/arr_client/lib/features/settings/`
 - [ ] T081 [US4] Pre-release gate: a connection check on the release-built APK, secret and traffic audit (SC-006, SC-007) and a TalkBack/200% text pass over US1–US4; record in `docs/release-checks.md`
 - [ ] T082 [US4] Record Radarr and Sonarr results in `docs/verification-matrix.md`
-- [ ] T083 [US4] Owner, only after the pre-release gate passes, the owner has tried the app on a phone and the application id is registered for Android developer verification: create the Android signing key and the `release` environment secrets, wire `key.properties` into the Gradle build, set `version: 0.1.0-beta.1+1` in `apps/arr_client/pubspec.yaml` and tag `v0.1.0-beta.1`, the first pre-release, through `.github/workflows/release.yml`
+- [ ] T083 [US4] Owner, only after the pre-release gate passes, the owner has tried the app on a phone and the application id and signing certificate are registered for Android developer verification (the signing key and the `release` environment secrets exist since 2026-11-26): wire `key.properties` into the Gradle build, set `version: 0.1.0-beta.1+1` in `apps/arr_client/pubspec.yaml` and tag `v0.1.0-beta.1`, the first pre-release, through `.github/workflows/release.yml`
 
 ## Phase 7: US5 Manage and choose releases (P2)
 
