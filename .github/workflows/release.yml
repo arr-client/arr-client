@@ -36,10 +36,15 @@ jobs:
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          test -n "$KEYSTORE_BASE64" || { echo "Signing secrets are not set."; exit 1; }
+          for name in KEYSTORE_BASE64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            test -n "${!name}" || { echo "::error::The signing secret for $name is not set."; exit 1; }
+          done
+          umask 077
           echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          # A backslash starts an escape in a .properties file, so each one is doubled.
           printf 'storeFile=%s\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
-            "$RUNNER_TEMP/release.jks" "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" \
+            "$RUNNER_TEMP/release.jks" "${STORE_PASSWORD//\\/\\\\}" "${KEY_ALIAS//\\/\\\\}" \
+            "${KEY_PASSWORD//\\/\\\\}" \
             > apps/arr_client/android/key.properties
       - name: Build
         run: |
@@ -47,18 +52,26 @@ jobs:
           flutter build apk --release --split-per-abi
           cd build/app/outputs/flutter-apk
           sha256sum ./*-release.apk > SHA256SUMS
+      # Nothing after the build needs the key, also when the build failed.
+      - name: Remove the signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks" apps/arr_client/android/key.properties
       # Reads what the build hooks of the build above did.
       - name: Check that SQLite was compiled from source, not downloaded
         run: dart run tool/check_sqlite_source.dart --built=android
-      - name: Check that every APK is signed
+      - name: Check that every APK is signed, and not with a debug key
         run: |
           apksigner=$(printf '%s\n' "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n 1)
           shopt -s nullglob
           apks=(apps/arr_client/build/app/outputs/flutter-apk/*-release.apk)
           test "${#apks[@]}" -gt 0 || { echo "::error::No release APKs found."; exit 1; }
           for apk in "${apks[@]}"; do
-            "$apksigner" verify "$apk" || { echo "::error::$apk failed signature verification."; exit 1; }
+            certs=$("$apksigner" verify --print-certs "$apk") || { echo "::error::$apk failed signature verification."; exit 1; }
+            # Without this line the next check would pass whatever the certificate is.
+            grep -q 'certificate DN:' <<< "$certs" || { echo "::error::No certificate listed for $apk."; exit 1; }
+            if grep -q 'CN=Android Debug' <<< "$certs"; then echo "::error::$apk is signed with a debug key."; exit 1; fi
             echo "Signed: $apk"
+            grep 'certificate SHA-256 digest' <<< "$certs"
           done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
