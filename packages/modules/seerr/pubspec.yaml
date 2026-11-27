@@ -12,9 +12,27 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
+  # Translations of the Flutter widgets; imported by the generated localizations.
+  flutter_localizations:
+    sdk: flutter
+  # Screen state (docs/standards/patterns.md). MIT.
+  flutter_riverpod: ^3.5.0
+  # Opens one screen from another by its route. BSD-3-Clause.
+  go_router: ^18.1.4
+  # Imported by the generated localizations.
+  intl: ^0.20.2
+  # Material widgets. package:flutter/material.dart is deprecated.
+  material_ui: ^1.11.1
+  # Shared widgets of the screens.
+  ui:
+    path: ../../ui
 
 dev_dependencies:
   # An in-memory database for the tests that run the module in a session. MIT.
   drift: ^2.35.4
   flutter_test:
     sdk: flutter
+
+flutter:
+  # `flutter pub get` runs gen-l10n with l10n.yaml.
+  generate: true

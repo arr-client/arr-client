@@ -66,6 +66,19 @@ class _Request implements RequestProvider {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _Discovery implements DiscoveryProvider {
+  _Discovery(this.instanceId, this.path);
+
+  final String instanceId;
+  final String path;
+
+  @override
+  ModuleRoute entryRoute() => ModuleRoute(instanceId: instanceId, path: path);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class _Subtitles implements SubtitleProvider {
   _Subtitles(this.instanceId);
 
@@ -162,6 +175,10 @@ class FakeModule implements ServiceModule {
       const (LibraryProvider) =>
         library?.call(context) ?? FakeLibrary(itemKind: itemKind),
       const (RequestProvider) => _Request(),
+      const (DiscoveryProvider) => _Discovery(
+        context.instance.id,
+        '$id/items/discover',
+      ),
       const (SubtitleProvider) => _Subtitles(context.instance.id),
       _ => null,
     };

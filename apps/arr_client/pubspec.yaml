@@ -50,6 +50,8 @@ dependencies:
     path: ../../packages/modules/qbittorrent
   radarr:
     path: ../../packages/modules/radarr
+  seerr:
+    path: ../../packages/modules/seerr
   sonarr:
     path: ../../packages/modules/sonarr
   ui:

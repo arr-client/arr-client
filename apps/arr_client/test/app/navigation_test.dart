@@ -206,6 +206,24 @@ void main() {
     });
   }
 
+  testWidgets('Browse opens the screen of a request service', (tester) async {
+    usePhone(tester);
+    final requests = FakeModule('requests', offers: {CapabilityKind.discovery});
+    final app = await TestApp.start(tester, modules: [requests]);
+    await app.add(requests, 'Requests server');
+    await app.pump(tester);
+    await open(tester, 'Discover');
+
+    await tester.tap(find.widgetWithText(ListTile, 'Requests server'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.textContaining('Requests server item discover'),
+      findsOneWidget,
+    );
+    await app.stop(tester);
+  });
+
   testWidgets('search opens above the destinations', (tester) async {
     usePhone(tester);
     final app = await TestApp.start(tester);

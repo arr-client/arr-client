@@ -7,9 +7,15 @@ import 'package:flutter/widgets.dart';
 
 import 'src/adapters/discovery.dart';
 import 'src/adapters/requests.dart';
+import 'src/adapters/seasons.dart';
 import 'src/api/probe.dart';
 import 'src/api/refusals.dart';
 import 'src/api/session_handler.dart';
+import 'src/screens/seerr_screens.dart';
+import 'src/screens/seerr_source.dart';
+
+// The app adds its delegate to the others, for the strings of the screens.
+export 'src/l10n/generated/seerr_localizations.dart' show SeerrLocalizations;
 
 const _product = 'Seerr';
 
@@ -34,8 +40,13 @@ const _descriptor = ModuleDescriptor(
   testedVersion: '3.5.2',
 );
 
-/// The Seerr service. The screens are yet to come (T129, T130).
+/// The Seerr service.
 final class SeerrModule implements ServiceModule {
+  // One for each connection to an instance, which is its client: the app may
+  // build the context anew while a screen is open, as after a rename. The
+  // screens' state is kept under it.
+  final _sources = Expando<SeerrSource>();
+
   @override
   String get id => 'seerr';
 
@@ -71,7 +82,15 @@ final class SeerrModule implements ServiceModule {
     return found as T?;
   }
 
-  // The screens are not built yet.
   @override
-  List<ModuleScreen> routes() => const [];
+  List<ModuleScreen> routes() => seerrScreens(
+    (context) => _sources[context.http] ??= SeerrSource(
+      instanceId: context.instance.id,
+      discovery: SeerrDiscoveryAdapter(context),
+      requests: SeerrRequestAdapter(context),
+      seasons: SeerrSeasonAdapter(context),
+      artwork: context.artwork,
+      logger: context.logger,
+    ),
+  );
 }
